@@ -1,0 +1,112 @@
+# %%
+import os
+import numpy as np
+import xarray as xr
+
+import matplotlib.pyplot as plt
+
+plt.rcParams.update({
+    "savefig.facecolor": 'white',
+    "font.size": 11, 
+    'savefig.dpi': 300, 
+    'font.sans-serif': 'arial', 
+    # 'figure.figsize': (4.6, 3)
+})
+
+from dotenv import load_dotenv
+load_dotenv()
+REPO_DIR = os.getenv('REPO_DIR')
+
+canterapath = os.path.join(REPO_DIR, 'modeling\mhdcantera\scripts\output')
+PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
+if not os.path.exists('output'): os.mkdir('output')
+
+# %%
+ds_TP_species = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+
+ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+
+ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
+
+# %%
+
+
+# alpha = xr.open_dataset(os.path.join(PI_modeling_dataset_dir,'alpha_bl.cdf')).squeeze()['alpha_bl']
+ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
+alpha = ds_NE['alpha']
+
+
+# Add enhancement factor
+da_dsigma_tot = xr.load_dataset(os.path.join(PI_modeling_dataset_dir,'da_dsigma_tot.cdf'))['enhancement factor']
+alpha = alpha*da_dsigma_tot
+
+
+beta = alpha -1 
+
+
+
+# %%
+
+
+combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, analysis='perf_Bconst')
+
+cmap = plt.get_cmap('RdBu')
+beta_sel = beta.sel(combo_sel)
+beta_sel.plot(vmin=-1,vmax=1,xscale='log', cmap=cmap)
+
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='black')
+
+# %%
+
+
+combo_downsel = {
+    'P_in' : 0,
+    'l_bk': 0,
+    'Kwt': [0.001, 0.01, 0.1],
+    'phi': [0.8,1,1.2],
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+P_zero.plot(col='phi', row='Kwt',hue='analysis', y='T', xscale='log')
+
+# %%
+
+
+combo_downsel = {
+    'l_bk': [0],
+    'phi': [0.8],
+    'Kwt': [0.01],
+    'analysis': ['perf_Bconst']
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+P_zero.plot(hue='P_in', y='T', xscale='log')
+
+
+# %%
+
+combo_downsel = {
+    'P_in' : 0,
+    'phi': [0.8],
+    'Kwt': [0.001,0.01,0.1]
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+P_zero.plot(col='l_bk', row='Kwt', hue='analysis', y='T', xscale='log')
+
+# %%
+
+combo_downsel = {
+    'P_in' : 0,
+    'l_bk': 0,
+    'phi': [0.8],
+    'Kwt': [0.01]
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+P_zero.plot(hue='analysis', y='T', xscale='log')
