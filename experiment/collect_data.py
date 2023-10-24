@@ -40,15 +40,21 @@ ds_absem.to_netcdf(pjoin('proc_data','ds_absem.cdf'))
 
 
 dss = []
+
+timecoords = None
 for date in dates:
     fp = pjoin(notebook_dir, date, 'mws','proc_data', 'ds_lecroy_time.cdf')
     ds = xr.load_dataset(fp)
     ds = ds[['i', 'q']]
+
+    if timecoords is not None:
+        ds = ds.assign_coords(time=timecoords)
+    else:
+        timecoords = ds.coords['time']
     dss.append(ds)
 
-#%%
 
-ds_lecroy = xr.concat(dss, 'time')
+ds_lecroy = xr.concat(dss, 'acq_time')
 ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 # %%
 

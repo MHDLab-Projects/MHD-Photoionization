@@ -20,14 +20,10 @@ fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
 
 mesh = pv.read(fname)
 
-print("array names")
-print(mesh.array_names)
+mesh
+# print("array names")
+# print(mesh.array_names)
 
-
-cmap = plt.cm.get_cmap("viridis")
-cells = mesh.cell_data
-
-mesh.plot(cmap="viridis")
 
 #%%
 p = pv.Plotter()
@@ -66,6 +62,7 @@ for i_loc, x_pos_cm in enumerate(locs):
 fig.set_size_inches(12,8)
 fig.tight_layout()
 
+#%%
 locs = [1e-3, 5e-3]
 n_vars = len(var_names)
 n_locs = len(locs)
