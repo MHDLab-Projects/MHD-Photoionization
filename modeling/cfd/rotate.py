@@ -1,62 +1,72 @@
+"""
+Script to create a 3D ImageData vtk file from a 2D axi-symmetric simulation. The
+2D plane is rotated a number of times, then interpolated to a 3D grid. The final
+spacing of the grid is used to determine the needed angle of rotation and
+interpolation radius. The data of a specified array is also output as a csv file
+suitable for loading into comsol
+"""
+
+#TODO: the algorithm does not seem to be working well at long lengths from the torch. Could be related to a lower mesh size there. 
+
 #%%
 import numpy as np
 import pyvista as pv
 import matplotlib.pyplot as plt
 import os
+import pandas as pd
 
 from mhdpy.io import gen_path
 
 from mhdpy.analysis.standard_import import *
 
-sp_dir = gen_path('sharepoint')
-
-results_dir = pjoin(sp_dir, r"Team Member Files\DaveH\Results\axiJP8200_17Jul23")
-
-
 #%%
 
+sp_dir = gen_path('sharepoint')
+results_dir = pjoin(sp_dir, r"Team Member Files\DaveH\Results\axiJP8200_17Jul23")
 case = "mdot0130_phi080_K010"
 fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
 
 mesh = pv.read(fname)
 
+# for k in mesh.cell_data.keys():
+#     if k != 'em': mesh.cell_data.remove(k)
 
+# for k in mesh.point_data.keys():
+#     if k != 'em': mesh.point_data.remove(k)
 
-for k in mesh.cell_data.keys():
-    if k != 'em': mesh.cell_data.remove(k)
-
-
-for k in mesh.point_data.keys():
-    if k != 'em': mesh.point_data.remove(k)
-
-mesh.set_active_scalars('em')
+mesh.set_active_scalars('T')
 
 mesh
 
 
 # %%
 
+# Clip the dataset to this box. 
+bounds = [0.21, 0.5,0,0.05, -0.1,0.1]
 
-bounds = [0.21, 0.4,0,0.015, -0.1,0.1]
+l_x = bounds[1] - bounds[0]
+l_y = bounds[3] - bounds[2]
+l_z = bounds[5] - bounds[4]
+
 mesh_clip = mesh.clip_box(bounds, invert=False).extract_surface()
 
-mesh_clip.plot(cpos='xy')
-
-
-#%%
-
-m3 = mesh_clip.extrude_rotate(
-    angle=30,
-    rotation_axis=(1,0,0)
-    )
-
-
-m3.plot(cpos='xy')
-
+# mesh_clip.plot(cpos='xy')
 
 #%%
 
-n_rots = 10
+# Ultimate spacing of the 3D grid. This will also be used for the interpolation radius and rotation angle determineation
+spacing = 0.001
+
+
+# We need the rotational angle to fine enough that the spacing at the end of the arc is equal to this
+# Tan(theta) = spacing/L ~ theta
+# n_rots = 2pi/theta = 2*pi*L/spacing
+
+L = l_y
+
+n_rots = int(np.ceil(2*np.pi*L/spacing))
+
+print("Generating {} rotations".format(n_rots))
 
 angles = np.linspace(0,360, n_rots)
 angles = angles[:-1]
@@ -68,46 +78,26 @@ for angle in angles:
 
     ms.append(m)
 
-
-
 m_rot = pv.CompositeFilters.combine(ms)
 
-
-m_rot.cell_data.remove('em')
-
+# m_rot.cell_data.remove('em')
 
 m_rot = m_rot.cast_to_pointset()
 
-m_rot.plot()
+#%%
+# m_rot.plot()
 
 #%%
-
-
-#%%
-
-
-# x = np.linspace
 
 bounds = m_rot.GetBounds()
 
-spacing = 0.001
-
 l_x = bounds[1] - bounds[0]
-n_x = int(l_x/spacing)
 l_y = bounds[3] - bounds[2]
-n_y = int(l_y/spacing)
 l_z = bounds[5] - bounds[4]
+
+n_x = int(l_x/spacing)
+n_y = int(l_y/spacing)
 n_z = int(l_z/spacing)
-
-# x = np.linspace(bounds[0],bounds[1], n_points)
-# y = np.linspace(bounds[2],bounds[3], n_points)
-# z = np.linspace(bounds[4],bounds[5], n_points)
-
-# x, y, z = np.meshgrid(x,y,z)
-
-# grid = pv.StructuredGrid(x,y,z)
-
-# mi = grid.interpolate(m_rot)
 
 grid = pv.ImageData()
 grid.origin = (bounds[0], bounds[2], bounds[4])
@@ -118,58 +108,37 @@ grid.dimensions = (n_x, n_y, n_z)
 
 #%%
 
-grid.slice_orthogonal().plot(show_vertices=True)
+# grid.slice_orthogonal().plot(show_vertices=True)
 
 #%%
 
-grid.plot(show_vertices=True, opacity=0.1)
+# grid.plot(show_vertices=True, opacity=0.1)
 
 # %%
 
-p = pv.Plotter()
+# p = pv.Plotter()
 
-p.add_mesh(grid, show_vertices=True, opacity=0.1)
-p.add_mesh(m_rot)
+# p.add_mesh(grid, show_vertices=True, opacity=0.1)
+# p.add_mesh(m_rot)
 
-p.show()
+# p.show()
 
 #%%
 
 m_i = grid.interpolate(m_rot, radius=spacing)
 
-
 # m_i.plot()
 
-#%%
-p = pv.Plotter()
-
-p.add_mesh(m_i, show_vertices=True, opacity=0.1)
-# p.add_mesh(m_rot, show_vertices=True, opacity=0.1)
-
-p.show()
-
-
 
 #%%
 
-m_i.slice_orthogonal().plot()
+# m_i.slice_orthogonal().plot()
 # %%
 
-# m_i.save('output/em_mesh.vtk')
-
-# m_out = m_i.cast_to_poly_points()
-
-# m_out.save('output/em_mesh.ply', binary=False)
-
-# m_i.save('output/test.csv', binary=False)
-
-m_i.save('output/test.vtk')
-
-# pv.save_meshio(m_out, 'output/em_mesh.stl')
+m_i.save('output/torch_rot_interp.vtk')
 
 #%%
 
-import pandas as pd
 
 data = dict(zip(['x','y','z'], m_i.points.T))
 
