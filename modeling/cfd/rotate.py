@@ -1,3 +1,4 @@
+#%%
 """
 Script to create a 3D ImageData vtk file from a 2D axi-symmetric simulation. The
 2D plane is rotated a number of times, then interpolated to a 3D grid. The final
@@ -7,6 +8,7 @@ suitable for loading into comsol
 """
 
 #TODO: the algorithm does not seem to be working well at long lengths from the torch. Could be related to a lower mesh size there. 
+#TODO: The interpolation at the edges of the square, outside the rotated circle, is not defined. Perhaps reduce dimensions of imagedata mesh to be inside the rotated cylinder
 
 #%%
 import numpy as np
@@ -19,6 +21,8 @@ from mhdpy.io import gen_path
 
 from mhdpy.analysis.standard_import import *
 
+pv.OFF_SCREEN = True
+
 #%%
 
 sp_dir = gen_path('sharepoint')
@@ -28,13 +32,9 @@ fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
 
 mesh = pv.read(fname)
 
-# for k in mesh.cell_data.keys():
-#     if k != 'em': mesh.cell_data.remove(k)
 
-# for k in mesh.point_data.keys():
-#     if k != 'em': mesh.point_data.remove(k)
 
-mesh.set_active_scalars('T')
+mesh.set_active_scalars('CO2')
 
 mesh
 
@@ -50,7 +50,7 @@ l_z = bounds[5] - bounds[4]
 
 mesh_clip = mesh.clip_box(bounds, invert=False).extract_surface()
 
-# mesh_clip.plot(cpos='xy')
+mesh_clip.plot(cpos='xy')
 
 #%%
 
@@ -85,7 +85,7 @@ m_rot = pv.CompositeFilters.combine(ms)
 m_rot = m_rot.cast_to_pointset()
 
 #%%
-# m_rot.plot()
+m_rot.plot()
 
 #%%
 
@@ -106,28 +106,20 @@ grid.dimensions = (n_x, n_y, n_z)
 
 # grid = grid.cast_to_rectilinear_grid()
 
-#%%
-
-# grid.slice_orthogonal().plot(show_vertices=True)
-
-#%%
-
-# grid.plot(show_vertices=True, opacity=0.1)
-
 # %%
 
-# p = pv.Plotter()
+p = pv.Plotter()
 
-# p.add_mesh(grid, show_vertices=True, opacity=0.1)
-# p.add_mesh(m_rot)
+p.add_mesh(grid, show_vertices=True, opacity=0.1)
+p.add_mesh(m_rot)
 
-# p.show()
+p.show()
 
 #%%
 
 m_i = grid.interpolate(m_rot, radius=spacing)
 
-# m_i.plot()
+m_i.plot()
 
 
 #%%

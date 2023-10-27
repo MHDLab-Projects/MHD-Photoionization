@@ -6,9 +6,6 @@ from mhdpy.analysis.standard_import import *
 
 from mhdpy.mws_utils import calc_mag_phase_AS
 
-#%%
-
-
 
 # %%
 
@@ -123,11 +120,32 @@ df_cfd = pd.read_csv(fp_cfd, index_col=0)
 df_cfd.index = df_cfd.index - df_cfd.index.values[0]
 df_cfd.index = df_cfd.index*1000
 
+
 ds_cfd = xr.Dataset.from_dataframe(df_cfd)
+
+
+#TODO: Convert to number density
+ds_cfd_norm = ds_cfd/ds_cfd.max()
+
 
 #%%
 
 ds_cfd.to_array('var').plot(hue='var', yscale='log')
+
+#%%
+
+fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), r'modeling\cfd\output\beam_conv.cdf' )
+
+ds_cfd_beam = xr.load_dataset(fp_cfd_beam)
+
+
+xs = ds_cfd_beam.coords['x_beam'].values
+xs = (xs - xs[0])*1000
+
+ds_cfd_beam = ds_cfd_beam.assign_coords(x_beam = xs)
+
+#TODO: Convert to number density
+ds_cfd_beam_norm = ds_cfd_beam/ds_cfd_beam.max()
 
 
 #%%
@@ -135,11 +153,20 @@ ds_cfd.to_array('var').plot(hue='var', yscale='log')
 g = ds['nK_m3'].plot(hue='run_plot', x='motor', marker='o')
 plot.dropna(g)
 
-plt.gca().get_legend().set_title('Experiment (date, #)')
+ax1 = plt.gca()
+ax1.get_legend().set_title('Experiment (date, #)')
+# ax1.set_yscale('log')
 
 plt.twinx()
 
-ds_cfd['K'].plot(color='black')
+ds_cfd_norm['K'].plot(color='orange', label ='centerline')
+ds_cfd_beam_norm['K'].plot(color='blue', label = 'beam convolution')
+
+ax2 = plt.gca()
+ax2.legend(bbox_to_anchor=[0,0,0.5,0.5])
+# ax2.set_yscale('log')
+
+plt.xlim(0,310)
 # %%
 
 g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
@@ -147,5 +174,11 @@ g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
 plt.gca().get_legend().set_title('Experiment (date, #)')
 plt.twinx()
 
-ds_cfd['KOH'].plot(color='black')
+ds_cfd_norm['KOH'].plot(color='orange', label ='centerline')
+ds_cfd_beam_norm['KOH'].plot(color='blue', label = 'beam convolution')
 
+ax2 = plt.gca()
+ax2.legend(bbox_to_anchor=[0,0,0.5,0.8])
+
+plt.xlim(0,310)
+# %%
