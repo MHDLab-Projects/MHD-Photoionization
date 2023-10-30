@@ -35,3 +35,15 @@ Threshold L for experimental nK. Is there an 'effective' L we can determine for 
 look at new interp function from Dave
 
 Make fork of pyvista xarray
+
+# 2023-10-30 meeting
+
+Caught error in AIAA 2020 manuscript. Equation 1 should be 
+
+$ t = \frac{I_{L+F}- I_F}{I_L} = 1 - \alpha $
+
+Linearity Assumption
+$ I_{L+F} = I_L + I_F$ 
+
+
+TODO: just try profiles along the beam centerline to start
