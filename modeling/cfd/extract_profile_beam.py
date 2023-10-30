@@ -85,7 +85,7 @@ extracted.plot()
 
 #%%
 
-from pv_utils import pv_to_unstack_xr
+from mhdpy.pyvista import pv_to_unstack_xr
 
 ds = pv_to_unstack_xr(extracted)
 
