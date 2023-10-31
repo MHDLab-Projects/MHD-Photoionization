@@ -7,8 +7,3 @@ cd ..
 cd modeling
 
 python setup.py develop
-
-cd mhdcantera
-
-python setup.py develop
-

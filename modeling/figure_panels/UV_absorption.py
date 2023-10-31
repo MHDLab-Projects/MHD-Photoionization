@@ -20,23 +20,23 @@ REPO_DIR = os.getenv('REPO_DIR')
 
 from noneq_utils import abscs, noneq
 
-canterapath = os.path.join(REPO_DIR, 'modeling\mhdcantera\scripts\output')
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling\dataset\output')
 PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
 if not os.path.exists('output'): os.mkdir('output')
 
 # %%
-ds_TP_species = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species.cdf'))
-ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))
+ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf'))
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'))
 
-ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf')).sel({'phi': 0.7})
+ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf')).sel({'phi': 0.7})
 
 seldict = {
     'P_combustor': ds_TP_params.coords['P_combustor'].item(),
     'inlet_T': ds_TP_params.coords['inlet_T'].item()
 }
 
-ds_HP_species = xr.open_dataset(os.path.join(canterapath, 'ds_HP_species.cdf')).sel(seldict)
-ds_HP_params = xr.open_dataset(os.path.join(canterapath, 'ds_HP_params.cdf')).sel(seldict)
+ds_HP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_HP_species.cdf')).sel(seldict)
+ds_HP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_HP_params.cdf')).sel(seldict)
 # %%
 
 

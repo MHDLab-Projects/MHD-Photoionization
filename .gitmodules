@@ -1,9 +1,3 @@
 [submodule "mhdpy"]
 	path = mhdpy
 	url = https://github.com/mhdLab/mhdpy
-[submodule "modeling/mhdpy"]
-	path = modeling/mhdpy
-	url = https://github.com/mhdLab/mhdpy
-[submodule "modeling/mhdcantera"]
-	path = modeling/mhdcantera
-	url = https://github.com/mhdLab/mhdcantera

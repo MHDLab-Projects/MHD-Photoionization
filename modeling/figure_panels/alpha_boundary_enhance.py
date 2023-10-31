@@ -21,14 +21,14 @@ REPO_DIR = os.getenv('REPO_DIR')
 
 from noneq_utils import abscs, noneq
 
-canterapath = os.path.join(REPO_DIR, 'modeling\mhdcantera\scripts\output')
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling\dataset\output')
 PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
 if not os.path.exists('output'): os.mkdir('output')
 # %%
-ds_TP_species = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
-ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
-ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
+ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
