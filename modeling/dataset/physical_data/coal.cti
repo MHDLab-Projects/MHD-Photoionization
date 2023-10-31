@@ -1,0 +1,178 @@
+
+stoichiometric_solid(
+    name = "coal",
+    density = 1500.0,
+    elements = "C H O N S",
+    species = """coal(s)""",
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="coal(s):1.0")
+)
+
+stoichiometric_solid(
+    name = "coal",
+    density = 1500.0,
+    elements = "C H O N S",
+    species = """coal(s)""",
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="coal(s):1.0")
+)
+
+stoichiometric_solid(
+    name = "char",
+    density = 3000.0,
+    elements = "C",
+    species = """C(gr)""",
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="C(gr):1.0")
+)
+
+incompressible_solid(
+    name = "condensed9",
+    elements = " C H O N S E K Si Al Fe Ca Ti Mg P Na",
+    species = """nasa9_condensed: all""",
+    options = ["skip_undeclared_elements"],
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="C(gr):1.0"),
+    density = 1500.0
+)
+
+ideal_gas(
+    name = "gas9",
+    elements = "C H O N S E K Ar Si Al Fe Ca Ti Mg P Na",
+    species = """nasa9_gas: all""",
+    options = ["skip_undeclared_elements"],
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CH4:1.0")
+)
+
+ideal_gas(
+    name = "gas9_v23_cust",
+    elements = "C H O N S E K Ar Si Al Fe Ca Ti Mg P Na",
+    species = """nasa9_gas_v23_cust: all""",
+    options = ["skip_undeclared_elements"],
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CH4:1.0")
+)
+
+ideal_gas(
+    name = "gas_small",
+    elements = "C H O N",
+    species = """nasa9_gas: N2 CO2 CO O2 CH4 H2 H2O OH""",
+    options = ["skip_undeclared_elements"],
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CH4:1.0")
+)
+
+ideal_gas(
+    name = "gas_small_ash",
+    elements = "C H O N S E K Ar Si Al Fe Ca Ti Mg P Na",
+    species = \
+    "nasa9_gas:"\
+        " N2 CO2 CO O2 CH4 H2 H2O OH e- OH- Ar"\
+        " C H O N"\
+        " SO2 S2 S"\
+        " KOH K2 K K+"\
+        " ALO AL AL+"\
+        " CaO Ca Ca+"\
+        " MgO Mg Mg+"\
+        " FeO Fe Fe+"\
+        " SiO Si Si+"\
+        " TiO Ti Ti+"\
+        " NaO Na Na+"\
+        " P2O5 PO P P+",
+    options = ["skip_undeclared_elements"],
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CH4:1.0")
+)
+
+species(
+    name = "coal(s)",
+    atoms = " C:501 H:406 O:83 N:6 S:3",
+    thermo = (
+        const_cp(
+            cp0 = 1e6,
+            h0 =  0e6,
+            s0 = -1e6
+        ),
+    )
+)
+
+
+stoichiometric_solid(
+    name = "CaH4O6S_cr",
+    density = 1500.0,
+    elements = "Ca H O S",
+    species = """CaH4O6S(cr)""",
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CaH4O6S(cr):1.0")
+)
+# from Chuck White via SOLIDS databank version APV82
+species(
+    name = "CaH4O6S(cr)",
+    atoms = " Ca:1 H:4 O:6 S:1",
+    thermo = (
+        const_cp (
+            tmin = 200.0,
+            tmax = 425.0, 
+            cp0 = 172e3,        # ~ 1000 J/kg-K   
+            h0 = -2022630e3,   # -2022630 kJ/kmol.
+            s0 = -1e3
+        )
+    )
+)
+
+stoichiometric_solid(
+    name = "CHKO2_cr",
+    density = 1500.0,
+    elements = "C H O K",
+    species = """CHKO2(cr)""",
+    initial_state = state(temperature = 300.0,
+    pressure = OneAtm, mole_fractions="CHKO2(cr):1.0")
+)
+# fro
+# Gelest, Inc - product guide
+species(
+    name = "CHKO2(cr)",
+    atoms = " C:1 H:1 K:1 O:2",
+    thermo = (
+        const_cp (
+            tmin = 200.0,
+            tmax = 440.0,      # need to get better reference (Wiki)
+            cp0 = 84e3,        #
+            h0 = -679900.02e3,   # 162.5 kcal/mol => 679900.02 J/mol
+            s0 = -1e3
+        )
+    )
+)
+
+
+species(name = "K",
+
+    atoms = " K:1 ",
+
+    thermo = (
+
+	NASA( [  200.00,  1000.00], [  2.500007120E+10,  -7.251131660E-08,
+ 
+                2.590684810E-10,  -3.794609110E-13,  1.932106410E-16,
+
+                9.958803070E+03,   5.040545170E+00] ),
+
+        NASA( [ 1000.00,  6000.00], [  2.260267210E+00,   5.623411790E-04,
+ 
+               -4.485518380E-07,   1.362434980E-10,  -1.029262680E-14,
+
+                1.003488120E+04,   6.315682010E+00] )
+
+             ),
+
+    transport = gas_transport(
+			geom = "atom",
+			diam = 4.25,
+			well_depth = 850,
+			rot_relax = 1),
+    # note = "L 4/93"
+
+       )
+
+

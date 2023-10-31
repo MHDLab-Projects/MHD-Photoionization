@@ -8,11 +8,10 @@ import xyzpy
 
 from dotenv import load_dotenv
 load_dotenv()
-REPO_DIR = os.getenv('REPO_DIR')
 
 from noneq_utils import abscs, noneq
 
-canterapath = os.path.join(REPO_DIR, 'modeling\mhdcantera\scripts\output')
+canterapath = os.path.join('output')
 if not os.path.exists('output'): os.mkdir('output')
 # %%
 ds_TP_species = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
