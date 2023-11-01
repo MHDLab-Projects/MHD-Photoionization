@@ -159,8 +159,8 @@ ax1.get_legend().set_title('Experiment (date, #)')
 
 plt.twinx()
 
-ds_cfd_norm['K'].plot(color='orange', label ='centerline')
-ds_cfd_beam_norm['K'].plot(color='blue', label = 'beam convolution')
+ds_cfd_norm['K'].plot(color='black', label ='centerline')
+ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam convolution', marker='o')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,0.5,0.5])
@@ -174,8 +174,8 @@ g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
 plt.gca().get_legend().set_title('Experiment (date, #)')
 plt.twinx()
 
-ds_cfd_norm['KOH'].plot(color='orange', label ='centerline')
-ds_cfd_beam_norm['KOH'].plot(color='blue', label = 'beam convolution')
+ds_cfd_norm['KOH'].plot(color='black', label ='centerline')
+ds_cfd_beam_norm['KOH'].plot(color='gray', label = 'beam convolution')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,0.5,0.8])
