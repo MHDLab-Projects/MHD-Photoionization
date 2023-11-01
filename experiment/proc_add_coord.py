@@ -22,6 +22,8 @@ process_tcs = [
     '53x',
     '536_pos',
     '536_power'
+    '5x6_pos',
+    '536_pos_power'
     ]
 
 process_regex = ["({})_(\d)".format(s) for s in process_tcs]
