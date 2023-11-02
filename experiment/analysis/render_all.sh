@@ -1,4 +1,6 @@
-for f in analysis*.py
+mkdir -p nb_render
+
+for f in *.py
 do
 jupytext --to notebook --execute $f --set-kernel python3
 jupfn="${f%.*}".ipynb

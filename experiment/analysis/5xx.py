@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.mws_utils import calc_mag_phase_AS
 
