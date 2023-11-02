@@ -21,19 +21,21 @@ ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_lecroy.cdf'))
 process_tcs = [
     '53x',
     '536_pos',
-    '536_power'
+    '536_power',
     '5x6_pos',
+    '5x3_pos',
     '536_pos_power'
     ]
+
 
 process_regex = ["({})_(\d)".format(s) for s in process_tcs]
 
 from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
 import re
 
-def process_ds(ds, coords_to_assign, date, run_num, tc_base):
+def process_ds(ds, coords_to_assign, date, run_num, tc_base, min_mnum=10):
 
-    ds = assign_coords_multi(ds, coords_to_assign, min_mnum=10)
+    ds = assign_coords_multi(ds, coords_to_assign, min_mnum=min_mnum)
     ds = ds.assign_coords(date=[date])
 
     #TODO: believe these ohter coordinates are showing up because of low min_mnum
@@ -70,14 +72,24 @@ for (tc, date), row in df_cuttimes.iterrows():
             tc_base, run_num = m.groups()
 
             ds_absem_sel = ds_absem.sel(acq_time = sl)
-            ds_absem_sel = process_ds(ds_absem_sel, coords_to_assign, date, run_num, tc_base)
+            ds_absem_sel = process_ds(ds_absem_sel, coords_to_assign, date, run_num, tc_base, min_mnum=None) #Absem aready downselected...
             dss_absem[tc_base].append(ds_absem_sel)
 
             ds_lecroy_sel = ds_lecroy.sel(acq_time = sl)
-            ds_lecroy_sel = process_ds(ds_lecroy_sel, coords_to_assign, date, run_num, tc_base)
+            ds_lecroy_sel = process_ds(ds_lecroy_sel, coords_to_assign, date, run_num, tc_base, min_mnum=10)
             dss_lecroy[tc_base].append(ds_lecroy_sel)
 
 
+#%%
+
+#TODO: output assigned coords to tdms for debugging/plotting
+
+# tw = slice(Timestamp('2023-05-24 20:11:19.415287808'), Timestamp('2023-05-24 20:13:36.610684416'), None)
+# coords_to_assign['motor'].sel(time=tw).plot(marker='o')
+
+# plt.twinx()
+
+# ds_absem.sel(acq_time=sl).max('wavelength')['alpha'].plot(hue='mp')
 
 #%%
 
