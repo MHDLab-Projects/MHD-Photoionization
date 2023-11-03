@@ -31,3 +31,9 @@ from mhdpy.plot import dropna
 
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
 
+
+# %%
+
+g = da_max.plot(hue ='run_plot', x='power', marker='o')
+plt.yscale('log')
+plt.xscale('log')

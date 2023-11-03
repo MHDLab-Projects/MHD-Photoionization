@@ -29,3 +29,33 @@ from mhdpy.plot import dropna
 
 g = da_max.plot(col='motor',hue ='run_plot', x='power', col_wrap=3, marker='o')
 
+
+# %%
+
+# counts = da_lecroy.isel(time=0).count('mnum')
+
+
+# counts.plot(hue='run_plot', col='power', x='motor')
+
+# #%%
+
+# da_sel = da_lecroy.where(counts > 10)
+# da_sel = da_sel.dropna('motor','all')
+
+
+# da_max = da_sel.mean('mnum').sel(time=slice(-1,1)).max('time')
+
+
+# g = da_max.plot(col='motor',hue ='run_plot', x='power', col_wrap=3, marker='o')
+#%%
+
+da_sel = da_max.isel(motor=[0,2,4])
+g = da_sel.plot(col='motor',hue ='run_plot', x='power', marker='o')
+
+#%%
+
+da_sel = da_max.isel(motor=[0,2,4])
+g = da_sel.plot(hue='motor',row ='run', x='power', marker='o')
+
+plt.xscale('log')
+plt.yscale('log')
