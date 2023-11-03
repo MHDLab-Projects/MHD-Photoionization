@@ -6,6 +6,15 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.mws_utils import calc_mag_phase_AS
 
 from mhdpy.plot import dropna
+
+#%%
+fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+dst_coords = mhdpy.io.TFxr(fp_dst_coords).as_dsst()['coords']
+
+fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+dsst = mhdpy.io.TFxr(fp_dsst).as_dsst()
+
+
 # %%
 
 tc = '5x6_pos'
@@ -27,10 +36,6 @@ da_lecroy = da_lecroy.drop('run') # Only one run for this tc
 
 #%%
 
-ds_absem
-# %%
-
-
 da_max = da_lecroy.mean('mnum').sel(time=slice(-1,1)).max('time')
 
 da_max.plot()
@@ -42,19 +47,13 @@ da_max.plot(hue='phi', marker='o')
 #%%
 
 da = ds_absem.sel(mp='mw_horns').drop('run')['alpha']
-
 # da = da.max('wavelength').count('mnum')
 da = da.max('wavelength').mean('mnum')
 
-
-
-da
 g = da.plot(hue='phi', marker='o')
-
 
 dropna(g)
 
-# plt.ylabel("measurement count")
 #%%
 da = ds_absem.sel(mp='mw_horns').drop('run')['alpha']
 
@@ -71,21 +70,24 @@ dsst = mhdpy.io.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
 tw = slice(Timestamp('2023-05-24 20:12:07.301042944'), Timestamp('2023-05-24 20:12:46.490260736'), None)
 
-
 da = ds_absem_time.sel(time=tw).dropna('time','all')
-
 da.mean('wavelength').plot(hue='mp', marker='o')
-
-# ds_absem['alpha'].mean('wavelength')
 
 plt.twinx()
 
-# dsst['motor']['Motor C Relative'].sel(time=tw).plot()
-
 dsst['hvof']['CC_equivalenceRatio'].sel(time=tw).plot()
 
-
 #%%
+
+# Check assigned coord values
+
+da = ds_absem_time.sel(time=tw).dropna('time','all')
+da.mean('wavelength').plot(hue='mp', marker='o')
+
+plt.twinx()
+
+dst_coords['CC_equivalenceRatio'].sel(time=tw).plot(marker='o')
+
 #%%
 
 ds_fit = ds_absem.mean('mnum')

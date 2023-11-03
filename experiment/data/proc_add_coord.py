@@ -1,18 +1,21 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+import re
+from collections import defaultdict
 
+from mhdpy.io import load_df_cuttimes, extract_cuttime_list
+from mhdpy.io import ds_to_tdms, TdmsWriter
+from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
 
 dsst = mhdpy.io.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
 df_cuttimes = load_df_cuttimes(pjoin(DIR_PROC_DATA, 'cuttimes.csv'), reduce_columns=False)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index(['Event', 'date'])
 
 cuttimes = extract_cuttime_list(df_cuttimes)
 timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
-
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
 ds_absem = ds_absem.rename(time='acq_time')
@@ -30,8 +33,6 @@ process_tcs = [
 
 process_regex = ["({})_(\d)".format(s) for s in process_tcs]
 
-from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
-import re
 
 def process_ds(ds, coords_to_assign, date, run_num, tc_base, min_mnum=10):
 
@@ -51,9 +52,15 @@ def process_ds(ds, coords_to_assign, date, run_num, tc_base, min_mnum=10):
 
 coords_to_assign = gen_coords_to_assign_1(dsst)
 
-dss_absem = []
+#%%
 
-from collections import defaultdict
+ds_coords = xr.merge(coords_to_assign.values())
+
+with TdmsWriter('proc_data/dst_coords.tdms', 'w') as tw:
+    ds_to_tdms(ds_coords, 'coords', tw)
+
+
+#%%
 dss_absem = defaultdict(list)
 dss_lecroy = defaultdict(list)
 
@@ -82,17 +89,6 @@ for (tc, date), row in df_cuttimes.iterrows():
 
 #%%
 
-#TODO: output assigned coords to tdms for debugging/plotting
-
-# tw = slice(Timestamp('2023-05-24 20:11:19.415287808'), Timestamp('2023-05-24 20:13:36.610684416'), None)
-# coords_to_assign['motor'].sel(time=tw).plot(marker='o')
-
-# plt.twinx()
-
-# ds_absem.sel(acq_time=sl).max('wavelength')['alpha'].plot(hue='mp')
-
-#%%
-
 output_dir = pjoin(DIR_PROC_DATA, 'absem')
 if not os.path.exists(output_dir): os.mkdir(output_dir)
 
@@ -103,8 +99,6 @@ for tc in dss_absem:
     ds.to_netcdf(pjoin(output_dir, '{}.cdf'.format(tc)))
 
 # %%
-
-
 
 output_dir = pjoin(DIR_PROC_DATA, 'lecroy')
 if not os.path.exists(output_dir): os.mkdir(output_dir)
