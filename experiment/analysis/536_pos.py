@@ -25,6 +25,9 @@ ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be
 ds_lecroy = calc_mag_phase_AS(ds_lecroy)#[['mag', 'phase','AS']]
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
+#%%
+
+ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run','all')
 
 #%%
 
