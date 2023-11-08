@@ -97,18 +97,18 @@ class AxiInterpolator:
         return self.interp((x,r))
 
 
+if __name__ == "__main__":
+    mesh = pv.read(fname)
 
-mesh = pv.read(fname)
+    p = mesh.point_data
+    R_u = ct.gas_constant
+    N_A = ct.avogadro
+    p['C_mix'] = p['p']/(p['T']*R_u)
+    # TODO calculate mole fraction
+    p['C_K'] = p['C_mix']*p['K']
+    f_mesh = pv_interpolator(mesh, ["C_K","T"])
 
-p = mesh.point_data
-R_u = ct.gas_constant
-N_A = ct.avogadro
-p['C_mix'] = p['p']/(p['T']*R_u)
-# TODO calculate mole fraction
-p['C_K'] = p['C_mix']*p['K']
-f_mesh = pv_interpolator(mesh, ["C_K","T"])
-
-f_axi = AxiInterpolator(mesh, ["C_K", "T"])
+    f_axi = AxiInterpolator(mesh, ["C_K", "T"])
 
 
 
@@ -215,8 +215,9 @@ class GaussAbsorption:
         ax.legend(title="T [K]")
         return ax
 
-Q_absorption = GaussAbsorption(b=[-0.3,-0.3])
-Q_absorption.plot()
+if __name__ == "__main__":
+    Q_absorption = GaussAbsorption(b=[-0.3,-0.3])
+    Q_absorption.plot()
 
 
 def f_quad(s, f_val, f_Qabs, lam_nm, kappa_CL):
