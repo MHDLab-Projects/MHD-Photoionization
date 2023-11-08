@@ -24,11 +24,11 @@ TODO
 - optimization testing
     - assume gaussian T and n profiles
     $$
-        (T,n)(x,r) = (T,n)_CL(x) exp( -\beta_{T,n}(x) r^2 ) 
+        (T,n)(x,r) = (T,n)_CL(x) exp( -\beta_{T,n}(x) r^2 )
         (T,n)_CL(x) = x^a_{T,n}
         \beta_{T,n}(x) = x^b_{T,n}
     $$
-        
+
 
 """
 import os
@@ -82,7 +82,7 @@ def pv_interpolator(mesh, var_names=[]):
                 data.append(v[:,i])
                 names.append("{}_{}".format(k,i))
     data = np.array(data).T
-    return interpolate.LinearNDInterpolator(p[:,:2], data)
+    return interpolate.LinearNDInterpolator(p[:,:2], data), names
 #
 # https://docs.pyvista.org/version/stable/api/core/_autosummary/pyvista.DataSetFilters.sample.html
 #
@@ -90,31 +90,33 @@ def pv_interpolator(mesh, var_names=[]):
 #
 
 class AxiInterpolator:
-    
-    def __init__(self, mesh, var_names=[]):        
-        self.interp = pv_interpolator(mesh, var_names)
-        
-    def __call__(self, points):        
-                
+
+    def __init__(self, mesh, var_names=[]):
+        self.interp, self.names = pv_interpolator(mesh, var_names)
+        self.index = { x : self.names.index(x) for x in self.names }
+
+
+    def __call__(self, points):
+
         p = points.T
         x = p[0]
         r = (p[1]**2 + p[2]**2)**0.5
-        
+
         return self.interp((x,r))
 
 
+if __name__ == "__main__":
+    mesh = pv.read(fname)
 
-mesh = pv.read(fname)
+    p = mesh.point_data
+    R_u = ct.gas_constant
+    N_A = ct.avogadro
+    p['C_mix'] = p['p']/(p['T']*R_u)
+    # TODO calculate mole fraction
+    p['C_K'] = p['C_mix']*p['K']
+    f_mesh = pv_interpolator(mesh, ["C_K","T"])
 
-p = mesh.point_data
-R_u = ct.gas_constant
-N_A = ct.avogadro
-p['C_mix'] = p['p']/(p['T']*R_u)
-# TODO calculate mole fraction
-p['C_K'] = p['C_mix']*p['K']
-f_mesh = pv_interpolator(mesh, ["C_K","T"])
-
-f_axi = AxiInterpolator(mesh, ["C_K", "T"])
+    f_axi = AxiInterpolator(mesh, ["C_K", "T"])
 
 
 
@@ -127,34 +129,34 @@ def Q_absorption_constant(T, lam_nm):
     qe = ct.electron_charge
     me = ct.electron_mass
     c0 = ct.light_speed
-    eps0 = ct.permeability_0    
+    eps0 = ct.permeability_0
     C = qe**2/(4.0*me*c0)
     return (1.0 + T*0.0 + lam_nm*0.0)
 
 class GaussAbsorption:
     """
-    
-    Calculates the relative cross-section assuming a series of 
+
+    Calculates the relative cross-section assuming a series of
     Gaussian peaks defined by
         A_i   - amplitude
         w_i   - width
         lam_i - wavelength center
         b_i   - temperature exponent
-    
+
         Q0 = 1e-18 m^2 [default]
         T0 = 1000 K
-    
+
         $$
         beta_i = beta0_i (T/T0)^b
         Q/Q0  = sum_i A_i exp ( -(beta_i (lam - lam_i)^ 2)
         $$
-    
-    
+
+
     """
-    
+
     def __init__(self, A=[2.0/3.0,1.0], lam=[765.0,770.0], w=[8.0,8.0], b=[0.0,0.0]):
         """
-                
+
         Parameters
         ----------
         A : float array, optional
@@ -179,21 +181,21 @@ class GaussAbsorption:
         self.T0 = 1000.0
         self.Q0 = 1e-18
         self.A_min = 1e-9
-        
+
     def __call__(self, T, lam_nm):
         """return nornmalized cross section"""
         beta = self.beta[:,np.newaxis]*(T/self.T0)**self.b[:,np.newaxis]
         Q = self.A[:,np.newaxis]*np.exp(-(beta*(lam_nm-self.lam[:,np.newaxis]))**2)
         Q += self.A_min
-        return np.sum(Q, axis=0)    
-    
+        return np.sum(Q, axis=0)
+
     def cross_section(self, T, lam_nm):
         """return dimensional cross section"""
-        return self(T, lam_nm)*self.Q0    
-        
+        return self(T, lam_nm)*self.Q0
+
     def plot(self, T=[300.0,1000.0,2000.0], ax=None):
         """
-        
+
         Parameters
         ----------
         T : float array
@@ -203,7 +205,7 @@ class GaussAbsorption:
         Returns
         -------
         ax
-        
+
         """
         lam, w = self.lam, self.w
         p = []
@@ -214,27 +216,28 @@ class GaussAbsorption:
         if ax is None:
             fig, ax = plt.subplots()
         for t in T:
-            Q = self(t,p)        
+            Q = self(t,p)
             ax.plot(p, Q, label="{}".format(t))
             ax.set_xlabel("wavelength [nm]")
             ax.set_ylabel("cross section []")
         ax.legend(title="T [K]")
         return ax
 
-Q_absorption = GaussAbsorption(b=[-0.3,-0.3])
-Q_absorption.plot()
+if __name__ == "__main__":
+    Q_absorption = GaussAbsorption(b=[-0.3,-0.3])
+    Q_absorption.plot()
 
 
 def f_quad(s, f_val, f_Qabs, lam_nm, kappa_CL):
     """integrand for integrate.quad
-    
+
     Parameters
     ----------
     s : float
-        position coordinate, *s*    
+        position coordinate, *s*
     f_val(s) : function
-        calculates an array containing field variables as a function of  
-        the ray position coordinate, *s*    
+        calculates an array containing field variables as a function of
+        the ray position coordinate, *s*
         f_val(s)[0] : molar concentration or number density
         f_val(s)[1] : temperature
     f_Qabs(T,lam_nm) : function
@@ -244,13 +247,13 @@ def f_quad(s, f_val, f_Qabs, lam_nm, kappa_CL):
         ray wavelength [nm]
     kapaa_CL : float
         centerline absorption coefficient
-    
-    
+
+
     Returns
     -------
     kappa_star : float
         normalized absorption coefficient []
-            
+
     """
     #pos = x0 + s*(x1 - x0)
     #r = (pos[1]**2 + pos[2]**2)**0.5
@@ -259,105 +262,105 @@ def f_quad(s, f_val, f_Qabs, lam_nm, kappa_CL):
     out = f_val(s)
     C_K, T = out[0], out[1]
     return (f_Qabs(T, lam_nm)*C_K)/kappa_CL
-    
-    
+
+
 def axi_array(pos):
     r = (pos[:,1]**2 + pos[:,2]**2)**0.5
     pos_axi = pos*1.0
     pos_axi[:,1] = r
     pos_axi[:,2] = np.atan2(pos[:,1],pos[:2])
     return pos_axi
-    
+
 def test_quad_single(wavelength_nm=760.00):
     """integration of a single ray using quad function
-    
+
     Parameters
     ----------
     wavelength_nm : float
         ray wavelength [nm]
-    
+
     """
     test_quad_range([wavelength_nm])
-    
+
 _wave_range = np.linspace(760,775,31)
 def test_range(wave_range=_wave_range):
     """integration of ray of different wavelengths using quad function
-    
+
     Parameters
     ----------
     wave_range : float array
         ray wavelengths [nm]
-    
+
     Returns
     -------
     kappa_star : float array
         normalized effective absorption coeffient
     kappaL : float array
-        effective absorption coeffient beam length       
+        effective absorption coeffient beam length
     intensity_ratio : float array
         target intensity / source intensity
-        
+
     Notes
     -----
-    
+
     $ Q_K $ - absorption cross-section non-dimensionalized with $Q_ref$
     $ Q_ref $ - nominal absorption cross-section [m^2]
-      
-    
+
+
     $$
         \kappa_{CK} = Q_K( T_CL, \lambda) C_{K,CL}
     $$
-    
+
     $$
         \kappa^* = \int_{a,b} ds ( Q_K( T(s), \lambda) C_K(s) )/ \kappa_{CL}
     $$
-    
+
     $$
         (\kappa L) = \kappa^* (\kappa_{CL} N_A Q_{ref}) L
     $$
-    
+
     $$
         \dfrac{I_t}{I_s} = \log \left(-\kappa L \right)
     $$
-   
-    
-        
+
+
+
     """
     x_CL = np.array([0.3,0.0,0.0])
     x_offset = np.array([-0.05,0.0,-0.1])
     x_source = x_CL + x_offset
     x_target = x_CL - x_offset
-    
-    L = np.sum((x_target-x_source)**2)**0.5    
+
+    L = np.sum((x_target-x_source)**2)**0.5
     s_CL = np.sum((x_CL-x_source)**2)**0.5/L
-    
-      
+
+
     # barrel exit diameter
     d = 1.2e-3
     s = np.concatenate( [np.linspace(0,1,100),s_CL + np.linspace(-0.5,0.5,100)*(d/L)] )
     s = np.unique(s)
-    s = np.sort(s)    
-    
+    s = np.sort(s)
+
     def f_pos(s):
         pos = x_source + s[:np.newaxis]*(x_target - x_source)
-    
+
     pos = f_pos(s)
     pos_axi = axi_array(pos)
     out = f_mesh((pos_axi[:,:2]))
     fig, ax = plt.subplots(2,1,sharex=True)
     ax[0].semilogy(pos[:,2],out[:,0]+1e-9,'-')
     ax[1].plot(pos[:,2],out[:,1],'-')
-    
+
     out = f_axi(x_CL[:])
     T_CL = out[1]
     C_CL = out[0]
-            
+
     def f_val(s):
         pos = x_source + s*(x_target - x_source)
         r = (pos[1]**2 + pos[2]**2)**0.5
         x = pos[0]
         return f_mesh((x, r))
-        
+
     A = wave_range*0.0
     err = A*0.0
     Q_CL = Q_absorption(T_CL, wave_range)
@@ -367,27 +370,27 @@ def test_range(wave_range=_wave_range):
     #
     n_wave = len(wave_range)
     # additional points to help integration
-    points = [s_CL-0.5*(d/L), s_CL, s_CL+0.5*(d/L)]  
+    points = [s_CL-0.5*(d/L), s_CL, s_CL+0.5*(d/L)]
     for i, wave in enumerate(wave_range):
         out = integrate.quad(f_quad, 0, 1, args=(wave, f_val, Q_absorption, kappa_CL[i]),
                                  full_output=True, points=points, limit=200)
         A[i] = out[0]
         err[i] = out[1]
-    
+
         val, err = out[0], out[1]
         quad_out = out[2]
-    
+
         if len(out) > 3:
             # print error message
             print(out[3])
-            
+
         if len(out) > 2:
             last = quad_out["last"]
             n_p = last + 1
             p_left = quad_out["alist"][:last]
             p_right = quad_out["blist"][:last]
             val_cell = quad_out["rlist"][:last]
-            
+
             n_dim = 3
             s = np.unique( np.concatenate([p_left,p_right]) )
             pos = f_pos(s)
@@ -396,14 +399,14 @@ def test_range(wave_range=_wave_range):
             color = cmap(float(i)/float(n_wave))
             ax[0].semilogy(pos[:,2],out[:,0]+1e-9, 'o', label='quad end-points', color=color)
             ax[1].plot(pos[:,2],out[:,1],'o')
-    
+
     ax[1].set_xlabel("x [m]")
     ax[0].set_ylabel("C_K [kmol/m^3]")
     ax[1].set_ylabel("T [K]")
     ax[0].legend()
-               
-    # L is needed because the integral is calculated using a non-dimensional distance, s  
-    # N_A is needed because the concentration is used instead of the number density    
+
+    # L is needed because the integral is calculated using a non-dimensional distance, s
+    # N_A is needed because the concentration is used instead of the number density
     A1 = (A*kappa_CL)*N_A*Q_absorption.Q0*L
     I_ratio = np.exp(-A1)
     if (n_wave > 1):
@@ -423,47 +426,47 @@ def test_range(wave_range=_wave_range):
 
 def line_interpolator(f_pos, f_val, a=0.0, b=1.0, max_iter=10, rtol=0.01, do_plot=False, verbose=1):
     """grid interpolator *f_val* to a line interpolator
-    
+
     Parameters
     ----------
     f_pos : function(s)
         calculate cartesian coordintes from line coordinate, *s*
     f_val : function(pos[:,n_dim])[:,n_var]
         calculate array of n_var values
-    a : float 
-        starting point of line  
+    a : float
+        starting point of line
     b : interval end
-        end point of line   
+        end point of line
     tol : float
-        max relative difference between values        
-        
-        
+        max relative difference between values
+
+
     Returns
     -------
-    
-    
-    
+
+
+
     Notes
     -----
     Given:
-        1. f_val(x) - a "value" function which calculates a set of values at cartesian 
+        1. f_val(x) - a "value" function which calculates a set of values at cartesian
             position, *x*
         2. f_pos(s) - a "posotion" function which calculates a position given a line
             position, *s*
-    
+
     1. finds a set of points, s[] on the interval between a and b, such that
         the difference in the values between any two adjacents points on s[]
         is less staop a specied value
-        
-        
-            
-    
+
+
+
+
     """
-    
+
     s = np.linspace(a,b,21)
     x = f_pos(s)
     v = f_val(x)
-    # 
+    #
     w_small = 1e-6
     w_vsmall = 1e-12
     w = (v.max(axis=0) - v.min(axis=0)) + (v.max(axis=0) + v.min(axis=0))*w_small + w_vsmall
@@ -480,8 +483,8 @@ def line_interpolator(f_pos, f_val, a=0.0, b=1.0, max_iter=10, rtol=0.01, do_plo
         print("Adpative Interpolator")
         print("{:4} {:5} {:4} {:>6} {:>9} {:>9}".format("iter","points","#new","%new","maxDelta","maxLoc"))
         print(header)
-    for i in range(max_iter):        
-       
+    for i in range(max_iter):
+
         dv = abs(v[1:,:] - v[:-1,:])
         ii = np.where( dv > rtol*w[np.newaxis,:] )
         i_new = np.unique(ii[0])
@@ -491,15 +494,15 @@ def line_interpolator(f_pos, f_val, a=0.0, b=1.0, max_iter=10, rtol=0.01, do_plo
             f = 100.0*n_new/n_s
             dv_norm = np.max(dv/w,axis=-1)
             print("{:4d} {:5d} {:4d} {:6.1f} {:9.1e} {:9.1e}".format(i, n_s, n_new, f, dv.max(), s[dv_norm.argmax()]))
-        if len(ii[0]) < 1: 
+        if len(ii[0]) < 1:
             break
         s_new = (s[i_new] + s[i_new+1])*0.5
         x_new = f_pos(s_new)
-        v_new = f_val(x_new)        
-              
+        v_new = f_val(x_new)
+
         s = np.concatenate([s,s_new])
         v = np.concatenate([v,v_new])
-        
+
         ii = np.argsort(s)
         v = v[ii]
         s = s[ii]
@@ -516,9 +519,9 @@ def line_interpolator(f_pos, f_val, a=0.0, b=1.0, max_iter=10, rtol=0.01, do_plo
                 ax[i,0].set_ylabel("v_{}".format(i))
                 ax[-1,0].set_xlabel("beam coordnate")
                 ax[-1,1].set_xlabel("# of new points")
-                
-        
-        
+
+
+
     x = f_pos(s)
     f = interpolate.interp1d(s, v.T)
     if verbose:
@@ -541,26 +544,26 @@ _method = {"integrate":"simpson", "interpolate":"beam"}
 def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
     """calculate relative beam intensity for wavelengths, lam[] and
     and centerline positions x_CL[]
-        
+
     Parameters
     ----------
     x_CL : float array
-        centerline positions [m]        
+        centerline positions [m]
     lam_nm : float arrray
         wave lengths [nm]
-        
+
     Returns
     -------
     dictionary of 2D float arrays [i_pos,i_wave]
         I_ratio : intensity ratio
         kappaL  : effective absorption coefficeint x beam length
         kappa_star : float array
-                    
+
     TODO:
     1. split-out code from inner loop into 1 or more functions
     2. vectorize integration
     """
-    
+
     n_pos, n_dim1 = x_CL.shape
     n_wave = len(lam_nm)
 
@@ -570,71 +573,71 @@ def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
     x_target = x_CL - x_offset
     L = np.sum((x_source - x_target)**2,axis=1)
     wave_range = lam_nm
-    
+
     # numerical integrand
     A = np.zeros((n_pos, n_wave))
     err = np.zeros((n_pos, n_wave))
-    out = f_axi(x_CL) 
+    out = f_axi(x_CL)
     C_CL = out[:,0]
     T_CL = out[:,1]
     A1 = A*0.0
-    Q0 = Q_absorption.Q0  
-    
+    Q0 = Q_absorption.Q0
+
     m1 = method.get("integrate","simpsons")
     m2 = method.get("interpolate","beam")
-    
+
     for j in range(n_pos):
-        
+
         s_beam = np.linspace(0,1.0,21)
-        
+
         def f_pos(s):
             return x_source[j] + (x_target - x_source)[j]*s[:,np.newaxis]
-    
+
         # create a direction 1D interpolating function
         f_beam, fig = line_interpolator(f_pos, f_axi, max_iter=15, do_plot=1)
-        
+
         fig.axes[0].set_title("x_CL = {}".format(x_CL[j]))
         s_beam = f_beam.x
         #ds = s_beam[1:] - s_beam[:-1]
         s_CL = np.sum((x_CL[j]-x_source[j])**2)**0.5/L[j]
-        points = [s_CL]   
+        points = [s_CL]
         Q_CL = Q_absorption(T_CL[j], wave_range)
-        
+
         print("Integrating @ x_CL = {} for {} wavelengths".format(x_CL[j], n_wave))
-        
+
         def f_val(s):
-            pos = f_pos(s)          
+            pos = f_pos(s)
             r = ((pos.T[1])**2 + (pos.T[2])**2).T
             return f_mesh((pos[:,0], r))
-            
+
         kappa_CL = C_CL[j]*Q_CL
         for i, wave in enumerate(wave_range):
-                                                     
+
             if m1 == "quad":
                 if m2 == "axi":
                     out = integrate.quad(f_quad, 0, 1, epsabs=1e-3, epsrel=1e-4,
                                      args=(f_val, Q_absorption, wave, kappa_CL[i]),
                                      full_output=True, points=points, limit=200)
                 else:
-                    out = integrate.quad(f_quad, 0, 1, 
+                    out = integrate.quad(f_quad, 0, 1,
                                     args=(f_beam, Q_absorption, wave, kappa_CL[i]),
-                                    full_output=True, points=points, limit=200)  
+                                    full_output=True, points=points, limit=200)
                 A[j,i] = out[0]
                 err[j,i] = out[1]
-            else:           
-                if m2 == "axi":              
-                    vals = f_val(s_beam)                
+            else:
+                if m2 == "axi":
+                    vals = f_val(s_beam)
                 else:
-                    vals = f_beam(s_beam)          
+                    vals = f_beam(s_beam)
                 C_K, T = vals[0], vals[1]
-                Q = Q_absorption(T, wave)/Q_CL[i]   
+                Q = Q_absorption(T, wave)/Q_CL[i]
                 a = Q*(C_K/C_CL[j])
-                out = integrate.simpson(a, s_beam)            
+                out = integrate.simpson(a, s_beam)
                 A[j,i] = out
-            
-        print("Done x = ",x_CL[j])                
+
+        print("Done x = ",x_CL[j])
         A1[j,:] = A[j,:]*kappa_CL*L[j]
-        
+
     A1 *= Q0*N_A
     I_ratio = np.exp(-A1)
     cmap = plt.colormaps["viridis"]
@@ -642,19 +645,17 @@ def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
     for j in range(n_pos):
         color = cmap( float(j)/(n_pos-1) )
         ax[0].plot(wave_range, I_ratio[j,:], color=color, label="{:3.0f}".format(100*x_CL[j,0]))
-    
+
     for i in range(0,n_wave,4):
-        color = cmap( float(i)/(n_wave-1))    
+        color = cmap( float(i)/(n_wave-1))
         ax[1].plot(x_CL[:,0]*100, I_ratio[:,i], color=color, label="{}".format(wave_range[i]))
-        
+
     ax[0].set_xlabel("wavelength [nm]")
     ax[1].legend(title="wavelength [nm]")
     ax[0].legend(title="centerline\nposition [cm]")
     ax[1].set_xlabel("centerline position [cm]")
     ax[0].set_ylabel("intensity ratio []")
 
-    plt.savefig('test.png')
-    
     return {"kappa_star":A, "kappaL":A1, "intensity_ratio":I_ratio }
 
 
