@@ -39,10 +39,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cantera as ct
 
-results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"
-sim_run = "."
-study = "."
-fname = os.path.join(results_dir, study,sim_run,"frontCyl.vtk")
+from mhdpy.io import gen_path
+from os.path import join as pjoin
+
+# results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"
+sp_dir = gen_path('sharepoint')
+results_dir = pjoin(sp_dir, r"Team Member Files\DaveH\Results\axiJP8200_17Jul23")
+case = "mdot0130_phi080_K010"
+fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
+
+# sim_run = "."
+# study = "."
+# fname = os.path.join(results_dir, study,sim_run,"frontCyl.vtk")
 n_dim = 3
 
 class Source:
@@ -644,6 +652,8 @@ def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
     ax[0].legend(title="centerline\nposition [cm]")
     ax[1].set_xlabel("centerline position [cm]")
     ax[0].set_ylabel("intensity ratio []")
+
+    plt.savefig('test.png')
     
     return {"kappa_star":A, "kappaL":A1, "intensity_ratio":I_ratio }
 
