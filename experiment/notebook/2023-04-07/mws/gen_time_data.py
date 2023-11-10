@@ -11,9 +11,9 @@ import numpy as np
 
 import mhdpy
 
-data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
 
-# dsst = mhdpy.io.TFxr().as_dsst()
+# dsst = mhdpy.fileio.TFxr().as_dsst()
 
 lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 input_fns = [fn for fn in os.listdir(lecroy_munged_folder) if 'Silicon' not in fn]
@@ -82,7 +82,7 @@ ds_out = xr.merge([
 ds_out = ds_out.rename(acq_time =  'time')
 #%%
 
-from mhdpy.io import ds_to_tdms
+from mhdpy.fileio.tdms import ds_to_tdms
 from nptdms import TdmsWriter
 
 # fp_out = os.path.join(lecroy_munged_folder, 'test.tdms')

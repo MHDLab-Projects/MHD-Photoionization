@@ -3,11 +3,11 @@
 
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
 
-dsst = mhdpy.io.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 df_cuttimes = load_df_cuttimes('cuttimes.csv').sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
 

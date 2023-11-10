@@ -9,8 +9,9 @@
 from mhdpy.analysis.standard_import import *
 
 from mhdpy.analysis.xr import interp_ds_to_var
-from mhdpy.io import TFxr, gen_path_date
-from mhdpy.process.absem import load_absem
+from mhdpy.fileio import TFxr
+from mhdpy.fileio.path import gen_path_date
+from mhdpy.fileio.spectral import load_absem
 
 data_folder = gen_path_date('2023-05-12')
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()

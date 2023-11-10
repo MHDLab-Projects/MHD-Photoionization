@@ -59,7 +59,7 @@ ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 # %%
 
 
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 
 dfs = []
 for date in dates:
@@ -80,9 +80,9 @@ dss_hvof = []
 dss_motor = []
 dss_filterwheel =[]
 for date in dates:
-    data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', date)
+    data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', date)
 
-    dsst = mhdpy.io.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+    dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
     dss_hvof.append(dsst['hvof'])
     dss_motor.append(dsst['motor'])
@@ -97,6 +97,6 @@ dsst = {
     'filterwheel': xr.concat(dss_filterwheel, 'time')
 }
 # %%
-from mhdpy.io import dsst_to_tdms
+from mhdpy.fileio.tdms import dsst_to_tdms
 
 dsst_to_tdms(dsst, pjoin(DIR_PROC_DATA, 'dsst.tdms'), 'w')

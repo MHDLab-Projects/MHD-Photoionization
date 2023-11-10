@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-from mhdpy.io import gen_path
+from mhdpy.fileio import gen_path
 
 from mhdpy.analysis.standard_import import *
 

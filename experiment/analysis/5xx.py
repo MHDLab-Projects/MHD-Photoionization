@@ -9,10 +9,10 @@ from mhdpy.plot import dropna
 
 #%%
 fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.io.TFxr(fp_dst_coords).as_dsst()['coords']
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.io.TFxr(fp_dsst).as_dsst()
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 
 # %%
@@ -65,7 +65,7 @@ da.sel(motor=100, method='nearest', phi=1).dropna('mnum','all')
 ## Examine time data...
 
 ds_absem_time = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))['alpha']
-dsst = mhdpy.io.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
 tw = slice(Timestamp('2023-05-24 20:12:07.301042944'), Timestamp('2023-05-24 20:12:46.490260736'), None)

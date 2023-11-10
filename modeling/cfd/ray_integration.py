@@ -39,7 +39,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cantera as ct
 
-from mhdpy.io import gen_path
+from mhdpy.fileio import gen_path
 from os.path import join as pjoin
 
 # results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"

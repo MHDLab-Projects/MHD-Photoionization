@@ -7,7 +7,8 @@ from mhdpy.plot.common import xr_errorbar, xr_errorbar_axes
 ds = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_alpha.cdf')).squeeze()
 #%%
 
-from mhdpy.io import TFxr, gen_path_date
+from mhdpy.fileio import TFxr
+from mhdpy.fileio.path import gen_path_date
 
 
 data_folder = gen_path_date('2023-04-07')
@@ -17,7 +18,7 @@ dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
 
 
 #%%
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 df_cuttimes = load_df_cuttimes('cuttimes_53x_2.csv').sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
 cuttimes = extract_cuttime_list(df_cuttimes)

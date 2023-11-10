@@ -7,7 +7,7 @@
 from mhdpy.analysis.standard_import import *
 
 datestr = '2023-05-24'
-data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', datestr)
+data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', datestr)
 lecroy_setup_folder = r'Z:\Lecroy Oscope\Setups'
 lecroy_raw_folder = os.path.join(r'Z:\Lecroy Oscope\Waveforms', datestr)
 

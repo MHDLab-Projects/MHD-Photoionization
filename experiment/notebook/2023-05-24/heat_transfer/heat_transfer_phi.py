@@ -10,9 +10,9 @@
 from mhdpy.analysis.standard_import import *
 from mhdpy.plot.common import xr_errorbar, xr_errorbar_axes
 
-data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-05-24')
+data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-05-24')
 
-dsst = mhdpy.io.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 # %% [markdown]
 # # Test Case analysis
@@ -21,7 +21,7 @@ dsst = mhdpy.io.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 # %%
 
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.analysis.ct import gen_da_ct_data, assign_tc_general, get_region
 
 

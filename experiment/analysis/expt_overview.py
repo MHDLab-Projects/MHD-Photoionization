@@ -6,16 +6,16 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 # %%
 
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.io.TFxr(fp_dsst).as_dsst()
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.io.TFxr(fp_dst_coords).as_dsst()['coords']
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 fp_cuttimes = pjoin(DIR_PROC_DATA, 'cuttimes.csv')
-df_ct = mhdpy.io.load_df_cuttimes(fp_cuttimes)
+df_ct = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
 
 fp_expt_tws = r'C:\Users\aspitarl\Git\MHDLab\video-conversion\scripts\experiment_timewindows.csv'
-df_exptw = mhdpy.io.load_df_cuttimes(fp_expt_tws)
+df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
 # df_exptw = pd.read_csv(fp_expt_tws)
 
 df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())

@@ -5,9 +5,9 @@ The time offset is varied and the acquisition time standard deviation is examine
 #%%
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.io.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
 
-dsst = mhdpy.io.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
 

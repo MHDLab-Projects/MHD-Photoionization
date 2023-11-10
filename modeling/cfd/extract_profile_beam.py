@@ -4,7 +4,7 @@ import pyvista as pv
 import matplotlib.pyplot as plt
 import os
 
-from mhdpy.io import gen_path
+from mhdpy.fileio import gen_path
 
 from mhdpy.analysis.standard_import import *
 

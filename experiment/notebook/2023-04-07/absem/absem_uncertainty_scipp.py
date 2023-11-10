@@ -9,7 +9,8 @@ import os
 import scipp as sc
 from pandas import Timestamp
 
-from mhdpy.io import TFxr, gen_path_date
+from mhdpy.fileio import TFxr
+from mhdpy.fileio.path import gen_path_date
 data_folder = gen_path_date('2023-04-07')
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
 
