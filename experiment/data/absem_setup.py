@@ -11,16 +11,6 @@ from mhdpy.analysis.xr import interp_ds_to_var
 from mhdpy.process.absem import calc_alpha_simple
 
 
-datestr = '2023-05-18'
-
-data_folder = os.path.join('munged',datestr)
-
-# data_folder = r'C:\Users\aspitarl\OneDrive - National Energy Technology Laboratory\Documents - MHD Lab Team\Data Share\MHD Lab\HVOF Booth\2023-05-18'
-dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
-
-fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
-ds_absem = load_absem(fp)
-
 
 def apply_mp(dsst, ds_absem):
     ds_mp = assign_multiplexer_coord(
@@ -81,17 +71,62 @@ def apply_mp(dsst, ds_absem):
 
     return ds_reduce_switches
 
-ds_reduce_switches = apply_mp(dsst, ds_absem)
 
 
-ds_alpha = ds_reduce_switches.set_index(temp=['time','mp','led']).unstack('temp')
-ds_alpha = ds_alpha['counts_mean']
-ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
-ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
 
-time_window_calib = slice(Timestamp('2023-05-24 22:42:02.371375360'), Timestamp('2023-05-24 22:42:55.928968704'), None)
-ds_alpha = calc_alpha_simple(ds_alpha, time_window_calib)
+#TODO: Figure out better multi-date handling. 
 
+dates = [ 
+    '2023-04-07',
+    '2023-05-12',
+    '2023-05-18', 
+    '2023-05-24'
+    ]
 
-ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
+has_multiplexer = [
+    False,
+    False,
+    True,
+    True
+]
+
+# TODO: revisit to allow for interpolated calibration
+calib_timewindows = [
+slice(Timestamp('2023-04-07 20:38:26.554598656'), Timestamp('2023-04-07 20:38:41.251181312'), None),
+slice(Timestamp('2023-05-12 19:32:18.307435776'), Timestamp('2023-05-12 19:32:51.481328384'), None),
+slice(Timestamp('2023-05-18 20:40:12.533416704'), Timestamp('2023-05-18 20:46:41.159732480'), None),
+slice(Timestamp('2023-05-24 22:42:02.371375360'), Timestamp('2023-05-24 22:42:55.928968704'), None),
+]
+
+for i, datestr in enumerate(dates):
+    print(datestr)
+
+    data_folder = os.path.join('munged',datestr)
+
+    dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+
+    fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
+    ds_absem = load_absem(fp)
+
+    if has_multiplexer[i]:
+        ds_reduce_switches = apply_mp(dsst, ds_absem)
+        ds_alpha = ds_reduce_switches.set_index(temp=['time','mp','led']).unstack('temp')
+        ds_alpha = ds_alpha['counts_mean']
+
+    else:
+        ds_alpha = ds_absem.set_index(temp=['time','led']).unstack('temp')
+        ds_alpha = ds_alpha['counts']
+
+    ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
+    ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
+
+    #TODO: probably can do this above. 
+    if not has_multiplexer[i]:
+        ds_alpha = ds_alpha.assign_coords(mp='barrel').expand_dims('mp')
+
+    time_window_calib = calib_timewindows[i]
+
+    ds_alpha = calc_alpha_simple(ds_alpha, time_window_calib)
+
+    ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
