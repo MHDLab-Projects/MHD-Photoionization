@@ -77,7 +77,6 @@ matplotlib-inline==0.1.6
 mdit-py-plugins==0.4.0
 mdurl==0.1.2
 meshio==5.3.4
--e git+https://github.com/mhdLab/mhdpy@6d9270c79f843591512ba3fc061dff71b15570fc#egg=mhdpy&subdirectory=..\..\mhdpy
 mistune==3.0.1
 multidict==6.0.4
 nbclient==0.8.0
@@ -85,7 +84,6 @@ nbconvert==7.7.4
 nbformat==5.9.2
 nest-asyncio==1.5.7
 netCDF4==1.6.3
--e git+https://github.com/MHDLab-Projects/MHD-Photoionization@cb2f736f9b4ad75db84cfc198d7763a550d55e48#egg=Nonequilibrium_Modeling_Utilities&subdirectory=modeling
 notebook==7.0.2
 notebook_shim==0.2.3
 npTDMS==1.7.1
