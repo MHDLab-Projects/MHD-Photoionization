@@ -1,0 +1,58 @@
+{
+    "2023-04-07": {
+        "has_multiplexer": false,
+        "calib_timewindow": [
+            "2023-04-07 20:38:26.554598656",
+            "2023-04-07 20:38:41.251181312"
+        ],
+        "mws_process_tcs": [
+            "530",
+            "536_Motor",
+            "536_Motor_Power",
+            "536_Motor_Power_Run2",
+            "536_Power",
+            "SeedRamp",
+            "SeedRamp_Run2"
+        ]
+    },
+    "2023-05-12": {
+        "has_multiplexer": false,
+        "calib_timewindow": [
+            "2023-05-12 19:32:18.307435776",
+            "2023-05-12 19:32:51.481328384"
+        ],
+        "mws_process_tcs": [
+            "Motor_1",
+            "SeedRamp_2",
+            "SeedRamp_3",
+            "Power_1"
+        ]
+    },
+    "2023-05-18": {
+        "has_multiplexer": true,
+        "calib_timewindow": [
+            "2023-05-18 20:40:12.533416704",
+            "2023-05-18 20:46:41.159732480"
+        ],
+        "mws_process_tcs": [
+            "pos_1",
+            "pos_2",
+            "power",
+            "seedramp_1"
+        ]
+    },
+    "2023-05-24": {
+        "has_multiplexer": true,
+        "calib_timewindow": [
+            "2023-05-24 22:42:02.371375360",
+            "2023-05-24 22:42:55.928968704"
+        ],
+        "mws_process_tcs": [
+            "516",
+            "536_power",
+            "5x6",
+            "5x3",
+            "seedramp_2"
+        ]
+    }
+}
