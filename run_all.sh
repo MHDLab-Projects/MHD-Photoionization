@@ -15,6 +15,9 @@ done
 
 echo " --- Additional Munging and Processing --- "
 cd $REPO_DIR/experiment/data
+
+python munge_lecroy.py
+
 ./run_all.sh
 
 echo " --- Rendering final notebooks --- "
