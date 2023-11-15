@@ -78,7 +78,8 @@ combo_downsel = {
     'l_bk': [0],
     'phi': [0.8],
     'Kwt': [0.01],
-    'analysis': ['perf_Bconst']
+    'analysis': ['perf_Bconst'],
+    'P_in': [0,1e-6,1e-2,1e2,1e6]
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
@@ -110,3 +111,19 @@ combo_downsel = {
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
 P_zero.plot(hue='analysis', y='T', xscale='log')
+
+#%%
+
+combo_downsel = {
+    'P_in' : 0,
+    'phi': [0.8],
+    'Kwt': [0.01],
+    # 'analysis': ['perf_Bconst']
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+g = P_zero.plot(hue='l_bk', col='analysis', y='T', xscale='log', col_wrap=2)
+
+for ax in g.axes.flatten():
+    ax.plot([1e5], [3000], marker='*', markersize=10, axes=ax)
