@@ -11,7 +11,7 @@ dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
-fp_cuttimes = pjoin(DIR_PROC_DATA, 'cuttimes.csv')
+fp_cuttimes = pjoin(REPO_DIR,'experiment','data', 'cuttimes.csv')
 df_ct = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
 
 fp_expt_tws = r'C:\Users\aspitarl\Git\MHDLab\video-conversion\scripts\experiment_timewindows.csv'
@@ -58,7 +58,7 @@ simple_ds_plot(ds_orig)
 
 #%%
 
-plt.rcParams.update({'font.size': 12})
+plt.rcParams.update({'font.size': 16})
 
 for date, df in df_ct.groupby('date'):
 

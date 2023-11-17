@@ -6,6 +6,7 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.mws_utils import calc_mag_phase_AS
 
+plt.rcParams.update({'font.size': 16})
 
 # %%
 
@@ -40,6 +41,19 @@ from mhdpy.plot import dropna
 g = ds_lecroy['AS'].mean('mnum').plot(hue='run_plot', row='motor', x='time')
 
 dropna(g)
+
+#%%
+
+# plt.figure(figsize=(4,6))
+
+# da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+
+da_sel = da_sel.dropna('run','all')
+
+da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
+
+# plt.yscale('log')
 
 #%%
 
@@ -84,6 +98,9 @@ ds = ds_alpha[['alpha', 'alpha_fit']]
 ds = ds.rename({'alpha': 'data', 'alpha_fit':'fit'})
 ds = ds.to_array('var')
 
+ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
+ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
 #%%
 
 g  = ds_p['nK_m3'].plot(hue='run_plot', x='motor',col='mp', marker='o')
@@ -94,17 +111,35 @@ plt.yscale('log')
 
 #%%
 
+plt.figure(figsize=(6,3))
+
+da_sel = ds_p['nK_m3'].sel(mp='mw_horns')
+
+da_sel = da_sel.dropna('run', 'all')
+
+da_sel.plot(hue='run_plot', x='motor', marker='o')
+
+plt.yscale('log')
+
+#%%
+
 
 mws_max = ds_lecroy['AS'].mean('mnum').max('time')
 mws_max.name ='AS_max'
+mws_max
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
 mws_pp = ds_lecroy['mag_pp'].mean('mnum')
+
+mws_pp
 mws_pp.name = 'mag_pp'
 
 #%%
 
 ds = xr.merge([mws_max, mws_pp,nK]).sortby('motor').dropna('run','all')
+
+ds['AS_max'].attrs = dict(long_name='AS Max')
+ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse', units='V')
 
 ds
 #%%
@@ -112,6 +147,28 @@ ds
 g = ds.to_array('var').plot(hue='run_plot', row='var', x='motor', sharey=False)
 
 dropna(g)
+
+#%%
+
+
+fig, axes = plt.subplots(3, figsize=(4,8))
+
+ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[0], marker='o')
+ds['mag_pp'].plot(hue='run_plot', x='motor', ax=axes[1],marker='o')
+ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
+
+for ax in axes:
+    ax.get_legend().remove()
+    ax.set_title('')
+
+axes[2].set_xlabel('Position [mm]')
+
+#%%
+
+ds.unstack('run').plot.scatter(x='nK_m3', y='mag_pp')
+
+plt.xscale('log')
+# plt.yscale('log')
 
 # %%
 
@@ -153,7 +210,9 @@ ds_cfd_beam_norm = ds_cfd_beam/ds_cfd_beam.max()
 
 #%%
 
-g = ds['nK_m3'].plot(hue='run_plot', x='motor', marker='o')
+da = ds['nK_m3'].dropna('run','all')
+
+g = da.plot(hue='run_plot', x='motor', marker='o')
 plot.dropna(g)
 
 ax1 = plt.gca()
@@ -166,7 +225,7 @@ ds_cfd_norm['K'].plot(color='black', label ='centerline')
 ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam convolution', marker='o')
 
 ax2 = plt.gca()
-ax2.legend(bbox_to_anchor=[0,0,0.5,0.5])
+ax2.legend(bbox_to_anchor=[0,0,1.0,0.7])
 # ax2.set_yscale('log')
 
 plt.xlim(0,310)
@@ -174,14 +233,16 @@ plt.xlim(0,310)
 
 g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
 
-plt.gca().get_legend().set_title('Experiment (date, #)')
+leg = plt.gca().get_legend()
+leg.set_title('Experiment (date, #)')
+leg.set_bbox_to_anchor([0,0,1.7,1])
 plt.twinx()
 
 ds_cfd_norm['KOH'].plot(color='black', label ='centerline')
 ds_cfd_beam_norm['KOH'].plot(color='gray', label = 'beam convolution')
 
 ax2 = plt.gca()
-ax2.legend(bbox_to_anchor=[0,0,0.5,0.8])
+ax2.legend(bbox_to_anchor=[0,0,1.8,0.3])
 
 plt.xlim(0,310)
 # %%

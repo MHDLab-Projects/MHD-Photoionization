@@ -27,7 +27,6 @@ ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='kwt', x='wavel
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 # %%
-# %%
 from mhdpy.plot import dropna
 
 g = ds_lecroy.mean('mnum').plot(hue='run_plot', row='kwt', x='time')
@@ -81,6 +80,9 @@ ds = ds.to_array('var')
 
 ds
 
+ds_p.coords['kwt'].attrs = dict(long_name='K Mass Frac.', units='%')
+ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
 # %%
 g = ds_alpha[['alpha','alpha_fit']].to_array('var').sel(mp='barrel').plot(col='kwt',hue='var', row='run', ylim = (1e-3,2), yscale='log', figsize=(10,6))
 
@@ -89,7 +91,11 @@ for ax in g.axes.flatten():
 
 #%%
 
-g  = ds_p['nK_m3'].plot(hue='run_plot', x='kwt',col='mp', marker='o')
+da = ds_p['nK_m3']
+
+da = da.dropna('run','all')
+
+g  = da.plot(hue='run_plot', x='kwt',col='mp', marker='o')
 
 dropna(g)
 
