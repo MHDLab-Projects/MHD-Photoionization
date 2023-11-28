@@ -63,3 +63,11 @@ Option 2: Make a new multi-date processing script. The notebook scripts are heav
 # 2023-11-08 
 
 Chose option 1 
+
+# 2023-11-27
+
+TODO: add spectral of calibration. 
+
+initial estimate of beam propogation path
+
+error analysis: average led on/off over entire test case. 
