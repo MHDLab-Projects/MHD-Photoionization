@@ -37,9 +37,11 @@ dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
 
-if has_multiplexer:
-    # Determine LED switching events
+# Determine LED switching events
+switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=[0,1])
+ds_absem = ds_absem.assign_coords(led_switch_num=('time', switches))
 
+if has_multiplexer:
     ds_mp = assign_multiplexer_coord(
     ds_absem,
     mp_sent=dsst['multiplexer_send']['Position'].pint.dequantify(),
@@ -47,33 +49,30 @@ if has_multiplexer:
     mp_port_names={1:'barrel', 2:'mw_horns'}
     )
 
-    # Determine LED switching events
-    switches = get_value_switches(ds_mp.coords['led'].values, switch_to_vals=[0,1])
-    ds_mp = ds_mp.assign_coords(switch_num=('time', switches))
-
     # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
-    ds_mp = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
+    ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
 
-    ds_mp = ds_mp.groupby('switch_num').apply(downselect_num_acq, num_acq=10)
-    ds_mp = ds_mp.dropna('time',how='all')
+ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
+ds_absem = ds_absem.dropna('time',how='all')
 
-    # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
-    ds = ds_mp.set_index(acq_group=['switch_num','led','mp', 'time']) # Time has to be added here or it is retained as a dimension?
-    ds = ds.reset_index('time').reset_coords('time') 
+# Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
+acq_groups = ['led_switch_num','led','time']
+if 'mp' in ds_absem.coords: acq_groups.append('mp')
 
-    ds_reduce_switches = reduce_switches(ds)
-    ds_alpha = ds_reduce_switches.set_index(temp=['time','mp','led']).unstack('temp')
-    ds_alpha = ds_alpha['counts_mean']
+ds = ds_absem.set_index(acq_group=acq_groups) # Time has to be added here or it is retained as a dimension?
+ds = ds.reset_index('time').reset_coords('time') 
 
-else:
-    ds_alpha = ds_absem.set_index(temp=['time','led']).unstack('temp')
-    ds_alpha = ds_alpha['counts']
+ds_reduce_switches = reduce_switches(ds)
+
+acq_groups.remove('led_switch_num')
+ds_alpha = ds_reduce_switches.set_index(temp=acq_groups).unstack('temp')
+ds_alpha = ds_alpha['counts_mean']
 
 ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
 #TODO: probably can do this above. 
-if not has_multiplexer:
+if not 'mp' in ds_absem.coords:
     ds_alpha = ds_alpha.assign_coords(mp='barrel').expand_dims('mp')
 
 time_window_calib = calib_timewindow
