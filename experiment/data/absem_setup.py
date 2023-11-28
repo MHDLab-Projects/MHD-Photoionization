@@ -6,7 +6,7 @@ from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 
 from mhdpy.analysis.xr import interp_ds_to_var
-from mhdpy.process.absem import calc_alpha_simple, apply_mp
+from mhdpy.process.absem import calc_alpha_simple, apply_mp, reduce_switches
 
 
 import json
@@ -38,7 +38,8 @@ fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
 
 if has_multiplexer:
-    ds_reduce_switches = apply_mp(dsst, ds_absem)
+    ds = apply_mp(dsst, ds_absem)
+    ds_reduce_switches = reduce_switches(ds)
     ds_alpha = ds_reduce_switches.set_index(temp=['time','mp','led']).unstack('temp')
     ds_alpha = ds_alpha['counts_mean']
 
