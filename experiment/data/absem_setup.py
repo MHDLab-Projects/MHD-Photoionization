@@ -51,15 +51,15 @@ if has_multiplexer:
 
     # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
     ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
+else:
+    ds_absem = ds_absem.assign_coords(mp = ('time', ['barrel']*len(ds_absem.coords['time']) ))
 
 ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
 ds_absem = ds_absem.dropna('time',how='all')
 
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
-acq_groups = ['led_switch_num','led','time']
-if 'mp' in ds_absem.coords: acq_groups.append('mp')
-
+acq_groups = ['led_switch_num','led','time','mp']
 ds = ds_absem.set_index(acq_group=acq_groups) # Time has to be added here or it is retained as a dimension?
 ds = ds.reset_index('time').reset_coords('time') 
 
@@ -71,10 +71,6 @@ ds_alpha = ds_alpha['counts_mean']
 
 ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
-
-if not 'mp' in ds_absem.coords:
-    ds_alpha = ds_alpha.assign_coords(mp='barrel').expand_dims('mp')
-
 
 ds_alpha = calc_alpha_simple(ds_alpha, calib_timewindow)
 
