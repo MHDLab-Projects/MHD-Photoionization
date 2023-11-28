@@ -56,6 +56,7 @@ ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=
 ds_absem = ds_absem.dropna('time',how='all')
 
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
+#TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
 acq_groups = ['led_switch_num','led','time']
 if 'mp' in ds_absem.coords: acq_groups.append('mp')
 
@@ -71,13 +72,11 @@ ds_alpha = ds_alpha['counts_mean']
 ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
-#TODO: probably can do this above. 
 if not 'mp' in ds_absem.coords:
     ds_alpha = ds_alpha.assign_coords(mp='barrel').expand_dims('mp')
 
-time_window_calib = calib_timewindow
 
-ds_alpha = calc_alpha_simple(ds_alpha, time_window_calib)
+ds_alpha = calc_alpha_simple(ds_alpha, calib_timewindow)
 
 ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq')
 
