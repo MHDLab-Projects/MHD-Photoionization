@@ -72,8 +72,20 @@ ds_alpha = ds_alpha['counts_mean']
 ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
-ds_alpha = calc_alpha_simple(ds_alpha, calib_timewindow)
 
-ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq')
+# Add calibration data
+
+# ds_alpha = calc_alpha_simple(ds_alpha, calib_timewindow)
+
+ds_calib = ds_alpha.sel(time=calib_timewindow).mean('time')
+ds_calib['diff'] = ds_calib['led_on'] - ds_calib['led_off']
+
+if ds_calib['diff'].isnull().all().item():
+    raise ValueError("Got all null for calibration dataset, check calibration timewindow")
+
+ds_alpha = ds_alpha.assign(calib=ds_calib['diff'])
+
+ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq').dropna('acq',how='all')
 
 ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
+# %%

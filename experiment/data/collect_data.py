@@ -25,13 +25,15 @@ dss = []
 for date in dates:
     fp = pjoin(munged_dir, date, 'Munged','Spectral', 'ds_absem_mp.cdf')
     ds = xr.load_dataset(fp)
-    ds = ds[['alpha']]
+    # ds = ds[['alpha']]
     dss.append(ds)
 
 
 #%%
 
 ds_absem = xr.concat(dss, 'acq')
+
+ds_absem['mp'] = ds_absem['mp'].astype(str) #TODO: being truncated t to 'mw_hor' when writing to cdf...this fixes. 
 
 ds_absem.to_netcdf(pjoin('proc_data','ds_absem.cdf'))
 #%%
