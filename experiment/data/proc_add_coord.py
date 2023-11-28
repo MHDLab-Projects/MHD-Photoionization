@@ -18,6 +18,7 @@ cuttimes = extract_cuttime_list(df_cuttimes)
 timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
+ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
 ds_absem = ds_absem.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_lecroy.cdf'))
 #%%

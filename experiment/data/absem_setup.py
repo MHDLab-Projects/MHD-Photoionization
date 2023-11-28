@@ -79,4 +79,6 @@ time_window_calib = calib_timewindow
 
 ds_alpha = calc_alpha_simple(ds_alpha, time_window_calib)
 
+ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq')
+
 ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))

@@ -31,7 +31,7 @@ for date in dates:
 
 #%%
 
-ds_absem = xr.concat(dss, 'time')
+ds_absem = xr.concat(dss, 'acq')
 
 ds_absem.to_netcdf(pjoin('proc_data','ds_absem.cdf'))
 #%%
