@@ -6,7 +6,6 @@ from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 
 from mhdpy.analysis.xr import interp_ds_to_var
-from mhdpy.process.absem import calc_alpha_simple, apply_mp, reduce_switches
 
 
 import json
@@ -29,6 +28,7 @@ has_multiplexer = settings['has_multiplexer']
 
 
 # Start processing 
+from mhdpy.process.absem import calc_alpha_simple, reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
 
 data_folder = os.path.join('munged',datestr)
 
@@ -38,7 +38,29 @@ fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
 
 if has_multiplexer:
-    ds = apply_mp(dsst, ds_absem)
+    # Determine LED switching events
+
+    ds_mp = assign_multiplexer_coord(
+    ds_absem,
+    mp_sent=dsst['multiplexer_send']['Position'].pint.dequantify(),
+    mp_receive=dsst['multiplexer_receive']['Position'].pint.dequantify(),
+    mp_port_names={1:'barrel', 2:'mw_horns'}
+    )
+
+    # Determine LED switching events
+    switches = get_value_switches(ds_mp.coords['led'].values, switch_to_vals=[0,1])
+    ds_mp = ds_mp.assign_coords(switch_num=('time', switches))
+
+    # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
+    ds_mp = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
+
+    ds_mp = ds_mp.groupby('switch_num').apply(downselect_num_acq, num_acq=10)
+    ds_mp = ds_mp.dropna('time',how='all')
+
+    # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
+    ds = ds_mp.set_index(acq_group=['switch_num','led','mp', 'time']) # Time has to be added here or it is retained as a dimension?
+    ds = ds.reset_index('time').reset_coords('time') 
+
     ds_reduce_switches = reduce_switches(ds)
     ds_alpha = ds_reduce_switches.set_index(temp=['time','mp','led']).unstack('temp')
     ds_alpha = ds_alpha['counts_mean']

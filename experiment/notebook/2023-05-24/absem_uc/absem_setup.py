@@ -22,8 +22,7 @@ has_multiplexer = settings['has_multiplexer']
 
 #%%
 
-
-from mhdpy.process.absem import apply_mp, reduce_switches
+#TODO: make consistent with main absem_setup
 
 
 #%%
@@ -40,7 +39,6 @@ ds_absem = load_absem(fp)
 # Needed for scipp
 ds_absem = ds_absem.assign_coords(led = ('time', ds_absem.coords['led'].astype(np.int64).values))
 
-ds = apply_mp2(dsst, ds_absem)
 
 ds
 
