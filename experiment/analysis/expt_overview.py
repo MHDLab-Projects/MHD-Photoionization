@@ -41,10 +41,10 @@ for c in coord_keys:
 ds_orig = xr.merge(das)
 
 da = ds_orig['CC_K_massFrac_in']
-ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time','all')
+ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how='all')
 
 da = ds_orig['CC_equivalenceRatio']
-ds_orig['CC_equivalenceRatio'] = da.where((da >= 0.2) & (da <= 1.5)).dropna('time','all')
+ds_orig['CC_equivalenceRatio'] = da.where((da >= 0.2) & (da <= 1.5)).dropna('time', how='all')
 
 
 ds_orig

@@ -42,7 +42,7 @@ g = da_max.plot(col='motor',hue ='run_plot', x='power', col_wrap=3, marker='o')
 # #%%
 
 # da_sel = da_lecroy.where(counts > 10)
-# da_sel = da_sel.dropna('motor','all')
+# da_sel = da_sel.dropna('motor', how='all')
 
 
 # da_max = da_sel.mean('mnum').sel(time=slice(-1,1)).max('time')

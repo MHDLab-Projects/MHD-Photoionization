@@ -15,7 +15,7 @@ ds_mp = ds
 tw= slice(Timestamp('2023-05-24 22:04:25.609789952'), Timestamp('2023-05-24 22:31:23.400811264'), None)
 
 ds_mp = ds_mp.sel(time = tw)
-ds_mp = ds_mp.dropna('mp','all').squeeze()
+ds_mp = ds_mp.dropna('mp', how='all').squeeze()
 
 
 ds_mp

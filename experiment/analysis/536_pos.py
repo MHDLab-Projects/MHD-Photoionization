@@ -29,7 +29,7 @@ ds_lecroy = calc_mag_phase_AS(ds_lecroy)#[['mag', 'phase','AS']]
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
 #%%
 
-ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run','all')
+ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
 
 #%%
 
@@ -50,7 +50,7 @@ dropna(g)
 # da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
 da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
 
-da_sel = da_sel.dropna('run','all')
+da_sel = da_sel.dropna('run', how='all')
 
 da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
 
@@ -71,7 +71,7 @@ alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
 #%%
 
 #Downselect to remove data where there are no peaks... TODO: revisit
-# alpha_tc = alpha_tc.where(alpha_tc.sel(wavelength=slice(760,775)).max('wavelength') > 0.5).dropna('time','all')
+# alpha_tc = alpha_tc.where(alpha_tc.sel(wavelength=slice(760,775)).max('wavelength') > 0.5).dropna('time', how='all')
 # alpha_tc = alpha_tc.sel(time=alpha_tc.coords['time'].values[::100])
 
 
@@ -81,7 +81,7 @@ spectral_reduction_params_fp = os.path.join(REPO_DIR,'spectral_reduction_params.
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 print('Reducing alpha with following data reduction parameters: ')
 print(spect_red_dict)
-alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength','all')
+alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
 alpha_tc_red.name = 'alpha_red'
 
 wls = alpha_tc.coords['wavelength'].values
@@ -137,7 +137,7 @@ mws_pp.name = 'mag_pp'
 
 #%%
 
-ds = xr.merge([mws_max, mws_pp,nK]).sortby('motor').dropna('run','all')
+ds = xr.merge([mws_max, mws_pp,nK]).sortby('motor').dropna('run', how='all')
 
 ds['AS_max'].attrs = dict(long_name='AS Max')
 ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse', units='V')
@@ -211,7 +211,7 @@ ds_cfd_beam_norm = ds_cfd_beam/ds_cfd_beam.max()
 
 #%%
 
-da = ds['nK_m3'].dropna('run','all')
+da = ds['nK_m3'].dropna('run', how='all')
 
 g = da.plot(hue='run_plot', x='motor', marker='o')
 plot.dropna(g)

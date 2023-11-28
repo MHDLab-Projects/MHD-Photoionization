@@ -31,7 +31,7 @@ switches = get_value_switches(ds_mp.coords['led'].values, switch_to_vals=[0,1])
 ds_mp = ds_mp.assign_coords(switch_num=('time', switches))
 
 # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
-ds_mp = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
+ds_mp = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time', how='all')
 
 #%%
 
@@ -56,7 +56,7 @@ plt.figure()
 ds_mp['counts'].groupby('switch_num').count().plot.hist(label='before downselect')
 
 ds_mp = ds_mp.groupby('switch_num').apply(downselect_num_acq, num_acq=10)
-ds_mp = ds_mp.dropna('time',how='all')
+ds_mp = ds_mp.dropna('time', how='all')
 
 ds_mp['counts'].groupby('switch_num').count().plot.hist(label = 'after')
 

@@ -50,12 +50,12 @@ if has_multiplexer:
     )
 
     # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
-    ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time','all')
+    ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time', how='all')
 else:
     ds_absem = ds_absem.assign_coords(mp = ('time', ['barrel']*len(ds_absem.coords['time']) ))
 
 ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
-ds_absem = ds_absem.dropna('time',how='all')
+ds_absem = ds_absem.dropna('time', how='all')
 
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
@@ -85,7 +85,7 @@ if ds_calib['diff'].isnull().all().item():
 
 ds_alpha = ds_alpha.assign(calib=ds_calib['diff'])
 
-ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq').dropna('acq',how='all')
+ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
 
 ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
 # %%

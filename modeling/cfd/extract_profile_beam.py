@@ -138,7 +138,7 @@ for x_beam in beam_xs:
 
 ds = xr.concat(dss, 'x_beam')
 
-ds = ds.dropna('pos_x','all')
+ds = ds.dropna('pos_x', how='all')
 
 # ds.mean('pos_z')['K'].plot()
 # %%
@@ -151,7 +151,7 @@ g = ds['K'].mean('pos_z').plot(col='x_beam', col_wrap=4, sharey=False)
 
 #%%
 
-# dss[5]['K'].mean('pos_z')#.dropna('pos_x','all')
+# dss[5]['K'].mean('pos_z')#.dropna('pos_x', how='all')
 
 beam_conv = ds.mean('pos_z').mean('pos_x').mean('pos_y')
 

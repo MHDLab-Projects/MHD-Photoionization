@@ -60,7 +60,7 @@ spectral_reduction_params_fp = os.path.join(REPO_DIR,'spectral_reduction_params.
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 print('Reducing alpha with following data reduction parameters: ')
 print(spect_red_dict)
-alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength','all')
+alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
 alpha_tc_red.name = 'alpha_red'
 
 fits, ds_p, ds_p_stderr = analysis.xr.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)

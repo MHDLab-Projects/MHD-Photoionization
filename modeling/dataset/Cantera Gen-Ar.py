@@ -90,7 +90,7 @@ ds_TP_params, ds_TP_species, ds_TP_species_rho = mhdpy.cantera.util.process_ds_s
 
 #drop all empty species
 da = ds_TP_species.to_array('species')
-da = da.where(da>0).dropna('species','all')
+da = da.where(da>0).dropna('species', how='all')
 ds_TP_species = da.to_dataset('species')
 
 # %%
