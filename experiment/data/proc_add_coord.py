@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import re
 from collections import defaultdict
 

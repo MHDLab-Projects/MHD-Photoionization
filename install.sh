@@ -1,4 +1,4 @@
-pip install -r requirements.txt
+pip install -r reqs/requirements.txt
 
 cd mhdpy
 pip install -e .

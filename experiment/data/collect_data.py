@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 munged_dir = 'munged'
 
@@ -14,6 +15,11 @@ for dir in os.listdir(munged_dir):
     m = regex.match(dir)
     if m:
         dates.append(dir)
+
+# sort date strings by date. 
+# The output datasets are not monotonic in time otherwise, is it better to just sort later?
+from datetime import datetime
+dates = sorted(dates, key=lambda x: datetime.strptime(x, '%Y-%m-%d'))
     
 dates
 # %%

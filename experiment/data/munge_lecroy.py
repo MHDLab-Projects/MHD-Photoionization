@@ -4,6 +4,7 @@ Script to munge all relevant lecroy dates. This should probably be incorporated 
 
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 from mhdpy.mws_utils.fileio import get_matching_filepath_mnums, NoMatchingFilesError, load_trc_mnum_simple
 from mhdpy.mws_utils.trc import setupfile_timeoffset

@@ -174,7 +174,7 @@ plt.xscale('log')
 # %%
 
 
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling\cfd\output\line_profies.csv' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profies.csv' )
 
 df_cfd = pd.read_csv(fp_cfd, index_col=0)
 
@@ -195,7 +195,7 @@ ds_cfd.to_array('var').plot(hue='var', yscale='log')
 
 #%%
 
-fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), r'modeling\cfd\output\beam_conv.cdf' )
+fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'beam_conv.cdf' )
 
 ds_cfd_beam = xr.load_dataset(fp_cfd_beam)
 
