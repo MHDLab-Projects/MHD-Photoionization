@@ -67,7 +67,7 @@ acq_groups.remove('led_switch_num')
 ds_alpha = ds_reduce_switches.set_index(temp=acq_groups).unstack('temp')
 ds_alpha = ds_alpha['counts_mean']
 
-ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
+ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_off', 1:'led_on'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
 
