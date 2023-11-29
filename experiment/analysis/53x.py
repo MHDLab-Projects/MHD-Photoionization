@@ -27,7 +27,7 @@ ds_lecroy = calc_mag_phase_AS(ds_lecroy)['AS']
 
 #%%
 
-ds_absem
+# ds_absem['calib'].isel(run=[0,1]).mean('mnum').sel(mp='barrel').plot(hue='run_plot', x='wavelength', row='kwt')
 
 # %%
 
@@ -155,7 +155,7 @@ pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
 tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
 
 da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim,'all')
+da_fit = da_fit.dropna(tc_dim, how='all')
 pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
 
 da_fit = da_fit/pulse_max

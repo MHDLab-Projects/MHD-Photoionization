@@ -7,7 +7,6 @@ from mhdpy.fileio.spectral import load_absem
 
 from mhdpy.analysis.xr import interp_ds_to_var
 
-
 import json
 import argparse
 
@@ -18,11 +17,10 @@ parser.add_argument('-d', '--date', type=str, default=None,
 
 datestr = parser.parse_args().date
 
+# datestr = '2023-04-07'
+
 with open('settings.json') as f:
     settings = json.load(f)[datestr]
-
-start, stop = map(pd.Timestamp, settings['calib_timewindow'])
-calib_timewindow = slice(start, stop)
 
 has_multiplexer = settings['has_multiplexer']
 
@@ -73,19 +71,60 @@ ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_on', 1:'led_off'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
 
-# Add calibration data
+#%%
 
-# ds_alpha = calc_alpha_simple(ds_alpha, calib_timewindow)
+# Add clalibration based on interpolation of before and after (and mid-experiment shutdown) calibration timewindows
+#TODO: the time windows are now just selected for motor=150mm (goldilocks) for mw_horns multiplexer, the data exists for 05-24 for different motor positions and shows a slight decrease in transmission near the barrel. Need to eventaully make the calibration for mw_horns mp dependent. 
 
-ds_calib = ds_alpha.sel(time=calib_timewindow).mean('time')
+from mhdpy.fileio import load_df_cuttimes
+fp_calib_ct = pjoin(REPO_DIR, 'experiment','data','cuttimes_absem_calib.csv')
+
+df_cuttimes = load_df_cuttimes(fp_calib_ct, reduce_columns=False)
+df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)
+
+df_cuttimes['date'] = df_cuttimes['Start Time'].apply(lambda x: x.date())
+df_cuttimes = df_cuttimes.where(df_cuttimes['date'] == pd.Timestamp(datestr).date()).dropna()
+
+#%%
+
+dss = []
+
+for idx, row in df_cuttimes.iterrows():
+
+    sl = slice(row['Start Time'], row['Stop Time'])
+
+    ds_calib = ds_alpha.sel(time=sl)
+
+    if ds_calib['led_on'].isnull().all().item():
+        raise ValueError("Got all null for calibration dataset, check calibration timewindow")
+
+
+    ds_calib = ds_calib.assign_coords(avg_time = ds_calib.coords['time'].mean())
+
+    ds_calib = ds_calib.mean('time')
+    ds_calib = ds_calib.rename(avg_time='time')
+
+    dss.append(ds_calib)
+
+
+ds_calib = xr.concat(dss, 'time')
+
 ds_calib['diff'] = ds_calib['led_on'] - ds_calib['led_off']
 
-if ds_calib['diff'].isnull().all().item():
-    raise ValueError("Got all null for calibration dataset, check calibration timewindow")
+# ds_calib['diff'].plot(hue='time')
+
+#%%
+
+ds_calib = ds_calib.interp_like(ds_alpha)
+
+# ds_calib['diff'].isel(time=[0,1000,2000]).plot(col='mp', hue='time')
+
+#%%
+
+# Add calibration data
 
 ds_alpha = ds_alpha.assign(calib=ds_calib['diff'])
 
 ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
 
 ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
-# %%
