@@ -12,7 +12,7 @@ from mhdpy.process.absem import calc_alpha_simple, apply_mp
 import json 
 datestr = '2023-05-24'
 
-with open(pjoin(REPO_DIR, 'experiment', 'data', 'settings.json')) as f:
+with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
 
 start, stop = map(pd.Timestamp, settings['calib_timewindow'])

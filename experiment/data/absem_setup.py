@@ -19,7 +19,7 @@ datestr = parser.parse_args().date
 
 # datestr = '2023-04-07'
 
-with open('settings.json') as f:
+with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
 
 has_multiplexer = settings['has_multiplexer']
@@ -77,7 +77,7 @@ ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 #TODO: the time windows are now just selected for motor=150mm (goldilocks) for mw_horns multiplexer, the data exists for 05-24 for different motor positions and shows a slight decrease in transmission near the barrel. Need to eventaully make the calibration for mw_horns mp dependent. 
 
 from mhdpy.fileio import load_df_cuttimes
-fp_calib_ct = pjoin(REPO_DIR, 'experiment','data','cuttimes_absem_calib.csv')
+fp_calib_ct = pjoin(REPO_DIR, 'experiment','metadata','cuttimes_absem_calib.csv')
 
 df_cuttimes = load_df_cuttimes(fp_calib_ct, reduce_columns=False)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)

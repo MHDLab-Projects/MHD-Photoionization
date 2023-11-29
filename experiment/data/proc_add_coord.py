@@ -10,7 +10,7 @@ from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
-df_cuttimes = load_df_cuttimes('cuttimes.csv', reduce_columns=False)
+df_cuttimes = load_df_cuttimes(pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes.csv'), reduce_columns=False)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index(['Event', 'date'])
 

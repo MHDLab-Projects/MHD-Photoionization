@@ -11,7 +11,7 @@ parser.add_argument('-d', '--date', type=str, default=None,
 
 datestr = parser.parse_args().date
 
-with open('settings.json') as f:
+with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
 
 process_tcs = settings['mws_process_tcs']

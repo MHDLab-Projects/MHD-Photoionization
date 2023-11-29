@@ -11,10 +11,10 @@ dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
-fp_cuttimes = pjoin(REPO_DIR,'experiment','data', 'cuttimes.csv')
+fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'cuttimes.csv')
 df_ct = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
 
-fp_expt_tws = r'C:\Users\aspitarl\Git\MHDLab\video-conversion\scripts\experiment_timewindows.csv'
+fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'experiment_timewindows.csv')
 df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
 # df_exptw = pd.read_csv(fp_expt_tws)
 
