@@ -37,7 +37,7 @@ pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
 tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
 
 da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim,'all')
+da_fit = da_fit.dropna(tc_dim, how='all')
 pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
 
 da_fit = da_fit/pulse_max
