@@ -42,6 +42,23 @@ ds_absem = xr.concat(dss, 'acq')
 ds_absem['mp'] = ds_absem['mp'].astype(str) #TODO: being truncated t to 'mw_hor' when writing to cdf...this fixes. 
 
 ds_absem.to_netcdf(pjoin('proc_data','ds_absem.cdf'))
+
+#%%
+
+# Absem calib
+
+dss = []
+for date in dates:
+    fp = pjoin(munged_dir, date, 'Munged','Spectral', 'ds_calib.cdf')
+    ds = xr.load_dataset(fp)
+    # ds = ds[['diff']]
+    dss.append(ds)
+
+
+ds_calib = xr.concat(dss, 'time')
+ds_calib['mp'] = ds_calib['mp'].astype(str) #TODO: being truncated t to 'mw_hor' when writing to cdf...this fixes. 
+ds_calib.to_netcdf(pjoin('proc_data','ds_calib.cdf'))
+
 #%%
 
 ## MWS

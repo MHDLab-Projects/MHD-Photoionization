@@ -17,7 +17,7 @@ parser.add_argument('-d', '--date', type=str, default=None,
 
 datestr = parser.parse_args().date
 
-# datestr = '2023-04-07'
+# datestr = '2023-05-24'
 
 with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
@@ -70,6 +70,7 @@ ds_alpha = ds_alpha['counts_mean']
 ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_off', 1:'led_on'})
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
+ds_alpha
 
 #%%
 
@@ -111,11 +112,35 @@ ds_calib = xr.concat(dss, 'time')
 
 ds_calib['diff'] = ds_calib['led_on'] - ds_calib['led_off']
 
+ds_calib.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_calib.cdf'))
 # ds_calib['diff'].plot(hue='time')
 
 #%%
 
-ds_calib = ds_calib.interp_like(ds_alpha)
+
+# Interpolate calibration data to alpha dataset
+# have to split out the mp dimension, otherwise interp_like doesn't work because of missing values
+#TODO: can this interpolation just happen on demand?
+
+if 'mw_horns' in ds_alpha.coords['mp'].values:
+
+    ds_mw_horns = ds_alpha.sel(mp='mw_horns').dropna('time', how='all')
+    ds_barrel = ds_alpha.sel(mp='barrel').dropna('time', how='all')
+
+    ds_calib_mw_horns = ds_calib.sel(mp='mw_horns')
+    ds_calib_barrel = ds_calib.sel(mp='barrel')
+
+    ds_calib_mw_horns = ds_calib_mw_horns.interp_like(ds_mw_horns, kwargs={'fill_value':'extrapolate'})
+    ds_calib_barrel = ds_calib_barrel.interp_like(ds_barrel, kwargs={'fill_value':'extrapolate'})
+
+    ds_calib = xr.concat([ds_calib_mw_horns, ds_calib_barrel], 'mp')
+
+    ds_calib
+
+else:
+    ds_calib = ds_calib.interp_like(ds_alpha, kwargs={'fill_value':'extrapolate'})
+
+# ds_calib = ds_calib.interp_like(ds_alpha, kwargs={'fill_value':'extrapolate'})
 
 # ds_calib['diff'].isel(time=[0,1000,2000]).plot(col='mp', hue='time')
 
@@ -123,8 +148,9 @@ ds_calib = ds_calib.interp_like(ds_alpha)
 
 # Add calibration data
 
-ds_alpha = ds_alpha.assign(calib=ds_calib['diff'])
+ds_alpha2 = ds_alpha.assign(calib=ds_calib['diff'])
 
-ds_alpha = ds_alpha.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
+ds_alpha2 = ds_alpha2.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
 
-ds_alpha.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
+ds_alpha2.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
+# %%
