@@ -37,6 +37,9 @@ coords_orig = xr.merge([
 
 # cuttimes = extract_cuttime_list(df_exptw)
 
+fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'cuttimes.csv')
+df_cuttimes = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
+
 cuttimes = extract_cuttime_list(df_cuttimes)
 
 #%%
@@ -53,3 +56,4 @@ coords_to_assign.sel(time=tw)['CC_K_massFrac_in'].plot(color='r', ax=ta)
 
 
 ds_absem['led_on'].sel(acq_time=tw).mean('wavelength').plot(hue='mp', ax=axes[1], marker='o')
+# %%

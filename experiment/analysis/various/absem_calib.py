@@ -193,7 +193,7 @@ dss_absem_methods.append(alpha_tc.assign_coords(method='const'))
 
 #%%
 
-da = alpha_tc.sel(mp='barrel')
+da = alpha_tc
 
 g = da.plot(hue='run_plot', x='wavelength', row='kwt')
 

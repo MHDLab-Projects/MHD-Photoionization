@@ -5,7 +5,7 @@
 from mhdpy.analysis.standard_import import *
 
 # enable dark mode
-plt.style.use('dark_background')
+# plt.style.use('dark_background')
 
 datestr = '2023-05-18'
 
