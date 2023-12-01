@@ -15,6 +15,9 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 # Scipp does not write non indexed coordinates back to xarray well...
 ds_absem = ds_absem.drop([c for c in ds_absem.coords if c not in ds_absem.indexes])
 
+#TODO: having to do this on office comp?
+ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
+ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 
 ds_absem
 

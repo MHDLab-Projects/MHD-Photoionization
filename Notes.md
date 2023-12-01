@@ -71,3 +71,12 @@ TODO: add spectral of calibration.
 initial estimate of beam propogation path
 
 error analysis: average led on/off over entire test case. 
+
+
+# 2023-12-01
+
+Compare LED to expected thorlabs
+
+measure drift over hours. 
+
+calculate error in fit from parameter covariance, and compare with error bars
