@@ -91,3 +91,88 @@ plt.xlim(765,772)
 
 ds_sel.coords['kwt']
 # %%
+
+
+ds = ds.assign_coords(run_plot = ('run', ds.indexes['run'].values))
+
+ds_sel = ds.sel(mp='barrel').dropna('kwt',how='all')
+
+ds_sel['mean'].plot(col='run', row='kwt')
+
+plt.ylim(-0.1,1.1)
+
+#%%
+
+da_sel = ds.to_array('stat')
+da_sel
+
+#%%
+# Define your custom plotting function
+def custom_plot(wavelength, mean, std, **kwargs):
+    lower_bound = mean - std
+    upper_bound = mean + std
+    plt.plot(wavelength, mean, **kwargs)
+    plt.fill_between(wavelength, lower_bound, upper_bound, alpha=0.5, color='gray')  # alpha sets the transparency
+
+# Create a FacetGrid
+g = xr.plot.FacetGrid(ds_sel, col='run', row='kwt')
+
+# Apply the custom function to each facet
+g.map(custom_plot, 'wavelength', 'mean', 'std')
+
+plt.ylim(-0.1,1.1)
+
+#%%
+
+# Create a FacetGrid
+g = xr.plot.FacetGrid(ds_sel, col='run', row='kwt')
+
+# Apply the custom function to each facet
+g.map(custom_plot, 'wavelength', 'mean', 'std')
+
+plt.ylim(-0.1,1.1)
+plt.xlim(765,772)
+
+#%%
+
+da_counts = ds_absem.count('mnum').mean('wavelength')['led_on']
+
+da_counts = da_counts.stack(run = ['date','run_num']).dropna('run', how='all')
+da_counts = da_counts.assign_coords(run_plot = ('run', da_counts.indexes['run'].values))
+da_counts = da_counts.where(da_counts> 0, drop=True)
+
+da_counts_sel = da_counts.sel(mp='barrel').dropna('kwt',how='all')
+
+da_counts_sel
+
+# da_counts_sel.plot(hue='run_plot', x='kwt', marker='o')
+
+
+#%%
+
+ds_sel['count'] = da_counts_sel
+
+ds_sel
+
+#%%
+
+# Define your custom plotting function
+def custom_plot(wavelength, mean, std, count, **kwargs):
+    lower_bound = mean - std
+    upper_bound = mean + std
+    plt.plot(wavelength, mean, **kwargs)
+    plt.fill_between(wavelength, lower_bound, upper_bound, alpha=0.5, color='gray')  # alpha sets the transparency
+    # count should be a single value, add it as text to the plot in the upper left
+    if not np.isnan(count):
+        plt.text(0.05, 0.9, '{}'.format(int(count)), transform=plt.gca().transAxes, color='red', fontsize=14, fontweight='bold')
+
+
+
+# Create a FacetGrid
+g = xr.plot.FacetGrid(ds_sel, col='run', row='kwt')
+
+# Apply the custom function to each facet
+g.map(custom_plot, 'wavelength', 'mean', 'std', 'count')
+
+plt.ylim(-0.1,1.1)
+plt.xlim(765,772)
