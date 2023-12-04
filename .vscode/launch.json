@@ -5,14 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Pytest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}"],
+            "justMyCode": false,
+            "console": "integratedTerminal",
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "cwd" : "${fileDirname}",
-            "args" : ["-d", "2023-05-24"]
+            "cwd": "${fileDirname}",
+            "args": [
+                "-d",
+                "2023-05-24"
+            ]
         }
     ]
 }
