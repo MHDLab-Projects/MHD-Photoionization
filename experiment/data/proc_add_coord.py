@@ -80,7 +80,8 @@ for (tc, date), row in df_cuttimes.iterrows():
             tc_base, run_num = m.groups()
 
             ds_absem_sel = ds_absem.sel(acq_time = sl)
-            ds_absem_sel = process_ds(ds_absem_sel, coords_to_assign, date, run_num, tc_base, min_mnum=None) #Absem aready downselected...
+            #TODO: can we add 'mnum_counts' as a variable in a general way and downselect later?
+            ds_absem_sel = process_ds(ds_absem_sel, coords_to_assign, date, run_num, tc_base, min_mnum=2) #Absem aready downselected...
             dss_absem[tc_base].append(ds_absem_sel)
 
             ds_lecroy_sel = ds_lecroy.sel(acq_time = sl)
