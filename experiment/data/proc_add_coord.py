@@ -20,8 +20,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 # Generate binned coordinates to assign along time dimension
 coords_to_assign = gen_coords_to_assign_1(dsst)
 
-# dss = [da.to_dataset(name=name) for name, da in coords_to_assign.items()]
-dss = [da for name, da in coords_to_assign.items()]
+dss = [da.to_dataset(name=name) for name, da in coords_to_assign.items()]
 ds_coords = xr.merge(dss)
 
 with TdmsWriter('proc_data/dst_coords.tdms', 'w') as tw:
