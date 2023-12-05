@@ -179,3 +179,16 @@ g.map(custom_plot, 'wavelength', 'mean', 'std', 'count')
 
 plt.ylim(-0.1,1.1)
 plt.xlim(765,772)
+
+#%%
+
+from mhdpy.analysis.spectral import perform_fit_alpha 
+
+spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
+spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
+
+ds_fit = ds.rename(mean='alpha')
+
+ds_p, ds_p_stderr, ds_alpha = perform_fit_alpha(ds_fit, spect_red_dict)
+
+#%%
