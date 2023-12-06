@@ -4,6 +4,7 @@ from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.xr import WeightedMeanAccessor
 
 # %%
 
@@ -22,7 +23,6 @@ ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 ds_absem
 
 #%%
-
 
 ds_mean = ds_absem.mean('mnum')
 ds_std = ds_absem.std('mnum')
@@ -52,9 +52,21 @@ da_mean.name = 'mean'
 da_std = sc.compat.to_xarray(sc.stddevs(sds['alpha']))
 da_std.name = 'std'
 
-ds = xr.merge([da_mean, da_std])
+counts = ds_absem['led_on'].isel(wavelength=0).count('mnum').to_dataset(name='count')
+
+#%%
+
+ds = xr.merge([
+    da_mean, 
+    da_std,
+    counts
+    ])
+
+ds['stderr'] = ds['std']/np.sqrt(ds['count'])
 
 ds = ds.stack(run = ['date','run_num']).dropna('run', how='all')
+
+ds
 
 #%%
 
@@ -90,9 +102,6 @@ for i, run in enumerate(ds.coords['run']):
 plt.ylim(-0.1,1.1)
 plt.xlim(765,772)
 
-#%%
-
-ds_sel.coords['kwt']
 # %%
 
 
@@ -104,12 +113,11 @@ ds_sel['mean'].plot(col='run', row='kwt')
 
 plt.ylim(-0.1,1.1)
 
-#%%
-
-da_sel = ds.to_array('stat')
-da_sel
 
 #%%
+
+ds_sel = ds.sel(mp='barrel').dropna('kwt',how='all')
+
 # Define your custom plotting function
 def custom_plot(wavelength, mean, std, **kwargs):
     lower_bound = mean - std
@@ -137,25 +145,6 @@ plt.ylim(-0.1,1.1)
 plt.xlim(765,772)
 
 #%%
-
-da_counts = ds_absem.count('mnum').mean('wavelength')['led_on']
-
-da_counts = da_counts.stack(run = ['date','run_num']).dropna('run', how='all')
-da_counts = da_counts.assign_coords(run_plot = ('run', da_counts.indexes['run'].values))
-da_counts = da_counts.where(da_counts> 0, drop=True)
-
-da_counts_sel = da_counts.sel(mp='barrel').dropna('kwt',how='all')
-
-da_counts_sel
-
-# da_counts_sel.plot(hue='run_plot', x='kwt', marker='o')
-
-
-#%%
-
-ds_sel['count'] = da_counts_sel
-
-ds_sel
 
 #%%
 
@@ -192,70 +181,33 @@ ds_fit = ds.rename(mean='alpha')
 ds_p, ds_p_stderr, ds_alpha = perform_fit_alpha(ds_fit, spect_red_dict)
 
 #%%
+
 ds_nK = xr.merge([
     ds_p['nK_m3'].to_dataset(name='mean'),
-    ds_p_stderr['nK_m3'].to_dataset(name='std'),
+    ds_p_stderr['nK_m3'].to_dataset(name='stderr'),
+    ds['count']  #TODO: better naming
 ])
+
+ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 
 ds_nK
 
 #%%
-
-# testing uncertianties package
-#TODO: move somewhere else, but refactor fitting first?
-
-from uncertainties import unumpy as unp
-
-ds_nK_unstacked = ds_nK.unstack('run')
-
-arr = unp.uarray(ds_nK_unstacked['mean'].values, ds_nK_unstacked['std'].values)
-
-# For some reason this appears to have the same order as arr
-# dims = list(ds_nK_unstacked.indexes.keys())
-dims = ds_nK_unstacked['mean'].dims #TODO: appears conversion to datarray is needed for correct dim order..
-
-coords = {dim: ds_nK_unstacked.coords[dim].values for dim in dims}
-da_nK_uc = xr.DataArray(arr, dims=dims, coords=coords)
-
-da_nK_uc
-
-#%%
-
-da = da_nK_uc.sel(kwt=1, method='nearest').sel(mp='barrel').stack(run=['date','run_num'])
-
-arr = da.values
-
-np.nanmean(arr, axis=-1)
-
-#%%
-
-# TODO: can't make sense of the std dev
-
-# narr = [v.nominal_value for v in arr]
-# np.nanmean(narr)
-# np.nanstd(narr)
-
-narr = [v.std_dev**2 for v in arr]
-np.sqrt(np.nanmean(narr))
-
-#%%
-
-da = da_nK_uc.stack(run=['date','run_num'])
-
-da = xr.apply_ufunc(np.nanmean, da, input_core_dims=[['run']], output_core_dims=[[]], kwargs={'axis':-1})
-
-da_nominal = xr.apply_ufunc(unp.nominal_values, da)
-da_std = xr.apply_ufunc(unp.std_devs, da)
-
-ds_nK_uc = xr.merge([da_nominal.rename('mean'), da_std.rename('std')])
-ds_nK_uc    
-
-#%%
 # da.values
 
-g = xr.plot.FacetGrid(ds_nK_uc, col='mp')
+g = xr.plot.FacetGrid(ds_nK, col='mp', row='run')
 
 g.map(plt.errorbar, 'kwt', 'mean', 'std', capsize=5)
 
 plt.yscale('log')
 # %%
+
+
+ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
+
+g = xr.plot.FacetGrid(ds_nK2, row='mp')
+
+g.map(plt.errorbar, 'kwt', 'mean', 'std', capsize=5)
+
+plt.yscale('log')
+plt.xscale('log')

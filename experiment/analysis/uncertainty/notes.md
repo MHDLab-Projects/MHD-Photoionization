@@ -24,3 +24,38 @@
 
 * standard deviation: 
 
+
+# 2023-12-05
+
+Trying to figure out how to calculate errors after rounds of averaging over mnum and run
+
+* weighted average
+* standard deviation or standard deviation of mean?
+* lmfit outputs 'standard error' which I believe is sdom
+
+https://blogs.sas.com/content/iml/2019/10/09/statistic-error-bars-mean.html
+
+https://www.statology.org/standard-deviation-vs-standard-error/
+
+```
+When to Use Standard Deviation vs. Standard Error
+
+If we are simply interested in measuring how spread out values are in a dataset, we can use the standard deviation.
+
+However, if we’re interested in quantifying the uncertainty around an estimate of the mean, we can use the standard error of the mean.
+
+```
+
+
+https://lmfit.github.io/lmfit-py/fitting.html
+
+```
+After a fit using the leastsq() or least_squares() method has completed successfully, standard errors for the fitted variables and correlations between pairs of fitted variables are automatically calculated from the covariance matrix.
+
+```
+
+
+questions: 
+
+* are sequential weighted means accurate? I don't think the math works out. 
+* is the error formula for weighted average  

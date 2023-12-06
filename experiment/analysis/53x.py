@@ -6,6 +6,7 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.mws_utils import calc_mag_phase_AS
 from mhdpy.plot import dropna
+from mhdpy.analysis.xr import WeightedMeanAccessor
 
 # %%
 
@@ -17,9 +18,6 @@ ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].val
 
 ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
 ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
-
-
-
 
 #%%
 
@@ -80,8 +78,11 @@ plt.xscale('log')
 
 ds_nK = xr.merge([
     ds_p['nK_m3'].to_dataset(name='mean'),
-    ds_p_stderr['nK_m3'].to_dataset(name='std'),
+    ds_p_stderr['nK_m3'].to_dataset(name='stderr'),
+    ds_absem.mean('wavelength').count('mnum')['alpha'].to_dataset(name='count')
 ])
+
+ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 
 ds_nK
 
@@ -112,14 +113,11 @@ plt.yscale('log')
 plt.xscale('log')
 #%%
 
-# Without any error propgation
-
-ds_nK_mean = ds_sel['mean'].mean('run')
-ds_nK_std = ds_sel['mean'].std('run')
+ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
 
 fig, axes = plt.subplots()
 
-xr_errorbar_axes(ds_nK_mean, ds_nK_std, axes)
+xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
 
 plt.yscale('log')
 plt.xscale('log')
@@ -127,8 +125,15 @@ plt.xscale('log')
 
 #%%
 
+# Compare to simply calculating new mean/std over run 
+ds_nK2 = ds_nK.wma.initialize_stat_dataset('mean', 'run')
 
+fig, axes = plt.subplots()
 
+xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
+
+plt.yscale('log')
+plt.xscale('log')
 
 #%%[markdown]
 
@@ -151,14 +156,8 @@ dropna(g)
 
 #%%
 
-#TODO: make a class for dataarray containing uncertainty
-
-da_l_unc = ds_lecroy['mag'].mean('mnum')
-ds_l_unc = da_l_unc.to_dataset(name='mean')
-ds_l_unc['std'] = ds_lecroy['mag'].std('mnum')
-
-ds_l_unc['count'] = ds_lecroy['mag'].mean('time').count('mnum')
-
+ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('mag', 'mnum')
+ds_l_unc['count'] = ds_l_unc['count'].isel(time=0)
 ds_l_unc
 
 #%%
@@ -187,13 +186,8 @@ plt.xlim(-10,10)
 
 #%%
 
-da_l_unc = ds_lecroy['AS'].mean('mnum')
-ds_l_unc = da_l_unc.to_dataset(name='mean')
-ds_l_unc['std'] = ds_lecroy['AS'].std('mnum')
-
-ds_l_unc['count'] = ds_lecroy['AS'].mean('time').count('mnum')
-ds_l_unc['sdom'] = ds_l_unc['std']/np.sqrt(ds_l_unc['count'])
-
+ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('AS', 'mnum')
+ds_l_unc['count'] = ds_l_unc['count'].isel(time=0)
 ds_l_unc
 
 #%%
@@ -212,39 +206,20 @@ g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt')
 
 # Apply the custom function to each facet
 
-g.map(custom_plot, 'time', 'mean', 'sdom', 'count')
+g.map(custom_plot, 'time', 'mean', 'stderr', 'count')
 
 
 #%%
 
-# calculate mean over run based on average weighted by sdom
-
-ds_l_unc['mean_weighted'] = ds_l_unc['mean']/ds_l_unc['sdom']**2
-
-dem = (1/ds_l_unc['sdom']**2).sum('run')
-
-ds_l_unc['mean_weighted'] = ds_l_unc['mean_weighted'].sum('run')/dem
-
-ds_l_unc['std_weighted'] = 1/np.sqrt(dem)
-
-ds_l_unc['count'] = ds_l_unc['count'].sum('run')
-
-ds_l_unc
+ds_l_unc_2 = ds_l_unc.wma.calc_weighted_mean('run')
 
 #%%
 
-ds2 = ds_l_unc[['mean_weighted', 'std_weighted', 'count']]
-
-ds2
-
-
-#%%
-
-g = xr.plot.FacetGrid(ds_l_unc, row='kwt')
+g = xr.plot.FacetGrid(ds_l_unc_2, row='kwt')
 
 # Apply the custom function to each facet
 
-g.map(custom_plot, 'time', 'mean_weighted', 'std_weighted', 'count')
+g.map(custom_plot, 'time', 'mean', 'std', 'count')
 
 # plt.ylim(0,1)
 
@@ -256,7 +231,7 @@ from mhdpy.mws_utils.fitting import fit_fn
 from mhdpy.analysis.xr import fit_da_lmfit
 from lmfit import Model
 
-da_fit = ds2['mean_weighted'].copy()
+da_fit = ds_l_unc_2['mean'].copy()
 
 
 pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
@@ -295,8 +270,6 @@ ds = xr.merge([fits, da_fit])
 
 da = ds.to_array('var')
 
-
-
 # for run in ds.coords['run_plot']:
 #     da_sel = da.sel(run=run)
 g= da.plot( x='time',hue='var', row='kwt')
@@ -331,37 +304,42 @@ plt.errorbar(ds_ne0['kwt'], ds_ne0['mean'], ds_ne0['std'], marker='o', capsize=5
 
 # %%
 
-mws_max = ds2.max('time')
+mws_max = ds_l_unc_2.max('time')
 
-max_time = ds2['mean_weighted'].argmax('time')
-max_time
+max_time = ds_l_unc_2['mean'].argmax('time')
+
 #TODO: pretty sure isel is right here
-mws_max['std'] = ds2['std_weighted'].isel(time=max_time)
+mws_max['std'] = ds_l_unc_2['std'].isel(time=max_time)
 
-
-#%%
-mws_max = mws_max.rename({'mean_weighted':'AS'})
-nK = ds_nK_mean.rename('nK_m3')
+ds_nK2_barrel = ds_nK2.sel(mp='barrel')
 
 #%%
 
-ds = xr.merge([mws_max,nK]).sortby('kwt')
-ds
-#%%
+
+ds = xr.merge([
+    mws_max.rename({'mean':'AS'})['AS'],
+    ds_nK2_barrel['mean'].rename('nK_m3')
+    ]).sortby('kwt')
 
 ds.plot.scatter(x='nK_m3', y='AS')
 
 
 #%%
 
-plt.errorbar(ds['nK_m3'], ds['AS'], xerr=ds_nK_std, yerr=mws_max['std'], marker='o', capsize=5)
+plt.errorbar(ds_nK2_barrel['mean'], mws_max['mean'], xerr=ds_nK2_barrel['std'], yerr=mws_max['std'], marker='o', capsize=5)
 
 plt.xscale('log')
 plt.yscale('log')
 
+plt.ylabel("AS Maximum")
+plt.xlabel("nK_m3")
+
 #%%
 
-plt.errorbar(ds['nK_m3'], ds_ne0['mean'], xerr=ds_nK_std, yerr=ds_ne0['std'], marker='o', capsize=5)
+plt.errorbar(ds_nK2_barrel['mean'], ds_ne0['mean'], xerr=ds_nK2_barrel['std'], yerr=ds_ne0['std'], marker='o', capsize=5)
 
 plt.xscale('log')
 
+
+plt.ylabel("ne_0 fit")
+plt.xlabel("nK_m3")
