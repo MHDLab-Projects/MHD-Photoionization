@@ -59,3 +59,5 @@ questions:
 
 * are sequential weighted means accurate? I don't think the math works out. 
 * is the error formula for weighted average  
+
+
