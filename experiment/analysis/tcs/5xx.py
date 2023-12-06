@@ -64,8 +64,20 @@ da.sel(motor=100, method='nearest', phi=1).dropna('mnum', how='all')
 #%%
 
 ## Examine time data...
+# I believe this is redundant with other time analysis, probably can remove 
 
-ds_absem_time = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))['alpha']
+ds_absem_time = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
+
+ds_absem_time['diff'] = ds_absem_time['led_on'] - ds_absem_time['led_off']
+ds_absem_time['alpha'] = 1 - ds_absem_time['diff']/ds_absem_time['calib']
+
+ds_absem_time = ds_absem_time.set_index(acq=['time','mp']).unstack('acq')
+
+ds_absem_time = ds_absem_time['alpha']
+
+ds_absem_time
+
+#%%
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
@@ -87,35 +99,20 @@ da.mean('wavelength').plot(hue='mp', marker='o')
 
 plt.twinx()
 
-dst_coords['CC_equivalenceRatio'].sel(time=tw).plot(marker='o')
+dst_coords['phi'].sel(time=tw).plot(marker='o')
 
 #%%
 
+
+from mhdpy.analysis.spectral import perform_fit_alpha
+
+spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
+spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
+
 ds_fit = ds_absem.mean('mnum')
 
-from mhdpy.analysis.spectral import model_blurredalpha_2peak, interp_alpha
-from mhdpy import analysis
-final_model, pars = model_blurredalpha_2peak()
 
-beta = -np.log(1-ds_fit['alpha'])/pars['L'].value
-beta_off = beta.sel(wavelength=slice(750,755)).mean('wavelength')
-alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
-
-
-spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
-print('Reducing alpha with following data reduction parameters: ')
-print(spect_red_dict)
-alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
-alpha_tc_red.name = 'alpha_red'
-
-wls = alpha_tc.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = analysis.xr.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-# ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
-fits.name = 'alpha_fit'
-
-ds_alpha = xr.merge([alpha_tc, alpha_tc_red, fits]).sel(wavelength=slice(760,775))
+ds_p, ds_p_stderr, ds_alpha = perform_fit_alpha(ds_fit, spect_red_dict)
 
 
 #%%
@@ -144,6 +141,9 @@ tc = '5x3_pos'
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.stack(run=['date','run_num'])
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
+
+ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
+ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.stack(run=['date','run_num'])
@@ -179,33 +179,7 @@ da_max.plot(hue='phi', marker='o')
 
 ds_fit = ds_absem.mean('mnum')
 
-from mhdpy.analysis.spectral import model_blurredalpha_2peak, interp_alpha
-from mhdpy import analysis
-final_model, pars = model_blurredalpha_2peak()
-
-beta = -np.log(1-ds_fit['alpha'])/pars['L'].value
-beta_off = beta.sel(wavelength=slice(750,755)).mean('wavelength')
-alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
-
-
-spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
-print('Reducing alpha with following data reduction parameters: ')
-print(spect_red_dict)
-alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
-alpha_tc_red.name = 'alpha_red'
-
-wls = alpha_tc.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = analysis.xr.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-# ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
-fits.name = 'alpha_fit'
-
-ds_alpha = xr.merge([alpha_tc, alpha_tc_red, fits]).sel(wavelength=slice(760,775))
-
-
-
-#%%
+ds_p, ds_p_stderr, ds_alpha = perform_fit_alpha(ds_fit, spect_red_dict)
 
 
 # %%
@@ -216,3 +190,4 @@ g = da.plot(hue='phi', marker='o')
 
 
 dropna(g)
+# %%

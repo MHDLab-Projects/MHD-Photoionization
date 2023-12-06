@@ -52,7 +52,7 @@ coords_orig.sel(time=tw)['CC_K_massFrac_in'].dropna('time',how='all').plot(ax=ax
 
 ta = axes[0].twinx()
 
-coords_to_assign.sel(time=tw)['CC_K_massFrac_in'].plot(color='r', ax=ta)
+coords_to_assign.sel(time=tw)['kwt'].plot(color='r', ax=ta)
 
 
 ds_absem['led_on'].sel(acq_time=tw).mean('wavelength').plot(hue='mp', ax=axes[1], marker='o')
