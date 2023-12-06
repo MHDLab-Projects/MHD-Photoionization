@@ -1,9 +1,13 @@
-mkdir -p nb_render
+: '
+script to call render_scripts.sh in all subdirectories
+'
 
-for f in *.py
+render_dirs=( "absem" "tcs" "uncertainty" "various" )
+
+for d in "${render_dirs[@]}"
 do
-jupytext --to notebook --execute $f --set-kernel python3
-jupfn="${f%.*}".ipynb
-cp -f $jupfn nb_render/$jupfn
-rm $jupfn
+    cd $d
+    echo "---rendering scripts in $d---"
+    source ../render_scripts.sh
+    cd ..
 done
