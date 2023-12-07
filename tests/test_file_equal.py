@@ -12,7 +12,7 @@ import os
 import pytest
 import glob
 
-test_data_path = 'tests/test_data' 
+test_data_path = pjoin(REPO_DIR, 'tests', 'test_data') 
 input_data_folder = pjoin(REPO_DIR, 'experiment','data','proc_data')
 
 # Get all TDMS files in the test_data folder
