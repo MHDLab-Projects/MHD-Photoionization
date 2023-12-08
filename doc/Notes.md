@@ -80,3 +80,50 @@ Compare LED to expected thorlabs
 measure drift over hours. 
 
 calculate error in fit from parameter covariance, and compare with error bars
+
+# 2023-12-07 
+
+## Uncertainty analysis
+
+Sources of uncertiainty 
+
+* variation within a given 'run': intra-run
+    * time fluctuation
+    * process unsteadiness
+    * dimenion 'mnum' (aka measurement number)
+* Variation between runs: inter-run
+    * Process changes (emulsion etc.)
+    * dimension: 'run' 
+* fitting
+    * fitting covariance
+
+Questions:
+
+How to handle combining errors between inter and intra process?
+* appears inter-run variation is larger
+* the 'true value' of the distibution is changing
+* Weighted average? Only one average/stddev calculation over all measurements?
+
+How to integrate fitting and associated parameter uncertianty?
+* Do we perform averages before or after fitting? 3 possibilities. 
+* Believe error corresponds to standard error
+
+Is error in weighted average the standard error or standard deviation
+
+$ \sigma_{stderr}  = \sigma_{stdev}/\sqrt{counts}$ 
+
+Believe the counts used in this should be the counts of intra-run
+
+
+
+#TODO: look at theoretical curves of alpha, wrt various inlcuding temperature
+
+#TODO test effect of data point spacing on absem fit: does data point number correspond to counts?
+
+Add a known noise 
+
+
+#TODO: compare fitting grouping
+1. average intra-run before fit
+2. fit each individual acquistion then average fit parameters
+3. 'global' least squares fitting. fit all acquisition to the same curve with one standard error 
