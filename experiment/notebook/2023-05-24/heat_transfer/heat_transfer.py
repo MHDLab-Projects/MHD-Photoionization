@@ -8,6 +8,7 @@
 # %%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-05-24')
 

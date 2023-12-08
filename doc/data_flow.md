@@ -47,7 +47,7 @@ flowchart TD;
         FD4["
         Data for each test case (53x, 536_pos, ...)
         Indexed by binned test case setpoint channels
-        uns
+        Time index converted to measurement number
         "]
         FD1 --> proc_add_coord.py 
         FD2 --> proc_add_coord.py 
@@ -60,7 +60,7 @@ flowchart TD;
 
     RD[Raw Data Z drive] 
     RD -- PostProcessing.py --> M1
-    M1 --" 
+    RD --" 
         mungelecroy.py 
         munge_spe.py
         "

@@ -8,6 +8,7 @@
 # %%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 from mhdpy.plot.common import xr_errorbar, xr_errorbar_axes
 
 data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-05-24')
