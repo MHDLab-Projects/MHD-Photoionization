@@ -4,7 +4,8 @@
 #%%
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
 figure_out_dir = pjoin(DIR_DATA_OUT, '1d_auto')
 

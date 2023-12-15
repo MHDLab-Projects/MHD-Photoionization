@@ -11,7 +11,8 @@ import numpy as np
 
 import mhdpy
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
 # dsst = mhdpy.fileio.TFxr().as_dsst()
 

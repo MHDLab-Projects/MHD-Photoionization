@@ -2,7 +2,8 @@
 
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-05-24')
+datestr = '2023-05-24'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
