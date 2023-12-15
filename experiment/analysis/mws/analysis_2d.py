@@ -1,25 +1,40 @@
 """
 Analysis of 2D parameter sweeps
+
+#TODO: Add other dates/2d sweeps, improve plots, and convert to use main function like analsis_1d.py
 """
 #%%
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
-figure_out_dir = pjoin(DIR_DATA_OUT, '2d_auto')
 
-datestr = '2023-04-07'
+
+datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
+figure_out_dir = pjoin(DIR_DATA_OUT, '2d_auto', datestr)
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
-tcs = [
-    '536_pos_536_power',
-    '536_pos_power_2'
-]
+tc_dict = {
+'2023-04-07':[
+    '536_pos_power'
+],
+'2023-05-24':[
+    '5x6_pos',
+    '5x3_pos'
+],
+}
 
-huedim = 'power'
+tcs = tc_dict[datestr]
+
+hudim_dict = {'2023-04-07':'power', '2023-05-24':'phi'}
+
+huedim = hudim_dict[datestr]
+
+
 coldim = 'motor'
 
 from mhdpy.mws_utils import calc_mag_phase_AS
@@ -85,10 +100,6 @@ for tc in dss:
 
 #%%
 
-dss[tc].sel(power=0)#.dropna(coldim, 'all')
-
-#%%
-
 
 figsize = (8, 11)
 for tc in dss:
@@ -124,3 +135,4 @@ for tc in dss:
 
     tc_fig_dir = pjoin(figure_out_dir, tc)
     plt.savefig(pjoin(tc_fig_dir, 'raw_signals_hue.png'))
+# %%
