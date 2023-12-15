@@ -2,6 +2,8 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 from mhdpy.mws_utils import calc_mag_phase_AS
+import seaborn as sns
+# sns.set_theme(style="darkgrid")
 
 def main(datestr):
 
@@ -15,6 +17,7 @@ def main(datestr):
     figure_out_dir = pjoin(DIR_DATA_OUT, '1d_auto', datestr)
 
     dss = {}
+    dss_std = {}
 
     for tc in tcs:
 
@@ -24,8 +27,7 @@ def main(datestr):
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
         ds = calc_mag_phase_AS(ds_in).drop('mag_pp')
-
-
+        ds_std = ds.std('mnum', keep_attrs=True)
 
         tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
         mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
@@ -49,6 +51,7 @@ def main(datestr):
 
 
         dss[tc] = ds
+        dss_std[tc] = ds_std
 
     # %%
 
@@ -105,7 +108,66 @@ def main(datestr):
 
         tc_fig_dir = pjoin(figure_out_dir, tc)
         plt.savefig(pjoin(tc_fig_dir, 'AS_log.png'))
+    #%%
 
+
+    for tc in dss:
+
+        ds = dss[tc]
+        ds_std = dss_std[tc]
+
+        tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
+
+        plt.figure()
+
+        tc_vals = ds.coords[tc_dim]
+        fig, axes = plt.subplots(len(tc_vals), figsize=(5, 3*len(tc_vals)), sharex=True)
+        # ds['AS'].plot(hue=tc_dim)
+        # dss_std[tc]['AS'].plot(hue=tc_dim, linestyle='--')
+
+        ds = ds.drop_vars([var for var in ds.coords if var not in ds.dims])
+
+        # xr_errorbar(ds['AS'], dss_std[tc]['AS'], huedim=tc_dim)
+
+        for i, c in enumerate(ds.coords[tc_dim]):
+            ds_sel_mean = ds.sel({tc_dim: c})['AS']
+            xs = ds_sel_mean.coords['time'].values
+
+            vals_mean = ds_sel_mean.values
+            vals_std = ds_std.sel({tc_dim: c})['AS'].values
+
+            plt.sca(axes[i])
+            plt.plot(xs, vals_mean)
+
+            plt.fill_between(x=xs,
+                    y1=vals_mean - vals_std,
+                    y2=vals_mean + vals_std,
+                    alpha=0.5
+                    )
+
+
+        # plt.yscale('log')
+
+        # plt.xlim(-1,30)
+        # plt.ylim(-1e-2, 1e-2)
+
+
+        tc_fig_dir = pjoin(figure_out_dir, tc)
+        plt.savefig(pjoin(tc_fig_dir, 'AS_lin.png'))
+
+    #%%
+
+
+    # Load an example dataset with long-form data
+    fmri = sns.load_dataset("fmri")
+
+    # Plot the responses for different events and regions
+    sns.lineplot(x="timepoint", y="signal",
+                hue="region", style="event",
+                data=fmri)
+
+
+# %%
 
     # %%
 
