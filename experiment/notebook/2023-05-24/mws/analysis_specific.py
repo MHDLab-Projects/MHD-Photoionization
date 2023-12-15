@@ -3,6 +3,7 @@ from mhdpy.analysis.standard_import import *
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
@@ -13,17 +14,21 @@ tc = '536_power'
 from mhdpy.mws_utils import calc_mag_phase_AS
 
 
-fp_in = pjoin('proc_data', '{}.cdf'.format(tc))
+fp_in = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy', '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
 
 ds = calc_mag_phase_AS(ds_in)
 
+ds = ds.sel(date='2023-05-24').sel(run_num=1)
 
-tc_dim = [dim for dim in ds.dims if dim != 'time'][0]
-mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
+
+tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
+# mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
 
 ds = ds.mean('mnum', keep_attrs=True)
+
+#%%
 
 
 # %%

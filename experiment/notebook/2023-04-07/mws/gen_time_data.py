@@ -13,6 +13,7 @@ import mhdpy
 
 datestr = '2023-04-07'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 # dsst = mhdpy.fileio.TFxr().as_dsst()
 

@@ -9,6 +9,7 @@ from mhdpy.analysis.standard_import import *
 datestr = '2023-04-07'
 datestr = datestr
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 lecroy_setup_folder = r'Z:\Lecroy Oscope\Setups'
 lecroy_raw_folder = os.path.join(r'Z:\Lecroy Oscope\Waveforms', datestr)
 
