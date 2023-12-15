@@ -26,9 +26,6 @@ ds = calc_mag_phase_AS(ds_in)
 ds.coords['acq_time'].attrs = dict(long_name='Acquisition Time')
 ds.coords['time'].attrs = dict(long_name='Osc. Time', units = '$\mu s$')
 
-#TODO: fix timeshift in setup script
-ds = ds.assign_coords(acq_time= ds.coords['acq_time'].values - np.timedelta64(1, 'h'))
-
 # %%
 
 from pandas import Timestamp

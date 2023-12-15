@@ -97,6 +97,9 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
     col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
        'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
        'percent_K_to_K2CO3', 'f_water']
+
+    #TODO: some of these not preset when revisiting script
+    col_select = [col for col in col_select if col in recipe_em]
     
     recipe_em = recipe_em.loc[col_select]
 

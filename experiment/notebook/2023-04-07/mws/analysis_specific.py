@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import re
 
 datestr = '2023-04-07'
@@ -141,12 +142,7 @@ from pint import Quantity
 
 mws_offset_min = Quantity(1 + 2/16, 'inches')
 mws_offset_max = Quantity(1 + 4/16, 'inches')
-536_pos_goldilocks = Quantity(150, 'mm')
+pos_536_goldilocks = Quantity(150, 'mm')
 
-print("Goldilocks Position min: {}".format((mws_offset_min + 536_pos_goldilocks).to('mm')))
-print("Goldilocks Position max: {}".format((mws_offset_max + 536_pos_goldilocks).to('mm')))
-
-
-#%%
-
-ds.sel(time=tw_power)
+print("Goldilocks Position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
+print("Goldilocks Position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))

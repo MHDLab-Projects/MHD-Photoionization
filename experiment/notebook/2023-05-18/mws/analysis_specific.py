@@ -1,5 +1,6 @@
 #%%
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
