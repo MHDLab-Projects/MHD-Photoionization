@@ -176,9 +176,9 @@ for ax in g.axes.flatten():
 
 
 # %%
-from mhdpy.analysis.spectral import model_blurredalpha_2peak, interp_alpha
+from mhdpy.analysis.spectral import gen_model_alpha_blurred, interp_alpha
 from mhdpy import analysis
-final_model, pars = model_blurredalpha_2peak()
+final_model, pars = gen_model_alpha_blurred()
 
 
 sl1 = slice(750,755)

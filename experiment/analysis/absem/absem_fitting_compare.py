@@ -50,9 +50,9 @@ da_alpha = interp_alpha(da_sel)
 
 #%%
 
-from mhdpy.analysis.spectral import model_blurredalpha_2peak, alpha_cut
+from mhdpy.analysis.spectral import gen_model_alpha_blurred, alpha_cut
 
-final_model, pars = model_blurredalpha_2peak()
+final_model, pars = gen_model_alpha_blurred()
 
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
@@ -98,7 +98,7 @@ plt.gca().get_legend().remove()
 #%%
 
 from lmfit import minimize, Parameters, report_fit, Model
-from mhdpy.analysis.spectral import blurred_alpha
+from mhdpy.analysis.spectral import alpha_blurred
 
 def objective(params, x, data):
     """Calculate total residual for fits of blurredalpha_2peak to several data sets."""
@@ -109,7 +109,7 @@ def objective(params, x, data):
     param_dict=  params.valuesdict()
     param_dict = {k: v for k, v in param_dict.items() if k != 'nK_m3'}
 
-    model_vals = blurred_alpha(x, **param_dict)
+    model_vals = alpha_blurred(x, **param_dict)
 
 
     # make residual per data set
@@ -127,7 +127,7 @@ x = alpha_tc_red.coords['wavelength'].values
 data_vals = alpha_tc_red.values.T
 
 
-final_model, pars = model_blurredalpha_2peak()
+final_model, pars = gen_model_alpha_blurred()
 # add parameters for your model here
 
 out = minimize(objective, pars, args=(x, data_vals))
@@ -142,7 +142,7 @@ param_dict = {k: v for k, v in param_dict.items() if k != 'nK_m3'}
 
 
 for i in range(data_vals.shape[0]):
-    y_fit = blurred_alpha(x, **param_dict)
+    y_fit = alpha_blurred(x, **param_dict)
     plt.plot(x, data_vals[i, :], 'o', x, y_fit, '-')
 
 
@@ -167,7 +167,7 @@ da_sel.plot(hue='mnum')
 
 from mhdpy.analysis.xr import fit_da_lmfit
 
-final_model, pars = model_blurredalpha_2peak()
+final_model, pars = gen_model_alpha_blurred()
 
 alpha_tc = da_sel
 

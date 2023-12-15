@@ -2,7 +2,7 @@
 from mhdpy.analysis.standard_import import *
 
 from mhdpy.analysis.spectral import interp_alpha
-from mhdpy.analysis.spectral import model_blurredalpha_2peak
+from mhdpy.analysis.spectral import gen_model_alpha_blurred
 from mhdpy.analysis.xr import fit_da_lmfit
 
 import pytest    
@@ -24,7 +24,7 @@ def test_absem_fit():
     da_alpha = da_alpha.sel(wavelength=slice(730,790))
     da_alpha = interp_alpha(da_alpha)
 
-    final_model, pars = model_blurredalpha_2peak()
+    final_model, pars = gen_model_alpha_blurred()
 
     wls = da_alpha.coords['wavelength'].values
     fits, ds_p, ds_p_stderr = fit_da_lmfit(da_alpha, final_model, pars, 'wavelength', wls)

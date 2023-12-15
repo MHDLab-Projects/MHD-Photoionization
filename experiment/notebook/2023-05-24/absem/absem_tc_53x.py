@@ -84,9 +84,9 @@ for ax in g.axes[3]: ax.set_ylim(-0.5,1.2)
 
 ds_fit = ds_mp.mean('mnum')
 
-from mhdpy.analysis.spectral import model_blurredalpha_2peak, interp_alpha
+from mhdpy.analysis.spectral import gen_model_alpha_blurred, interp_alpha
 from mhdpy import analysis
-final_model, pars = model_blurredalpha_2peak()
+final_model, pars = gen_model_alpha_blurred()
 
 beta = -np.log(1-ds_fit['alpha'])/pars['L'].value
 beta_off = beta.sel(wavelength=slice(750,755)).mean('wavelength')
