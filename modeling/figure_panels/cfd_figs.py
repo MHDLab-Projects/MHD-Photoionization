@@ -11,7 +11,7 @@ pv.OFF_SCREEN = True
 
 folder_cfd = pjoin(REPO_DIR, 'modeling','cfd')
 
-fname = pjoin(folder_cfd, 'output/torch_rot_interp.vtk')
+fname = pjoin(folder_cfd, 'output','torch_rot_interp.vtk')
 
 m_torch = pv.read(fname)
 

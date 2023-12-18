@@ -21,7 +21,7 @@ REPO_DIR = os.getenv('REPO_DIR')
 
 from noneq_utils import abscs, noneq
 
-cantera_data_dir = os.path.join(REPO_DIR, 'modeling\dataset\output')
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
 PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
 if not os.path.exists('output'): os.mkdir('output')
 # %%
