@@ -45,7 +45,7 @@ outputtype = 'X'
 paramnames = ['rho','enthalpy','Cp','Cv','sigma','mobility','viscosity','thermalConduct']
 
 gas_tr, electron_trans = ct_utils.gen_gas(
-                    GasThermo_tr = 'data/drm19_SeededKero.cti',
+                    GasThermo_tr = 'data/drm19_SeededKero.yaml',
                     GasThermoName_tr = 'gas',
                     CrossSectionFile = 'data/NETL_CF2017.csv',
                     basis = 'molar' #why is this molar?

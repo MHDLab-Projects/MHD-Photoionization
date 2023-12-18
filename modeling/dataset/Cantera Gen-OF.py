@@ -43,7 +43,7 @@ paramnames = ['rho','enthalpy','Cp','Cv','sigma','mobility','viscosity','thermal
 
 
 gas_tr, electron_trans = ct_utils.gen_gas(
-                    GasThermo_tr = os.path.join(physical_data_folder, 'drm19_SeededKero.cti'),
+                    GasThermo_tr = os.path.join(physical_data_folder, 'drm19_SeededKero.yaml'),
                     GasThermoName_tr = 'gas',
                     CrossSectionFile = os.path.join(physical_data_folder, 'NETL_CF2017.csv'),
                     basis = 'molar'
@@ -110,7 +110,6 @@ ds.attrs = dict()
 ds = ds.squeeze()
 
 ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciesparams(ds, gas_tr)
-
 
 # %%
 
