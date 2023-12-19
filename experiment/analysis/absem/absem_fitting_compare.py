@@ -56,7 +56,7 @@ plt.axhline(0, color='k', linestyle='--', linewidth=0.5)
 #%%
 
 from lmfit import minimize, Parameters, report_fit, Model
-from mhdpy.analysis.spectral import alpha_blurred
+from mhdpy.analysis.spectral import alpha_2peak
 
 
 da_alpha = interp_alpha(da_sel)
@@ -69,7 +69,7 @@ def objective(params, x, data):
 
     param_dict=  params.valuesdict()
 
-    model_vals = alpha_blurred(x, **param_dict)
+    model_vals = alpha_2peak(x, **param_dict)
 
 
     # make residual per data set
@@ -97,7 +97,7 @@ plt.figure()
 param_dict=  out.params.valuesdict()
 
 for i in range(data_vals.shape[0]):
-    y_fit = alpha_blurred(x, **param_dict)
+    y_fit = alpha_2peak(x, **param_dict)
     plt.plot(x, data_vals[i, :], 'o', x, y_fit, '-')
 
 
@@ -135,9 +135,11 @@ for i , ax in enumerate(g.axes.flatten()):
 
 #%%
 
-from mhdpy.plot.common import xr_errorbar
+ds_p_stderr['nK_m3']
 
-xr_errorbar(ds_p['nK_m3'], ds_p_stderr['nK_m3'])
+#%%
+
+plt.errorbar(ds_p.coords['mnum'] , ds_p['nK_m3'], ds_p_stderr['nK_m3'], fmt='o')
 
 #%%
 nK_mean = ds_p['nK_m3'].mean('mnum').item()
@@ -182,3 +184,5 @@ da.plot(hue='var')
 #%%
 
 print("nK_m3 = {:.2e} +/- {:.2e}".format(ds_p['nK_m3'].item(), ds_p_stderr['nK_m3'].item()))
+
+# %%
