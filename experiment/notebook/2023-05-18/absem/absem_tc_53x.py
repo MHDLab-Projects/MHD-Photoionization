@@ -46,7 +46,7 @@ da_signal.values = coords_grid
 ds_mp = assign_signal(ds_mp, da_signal, 'time')
 #%%
 #TODO: Taken from mws utils
-from mhdpy.mws_utils.coords import assign_mnum
+from mhdpy.analysis.xr import assign_mnum
 
 
 ds_mp

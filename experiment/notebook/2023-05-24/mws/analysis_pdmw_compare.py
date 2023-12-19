@@ -18,7 +18,7 @@ This was pulled from add_coord_overview.py
 """
 
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.mws_utils.coords import assign_coords_multi
+from mhdpy.analysis.xr import assign_coords_multi
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data')

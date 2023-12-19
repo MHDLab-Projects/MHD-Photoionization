@@ -88,7 +88,8 @@ plt.yscale('log')
 
 from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
-from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
+from mhdpy.mws_utils.coords import gen_coords_to_assign_1
+from mhdpy.analysis.xr import assign_coords_multi
 
 coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
 coords_to_assign

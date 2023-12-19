@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
+from mhdpy.mws_utils.coords import gen_coords_to_assign_1
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
@@ -161,7 +161,7 @@ ds['led_on'].mean('acq_time').plot(hue='kwt')
 
 #%%
 
-from mhdpy.mws_utils.coords import assign_coords_multi
+from mhdpy.analysis.xr import assign_coords_multi
 
 ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=2)
 
