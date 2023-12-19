@@ -29,7 +29,7 @@ def test_absem_fit_interpolated(da_alpha):
     da_alpha = da_alpha.sel(wavelength=slice(730,790))
     da_alpha = interp_alpha(da_alpha)
 
-    final_model, pars = gen_model_alpha_blurred()
+    final_model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=True)
 
     wls = da_alpha.coords['wavelength'].values
     fits, ds_p, ds_p_stderr = fit_da_lmfit(da_alpha, final_model, pars, 'wavelength', wls)
@@ -42,7 +42,7 @@ def test_absem_fit_uninterpolated(da_alpha):
 
     da_alpha = da_alpha.sel(wavelength=slice(730,790))
 
-    final_model, pars = gen_model_alpha_blurred()
+    final_model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
     wls = da_alpha.coords['wavelength'].values
     fits, ds_p, ds_p_stderr = fit_da_lmfit(da_alpha, final_model, pars, 'wavelength', wls)
