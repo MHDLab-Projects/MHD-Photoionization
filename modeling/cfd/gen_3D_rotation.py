@@ -26,7 +26,7 @@ pv.OFF_SCREEN = True
 #%%
 
 sp_dir = gen_path('sharepoint')
-results_dir = pjoin(sp_dir, r"Team Member Files\DaveH\Results\axiJP8200_17Jul23")
+results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
 case = "mdot0130_phi080_K010"
 fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
 
@@ -55,7 +55,7 @@ mesh_clip.plot(cpos='xy')
 #%%
 
 # Ultimate spacing of the 3D grid. This will also be used for the interpolation radius and rotation angle determineation
-spacing = 0.001
+spacing = 0.003 #TODO: was 0.001 but having memory issues on WSL. Should use differerent method than rotation anyway...
 
 
 # We need the rotational angle to fine enough that the spacing at the end of the arc is equal to this

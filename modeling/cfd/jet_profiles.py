@@ -14,6 +14,7 @@ TODO
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy
+from pathlib import Path
 
 
 def test_sympy_diff():
@@ -303,6 +304,10 @@ if __name__ == "__main__":
     test_sympy_diff()
     test_sympy_profile()
     test_jet_profile()
+    
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    plt.savefig(output_dir / 'jet_profiles.png')
 
 
 

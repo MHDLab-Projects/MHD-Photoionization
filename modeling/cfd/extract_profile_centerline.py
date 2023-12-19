@@ -10,7 +10,7 @@ from mhdpy.analysis.standard_import import *
 
 sp_dir = gen_path('sharepoint')
 
-results_dir = pjoin(sp_dir, r"Team Member Files\DaveH\Results\axiJP8200_17Jul23")
+results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
 # %%
 case = "mdot0130_phi080_K010"
 fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
