@@ -14,7 +14,7 @@ def main(datestr):
 
     dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
-    figure_out_dir = pjoin(DIR_DATA_OUT, '1d_auto', datestr)
+    figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_1d', datestr)
 
     dss = {}
     dss_std = {}

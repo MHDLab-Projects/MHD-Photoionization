@@ -13,7 +13,7 @@ datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
-figure_out_dir = pjoin(DIR_DATA_OUT, '2d_auto', datestr)
+figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_2d', datestr)
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
