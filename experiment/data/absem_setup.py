@@ -4,6 +4,7 @@ from mhdpy.analysis.standard_import import *
 from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
+from mhdpy.process.absem import calc_alpha_simple, reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
 
 from mhdpy.analysis.xr import interp_ds_to_var
 
@@ -26,7 +27,6 @@ has_multiplexer = settings['has_multiplexer']
 
 
 # Start processing 
-from mhdpy.process.absem import calc_alpha_simple, reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
 
 data_folder = os.path.join('munged',datestr)
 
@@ -36,7 +36,7 @@ fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
 
 # Determine LED switching events
-switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=[0,1])
+switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=['led_off','led_on'])
 ds_absem = ds_absem.assign_coords(led_switch_num=('time', switches))
 
 if has_multiplexer:
@@ -61,16 +61,16 @@ acq_groups = ['led_switch_num','led','time','mp']
 ds = ds_absem.set_index(acq_group=acq_groups) # Time has to be added here or it is retained as a dimension?
 ds = ds.reset_index('time').reset_coords('time') 
 
-ds_reduce_switches = reduce_switches(ds)
+ds_absem = reduce_switches(ds)
 
 acq_groups.remove('led_switch_num')
-ds_alpha = ds_reduce_switches.set_index(temp=acq_groups).unstack('temp')
-ds_alpha = ds_alpha['counts_mean']
+ds_absem = ds_absem.set_index(temp=acq_groups).unstack('temp')
+ds_absem = ds_absem['counts_mean']
 
-ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_off', 1:'led_on'})
-ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
+ds_absem = ds_absem.to_dataset('led')
+ds_absem = interp_ds_to_var(ds_absem, 'led_on')
 
-ds_alpha
+ds_absem
 
 #%%
 
@@ -94,7 +94,7 @@ for idx, row in df_cuttimes.iterrows():
 
     sl = slice(row['Start Time'], row['Stop Time'])
 
-    ds_calib = ds_alpha.sel(time=sl)
+    ds_calib = ds_absem.sel(time=sl)
 
     if ds_calib['led_on'].isnull().all().item():
         raise ValueError("Got all null for calibration dataset, check calibration timewindow")
@@ -122,10 +122,10 @@ ds_calib.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_calib.cdf'))
 # have to split out the mp dimension, otherwise interp_like doesn't work because of missing values
 #TODO: can this interpolation just happen on demand?
 
-if 'mw_horns' in ds_alpha.coords['mp'].values:
+if 'mw_horns' in ds_absem.coords['mp'].values:
 
-    ds_mw_horns = ds_alpha.sel(mp='mw_horns').dropna('time', how='all')
-    ds_barrel = ds_alpha.sel(mp='barrel').dropna('time', how='all')
+    ds_mw_horns = ds_absem.sel(mp='mw_horns').dropna('time', how='all')
+    ds_barrel = ds_absem.sel(mp='barrel').dropna('time', how='all')
 
     ds_calib_mw_horns = ds_calib.sel(mp='mw_horns')
     ds_calib_barrel = ds_calib.sel(mp='barrel')
@@ -138,19 +138,15 @@ if 'mw_horns' in ds_alpha.coords['mp'].values:
     ds_calib
 
 else:
-    ds_calib = ds_calib.interp_like(ds_alpha, kwargs={'fill_value':'extrapolate'})
-
-# ds_calib = ds_calib.interp_like(ds_alpha, kwargs={'fill_value':'extrapolate'})
-
-# ds_calib['diff'].isel(time=[0,1000,2000]).plot(col='mp', hue='time')
+    ds_calib = ds_calib.interp_like(ds_absem, kwargs={'fill_value':'extrapolate'})
 
 #%%
 
 # Add calibration data
 
-ds_alpha2 = ds_alpha.assign(calib=ds_calib['diff'])
+ds_absem = ds_absem.assign(calib=ds_calib['diff'])
 
-ds_alpha2 = ds_alpha2.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
+ds_absem = ds_absem.stack(acq=['time','mp']).reset_index('acq').dropna('acq', how='all')
 
-ds_alpha2.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
+ds_absem.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_absem_mp.cdf'))
 # %%
