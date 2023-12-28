@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.mws_utils.coords import gen_coords_to_assign_1
+from mhdpy.analysis.coords import gen_coords_to_assign_1
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
@@ -46,7 +46,7 @@ coords_orig
 
 #%%[markdown]
 
-# We bin these coordinates (with bins defined in mhdpy.mws_utis.gen_coords_to_assign_1) to group together all datapoints associatd with setpoint plateaus
+# We bin these coordinates (with bins defined in mhdpy.analysis.coords.gen_coords_to_assign_1) to group together all datapoints associatd with setpoint plateaus
 # 
 # Currently the data is all replaced with the average of all data in the bin, not the nominal setpoint
 #

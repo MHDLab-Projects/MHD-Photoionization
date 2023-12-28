@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
-from mhdpy.mws_utils.coords import gen_coords_to_assign_1
+from mhdpy.analysis.coords import gen_coords_to_assign_1
 from mhdpy.analysis.xr import assign_coords_multi
 
 # Absorption emsssion and lecroy
