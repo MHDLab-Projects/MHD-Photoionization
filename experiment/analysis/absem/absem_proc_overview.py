@@ -83,7 +83,8 @@ ds_absem = ds
 
 # Start processing 
 from mhdpy.analysis.absem import calc_alpha_simple
-from mhdpy.coords import reduce_acq_group, get_value_switches, assign_multiplexer_coord, downselect_num_acq
+from mhdpy.coords import reduce_acq_group, get_value_switches, downselect_num_acq
+from mhdpy.coords.spectral import assign_multiplexer_coord
 
 data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'munged',datestr)
 

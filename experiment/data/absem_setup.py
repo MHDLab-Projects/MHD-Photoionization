@@ -5,7 +5,8 @@ from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 from mhdpy.analysis.absem import calc_alpha_simple
-from mhdpy.coords import reduce_acq_group, get_value_switches, assign_multiplexer_coord, downselect_num_acq
+from mhdpy.coords import reduce_acq_group, get_value_switches, downselect_num_acq
+from mhdpy.coords.spectral import prep_absem_mp
 
 
 from mhdpy.xr_utils import interp_ds_to_var
@@ -37,42 +38,7 @@ dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
 
-# Determine LED switching events
-switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=['led_off','led_on'])
-ds_absem = ds_absem.assign_coords(led_switch_num=('time', switches))
-
-if has_multiplexer:
-    ds_mp = assign_multiplexer_coord(
-    ds_absem,
-    mp_sent=dsst['multiplexer_send']['Position'].pint.dequantify(),
-    mp_receive=dsst['multiplexer_receive']['Position'].pint.dequantify(),
-    mp_port_names={1:'barrel', 2:'mw_horns'}
-    )
-
-    # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
-    ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time', how='all')
-else:
-    ds_absem = ds_absem.assign_coords(mp = ('time', ['barrel']*len(ds_absem.coords['time']) ))
-
-ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
-ds_absem = ds_absem.dropna('time', how='all')
-
-# Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
-#TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
-acq_groups = ['led_switch_num','led','time','mp']
-ds_acq_group = ds_absem.set_index(acq_group=acq_groups)
-
-ds_reduce = reduce_acq_group(ds_acq_group)
-ds_reduce = ds_reduce.reset_coords('led_switch_num', drop=True)
-
-acq_groups.remove('led_switch_num')
-ds_absem = ds_reduce.set_index(temp=acq_groups).unstack('temp')
-ds_absem = ds_absem['counts_mean']
-
-ds_absem = ds_absem.to_dataset('led')
-ds_absem = interp_ds_to_var(ds_absem, 'led_on')
-
-ds_absem
+ds_absem = prep_absem_mp(ds_absem, dsst, has_multiplexer)
 
 #%%
 
