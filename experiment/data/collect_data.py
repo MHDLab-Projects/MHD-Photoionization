@@ -82,7 +82,7 @@ for date in dates:
 ds_lecroy = xr.concat(dss, 'acq_time')
 ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 #%%
-from mhdpy.analysis.xr import assign_coords_multi
+from mhdpy.coords import assign_coords_multi
 dss_hvof = []
 dss_motor = []
 dss_filterwheel =[]

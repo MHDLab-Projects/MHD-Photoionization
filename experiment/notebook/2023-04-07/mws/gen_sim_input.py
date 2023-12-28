@@ -64,8 +64,8 @@ dsst_stats = {key: dsst[key] for key in key_sel}
 
 da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
-from mhdpy.analysis.ct import assign_tc_general
-from mhdpy.analysis.xr import calc_stats
+from mhdpy.coords.ct import assign_tc_general
+from mhdpy.xr_utils import calc_stats
 
 
 dss_out = []

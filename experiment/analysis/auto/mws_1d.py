@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 import seaborn as sns
 # sns.set_theme(style="darkgrid")
 
@@ -203,8 +203,8 @@ def main(datestr):
 
     # %%
 
-    from mhdpy.mws_utils.fitting import fit_fn 
-    from mhdpy.analysis.xr import fit_da_lmfit
+    from mhdpy.analysis.mws.fitting import fit_fn 
+    from mhdpy.xr_utils import fit_da_lmfit
     from lmfit import Model
 
     das_fit_input = {}

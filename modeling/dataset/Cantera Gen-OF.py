@@ -17,7 +17,7 @@ import xyzpy
 # import cantera_utils.et
 # import cantera_utils.util as ct_utils
 
-import mhdpy.cantera.util as ct_utils 
+import mhdpy.cantera_utils.util as ct_utils 
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -215,7 +215,7 @@ ds_HP_species.to_netcdf(os.path.join(output_path, 'ds_HP_species.cdf'))
 ds_HP_species_rho.to_netcdf(os.path.join(output_path, 'ds_HP_species_rho.cdf'))
 
 
-# from mhdpy.analysis.xr import writeunitsrowcsv
+# from mhdpy.xr_utils import writeunitsrowcsv
 
 # ds_TP_params.to_dataframe().to_csv(os.path.join(output_path, 'ds_TP_params.csv'))
 # writeunitsrowcsv(ds_TP_params,os.path.join(output_path, 'ds_TP_params.csv'))

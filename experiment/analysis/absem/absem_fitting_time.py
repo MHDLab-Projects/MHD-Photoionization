@@ -29,7 +29,7 @@ ds_alpha
 
 ds_fit = ds_alpha
 
-from mhdpy.analysis.spectral import gen_model_alpha_blurred, interp_alpha
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, interp_alpha
 from mhdpy import analysis
 final_model, pars = gen_model_alpha_blurred()
 
@@ -53,11 +53,11 @@ spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 print('Reducing alpha with following data reduction parameters: ')
 print(spect_red_dict)
-alpha_tc_red = analysis.spectral.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
+alpha_tc_red = analysis.absem.fitting.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
 alpha_tc_red.name = 'alpha_red'
 
 wls = alpha_tc.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = analysis.xr.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)
+fits, ds_p, ds_p_stderr = mhdpy.xr_utils.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)
 ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
 # ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
 fits.name = 'alpha_fit'
@@ -88,8 +88,7 @@ plt.yscale('log')
 
 from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
-from mhdpy.analysis.coords import gen_coords_to_assign_1
-from mhdpy.analysis.xr import assign_coords_multi
+from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
 
 coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
 coords_to_assign

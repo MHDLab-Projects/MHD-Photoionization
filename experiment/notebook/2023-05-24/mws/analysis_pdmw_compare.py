@@ -18,7 +18,7 @@ This was pulled from add_coord_overview.py
 """
 
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.analysis.xr import assign_coords_multi
+from mhdpy.coords import assign_coords_multi
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
@@ -45,7 +45,7 @@ ds
 
 # %%
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 ds_mw = calc_mag_phase_AS(ds)
 
 dapd = ds['pd1']

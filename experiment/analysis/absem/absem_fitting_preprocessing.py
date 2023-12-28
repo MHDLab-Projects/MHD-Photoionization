@@ -15,8 +15,8 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis.spectral import interp_alpha
-from mhdpy.analysis.spectral import gen_model_alpha_blurred, alpha_cut
+from mhdpy.analysis.absem.fitting import interp_alpha
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, alpha_cut
 
 # %%
 
@@ -126,14 +126,14 @@ ds_cut = ds_sel.where((ledoff_norm.wavelength < left_wl) | (ledoff_norm.waveleng
 ds_cut['led_off'].plot(row='kwt')
 # %%
 
-from mhdpy.analysis.spectral import gen_model_alpha_blurred
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
 
 final_model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False,nan_policy='omit')
 
 
 # %%
 
-from mhdpy.analysis.xr import fit_da_lmfit
+from mhdpy.xr_utils import fit_da_lmfit
 
 ds_fit = ds_cut.copy()
 

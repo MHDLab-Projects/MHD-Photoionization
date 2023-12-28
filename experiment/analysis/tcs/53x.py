@@ -4,9 +4,9 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 from mhdpy.plot import dropna
-from mhdpy.analysis.xr import WeightedMeanAccessor
+from mhdpy.xr_utils import WeightedMeanAccessor
 
 # %%
 
@@ -32,7 +32,7 @@ plt.xlim(760,780)
 
 #%%
 
-from mhdpy.analysis.spectral import perform_fit_alpha
+from mhdpy.analysis.absem.fitting import perform_fit_alpha
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
@@ -227,8 +227,8 @@ g.map(custom_plot, 'time', 'mean', 'std', 'count')
 #%%
 
 
-from mhdpy.mws_utils.fitting import fit_fn 
-from mhdpy.analysis.xr import fit_da_lmfit
+from mhdpy.analysis.mws.fitting import fit_fn 
+from mhdpy.xr_utils import fit_da_lmfit
 from lmfit import Model
 
 da_fit = ds_l_unc_2['mean'].copy()

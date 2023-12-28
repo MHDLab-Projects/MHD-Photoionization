@@ -37,7 +37,7 @@ huedim = hudim_dict[datestr]
 
 coldim = 'motor'
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 
 dss = {}
 

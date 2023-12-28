@@ -24,7 +24,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # %%
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
-from mhdpy.analysis.ct import gen_da_ct_data, assign_tc_general, get_region
+from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general, get_region
 
 
 df_cuttimes = load_df_cuttimes('cuttimes_seedramp.csv')
@@ -110,8 +110,8 @@ dsst_stats = {key: dsst[key] for key in key_sel}
 
 da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
-from mhdpy.analysis.ct import assign_tc_general
-from mhdpy.analysis.xr import calc_stats
+from mhdpy.coords.ct import assign_tc_general
+from mhdpy.xr_utils import calc_stats
 
 
 dss_out = []

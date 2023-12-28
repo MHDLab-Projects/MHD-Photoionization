@@ -12,7 +12,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 tc = '536_power'
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 
 
 fp_in = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy', '{}.cdf'.format(tc))
@@ -34,8 +34,8 @@ ds = ds.mean('mnum', keep_attrs=True)
 
 # %%
 
-from mhdpy.mws_utils.fitting import fit_fn 
-from mhdpy.analysis.xr import fit_da_lmfit
+from mhdpy.analysis.mws.fitting import fit_fn 
+from mhdpy.xr_utils import fit_da_lmfit
 from lmfit import Model
 
 da_fit = ds['AS'].copy()

@@ -2,7 +2,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 # %%[markdown]
 
 # Summary: 
@@ -51,7 +51,7 @@ ds_sel['led_on'].plot.line(x='wavelength', hue='mnum')
 
 #%%
 
-from mhdpy.process.absem import calc_alpha_scipp
+from mhdpy.analysis.absem import calc_alpha_scipp
 
 ds_absem_in = ds_absem2.unstack('run')
 
@@ -113,7 +113,7 @@ plt.xlim(765,772)
 
 
 #%%
-from mhdpy.analysis.xr import WeightedMeanAccessor
+from mhdpy.xr_utils import WeightedMeanAccessor
 
 ds_alpha_2 = ds_alpha.wma.calc_weighted_mean('run')
 

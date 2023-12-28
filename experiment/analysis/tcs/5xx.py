@@ -3,7 +3,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 
 from mhdpy.plot import dropna
 
@@ -104,7 +104,7 @@ dst_coords['phi'].sel(time=tw).plot(marker='o')
 #%%
 
 
-from mhdpy.analysis.spectral import perform_fit_alpha
+from mhdpy.analysis.absem.fitting import perform_fit_alpha
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()

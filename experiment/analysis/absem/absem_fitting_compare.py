@@ -8,8 +8,8 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis.spectral import interp_alpha
-from mhdpy.analysis.spectral import gen_model_alpha_blurred, alpha_cut
+from mhdpy.analysis.absem.fitting import interp_alpha
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, alpha_cut
 
 # %%
 
@@ -56,7 +56,7 @@ plt.axhline(0, color='k', linestyle='--', linewidth=0.5)
 #%%
 
 from lmfit import minimize, Parameters, report_fit, Model
-from mhdpy.analysis.spectral import alpha_2peak
+from mhdpy.analysis.absem.fitting import alpha_2peak
 
 
 da_alpha = interp_alpha(da_sel)
@@ -108,7 +108,7 @@ for i in range(data_vals.shape[0]):
 
 #%%
 
-from mhdpy.analysis.xr import fit_da_lmfit
+from mhdpy.xr_utils import fit_da_lmfit
 
 final_model, pars = gen_model_alpha_blurred()
 

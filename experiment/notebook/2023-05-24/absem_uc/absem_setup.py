@@ -5,8 +5,8 @@ from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 
-from mhdpy.analysis.xr import interp_ds_to_var
-from mhdpy.process.absem import calc_alpha_simple, apply_mp
+from mhdpy.xr_utils import interp_ds_to_var
+from mhdpy.analysis.absem import calc_alpha_simple
 
 
 import json 

@@ -34,7 +34,7 @@ p.show()
 
 #%%
 
-from mhdpy.pyvista import pv_to_unstack_xr
+from mhdpy.pyvista_utils import pv_to_unstack_xr
 
 
 ds = pv_to_unstack_xr(ms)

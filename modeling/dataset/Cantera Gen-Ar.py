@@ -13,8 +13,8 @@ import re
 import xarray as xr
 import xyzpy
 
-import mhdpy.cantera.et
-import mhdpy.cantera.util as ct_utils
+import mhdpy.cantera_utils.et
+import mhdpy.cantera_utils.util as ct_utils
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -69,7 +69,7 @@ def calc_TP(gas_tr, T, P, Kwt):
     gas_tr.TPX = T, P, {'Ar': 1-setK, 'K': setK}
     gas_tr.equilibrate('TP')
 
-    params, dat_species = mhdpy.cantera.util.extract_params(gas_tr, electron_trans, outputtype,)
+    params, dat_species = mhdpy.cantera_utils.util.extract_params(gas_tr, electron_trans, outputtype,)
 
     return tuple([*params, *dat_species])   
 
@@ -86,7 +86,7 @@ ds.attrs = dict()
 ds = ds.squeeze()
 
 
-ds_TP_params, ds_TP_species, ds_TP_species_rho = mhdpy.cantera.util.process_ds_speciesparams(ds, gas_tr)
+ds_TP_params, ds_TP_species, ds_TP_species_rho = mhdpy.cantera_utils.util.process_ds_speciesparams(ds, gas_tr)
 
 #drop all empty species
 da = ds_TP_species.to_array('species')
@@ -190,10 +190,10 @@ ds_TP_species_rho.to_netcdf(os.path.join(pathout, 'ds_TP_species_rho.cdf'))
 
 
 ds_TP_params.to_dataframe().to_csv(os.path.join(pathout, 'ds_TP_params.csv'))
-mhdpy.analysis.xr.writeunitsrowcsv(ds_TP_params,os.path.join(pathout, 'ds_TP_params.csv'))
+mhdpy.xr_utils.writeunitsrowcsv(ds_TP_params,os.path.join(pathout, 'ds_TP_params.csv'))
 
 ds_TP_species.to_dataframe().to_csv(os.path.join(pathout, 'ds_TP_species.csv'))
-mhdpy.analysis.xr.writeunitsrowcsv(ds_TP_species,os.path.join(pathout, 'ds_TP_species.csv'))
+mhdpy.xr_utils.writeunitsrowcsv(ds_TP_species,os.path.join(pathout, 'ds_TP_species.csv'))
 
 ds_TP_species_rho.to_dataframe().to_csv(os.path.join(pathout, 'ds_TP_species_rho.csv'))
-mhdpy.analysis.xr.writeunitsrowcsv(ds_TP_species_rho,os.path.join(pathout, 'ds_TP_species_rho.csv'))
+mhdpy.xr_utils.writeunitsrowcsv(ds_TP_species_rho,os.path.join(pathout, 'ds_TP_species_rho.csv'))

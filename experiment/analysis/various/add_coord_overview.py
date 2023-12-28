@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.analysis.coords import gen_coords_to_assign_1
+from mhdpy.coords import gen_coords_to_assign_1
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
@@ -46,7 +46,7 @@ coords_orig
 
 #%%[markdown]
 
-# We bin these coordinates (with bins defined in mhdpy.analysis.coords.gen_coords_to_assign_1) to group together all datapoints associatd with setpoint plateaus
+# We bin these coordinates (with bins defined in mhdpy.coords.gen_coords_to_assign_1) to group together all datapoints associatd with setpoint plateaus
 # 
 # Currently the data is all replaced with the average of all data in the bin, not the nominal setpoint
 #
@@ -120,7 +120,7 @@ ds_absem_sel['led_on'].mean('wavelength').plot( ax=axes[1], marker='o')
 #Functions expecting a dictionary of datarrays...
 coord_signal_dict = {k: coords_to_assign[k].dropna('time',how='all') for k in coords_to_assign.data_vars}
 
-from mhdpy.analysis.xr import assign_signal
+from mhdpy.coords import assign_signal
 
 ds = assign_signal(ds_absem_sel, coord_signal_dict['kwt'], timeindex='acq_time')
 
@@ -161,7 +161,7 @@ ds['led_on'].mean('acq_time').plot(hue='kwt')
 
 #%%
 
-from mhdpy.analysis.xr import assign_coords_multi
+from mhdpy.coords import assign_coords_multi
 
 ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=2)
 

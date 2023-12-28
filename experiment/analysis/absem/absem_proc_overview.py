@@ -82,14 +82,15 @@ has_multiplexer = settings['has_multiplexer']
 ds_absem = ds
 
 # Start processing 
-from mhdpy.process.absem import calc_alpha_simple, reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
+from mhdpy.analysis.absem import calc_alpha_simple
+from mhdpy.coords import reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
 
 data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'munged',datestr)
 
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
 
 # Determine LED switching events
-switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=[0,1])
+switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=['led_off','led_on'])
 ds_absem = ds_absem.assign_coords(led_switch_num=('time', switches))
 
 if has_multiplexer:
@@ -132,7 +133,7 @@ ds_sel['led_switch_num'].plot(ax=axes[3], marker='o')
 
 #%%
 
-from mhdpy.analysis.xr import interp_ds_to_var
+from mhdpy.xr_utils import interp_ds_to_var
 
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
@@ -146,7 +147,7 @@ acq_groups.remove('led_switch_num')
 ds_alpha = ds_reduce_switches.set_index(temp=acq_groups).unstack('temp')
 ds_alpha = ds_alpha['counts_mean']
 
-ds_alpha = ds_alpha.to_dataset('led').rename({0:'led_off', 1:'led_on'})
+ds_alpha = ds_alpha.to_dataset('led')
 ds_alpha = interp_ds_to_var(ds_alpha, 'led_on')
 
 ds_alpha

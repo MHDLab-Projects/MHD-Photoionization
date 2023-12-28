@@ -9,7 +9,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis.mws import calc_mag_phase_AS
 
 #%%
 
@@ -53,8 +53,8 @@ plt.xlim(-1,40)
 
 #%%
 
-from mhdpy.mws_utils.fitting import fit_fn 
-from mhdpy.analysis.xr import fit_da_lmfit
+from mhdpy.analysis.mws.fitting import fit_fn 
+from mhdpy.xr_utils import fit_da_lmfit
 from lmfit import Model
 
 

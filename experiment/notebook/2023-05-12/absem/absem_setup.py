@@ -8,7 +8,7 @@
 # %%
 from mhdpy.analysis.standard_import import *
 
-from mhdpy.analysis.xr import interp_ds_to_var
+from mhdpy.xr_utils import interp_ds_to_var
 from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
@@ -35,7 +35,7 @@ ds_alpha = ds_alpha.assign_coords(mp='barrel').expand_dims('mp')
 ds_alpha 
 
 #%%
-from mhdpy.process.absem import calc_alpha_simple
+from mhdpy.analysis.absem import calc_alpha_simple
 
 time_window_calib = slice(Timestamp('2023-05-12 19:32:18.307435776'), Timestamp('2023-05-12 19:32:51.481328384'), None)
 ds_alpha = calc_alpha_simple(ds_alpha, time_window_calib)
