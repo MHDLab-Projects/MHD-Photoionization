@@ -67,7 +67,7 @@ ds2.swa
 
 #%%
 
-ds2 = reduce_switches(ds)
+ds2 = reduce_acq_group(ds)
 
 # %%
 

@@ -5,7 +5,7 @@ from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 from mhdpy.analysis.absem import calc_alpha_simple
-from mhdpy.coords import reduce_switches, get_value_switches, assign_multiplexer_coord, downselect_num_acq
+from mhdpy.coords import reduce_acq_group, get_value_switches, assign_multiplexer_coord, downselect_num_acq
 
 
 from mhdpy.xr_utils import interp_ds_to_var
@@ -60,13 +60,13 @@ ds_absem = ds_absem.dropna('time', how='all')
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
 acq_groups = ['led_switch_num','led','time','mp']
-ds = ds_absem.set_index(acq_group=acq_groups) # Time has to be added here or it is retained as a dimension?
-ds = ds.reset_index('time').reset_coords('time') 
+ds_acq_group = ds_absem.set_index(acq_group=acq_groups)
 
-ds_absem = reduce_switches(ds)
+ds_reduce = reduce_acq_group(ds_acq_group)
+ds_reduce = ds_reduce.reset_coords('led_switch_num', drop=True)
 
 acq_groups.remove('led_switch_num')
-ds_absem = ds_absem.set_index(temp=acq_groups).unstack('temp')
+ds_absem = ds_reduce.set_index(temp=acq_groups).unstack('temp')
 ds_absem = ds_absem['counts_mean']
 
 ds_absem = ds_absem.to_dataset('led')
