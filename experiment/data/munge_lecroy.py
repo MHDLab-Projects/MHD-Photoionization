@@ -6,8 +6,8 @@ Script to munge all relevant lecroy dates. This should probably be incorporated 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 
-from mhdpy.mws_utils.fileio import get_matching_filepath_mnums, NoMatchingFilesError, load_trc_mnum_simple
-from mhdpy.mws_utils.trc import setupfile_timeoffset
+from mhdpy.fileio.lecroy import get_matching_filepath_mnums, NoMatchingFilesError, load_trc_mnum_simple, setupfile_timeoffset
+
 # # Setup File to calibrate time difference between lecroy and lab computer. 
 # https://stackoverflow.com/questions/312443/how-do-i-split-a-list-into-equally-sized-chunks
 def get_chunks(lst, n):
