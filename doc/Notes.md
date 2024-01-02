@@ -127,3 +127,38 @@ Add a known noise
 1. average intra-run before fit
 2. fit each individual acquistion then average fit parameters
 3. 'global' least squares fitting. fit all acquisition to the same curve with one standard error 
+
+# 2024-01-02
+
+## Pipeline packages
+
+Looking around for a simple python package for defining data processing/analysis pipelines. Seems like most are designed for specific types of data and more complex than needed. 
+
+* Sklearn
+    * https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html
+    * too specific to machine learning 
+
+* Web-based. To much of an emphasis on scheduling...
+    * Luigi
+        * https://luigi.readthedocs.io/en/stable/
+    * prefect
+        * https://www.prefect.io/
+    * apache airflow
+        * https://codesolid.com/airflow-python-etl/
+
+* Bonobo
+    * https://www.bonobo-project.org/
+    * looks promising, but last commit 2021
+    * http://docs.bonobo-project.org/en/master/faq.html#why-not-use-some-library-instead
+
+* found an astrophysics package with internal implementation like what I'm thinking
+    * https://pythonhosted.org/Astropysics/coremods/pipeline.html#astropysics.pipeline.Pipeline
+
+* Pipeln
+    *https://cgarciae.gitbook.io/pypeln/readme
+
+
+
+* build from scractch...
+    * https://dkraczkowski.github.io/articles/crafting-data-processing-pipeline/
+    * why is this not a package
