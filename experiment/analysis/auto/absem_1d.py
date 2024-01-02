@@ -13,8 +13,8 @@ create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 
-from mhdpy.analysis.absem.fitting import interp_alpha
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, alpha_cut
+from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 
 # %%
 

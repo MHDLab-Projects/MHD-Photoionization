@@ -1,7 +1,8 @@
 #%%
 from mhdpy.analysis.standard_import import *
 
-from mhdpy.analysis.absem.fitting import interp_alpha, gen_model_alpha_blurred
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
+from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy.xr_utils import fit_da_lmfit
 
 import pytest    
