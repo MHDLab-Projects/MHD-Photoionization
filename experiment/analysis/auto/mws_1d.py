@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 import seaborn as sns
 # sns.set_theme(style="darkgrid")
 
@@ -26,7 +26,7 @@ def main(datestr):
         ds_in = xr.load_dataset(fp_in)
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-        ds = calc_mag_phase_AS(ds_in).drop('mag_pp')
+        ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
         ds_std = ds.std('mnum', keep_attrs=True)
 
         tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]

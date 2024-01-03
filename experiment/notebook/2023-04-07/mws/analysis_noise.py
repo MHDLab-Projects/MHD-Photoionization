@@ -14,7 +14,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 tc = '536_pos'
 
@@ -23,7 +23,7 @@ fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
 ds_in = xr.load_dataset(fp_in)
 ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-ds = calc_mag_phase_AS(ds_in).drop('mag_pp')
+ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
 
 
 tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]

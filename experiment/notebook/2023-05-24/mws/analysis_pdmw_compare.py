@@ -45,7 +45,7 @@ ds
 
 # %%
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 ds_mw = calc_mag_phase_AS(ds)
 
 dapd = ds['pd1']

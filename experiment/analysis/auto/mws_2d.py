@@ -37,7 +37,7 @@ huedim = hudim_dict[datestr]
 
 coldim = 'motor'
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 dss = {}
 
@@ -50,7 +50,7 @@ for tc in tcs:
 
     ds_in = ds_in.drop('kwt')
 
-    ds = calc_mag_phase_AS(ds_in).drop('mag_pp')
+    ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
 
 
     tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]

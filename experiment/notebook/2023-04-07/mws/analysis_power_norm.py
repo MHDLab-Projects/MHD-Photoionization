@@ -13,7 +13,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 tc = 'ds_SeedRamp_Run2'
 
@@ -21,7 +21,7 @@ fp_in = pjoin(data_folder, 'Lecroy',  '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
 
-ds = calc_mag_phase_AS(ds_in)
+ds = ds.mws.calc_mag_phase_AS()
 
 ds.coords['acq_time'].attrs = dict(long_name='Acquisition Time')
 ds.coords['time'].attrs = dict(long_name='Osc. Time', units = '$\mu s$')

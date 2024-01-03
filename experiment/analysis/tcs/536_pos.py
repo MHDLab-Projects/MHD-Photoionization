@@ -4,7 +4,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 from mhdpy.analysis import absem
 
 plt.rcParams.update({'font.size': 16})
@@ -24,7 +24,7 @@ ds_lecroy = ds_lecroy.stack(run=['date','run_num'])
 ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = calc_mag_phase_AS(ds_lecroy)#[['mag', 'phase','AS']]
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
 #%%

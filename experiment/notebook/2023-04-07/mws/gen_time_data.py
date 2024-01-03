@@ -16,7 +16,7 @@ lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 input_fns = [fn for fn in os.listdir(lecroy_munged_folder) if 'Silicon' not in fn]
 input_fns = [fn for fn in input_fns if 'Nothing' not in fn]
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 
 dss = []
@@ -47,7 +47,7 @@ ds = xr.concat(dss, 'acq_time')
 
 ds = ds.sortby('acq_time')
 
-ds = calc_mag_phase_AS(ds)
+ds = ds.mws.calc_mag_phase_AS()
 
 #%%
 

@@ -12,14 +12,14 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 tc = '536_power'
 
-from mhdpy.analysis.mws import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 
 fp_in = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy', '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
 
-ds = calc_mag_phase_AS(ds_in)
+ds = ds.mws.calc_mag_phase_AS()
 
 ds = ds.sel(date='2023-05-24').sel(run_num=1)
 
