@@ -59,7 +59,7 @@ ds_sel = ds_sel.sel(mnum=1).dropna('kwt', how='all')
 
 da_sel = ds_sel['led_off']
 
-da_sel.plot(hue='kwt')
+da_sel.plot(row='kwt')
 
 plt.xlim(764,772)
 
@@ -100,25 +100,40 @@ def find_first_above_cutoff(data, cutoff):
             return i
     return None  # return None if no value is above the cutoff
 
-def find_first_dataarray_processor(da):
+def get_wl_wings(da):
 
-    wl_idx = find_first_above_cutoff(da.values, ledoff_norm_cutoff)
+    wl_idx_left = find_first_above_cutoff(da.values, ledoff_norm_cutoff)
+    wl_idx_right = find_first_above_cutoff(da.values[::-1], ledoff_norm_cutoff)
 
-    wl = da.wavelength[wl_idx]
+    wl_left = da.wavelength[wl_idx_left]
+    wl_right = da.wavelength[-wl_idx_right]
 
-    return wl
-
-left_wl = ledoff_norm.groupby('kwt').apply(find_first_dataarray_processor)
-right_wl = ledoff_norm.groupby('kwt').apply(lambda da: find_first_dataarray_processor(da.sortby('wavelength', ascending=False)))
-
-right_wl
+    return wl_left, wl_right
 
 
-#%%
+def keep_wings_processor(ds_sel):
+    # calculate normalized data
 
+    da_sel = ds_sel['led_off']
 
-# Remove all data between the two wavelengths
-ds_cut = ds_sel.where((ledoff_norm.wavelength < left_wl) | (ledoff_norm.wavelength > right_wl), drop=True)
+    offset = da_sel.sel(wavelength=slice(750,752)).mean('wavelength')
+
+    ledoff_norm = (da_sel - offset)
+
+    ledoff_norm = ledoff_norm/ledoff_norm.max('wavelength')
+
+    # find the first wavelength above the cutoff for each kwt
+
+    wl_left, wl_right = get_wl_wings(ledoff_norm)
+
+    # Remove all data between the two wavelengths
+
+    ds_cut = ds_sel.where((ledoff_norm.wavelength < wl_left) | (ledoff_norm.wavelength > wl_right), drop=True)
+
+    return ds_cut
+
+ds_cut = ds_sel.groupby('kwt').apply(keep_wings_processor)
+
 
 
 # %%
