@@ -16,6 +16,8 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 
+from mhdpy.xr_utils import XarrayUtilsAccessorCommon
+
 # %%
 
 # tc = '536_pos'
@@ -91,23 +93,12 @@ else:
 
 #%%
 
-def reset_mnum(ds):
-    ds = ds.dropna('mnum', how='all')
-
-    ds = ds.assign_coords(mnum=range(len(ds.coords['mnum'])))
-
-    return ds
-
-
-
-#%%
-
 def groupby_run_processor(ds_plot):
     #TODO: assert that there is only one run coord, which should be true as we are grouping by it
     run_name = ds_plot.coords['run'].item()
     run_name = "{}_{}".format(run_name[0], run_name[1])
 
-    ds_plot = ds_plot.groupby(tc_dim).apply(reset_mnum)
+    ds_plot = ds_plot.groupby(tc_dim).apply(lambda x: x.xr_utils.assign_mnum('mnum'))
     ds_plot = ds_plot.isel(mnum=range(5))
 
     return ds_plot, run_name
@@ -146,19 +137,6 @@ def plot_led1(ds_plot, run_name):
 
 ds_sel.groupby('run').apply(lambda ds: plot_led1(*groupby_run_processor(ds)))
 #%%
-#%%
-
-# # ds_sel2 = ds_sel.sel(run=[('2023-05-24', 1)]).dropna('mnum', how='all').dropna('kwt', how='all')
-# ds_sel2 = ds_sel.sel(run=('2023-05-24', 1)).dropna('mnum', how='all').dropna('kwt', how='all')
-
-# ds_sel2 = ds_sel2.groupby('kwt').apply(reset_mnum)
-
-# # ds_sel2 = ds_sel2.sel(kwt=1,method='nearest')
-
-# ds_sel2
-#%%
-
-
 
 def plot_led2(ds_plot, run_name):
 

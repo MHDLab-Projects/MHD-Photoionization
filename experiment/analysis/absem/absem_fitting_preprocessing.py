@@ -44,15 +44,6 @@ ds_absem = ds_absem.drop('acq_time')
 ds_absem
 #%%
 
-def reset_mnum(ds):
-    ds = ds.dropna('mnum', how='all')
-
-    ds = ds.assign_coords(mnum=range(len(ds.coords['mnum'])))
-
-    return ds
-
-#%%
-
 ledoff_norm_cutoff = 0.5
 
 def find_first_above_cutoff(data, cutoff):
@@ -111,7 +102,7 @@ ds2 = ds2.xr_utils.groupby_dims([d for d in ds2.dims if d != 'wavelength']).appl
 
 #%%
 
-ds3 = ds2.sel(date='2023-05-18', run_num=1, mp='barrel').groupby('kwt').apply(reset_mnum)
+ds3 = ds2.sel(date='2023-05-18', run_num=1, mp='barrel').groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
 ds_cut = ds3.sel(mnum=1)
 
 
