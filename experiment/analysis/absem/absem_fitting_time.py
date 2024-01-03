@@ -4,6 +4,7 @@ from mhdpy.analysis.standard_import import *
 from mhdpy.plot import dropna
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
+from mhdpy.analysis import absem
 
 datestr = '2023-05-18'
 
@@ -15,9 +16,8 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
 
-ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
+ds_Absem = ds_absem.absem.calc_alpha()
 
-ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
 ds_absem
 #%%
 

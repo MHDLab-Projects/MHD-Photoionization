@@ -3,6 +3,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
+from mhdpy.analysis import absem
 
 #%%
 fp_calib = pjoin(DIR_PROC_DATA, 'ds_calib.cdf')
@@ -152,8 +153,7 @@ ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].val
 
 ds_absem = ds_absem.mean('mnum')
 
-ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
-ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
+ds_absem = ds_absem.absem.calc_alpha()
 
 ds_absem = ds_absem.sel(mp='barrel')
 

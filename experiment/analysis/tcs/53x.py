@@ -7,6 +7,7 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.analysis.mws import calc_mag_phase_AS
 from mhdpy.plot import dropna
 from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdpy.analysis import absem
 
 # %%
 
@@ -16,8 +17,7 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.stack(run=['date','run_num']).dropna('run',how='all')
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
-ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
-ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
+ds_absem = ds_absem.absem.calc_alpha()
 
 #%%
 

@@ -17,6 +17,7 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
+from mhdpy.analysis import absem
 
 from mhdpy.xr_utils import XarrayUtilsAccessorCommon
 
@@ -34,8 +35,7 @@ ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 
 ds_absem = ds_absem.stack(run = ['date','run_num']).dropna('run', how='all')
 
-ds_absem['diff'] = ds_absem['led_on'] - ds_absem['led_off']
-ds_absem['alpha'] = 1 - ds_absem['diff']/ds_absem['calib']
+ds_absem = ds_absem.absem.calc_alpha()
 
 ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
