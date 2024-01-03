@@ -68,7 +68,7 @@ plt.ylim(-1.1,1.1)
 
 ds2 = ds_fit.xr_utils.groupby_dims_wrapper(
     lambda x: x.absem.reduce_keep_wings(led_off_norm_cutoff=0.8), 
-    [d for d in ds2.dims if d != 'wavelength']
+    [d for d in ds_fit.dims if d != 'wavelength']
     )
 
 #%%
