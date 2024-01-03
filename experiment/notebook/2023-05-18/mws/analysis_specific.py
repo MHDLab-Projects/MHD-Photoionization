@@ -19,7 +19,7 @@ fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
 ds_in = xr.load_dataset(fp_in)
 ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
+ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
 
 
 tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
@@ -27,45 +27,17 @@ mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
 
 ds = ds.mean('mnum', keep_attrs=True)
 
+ds
 
 # %%
 
-from mhdpy.analysis.mws.fitting import fit_fn 
-from mhdpy.xr_utils import fit_da_lmfit
-from lmfit import Model
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
 da_fit = ds['AS'].copy()
 
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
-tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
-
-da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim, how='all')
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-da_fit = da_fit/pulse_max
-
-da_fit = np.log(da_fit).dropna('time', 'all')
-
-mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0, take_log=True))
-
-params = mod.make_params()
-params['dne'].value = 1e14
-params['ne0'].value = 6e12
-params['dne'].min = 0
-# params['ne0'].min = 0
-params['ne0'].vary = False
-
-
-da_fit_region = da_fit.sel(time=slice(0,30))
-x_eval = da_fit.sel(time=slice(0,30)).coords['time'].values
-
-# da_fit_coarse = da_fit_region.coarsen(time=10).mean()
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_fit_region, mod, params, 'time', x_eval)
-
-fits = np.exp(fits)
-da_fit = np.exp(da_fit)
+ds_mws_fit
 
 #%%
 
@@ -74,11 +46,13 @@ plt.rcParams.update({'font.size': 14})
 
 # plt.figure()
 
-fig, axes = plt.subplots(3, sharex=True, figsize=(5,10))
+tc_vals = ds_mws_fit.coords[tc_dim]
+
+fig, axes = plt.subplots(len(tc_vals), sharex=True, figsize=(5,10))
 
 tc_dim = 'power'
 
-for i, tc_val in enumerate(da_fit.coords[tc_dim]):
+for i, tc_val in enumerate(tc_vals):
 
     ax = axes[i]
 
@@ -88,8 +62,8 @@ for i, tc_val in enumerate(da_fit.coords[tc_dim]):
     # pre_pulse_std = da_fit.sel(time=slice(-50,-1)).std('time')
     # plt.hlines(pre_pulse_std.sel({tc_dim: tc_val}).item(), 0, 50, linestyle = '--')
 
-    da_fit.sel({tc_dim: tc_val}).plot(marker='o', label='Data', ax=ax)
-    fits.sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red', ax=ax)
+    ds_mws_fit['AS'].sel({tc_dim: tc_val}).plot(marker='o', label='Data', ax=ax)
+    ds_mws_fit['AS_fit'].sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red', ax=ax)
 
     ax.set_yscale('log')
     ax.set_ylim(9e-3,2)
@@ -117,13 +91,13 @@ plt.savefig(pjoin(DIR_FIG_OUT,'fit_specific.png'))
 # %%
 
 
-da_fit.plot(hue='power')
+ds_mws_fit['AS'].plot(hue='power')
 
 ax=plt.gca()
 
-for i, tc_val in enumerate(fits.coords[tc_dim]):
+for i, tc_val in enumerate(ds_mws_fit.coords[tc_dim]):
 
-    fits.sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red', ax=ax)
+    ds_mws_fit['AS_fit'].sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red', ax=ax)
 
 plt.yscale('log')
 

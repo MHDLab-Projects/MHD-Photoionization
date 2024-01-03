@@ -26,7 +26,7 @@ def main(datestr):
         ds_in = xr.load_dataset(fp_in)
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-        ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
+        ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
         ds_std = ds.std('mnum', keep_attrs=True)
 
         tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
@@ -203,9 +203,7 @@ def main(datestr):
 
     # %%
 
-    from mhdpy.analysis.mws.fitting import fit_fn 
-    from mhdpy.xr_utils import fit_da_lmfit
-    from lmfit import Model
+    from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
     das_fit_input = {}
     dss_fits = {}
@@ -217,35 +215,10 @@ def main(datestr):
         ds = dss[tc]
 
         da_fit = ds['AS'].copy()
-        pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
 
-        tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
+        ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
-        da_fit = da_fit.where(pulse_max > 5e-5) # Targeting low power...
-        da_fit = da_fit.dropna(tc_dim, how='all')
-        pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-        da_fit = da_fit/pulse_max
-
-        das_fit_input[tc] = da_fit
-
-        mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0))
-
-        params = mod.make_params()
-        params['dne'].value = 1e14
-        params['ne0'].value = 1e12
-        params['dne'].min = 1e11
-        params['ne0'].min = 1e11
-
-
-        da_fit_region = da_fit.sel(time=slice(0,15))
-        x_eval = da_fit.sel(time=slice(0,15)).coords['time'].values
-
-        # da_fit_coarse = da_fit_region.coarsen(time=10).mean()
-        fits, ds_p, ds_p_stderr = fit_da_lmfit(da_fit_region, mod, params, 'time', x_eval)
-
-
-        dss_fits[tc] = fits
+        dss_fits[tc] = ds_mws_fit['AS_fit']
         dss_p[tc] = ds_p
         dss_p_stderr[tc] = ds_p_stderr
 

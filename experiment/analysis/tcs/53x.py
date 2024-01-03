@@ -227,48 +227,13 @@ g.map(custom_plot, 'time', 'mean', 'std', 'count')
 #%%
 
 
-from mhdpy.analysis.mws.fitting import fit_fn 
-from mhdpy.xr_utils import fit_da_lmfit
-from lmfit import Model
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
 da_fit = ds_l_unc_2['mean'].copy()
 
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
-
-da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim, how='all')
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-da_fit = da_fit/pulse_max
-
-da_fit = np.log(da_fit).dropna('time', 'all')
-
-mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0, take_log=True))
-
-params = mod.make_params()
-params['dne'].value = 1e14
-params['ne0'].value = 3e12
-params['dne'].min = 0
-params['ne0'].min = 0
-
-
-da_fit_region = da_fit.sel(time=slice(0,30))
-x_eval = da_fit.sel(time=slice(0,30)).coords['time'].values
-
-# da_fit_coarse = da_fit_region.coarsen(time=10).mean()
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_fit_region, mod, params, 'time', x_eval)
-
-fits = np.exp(fits)
-da_fit = np.exp(da_fit)
-# %%
-
-
-ds = xr.merge([fits, da_fit])
-
-da = ds.to_array('var')
+da = ds_mws_fit.to_array('var')
 
 # for run in ds.coords['run_plot']:
 #     da_sel = da.sel(run=run)
