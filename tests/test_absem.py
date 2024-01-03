@@ -57,7 +57,7 @@ def test_pipe_fit_alpha_1(ds_absem):
     spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
     spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
-    ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_absem, spect_red_dict)
+    ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_1(ds_absem, spect_red_dict)
 
 def test_wing_cut(ds_absem):
     ds_absem = ds_absem.absem.reduce_keep_wings()

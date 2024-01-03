@@ -38,28 +38,50 @@ ds_absem = ds_absem.absem.calc_alpha()
 
 ds_absem
 
+#%%
+
+seldict = dict(date='2023-05-18', run_num=1, mp='barrel')
+ds_sel = ds_absem.sel(seldict).groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
+# ds_sel = ds_sel.mean('mnum')
+#%%
+
+# Need to calc alpha before droping for beta_offset. mw_horn data can be negative
+ds_fit = ds_sel.absem.calc_alpha(beta_offset_wls=slice(750,755))
+
+ds_fit = ds_fit.xr_utils.groupby_dims_wrapper(
+    lambda x: x.absem.drop_alpha_peaks_negative(),
+    [d for d in ds_fit.dims if d != 'wavelength']
+)
+
+
+#%%
+
+ds_sel['alpha'].sel(kwt=0.05).dropna('mnum').plot(row='mnum')
+
+plt.ylim(-1.1,1.1)
+
 #%%[markdown]
 
 # ### Reduce to wings
 
 #%%
 
-ds2 = ds_absem.unstack()
-ds2 = ds2.xr_utils.groupby_dims([d for d in ds2.dims if d != 'wavelength']).apply(lambda x: x.absem.reduce_keep_wings()).unstack('temp')
+ds2 = ds_fit.xr_utils.groupby_dims_wrapper(
+    lambda x: x.absem.reduce_keep_wings(led_off_norm_cutoff=0.8), 
+    [d for d in ds2.dims if d != 'wavelength']
+    )
 
 #%%
 
-seldict = dict(date='2023-05-18', run_num=1, mp='barrel')
 
-ds3 = ds2.sel(seldict).groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
-ds_cut = ds3.sel(mnum=1)
-
-ds_cut = ds_cut.where(~ds_cut['alpha_red'].isnull()).dropna('wavelength', how='all')
+# ds_cut = ds2.sel(mnum=1)
+ds_cut = ds2.mean('mnum')
+# ds_cut = ds_cut.where(~ds_cut['alpha_red'].isnull())#.dropna('wavelength', how='all')
 
 
 # %%
 
-ds_cut['led_off'].plot(row='kwt')
+ds_cut['alpha_red'].plot(row='kwt')
 # %%
 
 ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit()
