@@ -40,3 +40,9 @@ def test_pipe_fit_mws_1(ds_mws):
        1.13125377e+13, 1.19845333e+13, 1.00853221e+13, 9.72104615e+12]
 
     assert np.allclose(ne0_fit_values, expected, rtol=1e-4)
+
+
+def test_pipe_fit_mws_1_nolog(ds_mws):
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'], take_log=False)
+
+    # TODO: values are different from take_log=True. Need to investigate why.

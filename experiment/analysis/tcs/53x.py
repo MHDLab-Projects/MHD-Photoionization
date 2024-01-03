@@ -229,7 +229,7 @@ g.map(custom_plot, 'time', 'mean', 'std', 'count')
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
-da_fit = ds_l_unc_2['mean'].copy()
+da_fit = ds_l_unc_2['mean'].copy().rename('AS')
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 

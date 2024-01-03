@@ -30,20 +30,9 @@ da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
 
 # ## fitting after averaging mnum
 
-#%%
-
-da_fit = da_sel.mean('mnum')
-
-tc_dim = 'run'
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim, how='all')
-
-da_fit = da_fit/pulse_max
-
-
 # %%
 
+da_fit = da_sel.mean('mnum')
 
 da_fit.plot(hue='run_plot', x='time')
 plt.yscale('log')
@@ -53,37 +42,19 @@ plt.xlim(-1,40)
 
 #%%
 
-from mhdpy.analysis.mws.fitting import fit_fn 
-from mhdpy.xr_utils import fit_da_lmfit
-from lmfit import Model
+from mhdpy.analysis.mws.fitting import gen_model_dnedt, pipe_fit_mws_1 
 
+pre_norm_cutoff = 5e-4
+fit_timewindow = slice(0,30)
+da_fit = da_fit.where(da_fit.mws._pulse_max() > pre_norm_cutoff) # Targeting low power...
 
-mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0, take_log=True))
+mod, params = gen_model_dnedt()
 
-params = mod.make_params()
-params['dne'].value = 1e14
-params['ne0'].value = 3e12
-params['dne'].min = 0
-params['ne0'].min = 0
+ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=fit_timewindow)
 
 #%%
 
-da_fit = np.log(da_fit).dropna('time', 'all')
-
-da_fit_region = da_fit.sel(time=slice(0,30))
-x_eval = da_fit.sel(time=slice(0,30)).coords['time'].values
-
-# da_fit_coarse = da_fit_region.coarsen(time=10).mean()
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_fit_region, mod, params, 'time', x_eval)
-
-fits = np.exp(fits)
-da_fit = np.exp(da_fit)
-#%%
-
-
-ds = xr.merge([fits, da_fit])
-
-da = ds.to_array('var')
+da = ds_mws_fit.to_array('var')
 
 # for run in ds.coords['run_plot']:
 #     da_sel = da.sel(run=run)
@@ -102,14 +73,39 @@ da_std.name='std'
 
 df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
 
-df
+df.plot(marker='o', yerr='std', capsize=5)
+
+#%%
+
+
+pre_norm_cutoff = 5e-4
+fit_timewindow = slice(0,30)
+da_fit = da_fit.where(da_fit.mws._pulse_max() > pre_norm_cutoff) # Targeting low power...
+
+mod, params = gen_model_dnedt()
+
+params['ne0'].value = 1e13 #TODO: value from cfd
+params['ne0'].vary = False
+params['kr'].vary = True
+
+ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=fit_timewindow)
+#%%
+
+da_mean = ds_p['kr']
+da_mean.name = 'mean'
+da_std = ds_p_stderr['kr']
+da_std.name='std'
+
+df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
+df.plot(marker='o', yerr='std', capsize=5)
+plt.ylabel('kr')
+
 
 #%%[markdown]
 
 # ## Global optimization
 
-# TODO: This cant handle nans when taking log. Just taking one rest case for now. 
-
+# TODO: This cant handle nans when taking log. Just taking one test case for now. 
 
 #%%
 
@@ -117,23 +113,13 @@ da_fit = da_sel.copy()
 
 da_fit = da_fit.isel(run=-2).dropna('mnum', how='all')
 
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-da_fit = da_fit/pulse_max
+da_fit = da_fit/da_fit.mws._pulse_max()
 
 #%%
-
-# da_fit.isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum')
-
-da_fit#.dropna('mnum', how='all')
-
-
-#%%
-
 
 from lmfit import minimize, Parameters, report_fit, Model
 
-
-mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0, take_log=False))
+mod, params = gen_model_dnedt(take_log=False)
 
 def objective(params, x, data):
     """Calculate total residual for fits of blurredalpha_2peak to several data sets."""
@@ -143,7 +129,9 @@ def objective(params, x, data):
 
     param_dict=  params.valuesdict()
 
-    model_vals = fit_fn(x, **param_dict)
+    model_vals = mod.func(x, **param_dict)
+
+    # model_vals = np.log(model_vals)
 
 
     # make residual per data set
@@ -171,7 +159,16 @@ report_fit(out)
 #%%
 
 param_dict=  out.params.valuesdict()
-y_fit = fit_fn(x_eval, **param_dict)
+y_fit = mod.func(x_eval, **param_dict)
+
+#%%
+
+da_fit_region.isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum')
+
+plt.plot(x_eval, y_fit)
+
+plt.yscale('log')
+
 
 #%%
 
@@ -180,4 +177,3 @@ da_fit_region.mean('mnum').plot()
 plt.plot(x_eval, y_fit)
 
 plt.yscale('log')
-
