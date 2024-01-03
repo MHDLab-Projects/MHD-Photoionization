@@ -30,7 +30,7 @@ ds_alpha
 ds_fit = ds_alpha
 
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
-from mhdpy.analysis.abesm.fit_prep import interp_alpha, alpha_cut
+from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
 from mhdpy import analysis
 final_model, pars = gen_model_alpha_blurred()
 

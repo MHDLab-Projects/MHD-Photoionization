@@ -18,6 +18,8 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 
+from mhdpy.xr_utils import XarrayUtilsAccessorCommon
+
 # %%
 
 tc = '53x'
@@ -49,38 +51,7 @@ def reset_mnum(ds):
 
     return ds
 
-ds_sel = ds_absem.sel(run=('2023-05-18', 1)).sel(mp='barrel')
-
-ds_sel = ds_sel.groupby('kwt').apply(reset_mnum)
-
-ds_sel = ds_sel.sel(mnum=1).dropna('kwt', how='all')
-
-# %%
-
-da_sel = ds_sel['led_off']
-
-da_sel.plot(row='kwt')
-
-plt.xlim(764,772)
-
 #%%
-
-offset = da_sel.sel(wavelength=slice(750,752)).mean('wavelength')
-
-ledoff_norm = (da_sel - offset)
-
-ledoff_norm = ledoff_norm/ledoff_norm.max('wavelength')
-
-ledoff_norm.plot(hue='kwt')
-
-# ledoff_norm.sel(kwt=0.05).plot()
-
-plt.xlim(764,772)
-
-
-#%%
-
-import numpy as np
 
 ledoff_norm_cutoff = 0.5
 
@@ -132,8 +103,16 @@ def keep_wings_processor(ds_sel):
 
     return ds_cut
 
-ds_cut = ds_sel.groupby('kwt').apply(keep_wings_processor)
 
+#%%
+
+ds2 = ds_absem.unstack()
+ds2 = ds2.xr_utils.groupby_dims([d for d in ds2.dims if d != 'wavelength']).apply(keep_wings_processor).unstack('temp')
+
+#%%
+
+ds3 = ds2.sel(date='2023-05-18', run_num=1, mp='barrel').groupby('kwt').apply(reset_mnum)
+ds_cut = ds3.sel(mnum=1)
 
 
 # %%
@@ -174,3 +153,4 @@ ds_p['nK_m3'].plot(marker='o')
 
 plt.xscale('log')
 plt.yscale('log')
+# %%
