@@ -39,11 +39,11 @@ spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze(
 
 ds_fit = ds_absem.mean('mnum')
 
-ds_p, ds_p_stderr, ds_alpha = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
 
 #%%
 
-ds = ds_alpha[['alpha', 'alpha_fit']]
+ds = ds_alpha_fit[['alpha', 'alpha_fit']]
 ds = ds.rename({'alpha': 'data', 'alpha_fit':'fit'})
 ds = ds.to_array('var')
 
@@ -53,7 +53,7 @@ ds_p.coords['kwt'].attrs = dict(long_name='K Mass Frac.', units='%')
 ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 
 # %%
-da_plot = ds_alpha[['alpha','alpha_fit']].to_array('var')
+da_plot = ds_alpha_fit[['alpha','alpha_fit']].to_array('var')
 
 g = da_plot.sel(mp='barrel').plot(col='kwt',hue='var', row='run', ylim = (1e-3,2), yscale='log', figsize=(10,10))
 

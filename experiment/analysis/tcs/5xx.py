@@ -112,12 +112,12 @@ spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze(
 ds_fit = ds_absem.mean('mnum')
 
 
-ds_p, ds_p_stderr, ds_alpha = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
 
 
 #%%
 
-ds = ds_alpha[['alpha', 'alpha_fit']]
+ds = ds_alpha_fit[['alpha', 'alpha_fit']]
 ds = ds.rename({'alpha': 'data', 'alpha_fit':'fit'})
 ds = ds.to_array('var')
 
@@ -178,7 +178,7 @@ da_max.plot(hue='phi', marker='o')
 
 ds_fit = ds_absem.mean('mnum')
 
-ds_p, ds_p_stderr, ds_alpha = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
 
 
 # %%
