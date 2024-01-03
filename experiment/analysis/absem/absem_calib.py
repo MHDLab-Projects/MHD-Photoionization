@@ -177,7 +177,6 @@ for ax in g.axes.flatten():
 
 # %%
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
-from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy import analysis
 final_model, pars = gen_model_alpha_blurred()
 

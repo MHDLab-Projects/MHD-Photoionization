@@ -15,7 +15,6 @@
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis.absem.fit_prep import interp_alpha, alpha_cut
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 from mhdpy.analysis import absem
 
@@ -42,68 +41,18 @@ ds_absem = ds_absem.sel(wavelength=slice(750,790))
 ds_absem = ds_absem.drop('acq_time')
 
 ds_absem
-#%%
-
-ledoff_norm_cutoff = 0.5
-
-def find_first_above_cutoff(data, cutoff):
-    """
-    Find the index of the first instance where the data is above a given cutoff.
-
-    Parameters:
-    data (numpy.ndarray): The data to search.
-    cutoff (float): The cutoff value.
-
-    Returns:
-    int: The index of the first instance where the data is above the cutoff.
-    """
-    for i, value in enumerate(data):
-        if value > cutoff:
-            return i
-    return None  # return None if no value is above the cutoff
-
-def get_wl_wings(da):
-
-    wl_idx_left = find_first_above_cutoff(da.values, ledoff_norm_cutoff)
-    wl_idx_right = find_first_above_cutoff(da.values[::-1], ledoff_norm_cutoff)
-
-    wl_left = da.wavelength[wl_idx_left]
-    wl_right = da.wavelength[-wl_idx_right]
-
-    return wl_left, wl_right
-
-
-def keep_wings_processor(ds_sel):
-    # calculate normalized data
-
-    da_sel = ds_sel['led_off']
-
-    offset = da_sel.sel(wavelength=slice(750,752)).mean('wavelength')
-
-    ledoff_norm = (da_sel - offset)
-
-    ledoff_norm = ledoff_norm/ledoff_norm.max('wavelength')
-
-    # find the first wavelength above the cutoff for each kwt
-
-    wl_left, wl_right = get_wl_wings(ledoff_norm)
-
-    # Remove all data between the two wavelengths
-
-    ds_cut = ds_sel.where((ledoff_norm.wavelength < wl_left) | (ledoff_norm.wavelength > wl_right), drop=True)
-
-    return ds_cut
-
 
 #%%
 
 ds2 = ds_absem.unstack()
-ds2 = ds2.xr_utils.groupby_dims([d for d in ds2.dims if d != 'wavelength']).apply(keep_wings_processor).unstack('temp')
+ds2 = ds2.xr_utils.groupby_dims([d for d in ds2.dims if d != 'wavelength']).apply(lambda x: x.absem.reduce_keep_wings()).unstack('temp')
 
 #%%
 
 ds3 = ds2.sel(date='2023-05-18', run_num=1, mp='barrel').groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
 ds_cut = ds3.sel(mnum=1)
+
+ds_cut = ds_cut.where(~ds_cut['alpha_red'].isnull()).dropna('wavelength', how='all')
 
 
 # %%
