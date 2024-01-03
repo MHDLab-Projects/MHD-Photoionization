@@ -55,40 +55,17 @@ plt.axhline(0, color='k', linestyle='--', linewidth=0.5)
 
 #%%
 
-from lmfit import minimize, Parameters, report_fit, Model
 from mhdpy.analysis.absem.fitting import alpha_2peak
-
+from mhdpy.xr_utils import fit_da_lmfit_global
 
 da_alpha = interp_alpha(da_sel)
-
-def objective(params, x, data):
-    """Calculate total residual for fits of blurredalpha_2peak to several data sets."""
-    mnums = data.shape[0]
-    resid = 0.0*data[:]
-
-
-    param_dict=  params.valuesdict()
-
-    model_vals = alpha_2peak(x, **param_dict)
-
-
-    # make residual per data set
-    for i in range(mnums):
-        resid[i, :] = data[i,:] - model_vals
-
-
-    # now flatten this to a 1D array, as minimize() needs
-
-    return resid.flatten()
-
-x = da_alpha.coords['wavelength'].values
-data_vals = da_alpha.values.T
 
 # Just using this to get defaul parameters
 final_model, pars = gen_model_alpha_blurred()
 
-out = minimize(objective, pars, args=(x, data_vals))
-report_fit(out)
+x = da_alpha.coords['wavelength'].values
+out = fit_da_lmfit_global(da_alpha, final_model, pars, 'wavelength', x)
+out
 
 #%%
 
@@ -96,9 +73,9 @@ plt.figure()
 
 param_dict=  out.params.valuesdict()
 
-for i in range(data_vals.shape[0]):
-    y_fit = alpha_2peak(x, **param_dict)
-    plt.plot(x, data_vals[i, :], 'o', x, y_fit, '-')
+da_alpha.plot(hue='mnum')
+
+plt.plot(x, final_model.eval(out.params, x=x))
 
 
 # %%[markdown]

@@ -115,65 +115,36 @@ da_fit = da_fit.isel(run=-2).dropna('mnum', how='all')
 
 da_fit = da_fit/da_fit.mws._pulse_max()
 
+da_fit = da_fit.sel(time=slice(0,30))
+
 #%%
 
-from lmfit import minimize, Parameters, report_fit, Model
+from mhdpy.xr_utils import fit_da_lmfit_global
 
 mod, params = gen_model_dnedt(take_log=False)
 
-def objective(params, x, data):
-    """Calculate total residual for fits of blurredalpha_2peak to several data sets."""
-    mnums = data.shape[0]
-    resid = 0.0*data[:]
-
-
-    param_dict=  params.valuesdict()
-
-    model_vals = mod.func(x, **param_dict)
-
-    # model_vals = np.log(model_vals)
-
-
-    # make residual per data set
-    for i in range(mnums):
-        resid[i, :] = data[i,:] - model_vals
-
-
-    # now flatten this to a 1D array, as minimize() needs
-
-    return resid.flatten()
-
-# da_fit2 = np.log(da_fit).dropna('time', 'all')
-da_fit2 = da_fit
-
-da_fit_region = da_fit2.sel(time=slice(0,30))
-x_eval = da_fit2.sel(time=slice(0,30)).coords['time'].values
-
-data_vals = da_fit_region.values.T
-
-# Just using this to get defaul parameters
-
-out = minimize(objective, params, args=(x_eval, data_vals))
-report_fit(out)
+xs_eval = da_fit.coords['time'].values
+out = fit_da_lmfit_global(da_fit, mod, params, 'time', xs_eval)
 
 #%%
 
 param_dict=  out.params.valuesdict()
-y_fit = mod.func(x_eval, **param_dict)
-
+y_fit = mod.func(xs_eval, **param_dict)
 #%%
 
-da_fit_region.isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum')
+da_fit.isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum')
 
-plt.plot(x_eval, y_fit)
+plt.plot(xs_eval, y_fit)
 
 plt.yscale('log')
 
 
 #%%
 
-da_fit_region.mean('mnum').plot()
+da_fit.mean('mnum').plot()
 
-plt.plot(x_eval, y_fit)
+plt.plot(xs_eval, y_fit)
 
 plt.yscale('log')
+
+# %%
