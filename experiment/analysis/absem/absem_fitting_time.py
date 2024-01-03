@@ -21,53 +21,25 @@ ds_Absem = ds_absem.absem.calc_alpha()
 ds_absem
 #%%
 
-ds_alpha = ds_absem.rename(acq='time').set_index(time='time')
-# ds_alpha = ds_alpha.sel(time=slice('2023-05-18 22:11:24.781554944', '2023-05-18 22:44:26.917220096'))
-ds_alpha
+ds_fit = ds_absem.rename(acq='time').set_index(time='time')
 
-#%%
+# ds_fit = ds_fit.sel(time=ds_fit.coords['time'].values[::100])
 
-ds_fit = ds_alpha
-
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
-from mhdpy import analysis
-final_model, pars = gen_model_alpha_blurred()
-
-beta = -np.log(1-ds_fit['alpha'])/pars['L'].value
-beta_off = beta.sel(wavelength=slice(750,755)).mean('wavelength')
-alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
-
-#%%
+ds_fit = ds_fit.absem.calc_alpha()
 
 #Downselect to remove data where there are no peaks... TODO: revisit
-alpha_tc = alpha_tc.where(alpha_tc.sel(wavelength=slice(760,775)).max('wavelength') > 0.5).dropna('time', how='all')
-# alpha_tc = alpha_tc.sel(time=alpha_tc.coords['time'].values[::100])
-
-#%%
-
-alpha_tc
-
-#%%
+ds_fit = ds_fit.where(ds_fit['alpha'].sel(wavelength=slice(760,775)).max('wavelength') > 0.5).dropna('time', how='all')
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
-print('Reducing alpha with following data reduction parameters: ')
-print(spect_red_dict)
-alpha_tc_red = analysis.absem.fitting.alpha_cut(alpha_tc,**spect_red_dict).dropna('wavelength', how='all')
-alpha_tc_red.name = 'alpha_red'
 
-wls = alpha_tc.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = mhdpy.xr_utils.fit_da_lmfit(alpha_tc_red, final_model, pars, 'wavelength', wls)
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-# ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
-fits.name = 'alpha_fit'
+ds_p, ds_p_stderr, ds_alpha= absem.fitting.pipe_fit_alpha_1(ds_fit, spect_red_dict)
 
+ds_alpha['nK_m3'] = ds_p['nK_m3']
 
 #%%
 
-ds_alpha = xr.merge([alpha_tc, alpha_tc_red, fits, ds_p[['nK_m3']]]).sel(wavelength=slice(760,775))
-
-ds = ds_alpha[['alpha', 'alpha_fit', 'nK_m3']]
+ds = ds_alpha[['alpha', 'alpha_fit', 'nK_m3']].sel(wavelength=slice(760,775))
 ds = ds.rename({'alpha': 'data', 'alpha_fit':'fit'})
 
 ds = ds.set_index(acq=['time','mp']).unstack('acq')
@@ -167,3 +139,5 @@ g = da_plot.plot(col='kwt',hue='var', row='run', ylim = (1e-3,2), yscale='log', 
 for ax in g.axes.flatten():
     ax.hlines(1,760,775, linestyles='--', color='gray')
 
+
+# %%

@@ -60,33 +60,10 @@ ds_cut = ds_cut.where(~ds_cut['alpha_red'].isnull()).dropna('wavelength', how='a
 ds_cut['led_off'].plot(row='kwt')
 # %%
 
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
+ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit()
+#%%
 
-final_model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False,nan_policy='omit')
-
-
-# %%
-
-from mhdpy.xr_utils import fit_da_lmfit
-
-ds_fit = ds_cut.copy()
-
-
-beta = -np.log(1-ds_fit['alpha'])
-beta_off = beta.sel(wavelength=slice(750,755)).mean('wavelength')
-alpha_tc = 1 - np.exp(-(beta - beta_off))
-
-wls = alpha_tc.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = fit_da_lmfit(alpha_tc, final_model, pars, 'wavelength', wls)
-
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-fits.name = 'alpha_fit'
-
-ds_alpha = xr.merge([alpha_tc, fits])#.sel(wavelength=slice(760,775))
-
-# %%
-
-ds_alpha.to_array('var').plot(row='kwt', hue='var')
+ds_alpha_fit.to_array('var').plot(row='kwt', hue='var')
 # %%
 
 ds_p['nK_m3'].plot(marker='o')
