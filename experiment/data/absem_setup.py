@@ -16,12 +16,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Process ABSEM data.')
 
-# parser.add_argument('-d', '--date', type=str, default=None,
-#                     help='Date to process, in format YYYY-MM-DD')
+parser.add_argument('-d', '--date', type=str, default=None,
+                    help='Date to process, in format YYYY-MM-DD')
 
-# datestr = parser.parse_args().date
+datestr = parser.parse_args().date
 
-datestr = '2023-05-24'
+# datestr = '2023-05-24'
 
 with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
@@ -43,6 +43,10 @@ ds_absem = prep_absem_mp(ds_absem, dsst, has_multiplexer)
 #TODO: interp_dataset_to_var is having to be done out here to access other stats. Can interpolation be done for all variables at once?
 ds_absem = ds_absem['counts_mean']
 ds_absem = interp_ds_to_var(ds_absem.to_dataset('led'), 'led_on')
+
+# Remove any data where led_on is nan but led_off is not or vice versa
+ds_absem = ds_absem.where(ds_absem['led_on'].isnull() == ds_absem['led_off'].isnull())
+
 #%%
 
 # Add clalibration based on interpolation of before and after (and mid-experiment shutdown) calibration timewindows
