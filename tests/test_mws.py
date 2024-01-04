@@ -13,7 +13,6 @@ def ds_mws():
     DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
     tc = '53x'
-
     ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
     seldict = dict(date='2023-05-18', run_num=1)
@@ -22,7 +21,26 @@ def ds_mws():
     ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
     ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
-    ds_lecroy = ds_lecroy.mean('mnum')
+    ds_lecroy = ds_lecroy.mean('mnum') #TODO: calc AS after mean? 
+
+    return ds_lecroy
+
+from mhdpy import xr_utils
+
+@pytest.fixture
+def ds_mws_all_mnum():
+
+    DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+    tc = '53x'
+    ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+
+    seldict = dict(date='2023-05-18', run_num=1)
+    ds_lecroy = ds_lecroy.sel(seldict)
+    # ds_lecroy = ds_lecroy.groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
+
+    ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
+    ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
     return ds_lecroy
 
@@ -46,3 +64,20 @@ def test_pipe_fit_mws_1_nolog(ds_mws):
     ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'], take_log=False)
 
     # TODO: values are different from take_log=True. Need to investigate why.
+
+from mhdpy.analysis.mws.fitting import gen_model_dnedt
+from mhdpy.xr_utils import fit_da_lmfit_global
+def test_mws_fit_global(ds_mws_all_mnum):
+    from mhdpy.xr_utils import fit_da_lmfit_global
+
+    ds_mws_all_mnum = ds_mws_all_mnum.isel(kwt=[0, -2, -1]) # downselecting as takes a lot of time without log. 
+
+    da_fit = ds_mws_all_mnum['AS']
+
+    da_fit = da_fit/da_fit.mws._pulse_max()
+
+    #TODO: having to take log to avoid nans
+    mod, params = gen_model_dnedt(take_log=False)
+
+    xs_eval = da_fit.coords['time'].values
+    fit_da_lmfit_global(da_fit, mod, params, 'time', xs_eval)

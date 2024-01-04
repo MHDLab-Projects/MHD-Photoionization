@@ -27,7 +27,7 @@ ds_absem = ds_absem.stack(run = ['date','run_num']).dropna('run', how='all')
 
 ds_absem = ds_absem.absem.calc_alpha()
 
-ds_sel = ds_absem.sel(mp='barrel').sel(run=('2023-05-24', 1)).sel(kwt=1,method='nearest')
+ds_sel = ds_absem.sel(mp='barrel').sel(run=('2023-05-24', 1))
 
 ds_sel = ds_sel.dropna('wavelength', how='all')
 ds_sel = ds_sel.sel(wavelength=slice(750,790))
@@ -38,7 +38,7 @@ da_sel
 
 #%%
 
-da_sel.plot(hue='mnum')
+da_sel.plot(hue='mnum', row='kwt')
 
 plt.ylim(-0.1,1.1)
 
@@ -64,19 +64,27 @@ da_alpha = interp_alpha(da_sel)
 final_model, pars = gen_model_alpha_blurred()
 
 x = da_alpha.coords['wavelength'].values
-out = fit_da_lmfit_global(da_alpha, final_model, pars, 'wavelength', x)
-out
+da_absem_fit, ds_p, ds_p_stderr  = fit_da_lmfit_global(da_alpha, final_model, pars, 'wavelength', x)
 
 #%%
 
-plt.figure()
+da_absem_fit.plot(hue='kwt')
 
-param_dict=  out.params.valuesdict()
+#%%
 
-da_alpha.plot(hue='mnum')
+ds = xr.merge([da_alpha, da_absem_fit])
 
-plt.plot(x, final_model.eval(out.params, x=x))
+#%%
 
+ds_p['nK_m3'].plot()
+
+#%%
+
+ds2 = ds.sel(kwt=1, method='nearest').dropna('mnum','all')
+
+ds2['alpha'].plot(hue='mnum')
+
+ds2['fits'].plot()
 
 # %%[markdown]
 
@@ -97,7 +105,12 @@ fits.name = 'alpha_fit'
 
 #%%
 
-da = xr.merge([da_alpha, fits]).to_array('var')
+da = xr.merge([da_alpha, fits]).to_array('var').sel(kwt=1, method='nearest')
+ds_p_sel = ds_p.sel(kwt=1, method='nearest')
+ds_p_stderr_sel = ds_p_stderr.sel(kwt=1, method='nearest')
+da = da.dropna('mnum','all')
+
+#%%
 
 g = da.plot(hue='var', row='mnum')
 
@@ -105,8 +118,8 @@ for i , ax in enumerate(g.axes.flatten()):
     # ax.set_ylim(-0.1,1.1)
     # ax.set_xlim(750,790)
     mnum = da.coords['mnum'].values[i]
-    nK_m3 = ds_p.sel(mnum=mnum)['nK_m3'].item()
-    nK_m3_stderr = ds_p_stderr.sel(mnum=mnum)['nK_m3'].item()
+    nK_m3 = ds_p_sel.sel(mnum=mnum)['nK_m3'].item()
+    nK_m3_stderr = ds_p_stderr_sel.sel(mnum=mnum)['nK_m3'].item()
 
     ax.set_title('mnum = {}, nK_m3 = {:.2e} +/- {:.2e}'.format(mnum, nK_m3, nK_m3_stderr))
 
@@ -116,11 +129,11 @@ ds_p_stderr['nK_m3']
 
 #%%
 
-plt.errorbar(ds_p.coords['mnum'] , ds_p['nK_m3'], ds_p_stderr['nK_m3'], fmt='o')
+plt.errorbar(ds_p_sel.coords['mnum'] , ds_p_sel['nK_m3'], ds_p_stderr_sel['nK_m3'], fmt='o')
 
 #%%
-nK_mean = ds_p['nK_m3'].mean('mnum').item()
-nK_std = ds_p['nK_m3'].std('mnum').item()
+nK_mean = ds_p_sel['nK_m3'].mean('mnum').item()
+nK_std = ds_p_sel['nK_m3'].std('mnum').item()
 
 print('nK_mean = {:.2e}, nK_std = {:.2e}'.format(nK_mean, nK_std))
 
@@ -128,12 +141,14 @@ print('nK_mean = {:.2e}, nK_std = {:.2e}'.format(nK_mean, nK_std))
 
 # ## Compare to performing average before alpha calculation
 
+
 #%%
 
 led_on = ds_sel['led_on'].mean('mnum')
 led_off = ds_sel['led_off'].mean('mnum')
 
 da_alpha = 1 - (led_on - led_off)/ds_sel['calib'].mean('mnum')
+da_alpha = da_alpha.sel(kwt=1, method='nearest')
 
 da_alpha = interp_alpha(da_alpha)
 
