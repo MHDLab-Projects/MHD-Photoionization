@@ -43,14 +43,17 @@ plt.legend()
 
 #%%
 
+additional = ['T', 'p']
+all_fields = [*soi, *additional]
+
 data = np.array([
-    line1[species] for species in soi
+    line1[species] for species in all_fields
 ])
 
 data = data.T
 
-df_out = pd.DataFrame(data, index = line1.points[:,0], columns=soi)
+df_out = pd.DataFrame(data, index = line1.points[:,0], columns=all_fields)
 df_out.index.name = 'x'
 
-df_out.to_csv('output/line_profies.csv')
+df_out.to_csv('output/line_profiles.csv')
 # %%
