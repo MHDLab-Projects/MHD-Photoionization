@@ -63,7 +63,7 @@ def process_ds(ds, coords_to_assign, date, run_num, tc_base, min_mnum=10):
 
     ds = ds.assign_coords(date=[date])
     ds = ds.assign_coords(run_num=[int(run_num)])#.expand_dims('run_num')
-    ds = ds.stack(run=['date','run_num'])
+    ds = ds.stack(run=['date','run_num']) #TODO: this can not be replaced by xr_utils.stack_run, debug
     return ds
 
 

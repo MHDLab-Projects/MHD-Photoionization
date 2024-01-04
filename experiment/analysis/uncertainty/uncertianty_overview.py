@@ -19,7 +19,7 @@ tc = '53x'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 
-ds_absem = ds_absem.stack(run=['date','run_num']).dropna('run',how='all')
+ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem
 

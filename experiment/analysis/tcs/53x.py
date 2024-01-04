@@ -14,8 +14,7 @@ from mhdpy.analysis import absem
 tc = '53x'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.stack(run=['date','run_num']).dropna('run',how='all')
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
+ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()
 
@@ -142,8 +141,7 @@ plt.xscale('log')
 #%%
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.stack(run=['date','run_num']).dropna('run',how='all')
-ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
+ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()

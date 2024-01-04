@@ -191,8 +191,7 @@ ds_absem
 
 #%%
 
-ds_absem = ds_absem.stack(run=['date','run_num']).dropna('run',how='all')
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
+ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem
 

@@ -105,7 +105,7 @@ for (tc_base, run_num, date), row in df_cuttimes.iterrows():
 
     ds_c = ds_c.assign_coords(date=[date])
     ds_c = ds_c.assign_coords(run_num=[int(run_num)])#.expand_dims('run_num')
-    ds_c = ds_c.stack(run=['date','run_num'])
+    ds_c = ds_c.xr_utils.stack_run()
 
     dss.append(ds_c)
 

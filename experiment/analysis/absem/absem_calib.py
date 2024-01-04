@@ -148,7 +148,7 @@ rat.sel(wavelength_bins=pd.Interval(725,735)).plot()
 tc = '53x'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.stack(run=['date','run_num'])
+ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
 ds_absem = ds_absem.mean('mnum')
