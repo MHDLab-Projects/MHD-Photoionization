@@ -162,3 +162,18 @@ Looking around for a simple python package for defining data processing/analysis
 * build from scractch...
     * https://dkraczkowski.github.io/articles/crafting-data-processing-pipeline/
     * why is this not a package
+
+
+# 2023-01-08
+
+TODO: 
+
+Improve handling of nans for global fit. 
+Then develop second mws fitting pipeline and revisit absem pipe 2. 
+    * Had to drop all wavelength for absem, which leads to distorted spectrum for low kwt.
+    * different length t_eval error message is showing up for mws
+
+Need to process multiple values for ne0 for cfd data. 
+    * interpolate to kwt values of experiment. 
+
+Add mw_horn nK fit to parameter for comparison. 
