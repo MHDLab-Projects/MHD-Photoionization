@@ -17,6 +17,7 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 #%%
 
@@ -72,7 +73,6 @@ dropna(g)
 plt.yscale('log')
 plt.xscale('log')
 
-
 #%%
 
 ds_nK = xr.merge([
@@ -83,56 +83,9 @@ ds_nK = xr.merge([
 
 ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 
-ds_nK
-
-
-#%%
-
-g = xr.plot.FacetGrid(ds_nK, col='mp', row='run')
-
-g.map(plt.errorbar, 'kwt', 'mean', 'std', capsize=5)
-
-plt.yscale('log')
-plt.xscale('log')
-
-dropna(g)
-
-#%%
-
-
-from mhdpy.plot.common import xr_errorbar_axes
-
-ds_sel = ds_nK.sel(mp='barrel').dropna('kwt',how='all').drop('mp')
-
-fig, axes = plt.subplots()
-
-xr_errorbar_axes(ds_sel['mean'], ds_sel['std'], axes, huedim='run')
-
-plt.yscale('log')
-plt.xscale('log')
-#%%
-
-ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
-
-fig, axes = plt.subplots()
-
-xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
-
-plt.yscale('log')
-plt.xscale('log')
-
-
-#%%
-
-# Compare to simply calculating new mean/std over run 
+# ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
 ds_nK2 = ds_nK.wma.initialize_stat_dataset('mean', 'run')
-
-fig, axes = plt.subplots()
-
-xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
-
-plt.yscale('log')
-plt.xscale('log')
+ds_nK2
 
 #%%[markdown]
 
@@ -152,78 +105,14 @@ g = ds_lecroy.mean('mnum')['AS'].plot(hue='run_plot', row='kwt', x='time')
 
 dropna(g)
 
-#%%
 
-ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('mag', 'mnum')
-ds_l_unc['count'] = ds_l_unc['count'].isel(time=0)
-ds_l_unc
-
-#%%
-
-# make facetgrid plot with confidence intervals
-
-# Define your custom plotting function
-def custom_plot(time, mean, std, count, **kwargs):
-    lower_bound = mean - std
-    upper_bound = mean + std
-    plt.plot(time, mean, **kwargs)
-    plt.fill_between(time, lower_bound, upper_bound, alpha=0.5, color='gray')  # alpha sets the transparency
-    # count should be a single value, add it as text to the plot in the upper left
-    if not np.isnan(count):
-        plt.text(0.05, 0.9, '{}'.format(int(count)), transform=plt.gca().transAxes, color='red', fontsize=14, fontweight='bold')
-
-
-
-g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt')
-
-# Apply the custom function to each facet
-
-g.map(custom_plot, 'time', 'mean', 'std', 'count')
-
-plt.xlim(-10,10)
 
 #%%
 
 ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('AS', 'mnum')
-ds_l_unc['count'] = ds_l_unc['count'].isel(time=0)
-ds_l_unc
-
-#%%
-
-g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt')
-
-# Apply the custom function to each facet
-
-g.map(custom_plot, 'time', 'mean', 'std', 'count')
-
-plt.xlim(-10,10)
-
-#%%
-
-g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt')
-
-# Apply the custom function to each facet
-
-g.map(custom_plot, 'time', 'mean', 'stderr', 'count')
-
-
-#%%
-
 ds_l_unc_2 = ds_l_unc.wma.calc_weighted_mean('run')
 
 #%%
-
-g = xr.plot.FacetGrid(ds_l_unc_2, row='kwt')
-
-# Apply the custom function to each facet
-
-g.map(custom_plot, 'time', 'mean', 'std', 'count')
-
-# plt.ylim(0,1)
-
-
-#%%
-
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
@@ -241,17 +130,6 @@ g= da.plot( x='time',hue='var', row='kwt')
 plt.yscale('log')
 
 dropna(g)
-
-#%%
-
-ds_p['ne0'].plot( x='kwt', marker='o')
-
-#%%
-
-ds_p['ne0'].drop(0,'kwt').plot(marker='o')
-
-plt.yscale('log')
-plt.xscale('log')
 
 #%%
 
@@ -283,9 +161,6 @@ ds = xr.merge([
     mws_max.rename({'mean':'AS'})['AS'],
     ds_nK2_barrel['mean'].rename('nK_m3')
     ]).sortby('kwt')
-
-ds.plot.scatter(x='nK_m3', y='AS')
-
 
 #%%
 

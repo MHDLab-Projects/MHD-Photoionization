@@ -26,7 +26,7 @@ from mhdpy.analysis.absem import calc_alpha_scipp
 
 ds = calc_alpha_scipp(ds_absem)
 
-ds = ds.stack(run = ['date','run_num']).dropna('run', how='all')
+ds = ds.xr_utils.stack_run()
 
 ds
 
@@ -162,14 +162,42 @@ g = xr.plot.FacetGrid(ds_nK, col='mp', row='run')
 g.map(plt.errorbar, 'kwt', 'mean', 'std', capsize=5)
 
 plt.yscale('log')
-# %%
+#%%
 
 
-ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
+from mhdpy.plot.common import xr_errorbar_axes
 
-g = xr.plot.FacetGrid(ds_nK2, row='mp')
+ds_sel = ds_nK.sel(mp='barrel').dropna('kwt',how='all').drop('mp')
 
-g.map(plt.errorbar, 'kwt', 'mean', 'std', capsize=5)
+fig, axes = plt.subplots()
+
+xr_errorbar_axes(ds_sel['mean'], ds_sel['std'], axes, huedim='run')
 
 plt.yscale('log')
 plt.xscale('log')
+#%%
+
+ds_nK2 = ds_nK.wma.calc_weighted_mean('run')
+
+fig, axes = plt.subplots()
+
+xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
+
+plt.yscale('log')
+plt.xscale('log')
+
+
+#%%
+
+# Compare to simply calculating new mean/std over run 
+ds_nK2 = ds_nK.wma.initialize_stat_dataset('mean', 'run')
+
+fig, axes = plt.subplots()
+
+xr_errorbar_axes(ds_nK2['mean'], ds_nK2['std'], axes, huedim='mp')
+
+plt.yscale('log')
+plt.xscale('log')
+
+
+
