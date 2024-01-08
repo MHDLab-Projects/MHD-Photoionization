@@ -12,33 +12,39 @@ from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 from mhdpy.analysis import absem
 
+from mhdpy.analysis.absem.fitting import alpha_2peak
+from mhdpy.xr_utils import fit_da_lmfit_global
+from mhdpy.xr_utils import fit_da_lmfit
+
+dss_p = []
+dss_p_stderr = []
+
+model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+
 # %%
 
 tc = '53x'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-# Scipp cannot handle multindex, casts to a custom 'PyObject' dtype that does not go back to xarray
 
 #TODO: having to do this on office comp?
 ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
 ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 
-ds_absem = ds_absem.stack(run = ['date','run_num']).dropna('run', how='all')
-
+ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 
-ds_sel = ds_absem.sel(mp='barrel').sel(run=('2023-05-24', 1))
-
-ds_sel = ds_sel.dropna('wavelength', how='all')
-ds_sel = ds_sel.sel(wavelength=slice(750,790))
-
-da_sel = ds_sel['alpha'].dropna('mnum','all')
-
-da_sel
+ds_absem
 
 #%%
 
-da_sel.plot(hue='mnum', row='kwt')
+ds_sel = ds_absem.sel(mp='barrel').sel(run=('2023-05-24', 1))
+ds_sel = ds_sel.dropna('wavelength', how='all')
+ds_sel = ds_sel.sel(wavelength=slice(750,790))
+
+#%%
+
+ds_sel['alpha'].plot(hue='mnum', row='kwt')
 
 plt.ylim(-0.1,1.1)
 
@@ -47,65 +53,61 @@ plt.axhline(0, color='k', linestyle='--', linewidth=0.5)
 
 #%%[markdown]
 
+# ## perfrom average before alpha calculation
+
+#%%
+
+ds_sel_2 = ds_sel.mean('mnum').absem.calc_alpha()
+
+ds_absem_fit, ds_p, ds_p_stderr = ds_sel_2['alpha'].absem.perform_fit(model, pars, method='iterative')
+
+dss_p.append(ds_p.assign_coords(method='preavg'))
+dss_p_stderr.append(ds_p.assign_coords(method='preavg'))
+
+#%%
+
+da = ds_absem_fit.to_array('var')
+
+da.plot(hue='var', row='kwt')
+
+#%%[markdown]
+
 # ## Global Least squares reduction. 
 
 # All measurement numbers are concatenated into one array, and fitted in one optimization process
-# 
+
+#%%
+
+# da_alpha = interp_alpha(da_sel)
+da_sel = ds_sel['alpha'].dropna('mnum',how='all')
+
+ds_absem_fit, ds_p, ds_p_stderr = da_sel.absem.perform_fit(model, pars, method='global')
+
+dss_p.append(ds_p.assign_coords(method='global'))
+dss_p_stderr.append(ds_p_stderr.assign_coords(method='global'))
 
 
 #%%
 
-from mhdpy.analysis.absem.fitting import alpha_2peak
-from mhdpy.xr_utils import fit_da_lmfit_global
+da = ds_absem_fit.mean('mnum').to_array('var')
 
-da_alpha = interp_alpha(da_sel)
+da.plot(hue='var', row='kwt')
 
-# Just using this to get defaul parameters
-final_model, pars = gen_model_alpha_blurred()
-
-x = da_alpha.coords['wavelength'].values
-da_absem_fit, ds_p, ds_p_stderr  = fit_da_lmfit_global(da_alpha, final_model, pars, 'wavelength', x)
-
-#%%
-
-da_absem_fit.plot(hue='kwt')
-
-#%%
-
-ds = xr.merge([da_alpha, da_absem_fit])
-
-#%%
-
-ds_p['nK_m3'].plot()
-
-#%%
-
-ds2 = ds.sel(kwt=1, method='nearest').dropna('mnum','all')
-
-ds2['alpha'].plot(hue='mnum')
-
-ds2['fits'].plot()
-
-# %%[markdown]
+#%%[markdown]
 
 # ## Fitting each individual spectrum
 
+#%%
+da_sel = ds_sel['alpha'].dropna('mnum',how = 'all')
 
+
+ds_absem_fit, ds_p, ds_p_stderr = da_sel.absem.perform_fit(model, pars, method='iterative')
+
+dss_p.append(ds_p.mean('mnum').assign_coords(method='individual'))
+dss_p_stderr.append(ds_p.std('mnum').assign_coords(method='individual'))
 #%%
 
-from mhdpy.xr_utils import fit_da_lmfit
-
-final_model, pars = gen_model_alpha_blurred()
-
-wls = da_alpha.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_alpha, final_model, pars, 'wavelength', wls)
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-# ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
-fits.name = 'alpha_fit'
-
-#%%
-
-da = xr.merge([da_alpha, fits]).to_array('var').sel(kwt=1, method='nearest')
+da = ds_absem_fit.to_array('var').sel(kwt=1, method='nearest')
 ds_p_sel = ds_p.sel(kwt=1, method='nearest')
 ds_p_stderr_sel = ds_p_stderr.sel(kwt=1, method='nearest')
 da = da.dropna('mnum','all')
@@ -125,10 +127,6 @@ for i , ax in enumerate(g.axes.flatten()):
 
 #%%
 
-ds_p_stderr['nK_m3']
-
-#%%
-
 plt.errorbar(ds_p_sel.coords['mnum'] , ds_p_sel['nK_m3'], ds_p_stderr_sel['nK_m3'], fmt='o')
 
 #%%
@@ -137,44 +135,29 @@ nK_std = ds_p_sel['nK_m3'].std('mnum').item()
 
 print('nK_mean = {:.2e}, nK_std = {:.2e}'.format(nK_mean, nK_std))
 
+
 #%%[markdown]
 
-# ## Compare to performing average before alpha calculation
-
-
-#%%
-
-led_on = ds_sel['led_on'].mean('mnum')
-led_off = ds_sel['led_off'].mean('mnum')
-
-da_alpha = 1 - (led_on - led_off)/ds_sel['calib'].mean('mnum')
-da_alpha = da_alpha.sel(kwt=1, method='nearest')
-
-da_alpha = interp_alpha(da_alpha)
-
-da_alpha.plot()
-
-plt.ylim(-0.1,1.1)
-
+# Comparison between the three methods
 
 #%%
 
-
-wls = da_alpha.coords['wavelength'].values
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_alpha, final_model, pars, 'wavelength', wls)
-ds_p['nK_m3'].attrs = dict(long_name='$n_{K,expt}$', units = '$\\#/m^3$')
-# ds_p.coords['phi'].attrs = dict(long_name='Total Mass Flow', units = 'gram/second')
-fits.name = 'alpha_fit'
-da_alpha.name = 'data'
+ds_p = xr.concat(dss_p, 'method')
+ds_p_stderr = xr.concat(dss_p_stderr, 'method')
 
 #%%
 
-da = xr.merge([da_alpha, fits]).to_array('var')
+ds_p['nK_m3'].plot(marker='o', hue='method')
 
-da.plot(hue='var')
+plt.xscale('log')
+plt.yscale('log')
 
 #%%
 
-print("nK_m3 = {:.2e} +/- {:.2e}".format(ds_p['nK_m3'].item(), ds_p_stderr['nK_m3'].item()))
+plot.common.xr_errorbar(ds_p['nK_m3'], ds_p_stderr['nK_m3'], huedim='method')
 
-# %%
+#%%
+
+ds_p_stderr['nK_m3'].plot(marker='o', hue='method')
+
+plt.yscale('log')
