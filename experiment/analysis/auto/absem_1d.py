@@ -56,7 +56,7 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
 ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 
-ds_absem = ds_absem.stack(run = ['date','run_num']).dropna('run', how='all')
+ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()
 

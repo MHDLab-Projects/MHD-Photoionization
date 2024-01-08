@@ -60,7 +60,7 @@ ds_absem_in.coords['date'] = ds_absem_in.coords['date'].astype(str)
 
 ds_alpha = calc_alpha_scipp(ds_absem_in)
 
-ds_alpha = ds_alpha.stack(run=('date','run_num')).dropna('run',how='all')
+ds_alpha = ds_alpha.xr_utils.stack_run()
 
 ds_alpha
 

@@ -132,8 +132,8 @@ xs_eval = da_fit.coords['time'].values
 da_mws_fit, ds_p, ds_p_stderr = fit_da_lmfit_global(da_fit, mod, params, 'time', xs_eval)
 
 da_mws_fit = da_mws_fit.stack(run=('date','run_num')).dropna('run',how='all')
-ds_p = ds_p.stack(run=('date','run_num')).dropna('run',how='all')
-ds_p_stderr = ds_p_stderr.stack(run=('date','run_num')).dropna('run',how='all')
+ds_p = ds_p.xr_utils.stack_run()
+ds_p_stderr = ds_p_stderr.xr_utils.stack_run()
 da_fit = da_fit.stack(run=('date','run_num')).dropna('run',how='all')
 
 #%%

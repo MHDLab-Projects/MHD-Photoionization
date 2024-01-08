@@ -30,7 +30,7 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
 ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
 
-ds_absem = ds_absem.stack(run = ['date','run_num']).dropna('run', how='all')
+ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.sel(wavelength=slice(750,790))
 ds_absem = ds_absem.drop('acq_time')
 
@@ -84,7 +84,9 @@ ds_cut = ds2.mean('mnum')
 ds_cut['alpha_red'].plot(row='kwt')
 # %%
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit()
+model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+
+ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit(model, params)
 #%%
 
 ds_alpha_fit.to_array('var').plot(row='kwt', hue='var')

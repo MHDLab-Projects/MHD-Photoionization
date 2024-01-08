@@ -254,7 +254,9 @@ for ax in g.axes.flatten():
 ds_fit = xr.concat(dss_absem_methods, 'method').to_dataset(name='alpha')
 ds_fit['alpha_red'] = ds_fit['alpha']
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_fit.absem.perform_fit()
+model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+
+ds_alpha_fit, ds_p, ds_p_stderr = ds_fit.absem.perform_fit(model, params)
 # %%
 
 
