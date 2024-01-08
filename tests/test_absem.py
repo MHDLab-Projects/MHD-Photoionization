@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1
+from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1, pipe_fit_alpha_2
 from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy.analysis import absem
 from mhdpy.xr_utils import fit_da_lmfit
@@ -63,6 +63,10 @@ def test_pipe_fit_alpha_1(ds_absem):
 
     ds_absem = ds_absem.sel(kwt=1,method='nearest')
     ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_1(ds_absem, spect_red_dict)
+
+
+def test_pipe_fit_alpha_2(ds_absem_all_mnum):
+    ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_2(ds_absem_all_mnum)
 
 def test_wing_cut(ds_absem):
     ds_absem = ds_absem.sel(kwt=1,method='nearest') # Wing cut needs just wavelength dim

@@ -126,6 +126,10 @@ ds2 = ds_fit.xr_utils.groupby_dims_wrapper(
 
 #%%
 
+ds2.sel(kwt=0.1).isel(mnum=[0,5,10])['alpha'].plot(row='mnum')
+
+#%%
+
 
 # ds_cut = ds2.sel(mnum=1)
 ds_cut = ds2.mean('mnum').absem.calc_alpha()
@@ -146,10 +150,44 @@ dss_p_stderr.append(ds_p_stderr.assign_coords(method='wings'))
 
 ds_alpha_fit.to_array('var').plot(row='kwt', hue='var')
 
+#%%[markdown]
+
+# ### Reduce to wings with global fit
+
+# This is the same as the previous method, but with a global fit.
+
+#%%
+
+da_fit = ds2.absem.calc_alpha()['alpha_red']
+
+# da_fit = da_fit.dropna('mnum', how='all')
+
+da_fit = da_fit.xr_utils.groupby_dims_wrapper(
+    lambda x: x.dropna('mnum', how='all').dropna('wavelength'),
+    [d for d in da_fit.dims if d not in ['wavelength','mnum']]
+    )
+
+
+#%%
+
+model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+
+ds_alpha_fit, ds_p, ds_p_stderr = da_fit.absem.perform_fit(model, params, method='global')
+dss_p.append(ds_p.assign_coords(method='wings_global'))
+dss_p_stderr.append(ds_p_stderr.assign_coords(method='wings_global'))
+
+ds_alpha_fit = xr.merge([ds_alpha_fit, ds2.mean('mnum').absem.calc_alpha()['alpha']])
+
+
+#%%
+
+
+ds_alpha_fit.mean('mnum').to_array('var').plot(row='kwt', hue='var')
+
 # %%
 
 ds_p = xr.concat(dss_p, dim='method')
-dss_p_stderr = xr.concat(dss_p_stderr, dim='method')
+ds_p_stderr = xr.concat(dss_p_stderr, dim='method')
 
 #%%
 
@@ -159,7 +197,12 @@ plt.xscale('log')
 plt.yscale('log')
 # %%
 
-plot.common.xr_errorbar(ds_p['nK_m3'], dss_p_stderr['nK_m3'], huedim='method')
+plot.common.xr_errorbar(ds_p['nK_m3'], ds_p_stderr['nK_m3'], huedim='method')
 
 plt.xscale('log')
 plt.yscale('log')
+
+#%%
+
+ds_p_stderr['nK_m3'].plot(marker='o', hue='method')
+plt.ylabel('nK_m3_stderr')
