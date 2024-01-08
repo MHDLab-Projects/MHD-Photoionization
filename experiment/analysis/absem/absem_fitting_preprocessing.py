@@ -20,6 +20,9 @@ from mhdpy.analysis import absem
 
 from mhdpy.xr_utils import XarrayUtilsAccessorCommon
 
+dss_p = []
+dss_p_stderr = []
+
 # %%
 
 tc = '53x'
@@ -38,20 +41,70 @@ ds_absem = ds_absem.absem.calc_alpha()
 
 ds_absem
 
-#%%
-
 seldict = dict(date='2023-05-18', run_num=1, mp='barrel')
 ds_sel = ds_absem.sel(seldict).groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
-# ds_sel = ds_sel.mean('mnum')
+
+# %%[markdown]
+
+# ### old cut alpha method
+
+# 
+
+#%%
+
+ds_fit = ds_sel.mean('mnum').absem.calc_alpha()
+
+spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
+spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
+
+ds_alpha_fit, ds_p, ds_p_stderr= absem.fitting.pipe_fit_alpha_1(ds_fit, spect_red_dict)
+dss_p.append(ds_p.assign_coords(method='alpha_cut'))
+dss_p_stderr.append(ds_p_stderr.assign_coords(method='alpha_cut'))
+# %%
+
+ds_alpha_fit['alpha_red'].plot(row='kwt')
+
+#%%
+
+
+#%%[markdown]
+
+# ### Alpha Cut with removing alpha negative alpha
+
+# This is the same as the old method, but with the addition of removing negative alpha values
+# Removal was needed for the wings method, so this is for consistent comparison. 
+
+
+#%%
+
+
+ds_fit = ds_sel.mean('mnum').absem.calc_alpha()
+
+ds_fit = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
+
+ds_fit = ds_fit.absem.drop_alpha_peaks_negative() # Addition to pipeline 1
+
+ds_fit = ds_fit.absem.reduce_cut_alpha(**spect_red_dict)
+
+model, params = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+
+ds_alpha_fit, ds_p, ds_p_stderr = ds_fit.absem.perform_fit(model, params)
+dss_p.append(ds_p.assign_coords(method='alpha_cut_no_neg'))
+dss_p_stderr.append(ds_p_stderr.assign_coords(method='alpha_cut_no_neg'))
+
+
+#%%[markdown]
+
+# ### Reduce to wings method
+
+# Find the wings of the spectrum by finding the first wavelength above a cutoff
+
 #%%
 
 # Need to calc alpha before droping for beta_offset. mw_horn data can be negative
 ds_fit = ds_sel.absem.calc_alpha(beta_offset_wls=slice(750,755))
 
-ds_fit = ds_fit.xr_utils.groupby_dims_wrapper(
-    lambda x: x.absem.drop_alpha_peaks_negative(),
-    [d for d in ds_fit.dims if d != 'wavelength']
-)
+ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
 
 
 #%%
@@ -75,7 +128,7 @@ ds2 = ds_fit.xr_utils.groupby_dims_wrapper(
 
 
 # ds_cut = ds2.sel(mnum=1)
-ds_cut = ds2.mean('mnum')
+ds_cut = ds2.mean('mnum').absem.calc_alpha()
 # ds_cut = ds_cut.where(~ds_cut['alpha_red'].isnull())#.dropna('wavelength', how='all')
 
 
@@ -87,46 +140,26 @@ ds_cut['alpha_red'].plot(row='kwt')
 model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
 ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit(model, params)
+dss_p.append(ds_p.assign_coords(method='wings'))
+dss_p_stderr.append(ds_p_stderr.assign_coords(method='wings'))
 #%%
 
 ds_alpha_fit.to_array('var').plot(row='kwt', hue='var')
+
 # %%
 
-ds_p['nK_m3'].plot(marker='o')
-
-plt.xscale('log')
-plt.yscale('log')
-
-#%%
-
-ds_p_wings = ds_p.assign_coords(method='wings')
-# %%[markdown]
-
-# ### old cut alpha
-
-#%%
-
-ds_fit = ds_absem.sel(seldict).groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
-ds_fit = ds_fit.sel(mnum=1)
-
-spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
-
-ds_alpha_fit, ds_p, ds_p_stderr= absem.fitting.pipe_fit_alpha_1(ds_fit, spect_red_dict)
-# %%
-
-ds_alpha_fit['alpha_red'].plot(row='kwt')
-
-#%%
-
-ds_p_alpha_cut = ds_p.assign_coords(method='alpha_cut')
-# %%
-
-ds_p = xr.concat([ds_p_wings, ds_p_alpha_cut], dim='method') 
+ds_p = xr.concat(dss_p, dim='method')
+dss_p_stderr = xr.concat(dss_p_stderr, dim='method')
 
 #%%
 
 ds_p['nK_m3'].plot(marker='o', hue='method')
+
+plt.xscale('log')
+plt.yscale('log')
+# %%
+
+plot.common.xr_errorbar(ds_p['nK_m3'], dss_p_stderr['nK_m3'], huedim='method')
 
 plt.xscale('log')
 plt.yscale('log')
