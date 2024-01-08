@@ -74,10 +74,7 @@ def test_mws_fit_global(ds_mws_all_mnum):
 
     da_fit = ds_mws_all_mnum['AS']
 
-    da_fit = da_fit/da_fit.mws._pulse_max()
-
     #TODO: having to take log to avoid nans
     mod, params = gen_model_dnedt(take_log=False)
 
-    xs_eval = da_fit.coords['time'].values
-    fit_da_lmfit_global(da_fit, mod, params, 'time', xs_eval)
+    ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
