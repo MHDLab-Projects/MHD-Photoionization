@@ -89,23 +89,23 @@ ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
 
-da_fit = ds_lecroy['AS'].mean('mnum')
+da_fit = ds_lecroy['AS']
 
 # %%
 
-g = da_fit.plot(hue='run_plot', row='kwt', x='time')
+g = da_fit.mean('mnum').plot(hue='run_plot', row='kwt', x='time')
 
 dropna(g)
 
 #%%[markdown]
 
-# ## Fixed kr, vary ne0
+# ## Fixed kr, vary ne0, old pipeline
 
 #%%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit.mean('mnum'))
 
 #%%
 
@@ -129,21 +129,19 @@ plot.common.xr_errorbar(ds_ne0['mean'], ds_ne0['std'], huedim='run')
 
 #%%[markdown]
 
-# ## Fixed ne0, vary kr
+# ## Fixed ne0, vary kr, new pipeline
 
 #%%
 
-from mhdpy.analysis.mws.fitting import gen_model_dnedt 
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
 
-mod, params = gen_model_dnedt(take_log=True)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
-params['ne0'].value = 1e13 #TODO: value from cfd, needs to vary with K
-params['ne0'].vary = False
-params['kr'].vary = True
+#TODO: sterr is nan where ds_p is not?
+ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
+#%%
 
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params)
-
-
+ds_kr
 #%%
 ds_kr = ds_p['kr'].to_dataset(name='mean')
 ds_kr['std'] = ds_p_stderr['kr']
@@ -151,7 +149,7 @@ ds_kr['std'] = ds_p_stderr['kr']
 plot.common.xr_errorbar(ds_kr['mean'], ds_kr['std'], huedim='run')
 
 plt.yscale('log')
-plt.ylim(1e-15,2e-14)
+# plt.ylim(1e-15,2e-14)
 
 
 #%%[markdown]
@@ -260,3 +258,5 @@ plt.xlim(4e20,2e22)
 
 plt.ylabel("Kr")
 plt.xlabel("nK_m3")
+
+# %%

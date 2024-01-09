@@ -108,46 +108,32 @@ plt.ylabel('kr')
 
 #%%
 
+from mhdpy.analysis.mws.fitting import gen_model_dnedt, pipe_fit_mws_2
+
 da_fit = da_sel.copy()
 
-# da_fit = da_fit.isel(run=-2).dropna('mnum', how='all')
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
-da_fit = da_fit/da_fit.mws._pulse_max()
+# ds_mws_fit = ds_mws_fit.mean('mnum')
 
-da_fit = da_fit.sel(time=slice(0,30))
-
-#TODO: make fit_da_lmfit_global able to handle multindex
-da_fit = da_fit.unstack('run')
-
-from mhdpy.xr_utils import fit_da_lmfit_global
-
-#TODO: having to take log 
-mod, params = gen_model_dnedt(take_log=False)
-
-params['ne0'].value = 1e13 #TODO: value from cfd
-params['ne0'].vary = False
-params['kr'].vary = True
-
-xs_eval = da_fit.coords['time'].values
-da_mws_fit, ds_p, ds_p_stderr = fit_da_lmfit_global(da_fit, mod, params, 'time', xs_eval)
-
-da_mws_fit = da_mws_fit.stack(run=('date','run_num')).dropna('run',how='all')
-ds_p = ds_p.xr_utils.stack_run()
-ds_p_stderr = ds_p_stderr.xr_utils.stack_run()
-da_fit = da_fit.stack(run=('date','run_num')).dropna('run',how='all')
 
 #%%
 
-fig, axes = plt.subplots(len(da_fit.indexes['run']), figsize=(5,10))
+ds_mws_fit
 
-for i, (group, da) in enumerate(da_fit.groupby('run')):
+
+#%%
+
+fig, axes = plt.subplots(len(ds_mws_fit.indexes['run']), figsize=(5,10))
+
+for i, (group, ds) in enumerate(ds_mws_fit.groupby('run')):
     ax=axes[i]
 
-    da.isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum', ax=ax)
+    ds['AS'].isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum', ax=ax)
 
     # plt.plot(xs_eval, y_fit)
 
-    da_mws_fit.sel(run=group).plot(ax=ax, color='black')
+    ds_mws_fit['AS_fit'].sel(run=group).plot(ax=ax, color='black')
 
     ax.set_yscale('log')
     ax.get_legend().remove()
@@ -162,3 +148,4 @@ da_std.name='std'
 df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
 df.plot(marker='o', yerr='std', capsize=5)
 plt.ylabel('kr')
+# %%
