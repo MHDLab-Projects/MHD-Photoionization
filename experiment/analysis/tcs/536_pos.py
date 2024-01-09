@@ -148,27 +148,23 @@ plt.xscale('log')
 # %%
 
 
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profies.csv' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles.cdf' )
 
-df_cfd = pd.read_csv(fp_cfd, index_col=0)
+ds_cfd = xr.load_dataset(fp_cfd)
 
-df_cfd.index = df_cfd.index - df_cfd.index.values[0]
-df_cfd.index = df_cfd.index*1000
+ds_cfd = ds_cfd.sel(kwt=1)
 
-
-ds_cfd = xr.Dataset.from_dataframe(df_cfd)
-
+ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
+ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
 
 #TODO: Convert to number density
 ds_cfd_norm = ds_cfd/ds_cfd.max()
 
 
-#%%
-
-ds_cfd.to_array('var').plot(hue='var', yscale='log')
 
 #%%
 
+#TODO: this is still for k=0.1
 fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'beam_conv.cdf' )
 
 ds_cfd_beam = xr.load_dataset(fp_cfd_beam)
@@ -197,7 +193,7 @@ ax1.get_legend().set_title('Experiment (date, #)')
 plt.twinx()
 
 ds_cfd_norm['K'].plot(color='black', label ='centerline')
-ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam convolution', marker='o')
+ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam conv (TODO)', marker='o')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,1.0,0.7])
@@ -214,7 +210,7 @@ leg.set_bbox_to_anchor([0,0,1.7,1])
 plt.twinx()
 
 ds_cfd_norm['KOH'].plot(color='black', label ='centerline')
-ds_cfd_beam_norm['KOH'].plot(color='gray', label = 'beam convolution')
+ds_cfd_beam_norm['KOH'].plot(color='gray', label = 'beam conv (TODO)')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,1.8,0.3])

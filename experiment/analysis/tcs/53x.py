@@ -139,9 +139,7 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
 #TODO: sterr is nan where ds_p is not?
 ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
-#%%
 
-ds_kr
 #%%
 ds_kr = ds_p['kr'].to_dataset(name='mean')
 ds_kr['std'] = ds_p_stderr['kr']

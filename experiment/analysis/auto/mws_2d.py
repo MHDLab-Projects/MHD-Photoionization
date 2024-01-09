@@ -50,7 +50,7 @@ for tc in tcs:
 
     ds_in = ds_in.drop('kwt')
 
-    ds = ds.mws.calc_mag_phase_AS().drop('mag_pp')
+    ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
 
 
     tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
