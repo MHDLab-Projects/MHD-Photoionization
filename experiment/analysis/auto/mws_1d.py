@@ -218,6 +218,7 @@ def main(datestr):
 
         ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
+        das_fit_input[tc] = da_fit
         dss_fits[tc] = ds_mws_fit['AS_fit']
         dss_p[tc] = ds_p
         dss_p_stderr[tc] = ds_p_stderr
@@ -296,6 +297,7 @@ tc_dict = {
     ],
 }
 
-for datestr in tc_dict:
-    print(datestr)
-    main(datestr)
+if __name__ == '__main__':
+    for datestr in tc_dict:
+        print(datestr)
+        main(datestr)
