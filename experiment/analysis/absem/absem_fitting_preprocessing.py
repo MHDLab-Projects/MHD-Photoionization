@@ -126,7 +126,7 @@ ds2 = ds_fit.xr_utils.groupby_dims_wrapper(
 
 #%%
 
-ds2.sel(kwt=0.1).isel(mnum=[0,5,10])['alpha'].plot(row='mnum')
+ds2.sel(kwt=0.1).isel(mnum=[0,5,10])['alpha_red'].plot(row='mnum')
 
 #%%
 
@@ -163,7 +163,7 @@ da_fit = ds2.absem.calc_alpha()['alpha_red']
 # da_fit = da_fit.dropna('mnum', how='all')
 
 da_fit = da_fit.xr_utils.groupby_dims_wrapper(
-    lambda x: x.dropna('mnum', how='all').dropna('wavelength'),
+    lambda x: x.dropna('mnum', how='all'),
     [d for d in da_fit.dims if d not in ['wavelength','mnum']]
     )
 
@@ -176,7 +176,7 @@ ds_alpha_fit, ds_p, ds_p_stderr = da_fit.absem.perform_fit(model, params, method
 dss_p.append(ds_p.assign_coords(method='wings_global'))
 dss_p_stderr.append(ds_p_stderr.assign_coords(method='wings_global'))
 
-ds_alpha_fit = xr.merge([ds_alpha_fit, ds2.mean('mnum').absem.calc_alpha()['alpha']])
+# ds_alpha_fit = xr.merge([ds_alpha_fit, ds2.mean('mnum').absem.calc_alpha()['alpha']])
 
 
 #%%

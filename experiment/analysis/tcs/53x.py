@@ -258,5 +258,5 @@ plt.yscale('log')
 # plt.ylim(3e12,2e13)
 plt.xlim(4e20,2e22)
 
-plt.ylabel("Ne0")
+plt.ylabel("Kr")
 plt.xlabel("nK_m3")
