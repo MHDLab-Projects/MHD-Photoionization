@@ -3,38 +3,55 @@
 from mhdpy.analysis.standard_import import *
 
 import pint_pandas
+import pint_xarray
 from pint import Quantity
 
-fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles.csv')
+fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles.cdf')
 
-df = pd.read_csv(fp, index_col=0)
+ds = xr.load_dataset(fp)
 
-df['T'] = df['T'].astype('pint[K]')
-df['p'] = df['p'].astype('pint[Pa]')
+#%%
+
+ds['T'] = ds['T'].pint.quantify('K')
+ds['p'] = ds['p'].pint.quantify('Pa')
 
 #%%
 
 R = Quantity(8.31446261815324, 'J/(mol*K)')
-df['rho'] = df['p']/(df['T']*R)
+ds['rho'] = ds['p']/(ds['T']*R)
 
 NA = Quantity(6.02214076e23, '1/mol')
 
-df['rho'] = df['rho']*NA
+ds['rho'] = ds['rho']*NA
 
-df['rho'].pint.to('1/cm^3')
+ds['rho'].pint.to('1/cm^3')
 #%%
 
-df['rho'].pint.magnitude.plot()
+ds['rho'].plot(hue='kwt')
 
 
 #%%
 
-Kp_rho = df['Kp']*df['rho']
-Kp_rho = Kp_rho.pint.to('1/cm^3')
+species = [var for var in ds.data_vars if var not in ['rho', 'T', 'p']]
 
-Kp_rho
+for species in species:
+    sp_rho = ds[species]*ds['rho']
+    sp_rho = sp_rho.pint.to('1/cm^3')
+    ds[species] = sp_rho
+
 #%%
 
-Kp_rho.pint.magnitude.plot()
+ds_sel = ds[['K', 'Kp']]
+
+g = ds_sel.to_array('var').plot(row='var', hue='kwt')
 
 plt.yscale('log')
+
+goldi_pos = ds['x'].min().item() + 0.18
+
+for ax in g.axes.flatten():
+    ax.axvline(goldi_pos, color='gray', linestyle='--')
+
+#%%
+
+ds_sel.sel(x=goldi_pos, method='nearest').to_dataframe()
