@@ -66,20 +66,20 @@ ds_calib.to_netcdf(pjoin('proc_data','ds_calib.cdf'))
 
 dss = []
 
-timecoords = None
 for date in dates:
     fp = pjoin(munged_dir, date, 'ds_lecroy_time.cdf')
     ds = xr.load_dataset(fp)
     ds = ds[['i', 'q']]
 
-    if timecoords is not None:
-        ds = ds.assign_coords(time=timecoords)
-    else:
-        timecoords = ds.coords['time']
+    #TODO: the starting time of each pulse is not the same for each run.
+    # Could shift the starting time for each date, but dont sure how that would work with time_offset
+    # for now just trimming a few us off the start and end of each pulse
+    ds = ds.sel(time=slice(-48e-6, 48e-6))
+
     dss.append(ds)
 
 
-ds_lecroy = xr.concat(dss, 'acq_time')
+ds_lecroy = xr.concat(dss, 'acq_time', join='override')
 
 time_offset = 0.93
 ds_lecroy = ds_lecroy.assign_coords(time=ds_lecroy.coords['time']*1e6 - time_offset)
