@@ -7,6 +7,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+from pint import Quantity
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
@@ -44,12 +45,11 @@ plt.xlim(-1,40)
 from mhdpy.analysis.mws.fitting import gen_model_dnedt, pipe_fit_mws_1 
 
 pre_norm_cutoff = 5e-4
-fit_timewindow = slice(0,30)
 da_fit = da_fit.where(da_fit.mws._pulse_max() > pre_norm_cutoff) # Targeting low power...
 
 mod, params = gen_model_dnedt()
 
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=fit_timewindow)
+ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params)
 
 #%%
 
@@ -78,16 +78,15 @@ df.plot(marker='o', yerr='std', capsize=5)
 
 
 pre_norm_cutoff = 5e-4
-fit_timewindow = slice(0,30)
 da_fit = da_fit.where(da_fit.mws._pulse_max() > pre_norm_cutoff) # Targeting low power...
 
-mod, params = gen_model_dnedt()
+mod, params = gen_model_dnedt(take_log=False)
 
-params['ne0'].value = 1e13 #TODO: value from cfd
+params['ne0'].value = Quantity(2e12, 'cm**-3').to('um**-3').magnitude #TODO: value from cfd
 params['ne0'].vary = False
 params['kr'].vary = True
 
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=fit_timewindow)
+ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params)
 #%%
 
 da_mean = ds_p['kr']

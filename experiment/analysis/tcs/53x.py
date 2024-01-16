@@ -90,16 +90,15 @@ ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
 
-da_fit = ds_lecroy['AS']
+ds_lecroy = ds_lecroy.drop(0,'kwt')
 
-da_fit = da_fit.drop(0,'kwt')
-
-da_fit
+ds_fit = ds_lecroy.mean('mnum')
+da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
 #%%
 
 
-g = da_fit.mean('mnum').plot(hue='run_plot', row='kwt', x='time')
+g = da_fit.plot(hue='run_plot', row='kwt', x='time')
 
 dropna(g)
 
@@ -111,7 +110,8 @@ dropna(g)
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit.mean('mnum'))
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
 #%%
 
@@ -138,6 +138,8 @@ plot.common.xr_errorbar(ds_ne0['mean'], ds_ne0['std'], huedim='run')
 # ## Fixed ne0, vary kr, new pipeline
 
 #%%
+
+da_fit = ds_lecroy['AS']
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
 
@@ -237,19 +239,21 @@ plt.errorbar(
 plt.xscale('log')
 plt.yscale('log')
 
-plt.ylim(3e12,2e13)
+# plt.ylim(3e12,2e13)
 plt.xlim(4e20,2e22)
 
-plt.ylabel("Ne0")
-plt.xlabel("nK_m3")
+plt.ylabel("Ne0 [#/um**3]")
+plt.xlabel("nK_m3 Barrel [#/m**3]")
 
 #%%
 
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
-ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7, 'Kwt': 0.001})
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
 kr = ds_TP_params['kr']
-kr = kr.pint.quantify('cm^3/s')#.pint.to('cm^3/us')
-kr_sel = kr.sel(P=1e5, T = 2000, method='nearest')
+kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
+kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
+
+kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
 
 kr_sel
 
@@ -270,11 +274,14 @@ plt.yscale('log')
 # plt.ylim(3e12,2e13)
 # plt.xlim(4e20,2e22)
 
-plt.ylabel("Kr [cm**3/s]")
-plt.xlabel("nK [#/m^3]")
+plt.ylabel("kr [cm**3/s]")
+plt.xlabel("nK Barrel [#/m^3]")
 
-plt.axhline(kr_sel.item().magnitude, linestyle = '--')
-
+# plt.axhline(kr_sel.item().magnitude, linestyle = '--')
+plt.twiny()
+kr_sel.plot(hue='T', marker='o')
+plt.gca().get_legend().set_bbox_to_anchor((0.5, 0.6))
+plt.xscale('log')
 
 
 # %%
