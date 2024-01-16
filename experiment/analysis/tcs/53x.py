@@ -86,12 +86,18 @@ ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
+
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
 
 da_fit = ds_lecroy['AS']
 
-# %%
+da_fit = da_fit.drop(0,'kwt')
+
+da_fit
+
+#%%
+
 
 g = da_fit.mean('mnum').plot(hue='run_plot', row='kwt', x='time')
 
@@ -239,6 +245,16 @@ plt.xlabel("nK_m3")
 
 #%%
 
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7, 'Kwt': 0.001})
+kr = ds_TP_params['kr']
+kr = kr.pint.quantify('cm^3/s')#.pint.to('cm^3/us')
+kr_sel = kr.sel(P=1e5, T = 2000, method='nearest')
+
+kr_sel
+
+#%%
+
 
 plt.errorbar(
     ds_p_stats['nK_m3_mean'], 
@@ -252,9 +268,15 @@ plt.xscale('log')
 plt.yscale('log')
 
 # plt.ylim(3e12,2e13)
-plt.xlim(4e20,2e22)
+# plt.xlim(4e20,2e22)
 
-plt.ylabel("Kr")
-plt.xlabel("nK_m3")
+plt.ylabel("Kr [cm**3/s]")
+plt.xlabel("nK [#/m^3]")
+
+plt.axhline(kr_sel.item().magnitude, linestyle = '--')
+
+
 
 # %%
+
+

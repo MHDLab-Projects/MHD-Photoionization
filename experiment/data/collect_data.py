@@ -80,6 +80,12 @@ for date in dates:
 
 
 ds_lecroy = xr.concat(dss, 'acq_time')
+
+time_offset = 0.93
+ds_lecroy = ds_lecroy.assign_coords(time=ds_lecroy.coords['time']*1e6 - time_offset)
+ds_lecroy.coords['time'].attrs['units'] = 'us'
+ds_lecroy.coords['time'].attrs['long_name'] = 'Time'
+
 ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 #%%
 from mhdpy.coords import assign_coords_multi

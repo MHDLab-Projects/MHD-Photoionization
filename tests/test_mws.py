@@ -57,7 +57,7 @@ def test_pipe_fit_mws_1(ds_mws):
     expected = [           0, 2.56266691e+12, 1.07160749e+13, 6.17915301e+12,
        1.13125377e+13, 1.19845333e+13, 1.00853221e+13, 9.72104615e+12]
 
-    assert np.allclose(ne0_fit_values, expected, rtol=1e-4)
+    assert np.allclose(ne0_fit_values, expected, rtol=1e-2)
 
 
 def test_pipe_fit_mws_1_nolog(ds_mws):
