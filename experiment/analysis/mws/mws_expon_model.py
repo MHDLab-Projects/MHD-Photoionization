@@ -1,8 +1,6 @@
 # %%[markdown]
 
-# # exponential
-
-#%%
+# # exponential fit mws data
 
 #%%
 
@@ -62,10 +60,10 @@ plt.yscale('log')
 
 ne0 = Quantity(2e12, 'cm**-3').to('um**-3').magnitude
 
-# tau = kr*ne0
-# kr = ne0/tau
+# tau = 1/(2*kr*ne0)
+# kr = 1/(2*tau*ne0)
 
-ds_p['kr'] = ne0/ds_p['decay']
+ds_p['kr'] = 1/(2*ne0*ds_p['decay'])
 
 ds_p['kr']
 # %%

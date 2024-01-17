@@ -1,0 +1,92 @@
+
+
+#%%[markdown]
+
+# # Investigating the shape of the mws data for individual mnum
+
+#%%
+
+from mhdpy.analysis.standard_import import *
+from pint import Quantity
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+from mhdpy.analysis import mws
+
+# %%
+
+tc = '53x'
+
+ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = ds_lecroy.xr_utils.stack_run()
+
+ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
+# %%
+
+
+da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
+# %%
+
+da_sel.sel(mnum=slice(0,10)).plot(hue='mnum', row='run')
+
+plt.xlim(-1,10)
+plt.ylim(1e-3,)
+plt.yscale('log')
+
+
+#%%
+
+da_2 = da_sel/da_sel.mws._pulse_max()
+
+da_2.sel(mnum=slice(0,10)).plot(hue='mnum', row='run')
+
+
+plt.xlim(-1,10)
+plt.ylim(1e-1,)
+plt.yscale('log')
+
+#%%
+
+da_2.mean('mnum').plot(hue='run_plot', x='time')
+plt.xlim(-1,30)
+plt.ylim(1e-3,)
+plt.yscale('log')
+
+#%%
+
+da_3 = da_sel.where(da_sel.mws._pulse_max() > 5e-4)
+
+da_3 = da_3/da_3.mws._pulse_max()
+
+da_3.mean('mnum').plot(hue='run_plot', x='time')
+plt.xlim(-1,30)
+plt.ylim(1e-3,)
+plt.yscale('log')
+# %%
+
+da_sel
+
+#%%
+
+run_max = da_sel.sel(time=slice(-2,2)).groupby('run_plot').max('time').max('mnum')
+
+run_max
+
+#%%
+
+da_hp = da_sel/run_max
+
+da_hp.isel(mnum=slice(0,10)).plot(row='run', hue='mnum', x='time')
+
+plt.xlim(-1,30)
+plt.ylim(1e-3,)
+plt.yscale('log')
+#%%
+
+da_hp = da_hp.where(da_hp.mws._pulse_max() > 0.3)
+# %%
+
+da_hp.mean('mnum').plot(hue='run_plot', x='time')
+# plt.xlim(-1,30)
+plt.ylim(1e-3,)
+plt.yscale('log')

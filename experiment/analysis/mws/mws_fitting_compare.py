@@ -75,6 +75,9 @@ df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
 df.plot(marker='o', yerr='std', capsize=5)
 
 #%%
+ds_p
+
+#%%
 
 
 pre_norm_cutoff = 5e-4
@@ -97,6 +100,9 @@ da_std.name='std'
 df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
 df.plot(marker='o', yerr='std', capsize=5)
 plt.ylabel('kr')
+
+#%%
+ds_p
 
 
 #%%[markdown]
@@ -123,7 +129,7 @@ ds_mws_fit
 
 #%%
 
-fig, axes = plt.subplots(len(ds_mws_fit.indexes['run']), figsize=(5,10))
+fig, axes = plt.subplots(len(ds_mws_fit.indexes['run']), figsize=(5,15))
 
 for i, (group, ds) in enumerate(ds_mws_fit.groupby('run')):
     ax=axes[i]
@@ -136,6 +142,7 @@ for i, (group, ds) in enumerate(ds_mws_fit.groupby('run')):
 
     ax.set_yscale('log')
     ax.get_legend().remove()
+    ax.set_ylim(1e-3,)
 
 #%%
 
@@ -148,3 +155,4 @@ df = xr.merge([da_mean, da_std]).to_dataframe()[['mean','std']]
 df.plot(marker='o', yerr='std', capsize=5)
 plt.ylabel('kr')
 # %%
+ds_p
