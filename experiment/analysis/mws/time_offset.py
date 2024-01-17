@@ -7,7 +7,6 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-import pint_xarray
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
