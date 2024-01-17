@@ -23,20 +23,9 @@ ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
 #%%
 
-from lmfit.models import ExponentialModel
+from mhdpy.analysis.mws.fitting import gen_model_exp
 
-mod = ExponentialModel()
-
-params = mod.make_params()
-
-params['amplitude'].value = 1
-params['amplitude'].vary = True # dne peak obscures normalization 
-params['decay'].value = 10
-
-params['amplitude'].min = 0
-params['decay'].min = 0
-
-mod.take_log = False
+mod, params = gen_model_exp()
 
 #%%
 
