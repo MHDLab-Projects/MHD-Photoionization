@@ -2,6 +2,7 @@
 
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws

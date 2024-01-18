@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
@@ -12,13 +13,11 @@ tc = '536_power'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
 ds_absem = ds_absem.absem.calc_alpha()
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
-ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
@@ -103,6 +102,7 @@ da_fit = da_lecroy.copy()
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
+ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
 #%%
 
 ds_mws_fit.mean('mnum').to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
