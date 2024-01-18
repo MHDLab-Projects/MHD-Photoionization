@@ -3,7 +3,6 @@
 
 # # Microwave Scattering fit comparison
 
-#  TODO: one date is offset in time
 #%%
 
 from mhdpy.analysis.standard_import import *
@@ -46,7 +45,7 @@ da_fit.plot(hue='run_plot', row='kwt', x='time')
 plt.yscale('log')
 
 plt.xlim(-1,40)
-
+plt.ylim(1e-4,)
 
 #%%
 
@@ -115,7 +114,8 @@ dss_p.append(ds_p2.assign_coords(method='pipe_2'))
 
 #%%[markdown]
 
-# ## pipe2 but vary dne
+# ## pipe2 but fix dne
+# pipe 2 previously was fixing dne, now adding for comparison here.
 
 #%%
 
@@ -129,6 +129,7 @@ mod, params = gen_model_dnedt(take_log=False)
 
 params['ne0'].value = Quantity(2e12, 'cm**-3').to('um**-3').magnitude #TODO: value from cfd
 params['ne0'].vary = False
+params['dne'].vary = False
 params['kr'].vary = True
 
 fits, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
@@ -153,7 +154,7 @@ ds_p2 = xr.merge([
     ds_p_stderr['kr'].rename('std')
     ])
 
-dss_p.append(ds_p2.assign_coords(method='pipe_2_varydne'))
+dss_p.append(ds_p2.assign_coords(method='pipe_2_fixdne'))
 
 #%%[markdown]
 
@@ -233,7 +234,12 @@ for i, (method, ds) in enumerate(ds_p.groupby('run')):
     ds['mean'].plot(hue='method', ax=ax, marker='o')
 
 # %%
-ds_p.mean('run')['mean'].plot(hue='method', marker='o')
+
+from mhdpy.plot.common import xr_errorbar
+
+ds_plot = ds_p.mean('run')
+
+xr_errorbar(ds_plot['mean'], ds_plot['std'], huedim='method')
 
 plt.yscale('log')
 plt.xscale('log')

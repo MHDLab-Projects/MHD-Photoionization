@@ -280,7 +280,7 @@ plt.xlabel("nK Barrel [#/m^3]")
 # plt.axhline(kr_sel.item().magnitude, linestyle = '--')
 plt.twiny()
 kr_sel.plot(hue='T', marker='o')
-plt.gca().get_legend().set_bbox_to_anchor((0.5, 0.6))
+plt.gca().get_legend().set_bbox_to_anchor((0.1, 0.6))
 plt.xscale('log')
 
 
