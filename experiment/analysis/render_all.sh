@@ -1,8 +1,13 @@
 : '
 script to call render_scripts.sh in all subdirectories
 '
+# Default directories to process
+render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
 
-render_dirs=( "absem" "tcs" "uncertainty" "various" )
+# If an argument is provided, use it as the directories to process
+if [ "$#" -gt 0 ]; then
+    render_dirs=( "$@" )
+fi
 
 purge_dirs=true
 
