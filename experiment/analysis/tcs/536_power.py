@@ -83,7 +83,7 @@ plt.yscale('log')
 
 #%%
 
-ds_mws_fit.isel(time=0).count('mnum')['AS'].plot(hue='run_plot', x='power', marker='o')
+ds_mws_fit.isel(time=0).count('mnum')['AS_all'].plot(hue='run_plot', x='power', marker='o')
 
 plt.yscale('log')
 
@@ -102,7 +102,7 @@ da_fit = da_lecroy.copy()
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
-ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
+# ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
 #%%
 
 ds_mws_fit.mean('mnum').to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
