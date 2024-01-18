@@ -162,6 +162,18 @@ plt.yscale('log')
 #%%[markdown]
 
 # # Compare Lecroy and MWS
+#%%
+
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
+kr = ds_TP_params['kr']
+kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
+kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
+
+kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
+
+kr_sel
+
 
 
 # %%
@@ -179,7 +191,8 @@ mws_std = da_stats.std('mnum').max('time')
 #%%
 
 ds_params = xr.merge([
-    ds_nK['mean'].sel(mp='barrel').drop('mp').rename('nK_m3'),
+    ds_nK['mean'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
+    ds_nK['mean'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
     ds_ne0['mean'].rename('ne0'),
     ds_kr['mean'].rename('kr'),
     mws_max.rename('AS_max'),
@@ -194,7 +207,7 @@ ds_params
 # Perform averages over run
 # TODO: combine with wma accessor
 
-count = ds_params['nK_m3'].count('run')
+count = ds_params['nK_m3_barrel'].count('run')
 
 ds_p_stats = xr.Dataset(coords=count.coords)
 
@@ -210,13 +223,47 @@ for var in ds_params.data_vars:
 
 ds_p_stats
 
+#%%
+
+vars = ['nK_m3_barrel', 'nK_m3_mw_horns', 'kr', 'AS_max']
+
+fig, axes = plt.subplots(len(vars), 1, figsize=(5,10), sharex=True)
+
+for i, var in enumerate(vars):
+
+    ax = axes[i]
+
+    ax.errorbar(
+        ds_p_stats.coords['kwt'], 
+        ds_p_stats['{}_mean'.format(var)], 
+        yerr=ds_p_stats['{}_stderr'.format(var)], 
+        marker='o', capsize=5,
+        label=var
+        )
+
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_ylabel(var)
+
+
+axes[0].set_ylabel("nK_m3 Barrel [#/m^3]")
+axes[1].set_ylabel("nK_m3 MW Horns [#/m^3]")
+axes[2].set_ylabel("kr [um^3/us]")
+axes[3].set_ylabel("AS Maximum")
+
+kr_sel.sel(Kwt=slice(0.1,1)).plot(hue='T', marker='o', ax=axes[2])
+axes[2].set_title('')
+
+axes[-1].set_xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
 plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
+    ds_p_stats['nK_m3_barrel_mean'], 
     ds_p_stats['AS_max_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
     yerr=ds_p_stats['AS_max_stderr'], 
     marker='o', capsize=5
     )
@@ -230,9 +277,9 @@ plt.xlabel("nK_m3")
 #%%
 
 plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
+    ds_p_stats['nK_m3_barrel_mean'], 
     ds_p_stats['ne0_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
     yerr=ds_p_stats['ne0_stderr'], 
     marker='o', capsize=5
     )
@@ -244,27 +291,15 @@ plt.yscale('log')
 plt.xlim(4e20,2e22)
 
 plt.ylabel("Ne0 [#/um**3]")
-plt.xlabel("nK_m3 Barrel [#/m**3]")
-
-#%%
-
-cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
-ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
-kr = ds_TP_params['kr']
-kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
-kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
-
-kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
-
-kr_sel
+plt.xlabel("nK_m3_barrel Barrel [#/m**3]")
 
 #%%
 
 
 plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
+    ds_p_stats['nK_m3_barrel_mean'], 
     ds_p_stats['kr_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
     yerr=ds_p_stats['kr_stderr'], 
     marker='o', capsize=5
     )
