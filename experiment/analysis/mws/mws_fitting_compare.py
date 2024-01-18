@@ -84,12 +84,38 @@ dss_p.append(ds_p2.assign_coords(method='avgmnum_1'))
 #%%
 ds_p
 
+#%%[markdown]
+
+# ## Pipe 2: Global fit
+
+#%%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
+
+da_fit = da_sel.copy()
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
+
+# ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
+
+#%%
+
+ds_mws_fit.mean('mnum').to_array('var').plot(col='run', row='kwt', hue='var')
+
+plt.yscale('log')
+
+#%%
+ds_p2 = xr.merge([
+    ds_p['kr'].rename('mean'),
+    ds_p_stderr['kr'].rename('std')
+    ])
+
+dss_p.append(ds_p2.assign_coords(method='pipe_2'))
+
 
 #%%[markdown]
 
-# ## Global optimization
-
-# TODO: This cant handle nans when taking log. Just taking one test case for now. 
+# ## pipe2 but vary dne
 
 #%%
 
@@ -122,33 +148,12 @@ plt.yscale('log')
 
 #%%
 
-# da_fit.xr_utils.stack_run().mean('mnum').plot(hue='run_plot', row='kwt', x='time')
-
-#%%
-
-# fig, axes = plt.subplots(len(ds_mws_fit.indexes['run']), figsize=(5,15))
-
-# for i, (group, ds) in enumerate(ds_mws_fit.groupby('run')):
-#     ax=axes[i]
-
-#     ds['AS'].isel(mnum=[0,10,20,30,40,50]).plot(hue='mnum', ax=ax)
-
-#     # plt.plot(xs_eval, y_fit)
-
-#     ds_mws_fit['AS_fit'].sel(run=group).plot(ax=ax, color='black')
-
-#     ax.set_yscale('log')
-#     ax.get_legend().remove()
-#     ax.set_ylim(1e-3,)
-
-#%%
-
 ds_p2 = xr.merge([
     ds_p['kr'].rename('mean'),
     ds_p_stderr['kr'].rename('std')
     ])
 
-dss_p.append(ds_p2.assign_coords(method='pipe_2'))
+dss_p.append(ds_p2.assign_coords(method='pipe_2_varydne'))
 
 #%%[markdown]
 
@@ -228,4 +233,7 @@ for i, (method, ds) in enumerate(ds_p.groupby('run')):
     ds['mean'].plot(hue='method', ax=ax, marker='o')
 
 # %%
-ds
+ds_p.mean('run')['mean'].plot(hue='method', marker='o')
+
+plt.yscale('log')
+plt.xscale('log')
