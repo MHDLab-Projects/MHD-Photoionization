@@ -6,8 +6,9 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
+from mhdpy.plot import dropna
 
-plt.rcParams.update({'font.size': 16})
+# plt.rcParams.update({'font.size': 16})
 
 # %%
 
@@ -15,18 +16,21 @@ tc = '536_pos'
 
 ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
 ds_absem = ds_absem.absem.calc_alpha()
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
-ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
+
+#%%[markdown]
+
+# # Absem
+
 #%%
 
 ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
@@ -36,25 +40,7 @@ ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run',
 ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wavelength')
 plt.ylim(0,1.1)
 plt.xlim(760,780)
-# %%
-from mhdpy.plot import dropna
 
-g = ds_lecroy['AS'].mean('mnum').plot(hue='run_plot', row='motor', x='time')
-
-dropna(g)
-
-#%%
-
-# plt.figure(figsize=(4,6))
-
-# da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-
-da_sel = da_sel.dropna('run', how='all')
-
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
-
-# plt.yscale('log')
 
 #%%
 
@@ -96,25 +82,78 @@ da_sel.plot(hue='run_plot', x='motor', marker='o')
 
 plt.yscale('log')
 
+#%%[markdown]
+
+# # Lecroy
+
+# %%
+
+g = ds_lecroy['AS'].mean('mnum').plot(hue='run_plot', row='motor', x='time')
+
+dropna(g)
+
 #%%
 
+motor_sel = [34.81, 104.8, 178, 226.7]
 
-mws_max = ds_lecroy['AS'].mean('mnum').max('time')
-mws_max.name ='AS_max'
-mws_max
+da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+
+fig, axes = plt.subplots(4, figsize=(3,10), sharex=True, sharey=True)
+
+for i, motor in enumerate(da_sel.coords['motor'].values):
+    ax = axes[i]
+    da_sel.sel(motor=motor).plot(hue='run_plot', x='time', ax=ax)
+    ax.set_title('Position: {} mm'.format(motor))
+    ax.set_xlabel('')
+    ax.set_ylabel('AS [V]')
+
+    if i == len(da_sel.coords['motor'].values) - 1:
+        ax.set_xlabel('Time [us]')
+
+    else:
+        ax.get_legend().remove()
+
+# da_sel.plot(row='motor', hue='run_plot', x='time', figsize=(8,25))
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
+#%%
+
+# plt.figure(figsize=(4,6))
+
+# da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+
+da_sel = da_sel.dropna('run', how='all')
+
+da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
+
+# plt.yscale('log')
+#%%
+
+mws_max = ds_lecroy['AS'].mean('mnum').max('time').rename('AS_max')
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
-mws_pp = ds_lecroy['mag_pp'].mean('mnum')
+mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
+mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
 
-mws_pp
-mws_pp.name = 'mag_pp'
+mws_max_std_ratio = mws_max/mws_pp_std
+mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
+
 
 #%%
 
-ds = xr.merge([mws_max, mws_pp,nK]).sortby('motor').dropna('run', how='all')
+ds = xr.merge([
+    mws_max, 
+    mws_pp,
+    mws_pp_std,
+    mws_max_std_ratio,
+    nK,
+    ]).sortby('motor').dropna('run', how='all')
 
-ds['AS_max'].attrs = dict(long_name='AS Max')
-ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse', units='V')
+ds['AS_max'].attrs = dict(long_name='AS Max', units='V')
+ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
+ds['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
+ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.')
 
 ds
 #%%
@@ -126,17 +165,53 @@ dropna(g)
 #%%
 
 
-fig, axes = plt.subplots(3, figsize=(4,8))
+fig, axes = plt.subplots(4, figsize=(4,12), sharex=True)
 
-ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[0], marker='o')
-ds['mag_pp'].plot(hue='run_plot', x='motor', ax=axes[1],marker='o')
-ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
+ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[0],marker='o')
+ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[1], marker='o')
+ds['mag_pp_std'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
+ds['AS_max_std_ratio'].plot(hue='run_plot', x='motor', ax=axes[3],marker='o')
 
 for ax in axes:
     ax.get_legend().remove()
     ax.set_title('')
+    ax.set_xlabel('')
 
+axes[3].set_xlabel('Position [mm]')
+
+#%%
+
+
+fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
+
+for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
+    ax = axes[i]
+
+    ds_stat = ds.wma.initialize_stat_dataset(var, 'run')
+
+    # plot with confidence interval
+
+    ds_stat['mean'].plot(ax=ax)
+
+    ax.fill_between(ds_stat.coords['motor'], ds_stat['mean'] - ds_stat['std'], ds_stat['mean'] + ds_stat['std'], alpha=0.2)
+
+    ax.set_title('')
+    ax.set_xlabel('')
+
+    unit_str = '[' + ds[var].attrs['units']+ ']' if 'units' in ds[var].attrs else '' 
+    ax.set_ylabel(ds[var].attrs['long_name'] + unit_str)
+    
 axes[2].set_xlabel('Position [mm]')
+
+for mp in motor_sel:
+    if mp == 178:
+        axes[2].axvline(mp, color='gold', linestyle='--')
+    else:
+        axes[2].axvline(mp, color='gray', linestyle='--')
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
+
 
 #%%
 

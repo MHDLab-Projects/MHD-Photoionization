@@ -23,9 +23,19 @@ ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
 
+#%%
+
+da_lecroy.mean('mnum').plot(hue='power', row='run')
+
+plt.yscale('log')
+
+plt.xlim(-1,50)
+plt.ylim(1e-5,1e-1)
 # %%
 
 da_max = da_lecroy.mean('mnum').sel(time=slice(-1,1)).max('time')
+
+da_max.attrs['long_name'] = 'Max AS'
 
 da_max
 #%%
@@ -39,3 +49,34 @@ g = da_max.plot(hue ='run_plot', x='power', marker='o')
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
 plt.yscale('log')
 plt.xscale('log')
+
+# %%
+
+da_fit = da_lecroy.copy()
+
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
+
+#TODO: sterr is nan where ds_p is not?
+ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
+
+#%%
+
+ds_p['kr'].plot(hue='run_plot', x='power', marker='o')
+
+plt.yscale('log')
+
+#%%
+
+ds_mws_fit.mean('mnum').to_array('var').plot(hue='var', row='power', col='run', x='time')
+
+plt.yscale('log')
+
+#%%
+
+ds_mws_fit.isel(time=0).count('mnum')['AS'].plot(hue='run_plot', x='power', marker='o')
+
+plt.yscale('log')
+
+plt.ylabel("mnum count")
