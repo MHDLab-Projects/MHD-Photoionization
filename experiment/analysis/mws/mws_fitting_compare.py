@@ -162,34 +162,13 @@ dss_p.append(ds_p2.assign_coords(method='pipe_2_fixdne'))
 
 #%%
 
-from mhdpy.analysis.mws.fitting import gen_model_exp
+from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
-mod, params = gen_model_exp()
 
-da_fit = da_sel.mean('mnum')
+# da_fit = da_sel.mean('mnum')
+da_fit = da_sel.copy()
 
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(
-    mod, params,
-    fit_timewindow=slice(Quantity(5, 'us'),Quantity(20, 'us')) 
-    )
-
-ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
-
-#%%
-ds_mws_fit.to_array('var').plot(col='run', row='kwt', hue='var')
-
-plt.yscale('log')
-
-#%%
-
-ne0 = Quantity(2e12, 'cm**-3').to('um**-3').magnitude
-
-# tau = 1/(2*kr*ne0)
-# kr = 1/(2*tau*ne0)
-
-ds_p['kr'] = 1/(2*ne0*ds_p['decay'])
-
-ds_p['kr']
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%
 

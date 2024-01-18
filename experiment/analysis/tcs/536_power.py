@@ -69,6 +69,15 @@ plt.yscale('log')
 
 #%%
 
+ds_p['dne'].plot(hue='run_plot', x='power', marker='o')
+
+plt.yscale('log')
+plt.xscale('log')
+
+plt.ylim(1e0,)
+
+#%%
+
 ds_mws_fit.mean('mnum').to_array('var').plot(hue='var', row='power', col='run', x='time')
 
 plt.yscale('log')
@@ -80,3 +89,38 @@ ds_mws_fit.isel(time=0).count('mnum')['AS'].plot(hue='run_plot', x='power', mark
 plt.yscale('log')
 
 plt.ylabel("mnum count")
+
+#%%[markdown]
+
+# # Exponential fitting
+
+#%%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_exp
+
+# da_fit = da_lecroy.mean('mnum')
+da_fit = da_lecroy.copy()
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
+
+#%%
+
+ds_mws_fit.mean('mnum').to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
+
+plt.yscale('log')
+
+plt.xlim(0,30)
+
+# %%
+
+ds_p['decay'].plot(hue='run_plot', x='power', marker='o')
+
+plt.yscale('log')
+
+plt.ylim(1,20)
+
+#%%
+
+ds_p.mean('run')['decay'].plot(marker='o')
+
+plt.ylim(1,10)
