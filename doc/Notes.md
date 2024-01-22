@@ -178,6 +178,13 @@ TODO:
 
 - [] Add mw_horn nK fit to parameter for comparison. 
 
-- [] add basic exponential fit
+- [x] add basic exponential fit
 
 - [] look at OH-
+
+
+# 2024-01-19
+
+Look at phase oscillations
+
+look at CFD e- Kp and OH
