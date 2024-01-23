@@ -22,7 +22,6 @@ timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
 df_cuttimes['Start Time'] = df_cuttimes['Start Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
 df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
 
-
 #%%
 
 #TODO: Rename these in lab config
@@ -46,14 +45,10 @@ dsst['calorimetry']['CC_water_T_in'] = dsst['calorimetry']['CC_water_T_in'].pint
 dsst['calorimetry']['CC_water_T_out'] = dsst['calorimetry']['CC_water_T_out'].pint.to('K')
 dsst['calorimetry']['CC_water_dT'] = dsst['calorimetry']['CC_water_dT'].pint.to('K')
 
-
 first_vars = ['CC_total_flow_in','CC_equivalenceRatio','CC_K_massFrac_in']
 dsst['hvof'] = dsst['hvof'][[*first_vars, *[var for var in dsst['hvof'].data_vars if var not in first_vars]]]
 
 # dsst['syringe'] = dsst['syringe'][['syringe_em_flow_out', 'syringe_fuel_flow_out', 'syringe_water_flow_out', 'syringe_K2CO3_flow_out', 'syringe_K_flow_out']]
-
-#%%
-
 
 #%%
 
@@ -92,7 +87,6 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
     recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
     # recipe_em = recipe_em.to_frame().T
 
-
     # This is to remove the attributes associated with CC_K_massFrac_in signal. Is there a better way to 'carry' the recipe?
     col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
        'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
@@ -103,34 +97,11 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
     
     recipe_em = recipe_em.loc[col_select]
 
-
     recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
     recipe_split.columns = ['val', 'unit']
     recipe_split = recipe_split.T
     
-
-
     recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
     
-#%%
-
-
-#%%
-
-# Testing that the total flow makes sense, but won't be exactly equal after the average...But did remoev argon during post processing. 
-
-# df_out['CC_fuel_flow_in'] + df_out['CC_o2_flow_in'] + df_out['syringe_em_flow_out']
-
-# df_out['CC_total_flow_in']
-# dsst['JP_ar_flow_out']
-
-#%%
-
-
-# %%
-
-#%%
-
-
