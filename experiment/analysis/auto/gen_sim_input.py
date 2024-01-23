@@ -5,11 +5,22 @@ DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
+
+fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
+
+dst_coords
+
+
 # %%
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
-df_cuttimes = load_df_cuttimes('cuttimes_sim.csv').sort_values('Start Time').reset_index(drop=True)
+
+fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes_kwt.csv')
+df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
+
+df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
 
 cuttimes = extract_cuttime_list(df_cuttimes)
 timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
@@ -18,8 +29,44 @@ timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
 # https://stackoverflow.com/questions/61802080/excelwriter-valueerror-excel-does-not-support-datetime-with-timezone-when-savin
 
 
-df_cuttimes['Start Time'] = df_cuttimes['Start Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
-df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
+# df_cuttimes['Start Time'] = df_cuttimes['Start Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
+# df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
+
+#%%
+
+tc_names = []
+
+for idx, row in df_cuttimes.iterrows():
+    timeslice = slice(row['Start Time'], row['Stop Time'])
+    da = dst_coords.sel(time=timeslice)['kwt'].dropna('time')
+    val_list = list(set(da.values))
+
+    assert len(val_list) == 1, f'Not all values are the same for {idx}'
+
+    val = round(val_list[0]*1, 2)
+
+    tc_names.append("{}_{}".format(row['date'], val))
+
+df_cuttimes.index = tc_names
+
+df_cuttimes
+
+
+df_cuttimes = df_cuttimes.reset_index()
+
+# df_cuttimes.groupby()
+for idx, row in df_cuttimes.groupby('index'):
+
+    mnums = range(1, len(row)+1)
+
+    df_cuttimes.loc[row.index, 'index'] = [f'{idx}_{mnum}' for mnum in mnums]
+
+    pass
+
+
+df_cuttimes = df_cuttimes.set_index('index')
+
+
 
 #%%
 
@@ -104,3 +151,4 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
     
+# %%
