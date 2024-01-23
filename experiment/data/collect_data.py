@@ -71,20 +71,9 @@ for date in dates:
     ds = xr.load_dataset(fp)
     ds = ds[['i', 'q']]
 
-    #TODO: the starting time of each pulse is not the same for each run.
-    # Could shift the starting time for each date, but dont sure how that would work with time_offset
-    # for now just trimming a few us off the start and end of each pulse
-    ds = ds.sel(time=slice(-48e-6, 48e-6))
-
     dss.append(ds)
 
-
 ds_lecroy = xr.concat(dss, 'acq_time', join='override')
-
-time_offset = 0.93
-ds_lecroy = ds_lecroy.assign_coords(time=ds_lecroy.coords['time']*1e6 - time_offset)
-ds_lecroy.coords['time'].attrs['units'] = 'us'
-ds_lecroy.coords['time'].attrs['long_name'] = 'Time'
 
 ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 #%%

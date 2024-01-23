@@ -7,7 +7,6 @@ data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 munged_dir = pjoin(REPO_DIR, 'experiment','data','munged')
-fp = pjoin(munged_dir, datestr, 'ds_lecroy_time.cdf')
 
 #%%
 
@@ -34,7 +33,10 @@ tw = cuttimes[16] # 516_pos
 
 #%%
 
+fp = pjoin(munged_dir, datestr, 'ds_lecroy_time.cdf')
+
 ds_in = xr.load_dataset(fp)
+
 ds_sel = ds_in.sel(acq_time=tw)
 
 ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
@@ -46,7 +48,7 @@ ds
 # %%
 
 from mhdpy.analysis import mws
-ds_mw = calc_mag_phase_AS(ds)
+ds_mw = ds.mws.calc_mag_phase_AS()
 
 dapd = ds['pd1']
 dapd.name='pd'
