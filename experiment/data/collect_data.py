@@ -90,6 +90,7 @@ ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 #%%
 from mhdpy.coords import assign_coords_multi
 dss_hvof = []
+dss_calor = []
 dss_motor = []
 dss_filterwheel =[]
 for date in dates:
@@ -98,6 +99,7 @@ for date in dates:
     dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
     dss_hvof.append(dsst['hvof'])
+    dss_calor.append(dsst['calorimetry'])
     dss_motor.append(dsst['motor'])
     dss_filterwheel.append(dsst['filterwheel'])
 
@@ -106,6 +108,7 @@ for date in dates:
 
 dsst = {
     'hvof': xr.concat(dss_hvof, 'time'),
+    'calorimetry': xr.concat(dss_calor, 'time'),
     'motor': xr.concat(dss_motor, 'time'),
     'filterwheel': xr.concat(dss_filterwheel, 'time')
 }

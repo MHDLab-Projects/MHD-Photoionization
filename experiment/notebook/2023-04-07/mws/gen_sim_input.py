@@ -1,12 +1,11 @@
 #%%
 from mhdpy.analysis.standard_import import *
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-datestr = '2023-04-07'
-data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
+fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
-# #%%
+# %%
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 df_cuttimes = load_df_cuttimes('cuttimes_sim.csv').sort_values('Start Time').reset_index(drop=True)
