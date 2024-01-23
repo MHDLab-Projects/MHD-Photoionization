@@ -19,6 +19,7 @@ This was pulled from add_coord_overview.py
 from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.coords import assign_coords_multi
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from datetime import datetime
 
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
 coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
@@ -27,38 +28,142 @@ coord_signal_dict = {k: coords_to_assign[k].dropna('time',how='all') for k in co
 
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'cuttimes.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes)
-cuttimes = extract_cuttime_list(df_cuttimes)
+df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
+df_cuttimes = df_cuttimes.where(df_cuttimes['date'].astype(str) == '2023-05-24').dropna()
+df_cuttimes = df_cuttimes.set_index('Event')
 
-tw = cuttimes[16] # 516_pos
+df_cuttimes
 
 #%%
+from mhdpy.analysis import mws
 
 fp = pjoin(munged_dir, datestr, 'ds_lecroy_time.cdf')
+ds_lecroy = xr.load_dataset(fp)
 
-ds_in = xr.load_dataset(fp)
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
-ds_sel = ds_in.sel(acq_time=tw)
-
-ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
-
-ds = ds.dropna('mnum', how='all')
-
-ds
-
-# %%
-
-from mhdpy.analysis import mws
-ds_mw = ds.mws.calc_mag_phase_AS()
-
-dapd = ds['pd1']
+dapd = ds_lecroy['pd1']
 dapd.name='pd'
 
-damw = ds_mw['AS']
+damw = ds_lecroy['AS']
 damw.name = 'mw'
 
 dapd.coords['time'] = damw.coords['time']
 
-ds = xr.merge([dapd, damw])
+ds_lecroy = xr.merge([dapd, damw])
+
+#%%[markdown]
+
+# # 53x
+
+#%%
+
+
+s = df_cuttimes.loc['53x_1']
+tw = slice(s['Start Time'], s['Stop Time'])
+
+ds_sel = ds_lecroy.sel(acq_time=tw)
+ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
+
+ds = ds.sel(phi=0.8, method='nearest')
+
+ds = ds.dropna('mnum', how='all')
+
+#%%
+
+ds.mean('mnum').to_array('var').plot(row='kwt', hue='var')
+
+#%%
+
+ds_2 = ds.mws._pulse_max().mean('mnum')
+
+ds_2['mw'].plot(marker='o')
+plt.twinx()
+ds_2['pd'].plot(marker='o', label ='photodiode', color='r')
+
+plt.legend()
+
+#%%[markdown]
+
+# # 536 Power
+
+#%%
+
+
+s = df_cuttimes.loc['536_power_1']
+tw = slice(s['Start Time'], s['Stop Time'])
+
+ds_sel = ds_lecroy.sel(acq_time=tw)
+ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
+
+#%%
+
+ds_2 = ds.mws._pulse_max().mean('mnum')
+
+ds_2['mw'].plot(marker='o')
+plt.twinx()
+ds_2['pd'].plot(marker='o', label ='photodiode', color='r')
+
+plt.legend()
+
+plt.xscale('log')
+plt.yscale('log')
+
+# %%[markdown]
+
+# # 5x6 pos
+
+#%%
+
+s = df_cuttimes.loc['5x6_pos_1']
+tw = slice(s['Start Time'], s['Stop Time'])
+
+ds_sel = ds_lecroy.sel(acq_time=tw)
+ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
+
+#%%
+
+ds_2 = ds.mws._pulse_max()
+
+ds_2 = ds_2[['pd','mw']].to_array('var').mean('mnum')
+
+ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
+
+# %%[markdown]
+
+# # 5x3 pos
+
+#%%
+
+s = df_cuttimes.loc['5x3_pos_1']
+tw = slice(s['Start Time'], s['Stop Time'])
+
+ds_sel = ds_lecroy.sel(acq_time=tw)
+ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
+
+#%%
+
+ds_2 = ds.mws._pulse_max()
+
+ds_2 = ds_2[['pd','mw']].to_array('var').mean('mnum')
+
+ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
+
+#%%[markdown]
+
+# # 536 pos
+
+#%%
+s = df_cuttimes.loc['516_pos_1']
+tw = slice(s['Start Time'], s['Stop Time'])
+
+ds_sel = ds_lecroy.sel(acq_time=tw)
+ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
+ds = ds.dropna('mnum', how='all')
+
+ds
+
+
 
 # %% [markdown]
 # # Compare time series of 770 nm photodiode (pd) and microwave scattering (mw) 
