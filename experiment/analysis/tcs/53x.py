@@ -5,6 +5,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
@@ -86,14 +87,19 @@ ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
+
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
 
-da_fit = ds_lecroy['AS']
+ds_lecroy = ds_lecroy.drop(0,'kwt')
 
-# %%
+ds_fit = ds_lecroy.mean('mnum')
+da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
-g = da_fit.mean('mnum').plot(hue='run_plot', row='kwt', x='time')
+#%%
+
+
+g = da_fit.plot(hue='run_plot', row='kwt', x='time')
 
 dropna(g)
 
@@ -105,7 +111,8 @@ dropna(g)
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_1 
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit.mean('mnum'))
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
 #%%
 
@@ -133,15 +140,15 @@ plot.common.xr_errorbar(ds_ne0['mean'], ds_ne0['std'], huedim='run')
 
 #%%
 
+da_fit = ds_lecroy['AS']
+
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
 #TODO: sterr is nan where ds_p is not?
 ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
-#%%
 
-ds_kr
 #%%
 ds_kr = ds_p['kr'].to_dataset(name='mean')
 ds_kr['std'] = ds_p_stderr['kr']
@@ -155,6 +162,18 @@ plt.yscale('log')
 #%%[markdown]
 
 # # Compare Lecroy and MWS
+#%%
+
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
+kr = ds_TP_params['kr']
+kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
+kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
+
+kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
+
+kr_sel
+
 
 
 # %%
@@ -172,7 +191,8 @@ mws_std = da_stats.std('mnum').max('time')
 #%%
 
 ds_params = xr.merge([
-    ds_nK['mean'].sel(mp='barrel').drop('mp').rename('nK_m3'),
+    ds_nK['mean'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
+    ds_nK['mean'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
     ds_ne0['mean'].rename('ne0'),
     ds_kr['mean'].rename('kr'),
     mws_max.rename('AS_max'),
@@ -187,7 +207,7 @@ ds_params
 # Perform averages over run
 # TODO: combine with wma accessor
 
-count = ds_params['nK_m3'].count('run')
+count = ds_params['nK_m3_barrel'].count('run')
 
 ds_p_stats = xr.Dataset(coords=count.coords)
 
@@ -203,13 +223,47 @@ for var in ds_params.data_vars:
 
 ds_p_stats
 
+#%%
+
+vars = ['nK_m3_barrel', 'nK_m3_mw_horns', 'kr', 'AS_max']
+
+fig, axes = plt.subplots(len(vars), 1, figsize=(5,10), sharex=True)
+
+for i, var in enumerate(vars):
+
+    ax = axes[i]
+
+    ax.errorbar(
+        ds_p_stats.coords['kwt'], 
+        ds_p_stats['{}_mean'.format(var)], 
+        yerr=ds_p_stats['{}_stderr'.format(var)], 
+        marker='o', capsize=5,
+        label=var
+        )
+
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_ylabel(var)
+
+
+axes[0].set_ylabel("nK_m3 Barrel [#/m^3]")
+axes[1].set_ylabel("nK_m3 MW Horns [#/m^3]")
+axes[2].set_ylabel("kr [um^3/us]")
+axes[3].set_ylabel("AS Maximum")
+
+kr_sel.sel(Kwt=slice(0.1,1)).plot(hue='T', marker='o', ax=axes[2])
+axes[2].set_title('')
+
+axes[-1].set_xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
 plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
+    ds_p_stats['nK_m3_barrel_mean'], 
     ds_p_stats['AS_max_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
     yerr=ds_p_stats['AS_max_stderr'], 
     marker='o', capsize=5
     )
@@ -223,30 +277,10 @@ plt.xlabel("nK_m3")
 #%%
 
 plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
+    ds_p_stats['nK_m3_barrel_mean'], 
     ds_p_stats['ne0_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
     yerr=ds_p_stats['ne0_stderr'], 
-    marker='o', capsize=5
-    )
-
-plt.xscale('log')
-plt.yscale('log')
-
-plt.ylim(3e12,2e13)
-plt.xlim(4e20,2e22)
-
-plt.ylabel("Ne0")
-plt.xlabel("nK_m3")
-
-#%%
-
-
-plt.errorbar(
-    ds_p_stats['nK_m3_mean'], 
-    ds_p_stats['kr_mean'], 
-    xerr=ds_p_stats['nK_m3_stderr'], 
-    yerr=ds_p_stats['kr_stderr'], 
     marker='o', capsize=5
     )
 
@@ -256,7 +290,36 @@ plt.yscale('log')
 # plt.ylim(3e12,2e13)
 plt.xlim(4e20,2e22)
 
-plt.ylabel("Kr")
-plt.xlabel("nK_m3")
+plt.ylabel("Ne0 [#/um**3]")
+plt.xlabel("nK_m3_barrel Barrel [#/m**3]")
+
+#%%
+
+
+plt.errorbar(
+    ds_p_stats['nK_m3_barrel_mean'], 
+    ds_p_stats['kr_mean'], 
+    xerr=ds_p_stats['nK_m3_barrel_stderr'], 
+    yerr=ds_p_stats['kr_stderr'], 
+    marker='o', capsize=5
+    )
+
+plt.xscale('log')
+plt.yscale('log')
+
+# plt.ylim(3e12,2e13)
+# plt.xlim(4e20,2e22)
+
+plt.ylabel("kr [cm**3/s]")
+plt.xlabel("nK Barrel [#/m^3]")
+
+# plt.axhline(kr_sel.item().magnitude, linestyle = '--')
+plt.twiny()
+kr_sel.plot(hue='T', marker='o')
+plt.gca().get_legend().set_bbox_to_anchor((0.1, 0.6))
+plt.xscale('log')
+
 
 # %%
+
+

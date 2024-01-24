@@ -168,12 +168,23 @@ Looking around for a simple python package for defining data processing/analysis
 
 TODO: 
 
-Improve handling of nans for global fit. 
-Then develop second mws fitting pipeline and revisit absem pipe 2. 
+- [x] Improve handling of nans for global fit. 
+- [x] Then develop second mws fitting pipeline and revisit absem pipe 2. 
     * Had to drop all wavelength for absem, which leads to distorted spectrum for low kwt.
     * different length t_eval error message is showing up for mws
 
-Need to process multiple values for ne0 for cfd data. 
+- [x]  Need to process multiple values for ne0 for cfd data. 
     * interpolate to kwt values of experiment. 
 
-Add mw_horn nK fit to parameter for comparison. 
+- [] Add mw_horn nK fit to parameter for comparison. 
+
+- [x] add basic exponential fit
+
+- [] look at OH-
+
+
+# 2024-01-19
+
+Look at phase oscillations
+
+look at CFD e- Kp and OH
