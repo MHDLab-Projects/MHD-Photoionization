@@ -75,6 +75,8 @@ plt.yscale('log')
 
 #%%
 
+plt.figure()
+
 ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
 ds_p_stderr_sel = ds_p_stderr.sel(run=('2023-05-24', 1))
@@ -103,6 +105,8 @@ dne_str = '$\Delta n_e$ = {:.2f} +/- {:.2f} #/um^3'.format(dne, dne_stderr)
 plt.text(0.2, 0.95, kr_str, transform=plt.gca().transAxes)
 plt.text(0.2, 0.90, dne_str, transform=plt.gca().transAxes)
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnent.png'))
+
 #%%[markdown]
 
 # # check with exponential fit
@@ -122,6 +126,8 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
     )
 
 #%%
+
+plt.figure()
 
 ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
@@ -146,5 +152,7 @@ decay_stderr = ds_p_stderr_sel['decay'].item()
 decay_str = '$\\tau$ = {:.3f} +/- {:.3f}  us'.format(decay, decay_stderr)
 
 plt.text(0.2, 0.95, decay_str, transform=plt.gca().transAxes)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_exp.png'))
 
 # %%

@@ -49,6 +49,62 @@ g = da_max.plot(hue ='run_plot', x='power', marker='o')
 plt.yscale('log')
 plt.xscale('log')
 
+#%%[markdown]
+
+# # Thermal acvitation model
+
+#%%
+
+
+da_max2 = da_max.mean('run')
+da_max2.plot(marker='o')
+# plt.yscale('log')
+
+#%%
+
+from pint import Quantity
+
+f_A = Quantity(0.05, 'dimensionless')
+laser_power = Quantity(10, 'mJ')
+
+powers = da_max2['power'].values*laser_power*f_A
+
+powers
+
+#%%
+
+cantera_results_dir = pjoin(REPO_DIR, 'modeling', 'dataset', 'output')
+
+ds_TP_params = xr.load_dataset(pjoin(cantera_results_dir, 'ds_TP_params.cdf'))
+
+ds_sel = ds_TP_params[['Cp', 'rho']].sel(T=2000, P=1e5, phi=0.8, method='nearest')
+
+
+
+Cp = Quantity(ds_sel['Cp'].mean('Kwt').item(), ds_sel['Cp'].attrs['units'])
+rho = Quantity(ds_sel['rho'].mean('Kwt').item(), ds_sel['rho'].attrs['units'].replace("m3", 'm**3'))
+
+Cp_vol = Cp * rho
+Cp_vol
+
+heated_volume = Quantity(1, 'cm^3') # Unknown/not well defined
+
+Cp_final = Cp_vol * heated_volume
+
+Cp_final.to('J/K')
+
+#%%
+
+deltaTs = powers / Cp_final
+
+deltaTs.to('K')
+
+
+#%%
+
+ds_TP_params['rho']
+
+
 # %%
 
 da_fit = da_lecroy.copy()

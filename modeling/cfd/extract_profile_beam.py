@@ -14,10 +14,10 @@ pv.OFF_SCREEN = True
 r_beam = 0.005
 
 # TODO: need to rotate frame or something in order to eventually convert to xarray. 
-# zx_ratio = 1.875/4.25
-# direc_beam = (-zx_ratio, 0, 1)
+zx_ratio = 1.875/4.25
+direc_beam = (-zx_ratio, 0, 1)
 
-direc_beam = (0,0,1)
+# direc_beam = (0,0,1)
 
 # %%
 
