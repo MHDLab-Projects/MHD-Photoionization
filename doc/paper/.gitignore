@@ -1,1 +1,8 @@
 zotero_cits.bib
+
+# files not cleaned up by latexmk clean for some reason
+_markdown_main
+main.bbl
+*.markdown.in
+*.run.xml
+*.synctex.gz

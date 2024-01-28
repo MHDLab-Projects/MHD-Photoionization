@@ -59,7 +59,69 @@
   ],
   "env": {}
  },
-
+{
+"name": "lualatex",
+"command": "lualatex",
+"args": [
+    "-shell-escape", //I can't remember why I needed this in the past 
+    "-synctex=1",
+    "-interaction=nonstopmode",
+    "-file-line-error",
+    "-pdf",
+    "-output-directory=%OUTDIR%",           
+    "%DOC%"
 ],
-"latex-workshop.latex.outDir": "output", // https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#placeholders
+"env": {}
+},
+		{
+			"name": "lualatexmk",
+			"command": "latexmk",
+			"args": [
+				"-synctex=1",
+				"-interaction=nonstopmode",
+				"-file-line-error",
+				"-lualatex",
+				"-outdir=%OUTDIR%",
+				"%DOC%"
+			]
+		},
+		{
+			"name": "lualatexmk_clean",
+			"command": "latexmk",
+			"args": [
+                "-c"
+			]
+		}
+],
+// "latex-workshop.latex.outDir": "output", // https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#placeholders
+"latex-workshop.latex.recipe.default": "lualatexmk",
+"latex-workshop.latex.autoBuild.run": "never",
+"latex-workshop.latex.recipes": [
+    {
+        "name": "lualatex",
+        "tools": [
+            "lualatex",
+
+        ]
+    },
+		{
+			"name": "lualatexmk",
+			"tools": [
+				"lualatexmk",
+                "lualatexmk_clean"
+			]
+		},
+
+    {
+        "name": "pdflatex -> bibtex -> pdflatex TWICE",
+        "tools": [
+            "pdflatex",
+            "bibtex",
+            "pdflatex",
+            "pdflatex",
+        ]
+    }        
+],
+
+
 }
