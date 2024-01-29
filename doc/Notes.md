@@ -188,3 +188,14 @@ TODO:
 Look at phase oscillations
 
 look at CFD e- Kp and OH
+
+# 2024-02-02
+
+- [] Main K dependence plot with CFD time windows. Develop functionality for sub timewindows. 
+
+- [] plot of error for each indivisual test case 
+
+- [] Collect physical properties
+
+- [] check surfactant emulsion recipe 
+    use test plan for recipe and add surfactant to CFD input
