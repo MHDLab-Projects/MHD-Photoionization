@@ -20,7 +20,7 @@ HVOF torch with syringe pump potassium feeding.
 \end{itemize}
 
 
-\begin{figure}[h]
+\begin{figure}[p]
     \includegraphics[width=\linewidth]{\repodir/experiment/analysis/various/output/figures/tc_plot_2023-05-18.png} 
     \caption{Representative experiment}
     \label{fig:expt_example}
@@ -88,6 +88,24 @@ of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet an
 \begin{equation}
     \alpha(\lambda) = 1 - \left(\frac{I_{L+F}(\lambda) - I_{F}(\lambda)}{I_F(\lambda)}\right)
 \end{equation}
+
+Currently the absorption is fit with the Beer-Lambert law, but we are working on numerical integration of the absorption to determine the number density and this section will be rewritten. 
+
+The differential equaiton is 
+
+\begin{equation}
+    \frac{dI}{dx} = -\kappa(\lambda) n_K(x) I
+\end{equation}
+
+If we assume $n_K$ is constant, we can solve the differential equation to get the Beer lambert law:
+
+\begin{equation}
+    \alpha(\lambda) = 1 - \exp(-\kappa(\lambda) n_K L)
+\end{equation}
+
+Where $L$ is the path length.
+
+For numerical integration, we write $n_K(x) = n_{K,max} f(x)$, where $f(x)$ is the profile of the number density along the beam path determined by CFD. 
 
 
 
