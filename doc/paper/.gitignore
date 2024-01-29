@@ -1,4 +1,4 @@
-zotero_cits.bib
+*.bib
 
 # files not cleaned up by latexmk clean for some reason
 _markdown_main
