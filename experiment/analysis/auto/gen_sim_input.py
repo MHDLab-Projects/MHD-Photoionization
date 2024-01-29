@@ -152,3 +152,131 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
     
+# %%
+
+
+from mhdpy.fileio.tdms import tdms2ds
+from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+
+fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
+
+dss_out = []
+with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwriter') as writer:
+    for key in dsst_stats:
+        ds = dsst_stats[key]
+
+        dss = []
+
+        for idx, row in df_cuttimes.iterrows():
+            timeslice = slice(row['Start Time'], row['Stop Time'])
+
+            ds_sel = ds.sel(time=timeslice)
+            ds_sel = assign_signal(ds_sel, dst_coords['kwt'].round(2), timeindex='time')
+
+            dss.append(ds_sel)
+
+        ds = xr.concat(dss, dim='time')
+
+        ds = unstack_multindexed_acq_dim(ds)
+
+        ds_out = calc_stats(ds, stat_dim='mnum')
+
+        df_out = ds_out.pint.dequantify().to_dataframe()
+
+        units = [ds_out[var].pint.units for var in ds_out.data_vars]
+        long_names = [ds_out[var].attrs['long_name'] if 'long_name' in ds_out[var].attrs else '' for var in ds_out.data_vars]
+
+
+        df_out.columns = [df_out.columns, units, long_names]
+        df_out.index.names = ['Statistic', 'Test Case']
+        df_out.columns.names = ['Name','Unit','Long Name']
+
+        df_out.to_excel(writer, sheet_name=sheet_names[key])
+
+    recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
+    # recipe_em = recipe_em.to_frame().T
+
+    # This is to remove the attributes associated with CC_K_massFrac_in signal. Is there a better way to 'carry' the recipe?
+    col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
+       'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
+       'percent_K_to_K2CO3', 'f_water']
+
+    #TODO: some of these not preset when revisiting script
+    col_select = [col for col in col_select if col in recipe_em]
+    
+    recipe_em = recipe_em.loc[col_select]
+
+    recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
+    recipe_split.columns = ['val', 'unit']
+    recipe_split = recipe_split.T
+    
+    recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
+
+    df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
+
+
+
+#%%
+
+df_ct = df_cuttimes.copy()
+
+fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'experiment_timewindows.csv')
+df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+# df_exptw = pd.read_csv(fp_expt_tws)
+
+df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
+df_exptw['date'] = df_exptw['Start Time'].apply(lambda x: x.date())
+df_exptw = df_exptw.set_index('date').sort_index()
+
+df_ct
+
+coord_keys = [
+    ('hvof', 'CC_K_massFrac_in'),
+    ('filterwheel', 'Filter Position'),
+    ('motor', 'Motor C Relative'),
+    ('hvof','CC_equivalenceRatio')
+]
+
+das = []
+
+for c in coord_keys:
+    da = dsst[c[0]][c[1]]
+    das.append(da)
+
+ds_orig = xr.merge(das)
+
+da = ds_orig['CC_K_massFrac_in']
+ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how='all')
+
+
+#%%
+
+plt.rcParams.update({'font.size': 16})
+
+fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)))
+
+# for i, date, df in df_ct.groupby('date'):
+for i, date in enumerate(df_exptw.index):
+
+
+
+    tw_expt = df_exptw.loc[date]
+    tw_expt = slice(tw_expt['Start Time'], tw_expt['Stop Time'])
+
+    dsst['hvof']['CC_K_massFrac_in'].sel(time=tw_expt).plot(ax=axes[i])
+
+    df_ct_date = df_ct[df_ct['date'] == date]
+
+    for idx, row in df_ct_date.iterrows():
+        axes[i].axvspan(row['Start Time'], row['Stop Time'], color='green', alpha=0.3)
+    
+    axes[i].set_title(date)
+
+    if i != len(df_exptw)-1:
+        axes[i].set_xlabel('')
+        axes[i].set_xticklabels([])
+
+#%%
+
+df_exptw
