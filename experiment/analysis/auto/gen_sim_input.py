@@ -108,6 +108,7 @@ da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims =
 from mhdpy.coords.ct import assign_tc_general
 from mhdpy.xr_utils import calc_stats
 
+#%%
 
 dss_out = []
 with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') as writer:
@@ -151,4 +152,3 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
     
-# %%

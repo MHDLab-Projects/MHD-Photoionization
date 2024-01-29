@@ -3,6 +3,7 @@
 
 # %%
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 # enable dark mode
 # plt.style.use('dark_background')
@@ -157,3 +158,84 @@ ds_alpha
 da = ds_alpha.sel(time=tw).to_array('var')
 
 da.plot(hue='var', col='mp', row='time')
+# %%
+
+#%%[markdown]
+
+# ## Calculate Alpha
+
+# # Just pulling in the main dataset for now.
+
+#%%
+
+
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+tc = '53x'
+
+ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = ds_absem.xr_utils.stack_run()
+
+ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ds_absem.sel(wavelength=slice(750,790))
+
+#%%
+
+
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+
+ds_fit = ds_absem
+
+ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
+
+#%%
+
+ds_absem['alpha_fit'] = ds_absem_fit['alpha_fit']
+
+# %%
+
+ds_sel = ds_absem.sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest')
+ds_sel = ds_sel.mean('mnum')
+ds_sel
+
+
+
+#%%
+
+ds_sel2 = ds_sel.sel(mp='barrel')
+
+nK_sel = ds_p['nK_m3'].sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest').sel(mp='barrel')
+
+
+fig, axes = plt.subplots(3, sharex=True, figsize=(4,9))
+
+ds_sel2[['led_on','led_off']].to_array('var').plot(ax=axes[0], hue='var')
+
+ds_sel2[['diff','calib']].to_array('var').plot(ax=axes[1], hue='var')
+
+ds_sel2['alpha'].plot(ax=axes[2], label='Data')
+ds_sel2['alpha_fit'].plot(ax=axes[2], label='Fit')
+
+plt.text
+
+for ax in axes:
+    ax.set_title('')
+
+axes[0].set_ylabel('Counts')
+axes[0].set_xlabel('')
+axes[0].legend(['Led On','Led Off'])
+
+axes[1].set_ylabel('Counts')
+axes[1].set_xlabel('')
+axes[1].legend(['On - Off','Calib.'])
+
+axes[2].set_ylabel('Absorption')
+axes[2].set_xlabel('Wavelength (nm)')
+axes[2].legend()
+
+axes[2].text(750,0.5, '$n_K$ = {:.2e}'.format(nK_sel.values), fontsize=10)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'absem_proc_overview.png'), bbox_inches='tight')
+
+#%%
+

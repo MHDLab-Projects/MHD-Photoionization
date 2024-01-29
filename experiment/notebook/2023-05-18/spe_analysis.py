@@ -71,6 +71,35 @@ da.mean('estime').plot(col='gatedelay', col_wrap=4)
 
 #%%
 
+plt.figure(figsize=(5,4))
+
+da_plot = da.mean('estime').sel(gatedelay=[750, 800, 850])
+da_plot.coords['gatedelay'].attrs['units'] = 'ns'
+
+da_plot.plot(row='gatedelay')
+
+#%%
+
+# Create a figure and axes with the desired size
+fig, axes = plt.subplots(nrows=3, figsize=(4, 8), sharex=True, sharey=True)
+
+# Select the gatedelays
+gatedelays = [750, 800, 850]
+
+# Plot each gatedelay on a different axis
+for ax, gatedelay in zip(axes, gatedelays):
+    da_plot = da.mean('estime').sel(gatedelay=gatedelay)
+    da_plot.coords['gatedelay'].attrs['units'] = 'ns'
+    da_plot.plot(ax=ax)
+
+axes[0].set_xlabel('')
+axes[1].set_xlabel('')
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img.png'), bbox_inches='tight', dpi=300)
+
+#%%
+
 da = das['63']
 
 da.mean('estime').mean('gatedelay').plot(robust=True)
