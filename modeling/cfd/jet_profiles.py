@@ -4,11 +4,13 @@
 Summary
 -------
 
-Testing of jet profiles and derivative functions
+Testing of analytical jet profiles and derivative functions
 
 
 TODO
 - add citations/references for profiles
+
+
 
 """
 import numpy as np

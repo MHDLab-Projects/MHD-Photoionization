@@ -1,8 +1,9 @@
 """
 Summary
 -------
-Use scipy tools for ray/beam integration with absorption.
+Use scipy tools for beam integration with absorption.
 
+Testing of different methods to perform the ray integration
 
 Routines
 --------
@@ -30,6 +31,8 @@ TODO
     $$
 
 
+https://docs.pyvista.org/version/stable/api/core/_autosummary/pyvista.PolyDataFilters.ray_trace.html#pyvista.PolyDataFilters.ray_trace
+
 """
 import os
 import pyvista as pv
@@ -38,6 +41,8 @@ import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 import numpy as np
 import cantera as ct
+
+from pv_axi_utils import pv_interpolator, AxiInterpolator
 
 results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"
 sim_run = "."
@@ -52,49 +57,6 @@ class Source:
         self.start = np.array(start)
         self.finish = np.array(finish)
         self.diameter = diameter
-
-
-def pv_interpolator(mesh, var_names=[]):
-    p = mesh.points
-    names = []
-    data = []
-    if len(var_names) == 0:
-        vars = mesh.point_data.keys()
-    else:
-        vars = [k for k in var_names if (k in mesh.point_data)]
-
-    for k in vars:
-        v = mesh.point_data[k]
-        if len(v.shape) == 1:
-            data.append(v)
-            names += [k]
-        if len(v.shape) == 2:
-            n_points, n = v.shape
-            for i in range(n):
-                data.append(v[:,i])
-                names.append("{}_{}".format(k,i))
-    data = np.array(data).T
-    return interpolate.LinearNDInterpolator(p[:,:2], data), names
-#
-# https://docs.pyvista.org/version/stable/api/core/_autosummary/pyvista.DataSetFilters.sample.html
-#
-# https://docs.pyvista.org/version/stable/examples/01-filter/resample.html#resampling-example
-#
-
-class AxiInterpolator:
-
-    def __init__(self, mesh, var_names=[]):
-        self.interp, self.names = pv_interpolator(mesh, var_names)
-        self.index = { x : self.names.index(x) for x in self.names }
-
-
-    def __call__(self, points):
-
-        p = points.T
-        x = p[0]
-        r = (p[1]**2 + p[2]**2)**0.5
-
-        return self.interp((x,r))
 
 
 if __name__ == "__main__":
@@ -173,6 +135,9 @@ class GaussAbsorption:
         self.T0 = 1000.0
         self.Q0 = 1e-18
         self.A_min = 1e-9
+
+    def calc(self, T, lam_name):
+        pass
 
     def __call__(self, T, lam_nm):
         """return nornmalized cross section"""
@@ -334,7 +299,7 @@ def test_range(wave_range=_wave_range):
     s = np.sort(s)
 
     def f_pos(s):
-        pos = x_source + s[:np.newaxis]*(x_target - x_source)
+        return x_source + s[:np.newaxis]*(x_target - x_source)
 
     pos = f_pos(s)
     pos_axi = axi_array(pos)
@@ -348,7 +313,7 @@ def test_range(wave_range=_wave_range):
     C_CL = out[0]
 
     def f_val(s):
-        pos = x_source + s*(x_target - x_source)
+        pos = f_pos(s)
         r = (pos[1]**2 + pos[2]**2)**0.5
         x = pos[0]
         return f_mesh((x, r))
@@ -416,116 +381,7 @@ def test_range(wave_range=_wave_range):
     return {"kappaL_star":A, "kappaL":A1, "intensity_ratio":I }
 
 
-def line_interpolator(f_pos, f_val, a=0.0, b=1.0, max_iter=10, rtol=0.01, do_plot=False, verbose=1):
-    """grid interpolator *f_val* to a line interpolator
 
-    Parameters
-    ----------
-    f_pos : function(s)
-        calculate cartesian coordintes from line coordinate, *s*
-    f_val : function(pos[:,n_dim])[:,n_var]
-        calculate array of n_var values
-    a : float
-        starting point of line
-    b : interval end
-        end point of line
-    tol : float
-        max relative difference between values
-
-
-    Returns
-    -------
-
-
-
-    Notes
-    -----
-    Given:
-        1. f_val(x) - a "value" function which calculates a set of values at cartesian
-            position, *x*
-        2. f_pos(s) - a "posotion" function which calculates a position given a line
-            position, *s*
-
-    1. finds a set of points, s[] on the interval between a and b, such that
-        the difference in the values between any two adjacents points on s[]
-        is less staop a specied value
-
-
-
-
-    """
-
-    s = np.linspace(a,b,21)
-    x = f_pos(s)
-    v = f_val(x)
-    #
-    w_small = 1e-6
-    w_vsmall = 1e-12
-    w = (v.max(axis=0) - v.min(axis=0)) + (v.max(axis=0) + v.min(axis=0))*w_small + w_vsmall
-    if do_plot:
-        cmap = plt.colormaps["viridis"]
-        n_points, n_vars = v.shape
-        fig, ax = plt.subplots(n_vars, 2)
-        for i in range(n_vars):
-            ax[i,0].plot(s,v[:,i],'k.')
-
-    if verbose:
-        header = 50*"-"
-        print(header)
-        print("Adpative Interpolator")
-        print("{:4} {:5} {:4} {:>6} {:>9} {:>9}".format("iter","points","#new","%new","maxDelta","maxLoc"))
-        print(header)
-    for i in range(max_iter):
-
-        dv = abs(v[1:,:] - v[:-1,:])
-        ii = np.where( dv > rtol*w[np.newaxis,:] )
-        i_new = np.unique(ii[0])
-        if verbose:
-            n_new = len(i_new)
-            n_s = len(s-1)
-            f = 100.0*n_new/n_s
-            dv_norm = np.max(dv/w,axis=-1)
-            print("{:4d} {:5d} {:4d} {:6.1f} {:9.1e} {:9.1e}".format(i, n_s, n_new, f, dv.max(), s[dv_norm.argmax()]))
-        if len(ii[0]) < 1:
-            break
-        s_new = (s[i_new] + s[i_new+1])*0.5
-        x_new = f_pos(s_new)
-        v_new = f_val(x_new)
-
-        s = np.concatenate([s,s_new])
-        v = np.concatenate([v,v_new])
-
-        ii = np.argsort(s)
-        v = v[ii]
-        s = s[ii]
-        dv = abs(v[1:,:] - v[:-1,:])
-        if do_plot > 0:
-            color = cmap( float(i)/max_iter )
-            for i in range(n_vars):
-                if do_plot == 1:
-                    ax[i,0].plot(s_new[:],v_new[:,i],'.', color=color, alpha=0.1)
-                else:
-                    ax[i,0].plot(s[:],v[:,i],'-', color=color, alpha=0.1)
-                ax[i,1].hist(dv[:,i], color=color, orientation="horizontal")
-                ax[i,1].set_ylabel(r"$\Delta v$"+"_{}".format(i))
-                ax[i,0].set_ylabel("v_{}".format(i))
-                ax[-1,0].set_xlabel("beam coordnate")
-                ax[-1,1].set_xlabel("# of new points")
-
-
-
-    x = f_pos(s)
-    f = interpolate.interp1d(s, v.T)
-    if verbose:
-        n_s = len(s)
-        a = np.linspace(0,1,n_s)
-        for i in range(n_vars):
-            #tw = ax[i,0].twiny()
-            ax[i,0].plot(a,v[:,i],'.', alpha=0.05)
-        print(header)
-        fig.tight_layout()
-        return f, fig
-    return f
 
 
 _x_CL = np.zeros((9,n_dim))
@@ -652,4 +508,4 @@ def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
 
 
 if __name__ == "__main__":
-    integrate_beams(method={"integrate":"simpons"})
+    integrate_beams(method={"integrate":"simpsons"})
