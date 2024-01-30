@@ -3,7 +3,7 @@ Summary
 -------
 Use scipy tools for beam integration with absorption.
 
-Testing of different methods to perform the ray integration
+Testing of different methods to perform the ray integration.
 
 Routines
 --------
@@ -35,6 +35,7 @@ https://docs.pyvista.org/version/stable/api/core/_autosummary/pyvista.PolyDataFi
 
 """
 import os
+from os.path import join as pjoin
 import pyvista as pv
 import scipy.interpolate as interpolate
 import scipy.integrate as integrate
@@ -42,12 +43,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cantera as ct
 
-from pv_axi_utils import pv_interpolator, AxiInterpolator
+from pv_axi_utils import pv_interpolator, AxiInterpolator, line_interpolator
 
-results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"
-sim_run = "."
-study = "."
-fname = os.path.join(results_dir, study,sim_run,"frontCyl.vtk")
+try:
+    from mhdpy.fileio import gen_path
+except Exception as e:
+    print(e)
+
+case = "mdot0130_phi080_K010"
+try:
+    sp_dir = gen_path('sharepoint')
+    results_rel = r"Team Member Files\DaveH\Results\axiJP8200_17Jul23"
+    results_dir = pjoin(sp_dir, results_rel)
+    fname = os.path.join(results_dir, "medium",case,"frontCyl.vtk")
+
+except Exception as e:
+    print(e)
+    results_dir = r"C:\Users\Huckaby\Desktop\MHD\Simulations\viz_example"
+    sim_run = "."
+    study = "."
+    fname = os.path.join(results_dir,study,sim_run,"frontCyl.vtk")
+
 n_dim = 3
 
 class Source:
@@ -380,15 +396,16 @@ def test_range(wave_range=_wave_range):
         tw.set_ylabel("log10(error)")
     return {"kappaL_star":A, "kappaL":A1, "intensity_ratio":I }
 
-
-
-
-
 _x_CL = np.zeros((9,n_dim))
 _x_CL[:,0] = np.linspace(0.2,0.6,9)
 _lam_nm = np.arange(760,775+0.1,0.5)
 _method = {"integrate":"simpson", "interpolate":"beam"}
 
+#line_interpolator = interpolate.LinearNDInterpolator
+#import beam_utils
+#line_interpolator = beam_utils.adapt_array 
+#(s, v, pos, f_v, max_iter=10, rtol=1e-2, do_plot=False):
+    
 def integrate_beams(x_CL=_x_CL, lam_nm=_lam_nm, method=_method):
     """calculate relative beam intensity for wavelengths, lam[] and
     and centerline positions x_CL[]

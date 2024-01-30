@@ -47,3 +47,19 @@ $ I_{L+F} = I_L + I_F$
 
 
 TODO: just try profiles along the beam centerline to start
+
+
+# 2023-11-03
+
+Thinking through how to handle experiment notebook
+
+Current setup: process data for each date in experiment notebook, then this repository pulls together all processed data
+
+The processing of data should be ultimately included in the publication repository. 
+
+Option 1: move dates from experiment notebook to publication repository
+Option 2: Make a new multi-date processing script. The notebook scripts are heavily refactored in this case and functions used in multi-date
+
+# 2023-11-08 
+
+Chose option 1 

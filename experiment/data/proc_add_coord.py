@@ -4,11 +4,11 @@ from mhdpy.analysis.standard_import import *
 import re
 from collections import defaultdict
 
-from mhdpy.io import load_df_cuttimes, extract_cuttime_list
-from mhdpy.io import ds_to_tdms, TdmsWriter
+from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
 from mhdpy.mws_utils.coords import gen_coords_to_assign_1, assign_coords_multi
 
-dsst = mhdpy.io.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
 
 df_cuttimes = load_df_cuttimes(pjoin(DIR_PROC_DATA, 'cuttimes.csv'), reduce_columns=False)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)

@@ -179,7 +179,7 @@ ds_TP_params = ds_TP_params.assign({'Gth':Gth})
 
 # In[18]:
 
-pathout = mhdpy.io.gen_path('sharepoint', 'lee','Data','Cantera Gasses','Ar')
+pathout = mhdpy.fileio.gen_path('sharepoint', 'lee','Data','Cantera Gasses','Ar')
 
 # df_input.to_csv(os.path.join(path, 'inputs.csv'))
 

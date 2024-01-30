@@ -14,7 +14,7 @@ import os
 import pyvista as pv
 import triangle
      
-from ray_integration import AxiInterpolator
+from pv_axi_utils import pv_interpolator, AxiInterpolator
 import tri_mesh
 from scipy import interpolate
 
@@ -180,7 +180,7 @@ def adapt_xr(ds_in, f_val, max_iter, rtol=0.01, verbose=0):
     for i in range(max_iter):        
         dv_ds = ds_out.diff("s")
             
-def adpat_array(s, v, pos, f_v, max_iter=10, rtol=1e-2, do_plot=False):
+def adaapt_array(s, v, pos, f_v, max_iter=10, rtol=1e-2, do_plot=False):
     """one-dimensional adaption on an extruded unstructured mesh
 
     Parameters
