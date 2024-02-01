@@ -1,7 +1,9 @@
 #%%
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
@@ -62,8 +64,8 @@ dsst_stats = {key: dsst[key] for key in key_sel}
 
 da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
-from mhdpy.analysis.ct import assign_tc_general
-from mhdpy.analysis.xr import calc_stats
+from mhdpy.coords.ct import assign_tc_general
+from mhdpy.xr_utils import calc_stats
 
 
 dss_out = []
@@ -95,6 +97,9 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
     col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
        'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
        'percent_K_to_K2CO3', 'f_water']
+
+    #TODO: some of these not preset when revisiting script
+    col_select = [col for col in col_select if col in recipe_em]
     
     recipe_em = recipe_em.loc[col_select]
 

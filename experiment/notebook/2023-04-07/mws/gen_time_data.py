@@ -1,17 +1,14 @@
 """Generate time curves to go into processed data tdms file"""
 
+## TODO: Writing disabled for now... incorporate in post processing?
 #%%
-import os
-from os.path import join as pjoin
-import matplotlib.pyplot as plt
-import pandas as pd
-import sys
-import xarray as xr
-import numpy as np
 
-import mhdpy
+from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 # dsst = mhdpy.fileio.TFxr().as_dsst()
 
@@ -19,7 +16,7 @@ lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 input_fns = [fn for fn in os.listdir(lecroy_munged_folder) if 'Silicon' not in fn]
 input_fns = [fn for fn in input_fns if 'Nothing' not in fn]
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 
 dss = []
@@ -50,7 +47,7 @@ ds = xr.concat(dss, 'acq_time')
 
 ds = ds.sortby('acq_time')
 
-ds = calc_mag_phase_AS(ds)
+ds = ds.mws.calc_mag_phase_AS()
 
 #%%
 
@@ -80,15 +77,21 @@ ds_out = xr.merge([
 ])
 
 ds_out = ds_out.rename(acq_time =  'time')
+
 #%%
 
-from mhdpy.fileio.tdms import ds_to_tdms
-from nptdms import TdmsWriter
+ds_out['pulse_max'].plot()
 
-# fp_out = os.path.join(lecroy_munged_folder, 'test.tdms')
-fp_out = pjoin(data_folder, 'Processed_Data.tdms')
 
-with TdmsWriter(fp_out, 'a') as tdms_writer:
-    ds_to_tdms(ds_out, 'lecroy',tdms_writer)
+#%%
+
+# from mhdpy.fileio.tdms import ds_to_tdms
+# from nptdms import TdmsWriter
+
+# # fp_out = os.path.join(lecroy_munged_folder, 'test.tdms')
+# fp_out = pjoin(data_folder, 'Processed_Data.tdms')
+
+# with TdmsWriter(fp_out, 'a') as tdms_writer:
+#     ds_to_tdms(ds_out, 'lecroy',tdms_writer)
 
 

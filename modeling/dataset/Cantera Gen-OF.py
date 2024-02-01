@@ -17,7 +17,7 @@ import xyzpy
 # import cantera_utils.et
 # import cantera_utils.util as ct_utils
 
-import mhdpy.cantera.util as ct_utils 
+import mhdpy.cantera_utils.util as ct_utils 
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -43,7 +43,7 @@ paramnames = ['rho','enthalpy','Cp','Cv','sigma','mobility','viscosity','thermal
 
 
 gas_tr, electron_trans = ct_utils.gen_gas(
-                    GasThermo_tr = os.path.join(physical_data_folder, 'drm19_SeededKero.cti'),
+                    GasThermo_tr = os.path.join(physical_data_folder, 'drm19_SeededKero.yaml'),
                     GasThermoName_tr = 'gas',
                     CrossSectionFile = os.path.join(physical_data_folder, 'NETL_CF2017.csv'),
                     basis = 'molar'
@@ -110,7 +110,6 @@ ds.attrs = dict()
 ds = ds.squeeze()
 
 ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciesparams(ds, gas_tr)
-
 
 # %%
 
@@ -216,7 +215,7 @@ ds_HP_species.to_netcdf(os.path.join(output_path, 'ds_HP_species.cdf'))
 ds_HP_species_rho.to_netcdf(os.path.join(output_path, 'ds_HP_species_rho.cdf'))
 
 
-# from mhdpy.analysis.xr import writeunitsrowcsv
+# from mhdpy.xr_utils import writeunitsrowcsv
 
 # ds_TP_params.to_dataframe().to_csv(os.path.join(output_path, 'ds_TP_params.csv'))
 # writeunitsrowcsv(ds_TP_params,os.path.join(output_path, 'ds_TP_params.csv'))

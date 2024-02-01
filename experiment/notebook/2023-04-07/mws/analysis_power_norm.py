@@ -5,13 +5,15 @@ The time offset is varied and the acquisition time standard deviation is examine
 #%%
 from mhdpy.analysis.standard_import import *
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 tc = 'ds_SeedRamp_Run2'
 
@@ -19,13 +21,10 @@ fp_in = pjoin(data_folder, 'Lecroy',  '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
 
-ds = calc_mag_phase_AS(ds_in)
+ds = ds.mws.calc_mag_phase_AS()
 
 ds.coords['acq_time'].attrs = dict(long_name='Acquisition Time')
 ds.coords['time'].attrs = dict(long_name='Osc. Time', units = '$\mu s$')
-
-#TODO: fix timeshift in setup script
-ds = ds.assign_coords(acq_time= ds.coords['acq_time'].values - np.timedelta64(1, 'h'))
 
 # %%
 

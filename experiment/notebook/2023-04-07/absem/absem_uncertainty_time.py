@@ -11,17 +11,17 @@ ds_calib_mp = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_calib.cdf'))
 ds_mp_mean = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_mean.cdf'))
 ds_mp_std = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_std.cdf'))
 
-ds_mean_time = ds_mp_mean.mean('wavelength').dropna('time','all')
+ds_mean_time = ds_mp_mean.mean('wavelength').dropna('time', how='all')
 
 # %%
 
 
-ds_mean_time['led_off'].dropna('time','all').plot()
+ds_mean_time['led_off'].dropna('time', how='all').plot()
 
 #%%
 
 
-ds_mean_time['led_on'].dropna('time','all').plot()
+ds_mean_time['led_on'].dropna('time', how='all').plot()
 
 
 #%%
@@ -34,7 +34,7 @@ plt.figure()
 tw = slice(Timestamp('2023-04-07 20:05:16.134990336'), Timestamp('2023-04-07 20:35:43.603072768'), None)
 
 ledon = ds_mp_mean['led_off']
-ledon = ledon.sel(time=tw).dropna('time','all')
+ledon = ledon.sel(time=tw).dropna('time', how='all')
 ledon = ledon.sel(wavelength = slice(765,772))
 
 
@@ -43,7 +43,7 @@ ledon = ledon.integrate('wavelength')
 mean = ledon#.resample(time='60s').mean()
 
 
-std = ds_mp_std['led_off'].sel(time=tw).dropna('time','all')
+std = ds_mp_std['led_off'].sel(time=tw).dropna('time', how='all')
 std = std.sel(wavelength = slice(765,772)).integrate('wavelength')
 
 # std = ledon.resample(time='60s').std()

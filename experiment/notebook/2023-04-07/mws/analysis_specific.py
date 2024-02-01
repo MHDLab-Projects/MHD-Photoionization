@@ -1,28 +1,32 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import re
 
-data_folder = mhdpy.fileio.gen_path('sharepoint', 'Data Share', 'MHD Lab', 'HVOF Booth', '2023-04-07')
+datestr = '2023-04-07'
+data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # #%%
 
 
-tc = '536_power_1'
+tc = '536_power'
 
-from mhdpy.mws_utils import calc_mag_phase_AS
+from mhdpy.analysis import mws
 
 
 fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
+ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-ds = calc_mag_phase_AS(ds_in)
+ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
 
 
-tc_dim = [dim for dim in ds.dims if dim != 'time'][0]
+tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
 mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
 
 mnum_counts
@@ -32,40 +36,11 @@ ds_avg = ds.mean('mnum', keep_attrs=True)
 
 # %%
 
-from mhdpy.analysis.xr import fit_da_lmfit
-from lmfit import Model
-from mhdpy.mws_utils.fitting import fit_fn
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_1
 
 da_fit = ds_avg['AS'].copy()
 
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-tc_dim = [dim for dim in da_fit.dims if dim != 'time'][0]
-
-da_fit = da_fit.where(pulse_max > 5e-4) # Targeting low power...
-da_fit = da_fit.dropna(tc_dim,'all')
-pulse_max = da_fit.sel(time=slice(-1,1)).max('time')
-
-da_fit = da_fit/pulse_max
-
-da_fit = np.log(da_fit).dropna('time', 'all')
-
-mod = Model(lambda x, dne, ne0: fit_fn(x, dne, ne0, take_log=True))
-
-params = mod.make_params()
-params['dne'].value = 1e14
-params['ne0'].value = 1e12
-params['dne'].min = 0
-params['ne0'].min = 0
-
-da_fit_region = da_fit.sel(time=slice(0,30))
-x_eval = da_fit.sel(time=slice(0,30)).coords['time'].values
-
-# da_fit_coarse = da_fit_region.coarsen(time=10).mean()
-fits, ds_p, ds_p_stderr = fit_da_lmfit(da_fit_region, mod, params, 'time', x_eval)
-
-fits = np.exp(fits)
-da_fit = np.exp(da_fit)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 
 #%%
 
@@ -96,8 +71,8 @@ param_str
 # pre_pulse_std = da_fit.sel(time=slice(-50,-1)).std('time')
 # plt.hlines(pre_pulse_std.sel({tc_dim: tc_val}).item(), 0, 50, linestyle = '--')
 
-da_fit.sel({tc_dim: tc_val}).plot(marker='o', label='Data')
-fits.sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red')
+ds_mws_fit['AS'].sel({tc_dim: tc_val}).plot(marker='o', label='Data')
+ds_mws_fit['AS_fit'].sel({tc_dim: tc_val}).plot(linestyle='--', label='Fit', color='red')
 
 plt.yscale('log')
 plt.ylim(5e-4,2)
@@ -138,12 +113,7 @@ from pint import Quantity
 
 mws_offset_min = Quantity(1 + 2/16, 'inches')
 mws_offset_max = Quantity(1 + 4/16, 'inches')
-536_pos_goldilocks = Quantity(150, 'mm')
+pos_536_goldilocks = Quantity(150, 'mm')
 
-print("Goldilocks Position min: {}".format((mws_offset_min + 536_pos_goldilocks).to('mm')))
-print("Goldilocks Position max: {}".format((mws_offset_max + 536_pos_goldilocks).to('mm')))
-
-
-#%%
-
-ds.sel(time=tw_power)
+print("Goldilocks Position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
+print("Goldilocks Position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))
