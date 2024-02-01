@@ -64,6 +64,8 @@ def test_pipe_fit_alpha_1(ds_absem):
     ds_absem = ds_absem.sel(kwt=1,method='nearest')
     ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_1(ds_absem, spect_red_dict)
 
+    assert ds_p['nK_m3'].item() == pytest.approx(1.17677e+22, rel=1e-4)
+
 
 def test_pipe_fit_alpha_2(ds_absem_all_mnum):
     ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_2(ds_absem_all_mnum)

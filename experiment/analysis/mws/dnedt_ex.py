@@ -75,6 +75,8 @@ plt.yscale('log')
 
 #%%
 
+plt.figure(figsize=(4,3))
+
 ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
 ds_p_stderr_sel = ds_p_stderr.sel(run=('2023-05-24', 1))
@@ -83,12 +85,12 @@ ds['AS_all'].plot(label='Data (all)')
 ds['AS_sel'].plot(label='Data (fitted)')
 ds['AS_fit'].plot(label='Fit', color='black', linestyle='--')
 
-plt.legend()
 
 plt.yscale('log')
 plt.ylabel('AS')
 
 plt.xlim(-1,50)
+plt.ylim(0.5e-3,2)
 
 kr = ds_p_sel['kr'].item()
 kr_stderr = ds_p_stderr_sel['kr'].item()
@@ -100,8 +102,14 @@ dne_stderr = ds_p_stderr_sel['dne'].item()
 kr_str = '$k_r$ = {:.3f} +/- {:.3f}  um^3/us'.format(kr, kr_stderr)
 dne_str = '$\Delta n_e$ = {:.2f} +/- {:.2f} #/um^3'.format(dne, dne_stderr)
 
-plt.text(0.2, 0.95, kr_str, transform=plt.gca().transAxes)
-plt.text(0.2, 0.90, dne_str, transform=plt.gca().transAxes)
+plt.text(0.2, 0.93, kr_str, transform=plt.gca().transAxes)
+plt.text(0.2, 0.85, dne_str, transform=plt.gca().transAxes)
+
+plt.legend(bbox_to_anchor=(1, 0.6), loc='right')
+6
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnent.png'), bbox_inches='tight')
 
 #%%[markdown]
 
@@ -122,6 +130,8 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
     )
 
 #%%
+
+plt.figure()
 
 ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
@@ -146,5 +156,7 @@ decay_stderr = ds_p_stderr_sel['decay'].item()
 decay_str = '$\\tau$ = {:.3f} +/- {:.3f}  us'.format(decay, decay_stderr)
 
 plt.text(0.2, 0.95, decay_str, transform=plt.gca().transAxes)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_exp.png'))
 
 # %%

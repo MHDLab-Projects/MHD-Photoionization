@@ -1,0 +1,129 @@
+\section{Methods}
+
+
+\subsection{Experimental}
+
+Figure \ref{fig:expt_setup} shows the experimenal setup. 
+
+HVOF torch with syringe pump potassium feeding. 
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{\repodir/figures/output/Fig_expt_setup.png} 
+    \caption{Experimental setup of the Photoionization experiment.}
+    \label{fig:expt_setup}
+\end{figure}
+
+\begin{itemize}
+\item Determine kr vs nK, position, laser power
+\item Absorption spectroscopy for nK
+\item Microwave scattering (MWS) for kr 
+\end{itemize}
+
+
+\begin{figure}[p]
+    \includegraphics[width=\linewidth]{\repodir/experiment/analysis/various/output/figures/tc_plot_2023-05-18.png} 
+    \caption{Representative experiment}
+    \label{fig:expt_example}
+\end{figure}
+
+A sample experiment is shown in Figure \ref{fig:expt_example}.
+
+
+The experiment consists of multiple 'runs' where the HVOF torch is brought to a nominal condition and one or two variables are chaged. The variables are the potassium flow rate, the laser power, and the position of the laser. 
+
+
+
+
+Diagnostic proccessing is shown in Figure \ref{fig:diagnostic_processing}.
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{\repodir/figures/output/diagnostic_processing.png} 
+    \caption{Processing of Microwave Scattering and Absorption-Emission spectroscopy data}
+    \label{fig:diagnostic_processing}
+\end{figure}
+
+
+\subsubsection{Microwave scattering}
+
+ In previous experiments we have determined that the optical emission lifetime is on the order of 10 nanoseconds (SI), which is much shorter than what is predicted for electrion-ion recombination. This fast optical decay is consistent with a chemilumiesence process associated with laser-induced dissocation of KOH. [] 
+
+To probe the free electron density, we developed a MWS diagonstic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, etc. The propogation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the trasmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. 
+
+The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilliscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude of the tranmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation.
+
+\begin{equation}
+    Mag(t) = \sqrt{I(t)^2 + Q(t)^2}
+\end{equation}
+
+The signal is then converted to a transmission by 
+
+\begin{equation}
+    T(t) = \frac{Mag(t)}{Mag_{Pre Pulse}}
+\end{equation}
+
+Where $Mag_{Pre Pulse}$ is the average magnitude within a time window of one microsecond before the laser pulse. 
+
+Finally, we calculate the combined absorption and scattering, AS, by
+
+\begin{equation}
+    AS(t) = 1 - T(t)
+\end{equation}
+
+We fit the AS data with a kinetic model. 
+
+\begin{equation}
+    \frac{d\Delta n_e}{dt} = - k_r [2 n_{K+,0}\Delta n_e + \Delta{n_e}^2]
+\end{equation}
+
+\subsubsection{Absorption spectroscopy}
+
+The absorption emission spectroscopy is used to determine the potassium number density, $n_K$. the AES system uses a 780 nm LED source and a high resolution HR4000 spectrometer. $n_K$ is determined at the exit of the barrel and at the center of the microwave horns (see Figure \ref{fig:expt_setup}).
+
+TODO: how much should this be copied from AIAA 2020
+
+The spectrally dependent absorption, $\alpha(\lambda)$, is measured from the intensity of the LED with no free jet, $I_0$, the intensity
+of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet and LED together $I_{L+F}$
+
+
+\begin{equation}
+    \alpha(\lambda) = 1 - \left(\frac{I_{L+F}(\lambda) - I_{F}(\lambda)}{I_F(\lambda)}\right)
+\end{equation}
+
+Currently the absorption is fit with the Beer-Lambert law, but we are working on numerical integration of the absorption to determine the number density and this section will be rewritten. 
+
+The differential equaiton is 
+
+\begin{equation}
+    \frac{dI}{dx} = -\kappa(\lambda) n_K(x) I
+\end{equation}
+
+If we assume $n_K$ is constant, we can solve the differential equation to get the Beer lambert law:
+
+\begin{equation}
+    \alpha(\lambda) = 1 - \exp(-\kappa(\lambda) n_K L)
+\end{equation}
+
+Where $L$ is the path length.
+
+For numerical integration, we write $n_K(x) = n_{K,max} f(x)$, where $f(x)$ is the profile of the number density along the beam path determined by CFD. 
+
+
+
+
+\subsection{Cantera}
+
+We perform 0D chemical equilibrium simulations with the Cantera python package to asses the viability of the photoionization process. 
+Assessing viability in hypothetical conditions using kr value
+
+TODO: copy methodology from PI modeling paper 
+
+\subsection{CFD}
+
+CFD modeling 
+
+\begin{itemize}
+\item nK+ for MWS kr determination
+\item CFD results at goldilocks need examination
+\item nK vs position profile, for line integral determination of nK
+\item Methodology is not developed yet. 
+\end{itemize}

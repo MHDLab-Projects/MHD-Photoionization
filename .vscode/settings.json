@@ -10,6 +10,118 @@
     "python.languageServer": "Jedi",
     "python.autoComplete.extraPaths": [
             "./mhdpy"
-    ]
+    ],
+    "audioCues.volume": 0,
     
+"latex-workshop.latex.tools": [
+    //https://tex.stackexchange.com/questions/525604/save-auxiliary-latex-files-in-another-folder-in-vsc
+    //https://mathjiajia.github.io/vscode-and-latex/
+ {
+  "name": "latexmk",
+  "command": "latexmk",
+  "args": [
+   "-synctex=1",
+   "-interaction=nonstopmode",
+   "-file-line-error",
+   "-pdf",
+   "-outdir=%OUTDIR%",
+   "%DOC%"
+  ],
+  "env": {}
+ },
+ {
+  "name": "xelatex",
+  "command": "xelatex",
+  "args": [
+   "-synctex=1",
+   "-interaction=nonstopmode",
+   "-file-line-error",
+   "%DOC%"
+  ],
+  "env": {}
+ },
+ {
+  "name": "pdflatex",
+  "command": "pdflatex",
+  "args": [
+   "-synctex=1",
+   "-interaction=nonstopmode",
+   "-file-line-error",
+   "%DOC%"
+  ],
+  "env": {}
+ },
+ {
+  "name": "bibtex",
+  "command": "bibtex",
+  "args": [
+   "%DOCFILE%"
+  ],
+  "env": {}
+ },
+{
+"name": "lualatex",
+"command": "lualatex",
+"args": [
+    "-shell-escape", //I can't remember why I needed this in the past 
+    "-synctex=1",
+    "-interaction=nonstopmode",
+    "-file-line-error",
+    "-pdf",
+    "-output-directory=%OUTDIR%",           
+    "%DOC%"
+],
+"env": {}
+},
+		{
+			"name": "lualatexmk",
+			"command": "latexmk",
+			"args": [
+				"-synctex=1",
+				"-interaction=nonstopmode",
+				"-file-line-error",
+				"-lualatex",
+				"-outdir=%OUTDIR%",
+				"%DOC%"
+			]
+		},
+		{
+			"name": "lualatexmk_clean",
+			"command": "latexmk",
+			"args": [
+                "-c"
+			]
+		}
+],
+// "latex-workshop.latex.outDir": "output", // https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#placeholders
+"latex-workshop.latex.recipe.default": "lualatexmk",
+"latex-workshop.latex.autoBuild.run": "never",
+"latex-workshop.latex.recipes": [
+    {
+        "name": "lualatex",
+        "tools": [
+            "lualatex",
+
+        ]
+    },
+		{
+			"name": "lualatexmk",
+			"tools": [
+				"lualatexmk",
+                "lualatexmk_clean"
+			]
+		},
+
+    {
+        "name": "pdflatex -> bibtex -> pdflatex TWICE",
+        "tools": [
+            "pdflatex",
+            "bibtex",
+            "pdflatex",
+            "pdflatex",
+        ]
+    }        
+],
+
+
 }

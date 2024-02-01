@@ -9,7 +9,7 @@ plt.rcParams.update({
     "savefig.facecolor": 'white',
     "font.size": 11, 
     'savefig.dpi': 300, 
-    'font.sans-serif': 'arial', 
+    # 'font.sans-serif': 'arial', 
     # 'figure.figsize': (4.6, 3)
 })
 
@@ -56,6 +56,8 @@ beta_sel = beta.sel(combo_sel)
 beta_sel.plot(vmin=-1,vmax=1,xscale='log', cmap=cmap)
 
 ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='black')
+
+plt.savefig('output/alpha_curve_demo.png')
 
 # %%
 
@@ -126,4 +128,6 @@ P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 g = P_zero.plot(hue='l_bk', col='analysis', y='T', xscale='log', col_wrap=2)
 
 for ax in g.axes.flatten():
-    ax.plot([1e5], [3000], marker='*', markersize=10, axes=ax)
+    ax.plot([1e5], [3000], marker='*', markersize=10)
+
+plt.savefig('output/alpha_curve_analysis_lbk.png')

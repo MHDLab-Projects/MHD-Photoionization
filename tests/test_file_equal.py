@@ -4,7 +4,7 @@ import pytest
 import warnings
 
 from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.tdms import tdms2ds
+from mhdpy.fileio.tdms import TFxr
 
 
 import logging
@@ -40,16 +40,38 @@ def data_tuple_tdms(request, tdms_file) -> (xr.Dataset, xr.Dataset):
     # Log the files being processed
     logging.info(f'Processing files: {fp_old}, {fp_new}')
 
-    ds_old = tdms2ds(fp_old)
-    ds_new = tdms2ds(fp_new)
+    dsst_old = TFxr(fp_old).as_dsst()
+    dsst_new = TFxr(fp_new).as_dsst()
 
-    return (ds_new, ds_old) 
+    return (dsst_new, dsst_old) 
+
+
+# This is to stop these tests themselves from being run (expecting 'data_tuple')
+from mhdpy.xr_utils.testing import test_same_groups as same_groups
+from mhdpy.xr_utils.testing import test_same_channels as same_channels
+from mhdpy.xr_utils.testing import test_rounded_values_equal as rounded_values_equal
+from mhdpy.xr_utils.testing import test_exact_values_equal as exact_values_equal
+from mhdpy.xr_utils.testing import test_output_equal as output_equal
 
 @pytest.mark.parametrize('tdms_file', tdms_files)
-def test_equals_tdms(data_tuple_tdms):
-    ds_new, ds_old = data_tuple_tdms
+def test_same_groups_tdms(data_tuple_tdms):
+    same_groups(data_tuple_tdms)
 
-    assert ds_new.equals(ds_old)
+@pytest.mark.parametrize('tdms_file', tdms_files)
+def test_same_channels_tdms(data_tuple_tdms):
+    same_channels(data_tuple_tdms)
+
+@pytest.mark.parametrize('tdms_file', tdms_files)
+def test_rounded_values_equal_tdms(data_tuple_tdms):
+    rounded_values_equal(data_tuple_tdms)
+
+@pytest.mark.parametrize('tdms_file', tdms_files)
+def test_exact_values_equal_tdms(data_tuple_tdms):
+    exact_values_equal(data_tuple_tdms)
+
+@pytest.mark.parametrize('tdms_file', tdms_files)
+def test_output_equal_tdms(data_tuple_tdms):
+    output_equal(data_tuple_tdms)
 
 # CDF tests
 
@@ -71,4 +93,6 @@ def data_tuple_cdf(request, cdf_file) -> (xr.Dataset, xr.Dataset):
 def test_equals_cdf(data_tuple_cdf):
     ds_new, ds_old = data_tuple_cdf
 
-    assert ds_new.equals(ds_old)
+    if not ds_new.equals(ds_old):
+        assertion_message = f'New and old datasets are not equal \n\n--New--\n{ds_new}\n\n--Old--{ds_old}'
+        raise AssertionError(assertion_message)
