@@ -6,7 +6,7 @@ Summary
 Sensitivity analysis and optimization (round-trip) based on an analytical
 jet profile.
 
-4 referenece beams are creteate for both analyses.
+4 referenece beams are created for both analyses.
 
 From an abritrary starting point, the optimizer attempts to recover
 the original input parameters:
@@ -17,7 +17,6 @@ the original input parameters:
     4. b  - width growth rate parameter
 
 The absorptions is assumed to composed of the sum of two-gaussians.
-
 
 Notes
 -----
@@ -125,9 +124,41 @@ pos_jet = np.array([p1, p2]).transpose((2,1,0))
 f_jet = jet.value(pos_jet[:,:,0], pos_jet[:,:,1])
 
 do_plot = True
+
+
 if do_plot:
-    fig, ax = plt.subplots()
-    ax.contour(pos_jet[:,:,0], pos_jet[:,:,1], f_jet[0])
+    fig1, ax1 = plt.subplots()
+    ax = [ax1]
+    fig = [fig1]
+
+    ax[0].contour(pos_jet[:,:,0], pos_jet[:,:,1], f_jet[0])
+    ax[0].set_aspect(1.0)
+    ax[0].set_ylabel("r")
+    ax[0].set_xlabel("x")
+    theta = np.linspace(-np.pi,np.pi)
+    idx = np.argmin( abs(x_jet-0.2) )
+    y = np.cos(theta)[:,np.newaxis]*r_jet
+    z = np.sin(theta)[:,np.newaxis]*r_jet
+    f_cyl = y*0.0
+    f_cyl[:,:] = f_jet[0][idx,:][np.newaxis,:]
+    print(y.shape, z.shape)
+    fig1, ax1 = plt.subplots()
+    fig.append(fig1)
+    ax.append(ax1)
+    ax[1].contour(z, y, f_cyl)
+    ax[1].set_ylabel("y")
+    ax[1].set_xlabel("z")
+    fig1, ax1 = plt.subplots()
+    fig.append(fig1)
+    ax.append(ax1)
+    ax[2].contour(pos_jet[:,:,0], pos_jet[:,:,1], f_jet[0])
+    ax[2].contour(pos_jet[:,:,0], -pos_jet[:,:,1], f_jet[0])
+    ax[2].set_aspect(1.0)
+    ax[2].set_xlabel("x")
+    ax[2].set_ylabel("y")
+
+
+
 
 #
 # forward calculation
@@ -313,9 +344,24 @@ for i_x, j_y in [(0,0),(1,0),(0,1),(-1,0)]:
     beam_list.append(beam)
 
 for i, beam in enumerate(beam_list):
-    ax.plot(beam["x"], beam["r"], '--', label="{i_x:} {i_y:}".format_map(beam), alpha=0.5)
-ax.legend()
-ax.set_aspect(1.0)
+    name = label="{i_x:} {i_y:}".format_map(beam)
+
+    line = ax[0].plot(beam["x"], beam["r"], '--', alpha=0.5)
+    color = line[0].get_color()
+    ax[0].plot(beam["x"][0], beam["r"][0],'o', label=name, alpha=0.5, color=color)
+
+    line = ax[1].plot(beam["pos"][:,2], beam["pos"][:,1], '--', alpha=0.5)
+    color = line[0].get_color()
+    ax[1].plot(beam["pos"][0,2], beam["pos"][0,1], 'o', label=name, alpha=0.5, color=color)
+    ax[1].set_ylim( -1.0*np.array(ax[1].get_ylim() ) )
+    ax[1].set_aspect(1.0)
+    ax[2].plot(np.average(beam["x"]), np.average(beam["pos"][:,1]), 'x', label=name, alpha=0.5)
+    ax[2].set_title("crossing point")
+    ax[2].set_aspect(1.0)
+for a in ax:
+    a.legend(loc="best")
+#raise Exception
+#ax.set_aspect(1.0)
 
 n_beam = len(beam_list)
 fig, ax = plt.subplots()
@@ -465,13 +511,15 @@ print("\nParameters")
 print("initial", p0)
 print("solution ", p1)
 print("reference", pref)
+err = {k: p1[k] - pref[k] for k in pref.keys()}
+print("err", err)
 
 new_beams = calc_new_beams(p1)
 for var in ["C","T"]:
     fig, ax = plt.subplots(2,2)
     ax = ax.flat
     for i in range(len(new_beams)):
-        label="x{i_x:} y{i_y:}".format_map(beam_list[i])
+        label="x={i_x:} y={i_y:}".format_map(beam_list[i])
         ax[i].plot(new_beams[i]["s"], new_beams[i][var], label="opt")
         ax[i].plot(new_beams[i]["s"], beam_list[i][var], '--', label="analytic")
         ax[i].set_title(i)
@@ -485,10 +533,11 @@ for var in ["C","T"]:
 fig, ax = plt.subplots(2,2)
 ax = ax.flat
 for i, beam in enumerate(beam_list):
-    label="x{i_x:} y{i_y:}".format_map(beam_list[i])
+    label="x={i_x:} y={i_y:}".format_map(beam_list[i])
     ax[i].plot(lam_range, new_beams[i]["logTau_t"], label="opt")
     ax[i].plot(lam_range, beam_list[i]["logTau_t"], '--', label="analytic")
     ax[i].set_ylabel("-logTau")
     ax[i].set_xlabel("wavelength [nm]")
 ax[0].legend()
 fig.tight_layout()
+

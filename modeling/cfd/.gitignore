@@ -1,0 +1,11 @@
+
+! VTK Files
+*.vtk
+*.vtu
+*.vtp
+
+!
+*.xyz
+
+! jupyter output
+.virtual_documents
