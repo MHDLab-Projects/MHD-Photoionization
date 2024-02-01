@@ -2,7 +2,8 @@
 
 Summary
 -------
-Surface meshes based on triangle
+Create surface and extruded volume meshes for cylinders using "triangle",
+a 2D triangulation tool
 
 
 """

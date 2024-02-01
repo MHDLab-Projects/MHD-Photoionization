@@ -44,6 +44,7 @@ import numpy as np
 import cantera as ct
 
 from pv_axi_utils import pv_interpolator, AxiInterpolator, line_interpolator
+import cross_section
 
 try:
     from mhdpy.fileio import gen_path
@@ -89,115 +90,8 @@ if __name__ == "__main__":
     f_axi = AxiInterpolator(mesh, ["C_K", "T"])
 
 
-
-
-def Q_absorption_constant(T, lam_nm):
-    """absorption cross-section
-
-
-    """
-    qe = ct.electron_charge
-    me = ct.electron_mass
-    c0 = ct.light_speed
-    eps0 = ct.permeability_0
-    C = qe**2/(4.0*me*c0)
-    return (1.0 + T*0.0 + lam_nm*0.0)
-
-class GaussAbsorption:
-    """
-
-    Calculates the relative cross-section assuming a series of
-    Gaussian peaks defined by
-        A_i   - amplitude
-        w_i   - width
-        lam_i - wavelength center
-        b_i   - temperature exponent
-
-        Q0 = 1e-18 m^2 [default]
-        T0 = 1000 K
-
-        $$
-        beta_i = beta0_i (T/T0)^b
-        Q/Q0  = sum_i A_i exp ( -(beta_i (lam - lam_i)^ 2)
-        $$
-
-
-    """
-
-    def __init__(self, A=[2.0/3.0,1.0], lam=[765.0,770.0], w=[8.0,8.0], b=[0.0,0.0]):
-        """
-
-        Parameters
-        ----------
-        A : float array, optional
-            peak amplitude []. The default is [2.0/3.0,1.0].
-        lam : float array, optional
-            peak wavelength[nm]. The default is [765.0,770.0].
-        w : float array, optional
-            peak width @ 1000K. The default is [8.0,8.0].
-        b : TYPE, optional
-            temperature exponent. The default is 0.0.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.A = np.array(A)
-        self.lam = np.array(lam)
-        self.w = np.array(w)
-        self.beta = np.sqrt(-np.log(0.1))/self.w*4.0
-        self.b = np.array(b)
-        self.T0 = 1000.0
-        self.Q0 = 1e-18
-        self.A_min = 1e-9
-
-    def calc(self, T, lam_name):
-        pass
-
-    def __call__(self, T, lam_nm):
-        """return nornmalized cross section"""
-        beta = self.beta[:,np.newaxis]*(T/self.T0)**self.b[:,np.newaxis]
-        Q = self.A[:,np.newaxis]*np.exp(-(beta*(lam_nm-self.lam[:,np.newaxis]))**2)
-        Q += self.A_min
-        return np.sum(Q, axis=0)
-
-    def cross_section(self, T, lam_nm):
-        """return dimensional cross section"""
-        return self(T, lam_nm)*self.Q0
-
-    def plot(self, T=[300.0,1000.0,2000.0], ax=None):
-        """
-
-        Parameters
-        ----------
-        T : float array
-            temperature [K]
-        ax : matplotlib figure axes, optional none
-            if ax == None, figure and axes are generated
-        Returns
-        -------
-        ax
-
-        """
-        lam, w = self.lam, self.w
-        p = []
-        n_peaks = len(lam)
-        for i in range(n_peaks):
-            p.append( np.linspace(lam[i]-w[i],lam[i]+w[i]))
-        p = np.sort(np.unique(np.array(p)))
-        if ax is None:
-            fig, ax = plt.subplots()
-        for t in T:
-            Q = self(t,p)
-            ax.plot(p, Q, label="{}".format(t))
-            ax.set_xlabel("wavelength [nm]")
-            ax.set_ylabel("cross section []")
-        ax.legend(title="T [K]")
-        return ax
-
 if __name__ == "__main__":
-    Q_absorption = GaussAbsorption(b=[-0.3,-0.3])
+    Q_absorption = cross_section.GaussAbsorption(b=[-0.3,-0.3])
     Q_absorption.plot()
 
 

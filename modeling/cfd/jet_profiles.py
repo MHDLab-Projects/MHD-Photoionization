@@ -4,7 +4,7 @@
 Summary
 -------
 
-Testing of analytical jet profiles and derivative functions
+Analytical jet profiles and derivative functions
 
 
 TODO
