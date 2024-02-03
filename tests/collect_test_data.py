@@ -19,10 +19,6 @@ input_data_folder = pjoin(REPO_DIR, 'experiment','data','proc_data')
 for root, dirs, files in os.walk(input_data_folder):
     subdir = os.path.relpath(root, input_data_folder)
 
-    if subdir == 'lecroy':
-        # skip lecroy folder for now
-        continue
-
     for file in files:
         fp_old = pjoin(root, file)
 
