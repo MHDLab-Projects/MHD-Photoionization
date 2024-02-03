@@ -110,6 +110,23 @@ from mhdpy.xr_utils import calc_stats
 
 #%%
 
+
+def extract_em_recipe_table(recipe_em):
+
+    col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
+         'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'f_water', 'f_surf', 'rho_em',
+         'percent_K_to_K2CO3', 'f_water']
+        
+    col_select = [col for col in col_select if col in recipe_em]
+
+    recipe_em = recipe_em.loc[col_select]
+
+    recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
+    recipe_split.columns = ['val', 'unit']
+    recipe_split = recipe_split.T
+
+    return recipe_split
+
 dss_out = []
 with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') as writer:
     for key in dsst_stats:
@@ -132,22 +149,7 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') 
         df_out.to_excel(writer, sheet_name=sheet_names[key])
 
     recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
-    # recipe_em = recipe_em.to_frame().T
-
-    # This is to remove the attributes associated with CC_K_massFrac_in signal. Is there a better way to 'carry' the recipe?
-    col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
-       'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
-       'percent_K_to_K2CO3', 'f_water']
-
-    #TODO: some of these not preset when revisiting script
-    col_select = [col for col in col_select if col in recipe_em]
-    
-    recipe_em = recipe_em.loc[col_select]
-
-    recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
-    recipe_split.columns = ['val', 'unit']
-    recipe_split = recipe_split.T
-    
+    recipe_split = extract_em_recipe_table(recipe_em)
     recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
@@ -195,22 +197,7 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
         df_out.to_excel(writer, sheet_name=sheet_names[key])
 
     recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
-    # recipe_em = recipe_em.to_frame().T
-
-    # This is to remove the attributes associated with CC_K_massFrac_in signal. Is there a better way to 'carry' the recipe?
-    col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
-       'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'rho_em',
-       'percent_K_to_K2CO3', 'f_water']
-
-    #TODO: some of these not preset when revisiting script
-    col_select = [col for col in col_select if col in recipe_em]
-    
-    recipe_em = recipe_em.loc[col_select]
-
-    recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
-    recipe_split.columns = ['val', 'unit']
-    recipe_split = recipe_split.T
-    
+    recipe_split = extract_em_recipe_table(recipe_em)
     recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
