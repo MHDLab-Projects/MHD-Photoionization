@@ -27,6 +27,39 @@ ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
+#%%
+
+from mhdpy.fileio.ct import load_df_cuttimes
+
+fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','cuttimes_kwt.csv')
+df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
+
+def downselect_acq_time(ds, df_cuttimes, tc):
+    """
+    Function to downselect ds to times in df_cuttimes
+    this is used for ds that was generated with one broad timewindow, then downselect to more specific plateau times
+    """
+    acq_times = ds['acq_time'].unstack('run').stack(temp=[...]).dropna('temp').values
+
+    acq_times_set = set(acq_times)
+    acq_times_in_ct = []
+
+    for _, ct in df_cuttimes.iterrows():
+        acq_times_in_ct.extend(time for time in acq_times_set if ct['Start Time'] <= time <= ct['Stop Time'])
+
+    acq_times_in_ct = list(acq_times_in_ct)
+
+    ds = ds.where(ds['acq_time'].isin(acq_times_in_ct), drop=True)
+
+    print("Downselecting to times in cuttimes")
+    print("Length before: ", len(acq_times))
+    print("Length after: ", len(acq_times_in_ct))
+
+    return ds
+
+
+ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs, tc)
+
 # %%
 
 ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='kwt', x='wavelength')
@@ -92,6 +125,8 @@ ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
 
 ds_lecroy = ds_lecroy.drop(0,'kwt')
+
+ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs, tc)
 
 ds_fit = ds_lecroy.mean('mnum')
 da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
