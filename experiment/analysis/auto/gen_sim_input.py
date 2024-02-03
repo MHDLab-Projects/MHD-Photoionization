@@ -13,6 +13,9 @@ dst_coords
 
 #%%
 
+
+#%%
+
 # Combustion chamber pressure sensor was faulty at the beginning of 04-07-2023. This removes those datapoints
 # Note. the starting time is just by eye here. 
 
@@ -119,7 +122,9 @@ from mhdpy.xr_utils import calc_stats
 #%%
 
 
-def extract_em_recipe_table(recipe_em):
+def extract_params(ds_hvof):
+    #TODO: name this dict to be more general
+    recipe_em = pd.Series(ds_hvof['CC_K_massFrac_in'].attrs)
 
     col_select=['em_M_tween80', 'em_rho', 'em_M_surf', 'em_M_brine', 'em_M_total',
          'em_f_fuel', 'em_f_K2CO3', 'f_fuel', 'f_K2CO3', 'f_water', 'f_surf', 'rho_em',
@@ -129,7 +134,10 @@ def extract_em_recipe_table(recipe_em):
 
     recipe_em = recipe_em.loc[col_select]
 
-    recipe_split = recipe_em.str.replace(' / ', '/').str.split(' ', expand=True)
+    recipe_em['calorific value'] = ds_hvof['CC_heatInput'].attrs['calorific value']
+
+    #TODO: hacky way to separate out value and units. 
+    recipe_split = recipe_em.str.replace(' / ', '/').str.replace(' * ', '*', regex=False).str.split(' ', expand=True)
     recipe_split.columns = ['val', 'unit']
     recipe_split = recipe_split.T
 
@@ -156,9 +164,8 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_all.xlsx'), engine='xlsxwrite
 
         df_out.to_excel(writer, sheet_name=sheet_names[key])
 
-    recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
-    recipe_split = extract_em_recipe_table(recipe_em)
-    recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
+    params_table = extract_params(dsst['hvof'])
+    params_table.to_excel(writer, sheet_name='Parameters')
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
     
@@ -204,9 +211,8 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
 
         df_out.to_excel(writer, sheet_name=sheet_names[key])
 
-    recipe_em = pd.Series(dsst['hvof']['CC_K_massFrac_in'].attrs)
-    recipe_split = extract_em_recipe_table(recipe_em)
-    recipe_split.to_excel(writer, sheet_name='Emulsion Recipe')
+    params_table = extract_params(dsst['hvof'])
+    params_table.to_excel(writer, sheet_name='Parameters')
 
     df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
 
