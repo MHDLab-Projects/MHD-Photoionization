@@ -11,6 +11,14 @@ dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 dst_coords
 
+#%%
+
+# Combustion chamber pressure sensor was faulty at the beginning of 04-07-2023. This removes those datapoints
+# Note. the starting time is just by eye here. 
+
+tw_CC_P_valid = slice(pd.Timestamp('2023-04-07 19:45:00'), pd.Timestamp('2024-05-24 23:59:59'))
+dsst['hvof']['CC_P'] = dsst['hvof']['CC_P'].sel(time=tw_CC_P_valid)
+
 
 # %%
 
@@ -128,7 +136,7 @@ def extract_em_recipe_table(recipe_em):
     return recipe_split
 
 dss_out = []
-with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input.xlsx'), engine='xlsxwriter') as writer:
+with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_all.xlsx'), engine='xlsxwriter') as writer:
     for key in dsst_stats:
         ds = dsst_stats[key]
         ds = assign_tc_general(ds, da_ct)

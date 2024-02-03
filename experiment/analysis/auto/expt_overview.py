@@ -91,3 +91,53 @@ for date, df in df_ct.groupby('date'):
 
 
 da_ct
+# %%
+
+output_dir = pjoin(DIR_FIG_OUT, 'other_signals')
+os.makedirs(output_dir, exist_ok=True)
+
+coord_keys = [
+    ('hvof', 'CC_K_massFrac_in'),
+    ('hvof','CC_P')
+]
+
+das = []
+
+for c in coord_keys:
+    da = dsst[c[0]][c[1]]
+    das.append(da)
+
+ds_orig = xr.merge(das)
+
+#%%
+
+plt.rcParams.update({'font.size': 16})
+
+for date, df in df_ct.groupby('date'):
+
+    timewindow = slice(
+        Timestamp(df_exptw.loc[date]['Start Time']), 
+        Timestamp(df_exptw.loc[date]['Stop Time'])
+        )
+
+    ds_plot = ds_orig.sel(time=timewindow)
+
+    # Generate da_ct from df_cuttimes with date column
+    
+    df['tw'] = df.apply(lambda x: slice(x['Start Time'], x['Stop Time']), axis=1)
+    da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
+
+    # TODO: something in here is messing with the order of the values
+    fig = tc_plot(ds_plot, da_ct, legend_axes=1)
+
+    fig.axes[0].set_yscale('log')
+    # fig.axes[3].set_ylim(0.5,1.5)
+
+    fig.axes[-1].get_legend().remove()
+
+    fig.suptitle(date, fontdict={'size': 16})
+
+    plt.tight_layout()
+
+    plt.savefig(pjoin(DIR_FIG_OUT, 'tc_plot_{}.png'.format(date)))
+
