@@ -307,23 +307,42 @@ def calc_absorption(source, beam_ds, Q_abs):
     Parameters
     ----------
     source : xr.Dataset
-        contains total intensity at source [W]
+        contains total intensity at source [W] as function of wavelength
     beam_ds : xr.Dataset
         beam Dataset
-    Q_abs : list of Gaussian Absorption Cross-sections
+    Q_abs : absorption cross section class
+        with vectorized function Q_abs.calc(T, lambda)
 
     adds the following values to the beam
-        I_source : intensity at the source [W/m^2]
-        Q        : spectral absorption at each point [m^2]
-        kappa    : absorption coefficient [1/m]
-        kappa_kL : integrated abs. coefficient []
-        I_target : intensity at the target [W/m^2]
-        I_target_sum : total intensity at the target [W]
+        I_source_total(lambda)      : source intensity [W]
+        I_source(ray,lambda)        : specific intensity at the source [W/m^2]
+        Q(s,ray,lambda)             : spectral absorption coefficient at each point [m^2]
+        kappa(s,ray,lambda)         : absorption coefficient [1/m]
+        kappa_kL(ray,lambda)        : integrated abs. coefficient []
+        I_target(ray,lambda)        : intensity at the target [W/m^2]
+        I_target(ray,lambda)        : average intensity [W/m^2]
+        I_target_total(ray,lambda)  : total intensity at the target [W]
 
+    s   - position along beam
+    ray - individual ray from beam
+    lambda - wavelength [nm]
+
+    Notes
+    -----
+    The calculations should also work if the source intensity is [photons/s]
+
+    I [W] = I [photons/s] h nu = I [photons/s] (h c)/lambda
+
+    TODO
+    - move source selection e.g. "diff" outside function
+    - add spatial variation in the source intensity
+        - maybe the spatially varying input intensity I_source(ray,lambda)
+           should be the input rather than the source intensity
     """
     ds = beam_ds
 
     lam_nm = source.wavelength
+    """
     t = (ds["T"]/Q_abs.T0)
     #print(t.shape)
 
@@ -338,27 +357,41 @@ def calc_absorption(source, beam_ds, Q_abs):
     # cross-section of both peaks
     Q_list = [ Q_abs.A[i]*np.exp( -(beta*(lam_nm-Q_abs.lam[i]))**2) for i,beta in enumerate(beta_list)]
 
-    ds.coords["wavelength"] = lam_nm
     # spectral obsorption as each point
     ds["Q"] = sum(Q_list)
+    """
+    ds.coords["wavelength"] = lam_nm
+    dims = ds["T"].dims + ("wavelength",)
+    ds["Q"] = dims, Q_abs.calc(ds["T"].to_numpy(), lam_nm.to_numpy())
 
-    # intensity at the source
-    ds["I_source"] = source["diff"].isel(time=0).drop("time")
+    # total intensity [W] at the source
+    #   TODO - move selection outside the
+    ds["I_source_total"] = source["diff"].isel(time=0).drop("time")
+
+    ds["source_area"] = ds["v_area"].sum(dim="ray")
+    # specific intensity [W/m^2] - assuming uniform
+    ds["I_source"] = ds["I_source_total"]/ds["source_area"]
+
+    # spatial variation in intensity
+    #   TODO - add spatial variation to the intensity
+    #        - sum(I_rel) = 1.0 - relative is with respect to the mean
+    # ds["I_source"] *= source["I_rel"]
 
     # absorption coefficient
-    ds["kappa"] = ds["Q"]*ds["K"]
+    ds["kappa"] = ds["Q"]*ds["n_K"]
 
     ii = np.arange(len(ds.s))
     s = ds["s"].to_numpy()
     kappa = ds["kappa"].to_numpy()
     kappaL = kappa*0.0
-    kappaL[1:] = (kappa[1:] + kappa[:-1])*(s[1:] + s[:-1])[:,np.newaxis,np.newaxis]*0.5
+    kappaL[1:] = (kappa[1:] + kappa[:-1])*(s[1:] - s[:-1])[:,np.newaxis,np.newaxis]*0.5
     ds["kappa_dL"] = ("s","ray","wavelength"), kappaL
     ds["kappa_L"] = ds["kappa_dL"].sum(dim="s")
     ds["I_target"] = ds["I_source"]*np.exp(-ds["kappa_L"])
-    ds["I_target_sum"] = ds["I_target"].sum(dim="ray")   # this should be multiplied by the area
+    ds["I_target_avg"] = (ds["I_target"]*ds["v_weights"]).sum(dim="ray")
+    ds["I_target_total"] = (ds["I_target"]*ds["v_area"]).sum(dim="ray")
 
-    return Q_list
+    #return Q_list
 
 def mag(s):
     """return the magnitude of s"""
