@@ -12,6 +12,8 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
+figsize = (10, 8)
+# plt.rcParams.update({'figure.figsize':(3,3), 'figure.dpi':100})
 
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 from mhdpy.analysis import absem
@@ -35,6 +37,7 @@ args = parser.parse_args()
 
 # Now you can use args.tc as your tc variable
 tc = args.tc
+# tc = '53x'
 
 
 tc_dim_dict = {
@@ -73,7 +76,7 @@ plt.figure()
 da_counts = ds_absem['led_on'].count('mnum').isel(wavelength=0)
 da_counts.name = 'counts'
 
-da_counts.plot(hue='mp', row='run', marker='o')
+da_counts.plot(hue='mp', row='run', marker='o', figsize=figsize)
 
 plt.savefig(pjoin(figure_out_dir, '{}_counts.png'.format(tc) ))
 
@@ -92,19 +95,23 @@ else:
 
 #%%
 
-def groupby_run_processor(ds_plot):
+def groupby_run_processor(ds_plot, max_mnum=5):
     #TODO: assert that there is only one run coord, which should be true as we are grouping by it
     run_name = ds_plot.coords['run'].item()
     run_name = "{}_{}".format(run_name[0], run_name[1])
 
     ds_plot = ds_plot.groupby(tc_dim).apply(lambda x: x.xr_utils.assign_mnum('mnum'))
-    ds_plot = ds_plot.isel(mnum=range(5))
+
+    # Warning, this is the number of columns
+    ds_plot = ds_plot.isel(mnum=range(max_mnum))
 
     return ds_plot, run_name
 
-def plot_alpha(ds_plot, run_name, ylim=(-1.1, 1.1), xlim=(765, 772)):
+def plot_alpha(ds_plot, run_name, ylim=(-1.1, 1.5), xlim=(765, 772)):
+
     da_plot = ds_plot['alpha']
-    da_plot.plot(hue='mnum', row=tc_dim)
+    da_plot = da_plot.dropna(tc_dim, how='all')
+    da_plot.plot(hue='mnum', row=tc_dim, figsize=figsize)
     plt.ylim(ylim)
     plt.xlim(xlim)
 
@@ -125,7 +132,8 @@ def plot_led1(ds_plot, run_name):
 
     da = ds_plot[['led_on','led_off','diff','calib']].to_array('var')
 
-    da.plot(hue='var', row='mnum', col=tc_dim)
+    da = da.dropna(tc_dim, how='all')
+    da.plot(hue='var', col='mnum', row=tc_dim, figsize=figsize)
 
     plt.xlim(765,768)
 
@@ -140,13 +148,14 @@ ds_sel.groupby('run').apply(lambda ds: plot_led1(*groupby_run_processor(ds)))
 def plot_led2(ds_plot, run_name):
 
     da_plot = ds_plot[['led_on','led_off','diff']].to_array('var')
-    g = da_plot.plot(hue='mnum', row='var', col=tc_dim, sharey=False)
+    da_plot = da_plot.dropna(tc_dim, how='all')
+    g = da_plot.plot(hue='mnum', col='var', row=tc_dim, sharey=False, figsize=figsize)
 
-    for i, tc_val in enumerate(ds_plot.coords[tc_dim].values):
+    for i, tc_val in enumerate(da_plot.coords[tc_dim].values):
 
         calib = ds_plot['calib'].sel({tc_dim : tc_val}).mean('mnum')
 
-        ax = g.axs[-1,i]
+        ax = g.axs[i, -1]
         calib.plot(ax=ax, color='black', linestyle='--')
 
         ax.set_title('')
