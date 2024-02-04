@@ -33,8 +33,7 @@ df_cuttimes = df_cuttimes.set_index('Event')
 
 df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
 
-cuttimes = extract_cuttime_list(df_cuttimes)
-timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
+
 
 # Convert to local time and drop all timezone information. 
 # https://stackoverflow.com/questions/61802080/excelwriter-valueerror-excel-does-not-support-datetime-with-timezone-when-savin
@@ -43,7 +42,54 @@ timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
 # df_cuttimes['Start Time'] = df_cuttimes['Start Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
 # df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
 
+df_cuttimes
+
 #%%
+
+"""
+Now we load the sequence timewindows and downselect cuttimes to only those that are within the 53x sequence timewindows
+"""
+
+#TODO: rename the file to sequence timewindows
+fp_sequence_tw = pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes.csv')
+
+df_sequence_tw = load_df_cuttimes(fp_sequence_tw)
+# add tc and run_num columns. tc is everything before the last underscore in 'Event' column
+df_sequence_tw['tc'] = df_sequence_tw['Event'].str.extract(r'(.*)_\d$')
+df_sequence_tw['run_num'] = df_sequence_tw['Event'].str.extract(r'.*_(\d)$').astype(int)
+
+df_sequence_tw = df_sequence_tw.where(df_sequence_tw['tc'] == '53x').dropna()
+
+df_sequence_tw
+
+#%%
+
+# Find the cuttimes where both the start and stop time are within the sequence timewindow
+
+def filter_cuttimes(df_cuttimes, df_sequence_tw, mode='both'):
+
+    df_cuttimes_filtered = pd.DataFrame()
+
+    for _, row in df_sequence_tw.iterrows():
+        start_time, stop_time = row['Start Time'], row['Stop Time']
+
+        if mode == 'both':
+            df_temp = df_cuttimes[(df_cuttimes['Start Time'] >= start_time) & (df_cuttimes['Stop Time'] <= stop_time)]
+        elif mode == 'either':
+            df_temp = df_cuttimes[((df_cuttimes['Start Time'] >= start_time) & (df_cuttimes['Start Time'] <= stop_time)) | 
+                                  ((df_cuttimes['Stop Time'] >= start_time) & (df_cuttimes['Stop Time'] <= stop_time))]
+        else:
+            raise ValueError("Invalid mode. Choose either 'both' or 'either'.")
+
+        df_cuttimes_filtered = pd.concat([df_cuttimes_filtered, df_temp])
+
+    return df_cuttimes_filtered
+
+df_cuttimes = filter_cuttimes(df_cuttimes, df_sequence_tw, mode='either')
+
+#%%
+
+"Form the test case names"
 
 tc_names = []
 
@@ -76,6 +122,11 @@ for idx, row in df_cuttimes.groupby('index'):
 
 
 df_cuttimes = df_cuttimes.set_index('index')
+
+cuttimes = extract_cuttime_list(df_cuttimes)
+timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
+
+df_cuttimes
 
 
 
@@ -118,6 +169,73 @@ da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims =
 
 from mhdpy.coords.ct import assign_tc_general
 from mhdpy.xr_utils import calc_stats
+
+#%%
+
+df_ct = df_cuttimes.copy()
+
+fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'experiment_timewindows.csv')
+df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+# df_exptw = pd.read_csv(fp_expt_tws)
+
+df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
+df_exptw['date'] = df_exptw['Start Time'].apply(lambda x: x.date())
+df_exptw = df_exptw.set_index('date').sort_index()
+
+df_ct
+
+coord_keys = [
+    ('hvof', 'CC_K_massFrac_in'),
+    ('filterwheel', 'Filter Position'),
+    ('motor', 'Motor C Relative'),
+    ('hvof','CC_equivalenceRatio')
+]
+
+das = []
+
+for c in coord_keys:
+    da = dsst[c[0]][c[1]]
+    das.append(da)
+
+ds_orig = xr.merge(das)
+
+da = ds_orig['CC_K_massFrac_in']
+ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how='all')
+
+
+#%%
+
+plt.rcParams.update({'font.size': 16})
+
+fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)))
+
+# for i, date, df in df_ct.groupby('date'):
+for i, date in enumerate(df_exptw.index):
+
+
+
+    tw_expt = df_exptw.loc[date]
+    tw_expt = slice(tw_expt['Start Time'], tw_expt['Stop Time'])
+
+    dsst['hvof']['CC_K_massFrac_in'].sel(time=tw_expt).plot(ax=axes[i])
+
+    df_ct_date = df_ct[df_ct['date'] == date]
+
+    for idx, row in df_ct_date.iterrows():
+        axes[i].axvspan(row['Start Time'], row['Stop Time'], color='green', alpha=0.3)
+    
+    axes[i].set_title(date)
+
+    if i != len(df_exptw)-1:
+        axes[i].set_xlabel('')
+        axes[i].set_xticklabels([])
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'))
+
+#%%
+
+df_exptw
 
 #%%
 
@@ -218,66 +336,3 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
 
 
 
-#%%
-
-df_ct = df_cuttimes.copy()
-
-fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'experiment_timewindows.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
-# df_exptw = pd.read_csv(fp_expt_tws)
-
-df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
-df_exptw['date'] = df_exptw['Start Time'].apply(lambda x: x.date())
-df_exptw = df_exptw.set_index('date').sort_index()
-
-df_ct
-
-coord_keys = [
-    ('hvof', 'CC_K_massFrac_in'),
-    ('filterwheel', 'Filter Position'),
-    ('motor', 'Motor C Relative'),
-    ('hvof','CC_equivalenceRatio')
-]
-
-das = []
-
-for c in coord_keys:
-    da = dsst[c[0]][c[1]]
-    das.append(da)
-
-ds_orig = xr.merge(das)
-
-da = ds_orig['CC_K_massFrac_in']
-ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how='all')
-
-
-#%%
-
-plt.rcParams.update({'font.size': 16})
-
-fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)))
-
-# for i, date, df in df_ct.groupby('date'):
-for i, date in enumerate(df_exptw.index):
-
-
-
-    tw_expt = df_exptw.loc[date]
-    tw_expt = slice(tw_expt['Start Time'], tw_expt['Stop Time'])
-
-    dsst['hvof']['CC_K_massFrac_in'].sel(time=tw_expt).plot(ax=axes[i])
-
-    df_ct_date = df_ct[df_ct['date'] == date]
-
-    for idx, row in df_ct_date.iterrows():
-        axes[i].axvspan(row['Start Time'], row['Stop Time'], color='green', alpha=0.3)
-    
-    axes[i].set_title(date)
-
-    if i != len(df_exptw)-1:
-        axes[i].set_xlabel('')
-        axes[i].set_xticklabels([])
-
-#%%
-
-df_exptw
