@@ -1,18 +1,19 @@
 #%%
 from mhdpy.analysis.standard_import import *
+
+from mhdpy.coords.ct import filter_cuttimes
+from mhdpy.coords.ct import assign_tc_general
+from mhdpy.xr_utils import calc_stats
+
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
-
 fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 dst_coords
-
-#%%
-
 
 #%%
 
@@ -22,33 +23,16 @@ dst_coords
 tw_CC_P_valid = slice(pd.Timestamp('2023-04-07 19:45:00'), pd.Timestamp('2024-05-24 23:59:59'))
 dsst['hvof']['CC_P'] = dsst['hvof']['CC_P'].sel(time=tw_CC_P_valid)
 
-
 # %%
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 
+# Test case cuttimes
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
 
-df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
-
-
-
-# Convert to local time and drop all timezone information. 
-# https://stackoverflow.com/questions/61802080/excelwriter-valueerror-excel-does-not-support-datetime-with-timezone-when-savin
-
-
-# df_cuttimes['Start Time'] = df_cuttimes['Start Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
-# df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('US/Pacific').dt.tz_localize(None)
-
-df_cuttimes
-
-#%%
-
-"""
-Now we load the sequence timewindows and downselect cuttimes to only those that are within the 53x sequence timewindows
-"""
+# Sequence cuttimes. Downselect to only 53x
 
 #TODO: rename the file to sequence timewindows
 fp_sequence_tw = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_sequence.csv')
@@ -60,32 +44,19 @@ df_sequence_tw['run_num'] = df_sequence_tw['Event'].str.extract(r'.*_(\d)$').ast
 
 df_sequence_tw = df_sequence_tw.where(df_sequence_tw['tc'] == '53x').dropna()
 
-df_sequence_tw
+# Experiment timewindows
+
+fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
+df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+df_exptw = df_exptw.set_index('date').sort_index()
+
 
 #%%
 
-# Find the cuttimes where both the start and stop time are within the sequence timewindow
-
-def filter_cuttimes(df_cuttimes, df_sequence_tw, mode='both'):
-
-    df_cuttimes_filtered = pd.DataFrame()
-
-    for _, row in df_sequence_tw.iterrows():
-        start_time, stop_time = row['Start Time'], row['Stop Time']
-
-        if mode == 'both':
-            df_temp = df_cuttimes[(df_cuttimes['Start Time'] >= start_time) & (df_cuttimes['Stop Time'] <= stop_time)]
-        elif mode == 'either':
-            df_temp = df_cuttimes[((df_cuttimes['Start Time'] >= start_time) & (df_cuttimes['Start Time'] <= stop_time)) | 
-                                  ((df_cuttimes['Stop Time'] >= start_time) & (df_cuttimes['Stop Time'] <= stop_time))]
-        else:
-            raise ValueError("Invalid mode. Choose either 'both' or 'either'.")
-
-        df_cuttimes_filtered = pd.concat([df_cuttimes_filtered, df_temp])
-
-    return df_cuttimes_filtered
+# Filter the cuttimes to only include the ones that are in the sequence timewindows
 
 df_cuttimes = filter_cuttimes(df_cuttimes, df_sequence_tw, mode='either')
+df_cuttimes
 
 #%%
 
@@ -104,31 +75,22 @@ for idx, row in df_cuttimes.iterrows():
 
     tc_names.append("{}_{}".format(row['date'], val))
 
-df_cuttimes.index = tc_names
+df_cuttimes['tc_name'] = tc_names
+df_cuttimes = df_cuttimes.set_index('tc_name')
 
-df_cuttimes
+new_testcase_names = []
 
-
-df_cuttimes = df_cuttimes.reset_index()
-
-# df_cuttimes.groupby()
-for idx, row in df_cuttimes.groupby('index'):
-
-    mnums = range(1, len(row)+1)
-
-    df_cuttimes.loc[row.index, 'index'] = [f'{idx}_{mnum}' for mnum in mnums]
-
+for idx, row in df_cuttimes.groupby('tc_name'):
     pass
 
+    mnums = range(1, len(row)+1)
+    new_testcase_names.extend([f'{idx}_{mnum}' for mnum in mnums])
 
-df_cuttimes = df_cuttimes.set_index('index')
+df_cuttimes['tc_name_2'] = new_testcase_names
+df_cuttimes = df_cuttimes.set_index('tc_name_2')
 
 cuttimes = extract_cuttime_list(df_cuttimes)
 timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
-
-df_cuttimes
-
-
 
 #%%
 
@@ -167,22 +129,8 @@ dsst_stats = {key: dsst[key] for key in key_sel}
 
 da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
-from mhdpy.coords.ct import assign_tc_general
-from mhdpy.xr_utils import calc_stats
 
 #%%
-
-df_ct = df_cuttimes.copy()
-
-fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
-# df_exptw = pd.read_csv(fp_expt_tws)
-
-df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
-df_exptw['date'] = df_exptw['Start Time'].apply(lambda x: x.date())
-df_exptw = df_exptw.set_index('date').sort_index()
-
-df_ct
 
 coord_keys = [
     ('hvof', 'CC_K_massFrac_in'),
@@ -209,20 +157,22 @@ plt.rcParams.update({'font.size': 16})
 
 fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)))
 
-# for i, date, df in df_ct.groupby('date'):
 for i, date in enumerate(df_exptw.index):
-
-
 
     tw_expt = df_exptw.loc[date]
     tw_expt = slice(tw_expt['Start Time'], tw_expt['Stop Time'])
 
     dsst['hvof']['CC_K_massFrac_in'].sel(time=tw_expt).plot(ax=axes[i])
 
-    df_ct_date = df_ct[df_ct['date'] == date]
+    df_cuttimes_date = df_cuttimes[df_cuttimes['date'] == date]
 
-    for idx, row in df_ct_date.iterrows():
+    for idx, row in df_cuttimes_date.iterrows():
         axes[i].axvspan(row['Start Time'], row['Stop Time'], color='green', alpha=0.3)
+
+    df_sequence_date = df_sequence_tw[df_sequence_tw['date'] == date]
+
+    for idx, row in df_sequence_date.iterrows():
+        axes[i].axvspan(row['Start Time'], row['Stop Time'], color='gray', alpha=0.3)
     
     axes[i].set_title(date)
 
@@ -234,11 +184,6 @@ for i, date in enumerate(df_exptw.index):
 plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'))
 
 #%%
-
-df_exptw
-
-#%%
-
 
 def extract_params(ds_hvof):
     #TODO: name this dict to be more general
