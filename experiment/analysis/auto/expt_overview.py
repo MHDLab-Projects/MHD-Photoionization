@@ -97,8 +97,12 @@ output_dir = pjoin(DIR_FIG_OUT, 'other_signals')
 os.makedirs(output_dir, exist_ok=True)
 
 coord_keys = [
-    ('hvof', 'CC_K_massFrac_in'),
-    ('hvof','CC_P')
+    ('hvof', 'CC_fuel_flow_in'),
+    ('hvof', 'CC_o2_flow_in'),
+    ('hvof','CC_P'),
+    ('calorimetry', 'CC_water_flow_in'),
+    ('calorimetry', 'CC_water_T_in'),
+    ('calorimetry', 'CC_water_T_out'),
 ]
 
 das = []
@@ -128,16 +132,16 @@ for date, df in df_ct.groupby('date'):
     da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
 
     # TODO: something in here is messing with the order of the values
-    fig = tc_plot(ds_plot, da_ct, legend_axes=1)
+    fig = tc_plot(ds_plot, da_ct, legend_axes=None)
 
-    fig.axes[0].set_yscale('log')
+    # fig.axes[0].set_yscale('log')
     # fig.axes[3].set_ylim(0.5,1.5)
 
-    fig.axes[-1].get_legend().remove()
+    # fig.axes[-1].get_legend().remove()
 
     fig.suptitle(date, fontdict={'size': 16})
 
     plt.tight_layout()
 
-    plt.savefig(pjoin(DIR_FIG_OUT, 'tc_plot_{}.png'.format(date)))
+    plt.savefig(pjoin(output_dir, 'tc_plot_{}.png'.format(date)))
 

@@ -200,7 +200,7 @@ look at CFD e- Kp and OH
 - [x] check surfactant emulsion recipe 
     use test plan for recipe and add surfactant to CFD input
 
-- [] check zero of signals
+- [x] check zero of signals
     fuel flow 
     o2 flow
     
