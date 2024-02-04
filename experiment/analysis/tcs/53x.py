@@ -89,6 +89,7 @@ for ax in g.axes.flatten():
 #%%
 
 da = ds_p['nK_m3']
+da.coords['kwt'].attrs = dict(long_name="Kwt", units='%')
 
 # da = da.dropna('run', how='all')
 
@@ -98,6 +99,8 @@ dropna(g)
 
 plt.yscale('log')
 plt.xscale('log')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_AES_nK.png'), dpi=300, bbox_inches='tight')
 
 #%%
 

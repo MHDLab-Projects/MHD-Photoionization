@@ -7,6 +7,9 @@ Figure \ref{fig:expt_setup} shows the experimenal setup.
 
 HVOF torch with syringe pump potassium feeding. 
 
+Throughout the experiment, the HVOF process is monitored with a variety of diagnostics. 
+
+
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{\repodir/figures/output/Fig_expt_setup.png} 
     \caption{Experimental setup of the Photoionization experiment.}
@@ -28,10 +31,22 @@ HVOF torch with syringe pump potassium feeding.
 
 A sample experiment is shown in Figure \ref{fig:expt_example}.
 
+There are a variety of independent variables that have been controlled through out the experiments to explore the photoionization process. For the HVOF process, the total mass flow, equivalence ratio, and atomic potassium mass fraction are controlled. Additionally, the position of the mobile MWS and AES diagnositics are controlled, as welw as the excimer laser power. 
 
-The experiment consists of multiple 'runs' where the HVOF torch is brought to a nominal condition and one or two variables are chaged. The variables are the potassium flow rate, the laser power, and the position of the laser. 
+Experiments consist of a variety of 'test cases', where the the system is brought to a specific combination of the independent variables and measurements are performed. In particular, 'sequences' of test cases are performed where one of these independent variables is changed. 
+
+For the results presented in this report, the equivalence ratio is held constant at a value of 0.8, the total mass flow rate is held constant at 13 g/s. These variables have been varied in supplementary test case sequences, with data shown in the SI. In this report, we focus on three sequences where the potassium mass fraction, the laser power, and the position of the laser downstream from the exit of the free jet are varied. Notably, when not being varied, the position of the AES/MWS diagnotsics is held fixed downstream of the torch at a 'nominal position' of 178 mm. The motivation for this position is discussed in the results section. 
+
+Test case sequences (TODO: improve names)
+\begin{itemize}
+    \item 536 Position: Varying MWS/AES diagnsotic position. Full laser power. Kwt = 1\%
+    \item 536 Power: Varying laser power. MWS/AES diagnostic at nominal position. Kwt = 1\%
+    \item 53x: Varying potassium mass fraction. MWS/AES diagnostic at nominal position. Full laser power.
+\end{itemize}
 
 
+
+We note that the syringe pump based feeding method has the disadvantage of a finite amount of emulsion that can be fed into the torch. This limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. For this reason, it was note possible to maintain consistent durations for the different test case sequences.
 
 
 Diagnostic proccessing is shown in Figure \ref{fig:diagnostic_processing}.

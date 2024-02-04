@@ -30,6 +30,59 @@ plt.yscale('log')
 
 plt.xlim(-1,50)
 plt.ylim(1e-5,1e-1)
+
+#%%
+da_lecroy.mean('mnum').mean('run').plot(hue='power')
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-5,1e-1)
+
+#%%
+from mhdpy.xr_utils.stats import WeightedMeanAccessor
+
+#TODO: add weighted mean dataarray acessor and tests
+
+ds_stat = da_lecroy.mean('mnum').to_dataset().wma.initialize_stat_dataset('AS', 'run')
+
+ds_stat = ds_stat.sel(power=[1,0.4,0.2,0.1])
+
+ds_stat
+
+#%%
+
+powers = ds_stat['power'].values
+
+fig, ax = plt.subplots()
+
+for i, power in enumerate(powers):
+
+    # plot with confidence interval
+
+    ds_stat_sel = ds_stat.sel(power=power)
+    ds_stat_sel['mean'].plot(label=power)
+
+    ax.fill_between(ds_stat_sel.coords['time'], ds_stat_sel['mean'] - ds_stat_sel['std'], ds_stat_sel['mean'] + ds_stat_sel['std'], alpha=0.2)
+
+    ax.set_title('')
+    ax.set_xlabel('')
+
+    # unit_str = '[' + ds[var].attrs['units']+ ']' if 'units' in ds[var].attrs else '' 
+    # ax.set_ylabel(ds[var].attrs['long_name'] + unit_str)
+    
+# axes[2].set_xlabel('Position [mm]')
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-5,1e-1)
+
+plt.ylabel('AS [V]')
+plt.xlabel('Time [us]')
+
+plt.legend(title='Power [relative]')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_time.png'))
+
 # %%
 
 da_max = da_lecroy.mean('mnum').sel(time=slice(-1,1)).max('time')
@@ -48,6 +101,8 @@ g = da_max.plot(hue ='run_plot', x='power', marker='o')
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
 plt.yscale('log')
 plt.xscale('log')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max.png'))
 
 #%%[markdown]
 

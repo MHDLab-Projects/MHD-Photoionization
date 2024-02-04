@@ -257,25 +257,36 @@ ds_cfd_beam_norm = ds_cfd_beam/ds_cfd_beam.max()
 
 #%%
 
+plt.figure(figsize=(5,3))
+
 da = ds['nK_m3'].dropna('run', how='all')
+da = da.sel(motor = slice(50,300))
 
 g = da.plot(hue='run_plot', x='motor', marker='o')
 plot.dropna(g)
 
 ax1 = plt.gca()
 ax1.get_legend().set_title('Experiment (date, #)')
-# ax1.set_yscale('log')
+ax1.get_legend().set_bbox_to_anchor([0,0,0.5,0.4])
+ax1.set_yscale('log')
+ax1.set_title('')
+ax1.set_xlabel('Position [mm]')
 
 plt.twinx()
 
-ds_cfd_norm['K'].plot(color='black', label ='centerline')
-ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam conv (TODO)', marker='o')
+ds_cfd_norm['K'].plot(color='black', label ='CFD centerline')
+# ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam conv (TODO)', marker='o')
 
 ax2 = plt.gca()
-ax2.legend(bbox_to_anchor=[0,0,1.0,0.7])
-# ax2.set_yscale('log')
+ax2.legend()
+ax2.set_ylabel('Normalized $n_{K, CFD}$')
+ax2.set_yscale('log')
+ax2.set_title('')
 
 plt.xlim(0,310)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+
 # %%
 
 g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
