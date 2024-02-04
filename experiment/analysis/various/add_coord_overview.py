@@ -31,7 +31,7 @@ coords_orig = xr.merge([
 ])
 
 
-fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'cuttimes.csv')
+fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
 df_cuttimes = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
 
 cuttimes = extract_cuttime_list(df_cuttimes)

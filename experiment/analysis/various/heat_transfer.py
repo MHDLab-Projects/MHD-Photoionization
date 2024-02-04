@@ -14,7 +14,7 @@ dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 dst_coords
 # %%
 
-fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes_kwt.csv')
+fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
 

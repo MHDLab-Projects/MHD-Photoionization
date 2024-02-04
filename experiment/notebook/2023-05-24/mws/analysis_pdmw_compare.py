@@ -26,7 +26,7 @@ coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
 
 coord_signal_dict = {k: coords_to_assign[k].dropna('time',how='all') for k in coords_to_assign.data_vars}
 
-fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'cuttimes.csv')
+fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes)
 df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
 df_cuttimes = df_cuttimes.where(df_cuttimes['date'].astype(str) == '2023-05-24').dropna()

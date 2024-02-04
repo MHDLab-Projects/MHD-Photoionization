@@ -53,7 +53,7 @@ ds_absem = ds_absem.where(ds_absem['led_on'].isnull() == ds_absem['led_off'].isn
 #TODO: the time windows are now just selected for motor=150mm (goldilocks) for mw_horns multiplexer, the data exists for 05-24 for different motor positions and shows a slight decrease in transmission near the barrel. Need to eventaully make the calibration for mw_horns mp dependent. 
 
 from mhdpy.fileio import load_df_cuttimes
-fp_calib_ct = pjoin(REPO_DIR, 'experiment','metadata','cuttimes_absem_calib.csv')
+fp_calib_ct = pjoin(REPO_DIR, 'experiment','metadata','ct_absem_calib.csv')
 
 df_cuttimes = load_df_cuttimes(fp_calib_ct, reduce_columns=False)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)

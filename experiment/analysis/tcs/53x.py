@@ -31,7 +31,7 @@ ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 from mhdpy.fileio.ct import load_df_cuttimes
 
-fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','cuttimes_kwt.csv')
+fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 def downselect_acq_time(ds, df_cuttimes, tc):

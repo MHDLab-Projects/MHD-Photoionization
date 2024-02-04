@@ -27,7 +27,7 @@ dsst['hvof']['CC_P'] = dsst['hvof']['CC_P'].sel(time=tw_CC_P_valid)
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 
-fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes_kwt.csv')
+fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
 df_cuttimes = df_cuttimes.set_index('Event')
 
@@ -51,7 +51,7 @@ Now we load the sequence timewindows and downselect cuttimes to only those that 
 """
 
 #TODO: rename the file to sequence timewindows
-fp_sequence_tw = pjoin(REPO_DIR, 'experiment', 'metadata', 'cuttimes.csv')
+fp_sequence_tw = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_sequence.csv')
 
 df_sequence_tw = load_df_cuttimes(fp_sequence_tw)
 # add tc and run_num columns. tc is everything before the last underscore in 'Event' column
@@ -174,7 +174,7 @@ from mhdpy.xr_utils import calc_stats
 
 df_ct = df_cuttimes.copy()
 
-fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'experiment_timewindows.csv')
+fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
 df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
 # df_exptw = pd.read_csv(fp_expt_tws)
 
