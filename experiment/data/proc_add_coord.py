@@ -34,7 +34,7 @@ df_cuttimes = load_df_cuttimes(pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_seq
 # add tc and run_num columns. tc is everything before the last underscore in 'Event' column
 df_cuttimes['tc'] = df_cuttimes['Event'].str.extract(r'(.*)_\d$')
 df_cuttimes['run_num'] = df_cuttimes['Event'].str.extract(r'.*_(\d)$').astype(int)
-
+df_cuttimes['date'] = df_cuttimes['date'].astype(str)
 
 process_tcs = [
     '53x',
@@ -104,8 +104,7 @@ for tc_base, df_cuttimes_tc in df_cuttimes.groupby('tc'):
 
     #TODO: believe these ohter coordinates are showing up because of low min_mnum
     if tc_base == '53x':
-        # if 'phi' in ds.dims:
-        downselect_dict = {'phi': 0.8}
+        downselect_dict = {'phi': 0.8, 'motor': 178}
     else:
         downselect_dict = None
 

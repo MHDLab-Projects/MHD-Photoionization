@@ -155,7 +155,7 @@ ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how
 
 plt.rcParams.update({'font.size': 16})
 
-fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)))
+fig, axes = plt.subplots(len(df_exptw), 1, figsize=(10, 5*len(df_exptw)), sharex=False)
 
 for i, date in enumerate(df_exptw.index):
 
@@ -178,7 +178,7 @@ for i, date in enumerate(df_exptw.index):
 
     if i != len(df_exptw)-1:
         axes[i].set_xlabel('')
-        axes[i].set_xticklabels([])
+        # axes[i].set_xticklabels([])
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'))

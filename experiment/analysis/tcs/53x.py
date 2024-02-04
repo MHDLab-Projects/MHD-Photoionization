@@ -27,6 +27,8 @@ ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
+ds_absem = ds_absem.drop(0, 'kwt')
+
 #%%
 
 from mhdpy.fileio.ct import load_df_cuttimes
