@@ -42,7 +42,8 @@ process_tcs = [
     '536_power',
     '5x6_pos',
     '5x3_pos',
-    '536_pos_power'
+    '536_pos_power',
+    '516_pos'
     ]
 
 # Only keep columns with tc in process_tcs

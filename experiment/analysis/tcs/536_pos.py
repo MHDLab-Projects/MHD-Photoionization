@@ -272,6 +272,8 @@ ax1.set_yscale('log')
 ax1.set_title('')
 ax1.set_xlabel('Position [mm]')
 
+ax1.axvline(178, color='gold', linestyle='--')
+
 plt.twinx()
 
 ds_cfd_norm['K'].plot(color='black', label ='CFD centerline')

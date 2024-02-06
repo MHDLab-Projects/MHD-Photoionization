@@ -131,9 +131,6 @@ g = da.plot(hue='phi', marker='o')
 
 dropna(g)
 # %%
-
-#%%
-
 # %%
 
 tc = '5x3_pos'
@@ -189,4 +186,10 @@ g = da.plot(hue='phi', marker='o')
 
 
 dropna(g)
+
+plt.yscale('log')
 # %%
+
+da_count = ds_absem['alpha'].isel(wavelength=0).count('mnum')
+
+da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
