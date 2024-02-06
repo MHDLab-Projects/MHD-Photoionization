@@ -1,5 +1,11 @@
 #%%
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
+
+#TODO: move plotting to a separate file
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+plt.rcParams.update({'font.size': 8, 'timezone': 'America/Los_Angeles'})
 
 from mhdpy.coords.ct import filter_cuttimes
 from mhdpy.coords.ct import assign_tc_general
@@ -62,7 +68,7 @@ df_cuttimes
 
 "Form the test case names"
 
-tc_names = []
+kwts = []
 
 for idx, row in df_cuttimes.iterrows():
     timeslice = slice(row['Start Time'], row['Stop Time'])
@@ -73,24 +79,27 @@ for idx, row in df_cuttimes.iterrows():
 
     val = round(val_list[0]*1, 2)
 
-    tc_names.append("{}_{}".format(row['date'], val))
+    kwts.append(val)
 
-df_cuttimes['tc_name'] = tc_names
-df_cuttimes = df_cuttimes.set_index('tc_name')
+df_cuttimes['kwt'] = kwts
 
-new_testcase_names = []
+# groupby kwt and date columns and add a measurement number column
 
-for idx, row in df_cuttimes.groupby('tc_name'):
-    pass
+df_cuttimes['mnum'] = df_cuttimes.groupby(['kwt', 'date']).cumcount()+1
+df_cuttimes['repeat'] = df_cuttimes['date'].astype(str) + '_' + df_cuttimes['mnum'].astype(str)
+df_cuttimes['tc'] = df_cuttimes['kwt'].astype(str) + '_' + df_cuttimes['repeat'].astype(str)
 
-    mnums = range(1, len(row)+1)
-    new_testcase_names.extend([f'{idx}_{mnum}' for mnum in mnums])
 
-df_cuttimes['tc_name_2'] = new_testcase_names
-df_cuttimes = df_cuttimes.set_index('tc_name_2')
+#TODO: can we have kwt as it's own multindex level? Mainly for display in output
+# df_cuttimes = df_cuttimes.set_index(['kwt', 'repeat'])
+
+df_cuttimes = df_cuttimes.set_index('tc')
+df_cuttimes = df_cuttimes.sort_index()
 
 cuttimes = extract_cuttime_list(df_cuttimes)
-timewindow = slice(cuttimes[0].start, cuttimes[-1].stop)
+
+
+df_cuttimes
 
 #%%
 
@@ -127,10 +136,11 @@ sheet_names = {'hvof': "HVOF Process Inputs", 'calorimetry': "Calorimetry"}
 
 dsst_stats = {key: dsst[key] for key in key_sel}
 
-da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
 
 #%%
+
+# Plot the experiment coordinates
 
 coord_keys = [
     ('hvof', 'CC_K_massFrac_in'),
@@ -139,19 +149,11 @@ coord_keys = [
     ('hvof','CC_equivalenceRatio')
 ]
 
-das = []
-
-for c in coord_keys:
-    da = dsst[c[0]][c[1]]
-    das.append(da)
-
+das = [dsst[c[0]][c[1]] for c in coord_keys]
 ds_orig = xr.merge(das)
 
 da = ds_orig['CC_K_massFrac_in']
 ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how='all')
-
-
-#%%
 
 plt.rcParams.update({'font.size': 16})
 
@@ -178,10 +180,63 @@ for i, date in enumerate(df_exptw.index):
 
     if i != len(df_exptw)-1:
         axes[i].set_xlabel('')
-        # axes[i].set_xticklabels([])
+        axes[i].set_xticklabels([])
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
+# Make a plot of each individual datarray in dsst with the timewindows. 
+downselect_keys = {
+    'hvof': ['CC_total_flow_in', 'CC_fuel_flow_in', 'CC_o2_flow_in', 'CC_em_flow_in', 'CC_P'],
+    'calorimetry': ['CC_water_flow_in', 'CC_water_T_in', 'CC_water_T_out', 'CC_heatTransfer']
+}
+
+output_dir = pjoin(DIR_FIG_OUT, 'individual_signals')
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+for i, date in enumerate(df_exptw.index):
+    tw_expt = df_exptw.loc[date]
+    tw_expt = slice(tw_expt['Start Time'], tw_expt['Stop Time'])
+
+    df_cuttimes_sel = df_cuttimes[df_cuttimes['date'] == date]
+    df_sequence_tw_sel = df_sequence_tw[df_sequence_tw['date'] == date]
+
+    for key in dsst_stats:
+
+        ds = dsst_stats[key].sel(time=tw_expt)
+
+        ds = ds[downselect_keys[key]]
+
+        for var in ds.data_vars:
+            da = ds[var]
+
+            fig, ax = plt.subplots()
+
+            da.plot(ax=ax)
+
+            for idx, row in df_cuttimes_sel.iterrows():
+                ax.axvspan(row['Start Time'], row['Stop Time'], color='green', alpha=0.3)
+
+            for idx, row in df_sequence_tw_sel.iterrows():
+                ax.axvspan(row['Start Time'], row['Stop Time'], color='gray', alpha=0.3)
+
+            ax.set_title(var)
+
+
+
+            plt.savefig(pjoin(output_dir, f'{date}_{key}_{var}.png'), dpi=300, bbox_inches='tight')
+
+            # break
+
+        
+#%%
+
+da_ct = xr.DataArray(cuttimes, dims='tc', coords={'tc': df_cuttimes.index})
+
+da_ct
 
 #%%
 
@@ -281,3 +336,5 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
 
 
 
+
+# %%
