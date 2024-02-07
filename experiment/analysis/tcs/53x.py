@@ -68,6 +68,11 @@ ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='kwt', x='wavel
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 
+#%%
+
+# # Examine calibration offset. This does not appear to be off as much as in the 5xx notebook. TODO: investigate and quantify off-peak calibraiton offset. 
+# ds_absem['alpha'].mean('mnum').sel(mp='mw_horns').isel(run=-1).plot(hue='kwt')
+
 
 #%%
 

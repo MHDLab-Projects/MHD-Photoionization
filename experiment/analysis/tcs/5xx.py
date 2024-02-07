@@ -139,6 +139,8 @@ ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
+# ds_absem = ds_absem.drop(34.81, 'motor')
+
 ds_absem = ds_absem.absem.calc_alpha()
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
@@ -151,6 +153,59 @@ da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
 
 
 da_lecroy = da_lecroy.drop('run') # Only one run for this tc
+
+#%%[markdown]
+
+# # quick partial fix calibraiton data for 5x3_pos. 
+
+
+# the calibration data appears to have a significant offset on the high wavlength side.
+# I looked at the alpha in 53x notebook and it doesn't appear to be as bad as here
+# TODO: some method of correcting calibration for this case. beta_offfset_line? or multiply calibration by a linear function of wavelength?
+
+#%%
+
+fp_calib = pjoin(REPO_DIR, 'experiment', 'data','proc_data', 'ds_calib.cdf')
+
+ds_calib = xr.load_dataset(fp_calib)
+
+ds_calib
+
+#%%
+
+da_calib = ds_calib.sel(mp='mw_horns').sel(time=Timestamp('2023-05-24T18:12:49.047832386'))
+# da_calib = ds_calib.sel(mp='mw_horns').sel(time=Timestamp('2023-05-24T22:42:25.960157725'))
+
+da_calib
+
+ds_absem['calib'] = da_calib['diff']
+
+ds_absem = ds_absem.absem.calc_alpha()
+
+#%%
+
+ds_sel = ds_absem.mean('run').sel(mp='mw_horns').mean('mnum')
+
+# ds_sel[['diff','calib']].to_array('var').plot(col='motor', row='phi', hue='var')
+
+#%%
+
+ds_sel[['diff', 'calib']].to_array('var').sel(motor=180, method='nearest').plot(hue='var', row='phi')
+
+
+#%%
+
+ratio = (ds_sel['diff']/ds_sel['calib'])
+
+ratio.sel(motor=50, method='nearest').plot(row='phi')
+
+plt.ylim(0.8,1.2)
+
+
+#%%
+ds_sel['alpha'].sel(motor=50, method='nearest').plot(hue='phi')
+
+plt.ylim(0,1)
 
 
 # %%
@@ -173,9 +228,25 @@ da_max.plot(hue='phi', marker='o')
 
 #%%
 
-ds_fit = ds_absem.mean('mnum')
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+#%%
+
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+
+ds_fit = ds_absem.isel(run=0) #only one run
+ds_fit = ds_fit.sel(wavelength=slice(750,790))
+
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
+
+#%%
+
+ds_alpha_fit['alpha_red'].sel(mp='mw_horns').plot(hue='phi', row='motor')
+
+# plt.ylim
+
+# plt.ylim()
+
+
 
 
 # %%
@@ -193,3 +264,4 @@ plt.yscale('log')
 da_count = ds_absem['alpha'].isel(wavelength=0).count('mnum')
 
 da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
+# %%
