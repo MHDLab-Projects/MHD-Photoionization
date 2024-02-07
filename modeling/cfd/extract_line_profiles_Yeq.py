@@ -1,0 +1,265 @@
+"""
+Script to extract line and beam profiles from CFD simulation data with new Yeq fields
+TODO: replace old extract_line_profiles.py with this script. Waiting on K=1% data. 
+"""
+
+
+#%%
+import numpy as np
+import pyvista as pv
+import matplotlib.pyplot as plt
+import os
+
+from mhdpy.fileio import gen_path
+
+from mhdpy.analysis.standard_import import *
+
+sp_dir = gen_path('sharepoint')
+
+# results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
+results_dir = 'input'
+
+fp = pjoin(results_dir, 'frontCyl_chem1.vtk')
+
+mesh = pv.read(fp)
+
+mesh.set_active_scalars('K')
+
+mesh
+
+#%%
+
+soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH']
+soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
+additional = ['T', 'p']
+all_fields = [*soi, *soi_Yeq, *additional]
+
+
+
+# %%
+
+from pv_axi_utils import AxiInterpolator,AxiMesh
+
+
+def gen_beam_line(position):
+    xy_ratio = 1.875/4.25
+    # xy_ratio=1
+
+    unit_cm = 1e-2
+    x_exit = 20.8*unit_cm
+
+    #position of interseciton of line with z=0
+    x_beam = x_exit +  position*unit_cm
+
+    # make two points that intersect this point and are in the direction of the beam
+    y_distance = 5*unit_cm
+
+    a = [x_beam - y_distance*xy_ratio, y_distance , 0]
+    b = [x_beam + y_distance*xy_ratio, -y_distance, 0]
+
+    return a, b
+
+
+
+def extract_line_axi(mesh, a, b):
+
+    am = AxiMesh(mesh)
+
+    line1 = am.sample_over_line(a, b, resolution=100)
+    line1.set_active_scalars('K')
+
+    line_cart  = pv.Line(a, b, 100)
+
+    line1.points = line_cart.points
+
+    # calculate the distance and values along the line
+
+    return line1
+
+def convert_line_df(line, fields):
+    dist = np.zeros(line.n_points)
+
+    for i in range(1, line.n_points):
+        dist[i] = dist[i-1] + np.linalg.norm(line.points[i] - line.points[i-1])
+
+    lines_out = []
+    for field in fields:
+        vals = line.point_data[field]
+
+        line_out = pd.Series(vals, index=dist)
+
+        lines_out.append(line_out)
+
+    df = pd.concat(lines_out, axis=1)
+    df.columns = fields
+    return df
+
+def interp_df_to_new_index(df_out, new_index):
+    # Initialize a new DataFrame with the new index
+    df_interpolated = pd.DataFrame(index=new_index)
+
+    # Interpolate each column separately
+    for column in df_out.columns:
+        df_interpolated[column] = np.interp(new_index, df_out.index, df_out[column])
+
+    return df_interpolated
+
+a, b = gen_beam_line(10)
+
+line1 = extract_line_axi(mesh, a, b)
+
+p = pv.Plotter()
+
+p.add_mesh(mesh, scalars='K')
+p.add_mesh(line1, color='red')
+
+
+p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
+
+
+p.show()
+
+
+#%%
+
+df_lines = convert_line_df(line1, ['T','p','K'])
+
+df_lines.plot()
+
+#%%
+
+beam_positions = np.arange(1, 30, 5)
+dist_grid = np.arange(0, 0.1, 0.001)
+
+dss = []
+
+for position in beam_positions:
+
+    a, b = gen_beam_line(position)
+
+    line_out = extract_line_axi(mesh, a, b)
+
+    df_lines = convert_line_df(line_out, ['T','p','K'])
+
+    df_int = interp_df_to_new_index(df_lines, dist_grid)
+
+    ds_out = xr.Dataset(df_int)
+    ds_out = ds_out.rename({'dim_0':'dist'})
+    ds_out = ds_out.assign_coords(pos=position)
+
+
+    dss.append(ds_out)
+
+    # break
+
+ds_lines = xr.concat(dss, dim='pos')
+
+#%%
+
+ds_lines['T'].plot()
+
+#%%
+
+ds_lines['K'].plot(hue='pos')
+
+plt.yscale('log')
+
+plt.ylim(1e-9, 1e-3)
+
+
+
+#%%
+
+
+unit_cm = 1e-2
+x_exit = 20.8*unit_cm
+
+a = [x_exit - 1e-2 , 0 , 0]
+b = [x_exit + 40e-2, 0, 0]
+
+line1 = extract_line_axi(mesh, a, b)
+
+p = pv.Plotter()
+
+p.add_mesh(mesh, scalars='K')
+p.add_mesh(line1, color='red', line_width=5)
+
+
+p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
+
+
+p.show()
+
+#%%
+
+dist_grid = np.arange(0, 0.4, 0.001)
+
+line_out = extract_line_axi(mesh, a, b)
+
+df_lines = convert_line_df(line_out, all_fields)
+
+df_int = interp_df_to_new_index(df_lines, dist_grid)
+
+ds_out = xr.Dataset(df_int)
+ds_out = ds_out.rename({'dim_0':'x'})
+
+ds_out
+ds_out = ds_out.assign_coords(kwt=[1])
+
+# ds_out = ds_out.drop_vars(['K', 'Kp'])
+# ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
+
+# # 
+ds_out.to_netcdf(pjoin('output', 'line_profiles_Yeq.cdf'))
+
+
+#%%
+
+ds_out[['K', 'Yeq_K']].to_array('var').plot(hue='var')
+
+plt.yscale('log')
+
+#%%
+
+ds_out[['Kp', 'Yeq_K+']].to_array('var').plot(hue='var')
+
+
+plt.yscale('log')
+
+#%%
+
+ds = ds_out
+
+ds['T'] = ds['T'].pint.quantify('K')
+ds['p'] = ds['p'].pint.quantify('Pa')
+
+from mhdpy.pyvista_utils import calc_rho
+
+ds['rho'] = calc_rho(ds['T'], ds['p'])  
+
+species = [var for var in ds.data_vars if var not in ['rho', 'T', 'p']]
+
+for species in species:
+    sp_rho = ds[species]*ds['rho']
+    sp_rho = sp_rho.pint.to('1/cm^3')
+    ds[species] = sp_rho
+
+#%%
+ds
+#%%
+
+
+ds_sel = ds[['Yeq_K', 'Yeq_K+']]
+
+g = ds_sel.to_array('var').plot(row='var', hue='kwt')
+
+plt.yscale('log')
+
+goldi_pos = ds['x'].min().item() + 0.18
+
+for ax in g.axes.flatten():
+    ax.axvline(goldi_pos, color='gray', linestyle='--')
+
+#%%
+
+ds_sel.sel(x=goldi_pos)
