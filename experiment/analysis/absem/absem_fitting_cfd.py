@@ -1,0 +1,517 @@
+# %% [markdown]
+#  # Absem fitting with CFD profiles
+
+# uses euler method to solve the differential equation for I(x)
+# using normalized number density profile nK(x) and maximum number density nK_max
+
+# %%
+
+from mhdpy.analysis.standard_import import *
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+from mhdpy.analysis import mws
+from mhdpy.plot import dropna
+from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdpy.analysis import absem
+
+# %%
+
+tc = '536_pos'
+
+ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = ds_absem.xr_utils.stack_run()
+
+ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ds_absem.sel(wavelength=slice(750,790))
+
+ds_absem
+
+
+# %%
+
+
+
+# %%
+
+# make an artifical tophat profile. zero outside of the beam, constant inside the beam 
+
+L = Quantity(1, 'cm')
+L_center = Quantity(1, 'cm')
+
+def tophat_profile(L, L_center, x):
+    nK = np.zeros_like(x)
+    nK[(x > L_center - L/2) & (x < L_center + L/2)] = 1
+    return nK
+
+x = np.linspace(0, 2, 100)
+
+nK_profile = tophat_profile(L.magnitude, 1, x) 
+
+plt.plot(x, nK_profile)
+
+
+# %%
+
+
+# %%
+
+from scipy.integrate import solve_ivp
+from mhdpy.analysis.absem.fitting import Q_2peak
+from pint import Quantity
+
+
+
+def dI_dx(x, I, kappa_profile):
+
+    # differential equation for I(x)
+    # dI/dx = -kappa(x) * I(x)
+
+    kappa = np.interp(x, kappa_profile.index, kappa_profile)
+    return -kappa * I
+
+def calc_I_profile_deq(kappa_profile):
+    x = kappa_profile.index
+
+    I_0 = 1
+    sol = solve_ivp(dI_dx, [x[0], x[-1]], [I_0], args=(kappa_profile,), t_eval=x, method='BDF', max_step=0.1)
+
+    I = sol.y[0]
+
+    return I
+
+from scipy.integrate import cumtrapz
+
+def calc_I_profile_num(kappa_profile):
+    x = kappa_profile.index
+
+    # Compute -kappa(x) * I(x)
+    dI_dx = -kappa_profile.values
+
+    # Compute the cumulative integral
+    I = cumtrapz(dI_dx, x, initial=0)
+
+    # Add the initial condition
+    I += 1
+
+    return I
+
+def calc_I_profile_euler(kappa_profile):
+    x = kappa_profile.index
+    I = np.zeros_like(kappa_profile.values)
+    I[0] = 1  # initial condition
+
+    # Euler method
+    for i in range(1, len(x)):
+        dI_dx = -kappa_profile.values[i-1] * I[i-1]
+        deltax = x[i] - x[i-1]
+        I[i] = I[i-1] + dI_dx * deltax
+
+        if I[i] < 0:
+            I[i] = 0
+
+    return I
+
+
+# %%
+
+
+wl = Quantity(770, 'nm')
+
+Q = Q_2peak(wl)
+nK = Quantity(1e21, '1/m^3')
+
+kappa_max = (Q*nK).to('1/cm').magnitude
+kappa_profile = kappa_max * nK_profile
+kappa_profile = pd.Series(kappa_profile, index=x)
+
+I = calc_I_profile_euler(kappa_profile)
+
+tau = I[-1]/I[0]
+
+print(tau)
+
+plt.plot(x, I)
+plt.twinx()
+plt.plot(x, kappa_profile, 'r')
+
+
+# %%
+
+
+fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'nK_beam_profiles.cdf')
+
+ds_cfd = xr.load_dataset(fp_cfd_profiles)
+ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
+ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
+ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
+
+ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
+ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
+
+from mhdpy.pyvista_utils import calc_rho
+
+ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
+
+ds_cfd
+
+
+# %%
+
+da_cfd = ds_cfd['rho']*ds_cfd['K']
+
+da_cfd
+
+
+# %%
+
+
+
+# mirror the profiles along dist=0
+
+da_cfd_mirror = da_cfd.assign_coords(dist=-da_cfd.coords['dist'].values)
+
+da_cfd = xr.concat([da_cfd_mirror, da_cfd], dim='dist')
+
+da_cfd = da_cfd.groupby('dist').first()
+
+da_cfd = da_cfd.sortby('dist')
+
+# drop any dupicated dist values
+
+# da_cfd = da_cfd.where(~da_cfd.duplicated('dist'), drop=True)
+
+
+# %%
+
+da_cfd.coords['dist'].values
+
+
+
+
+
+
+
+# %%
+
+
+da_cfd.plot(hue='pos')
+
+plt.yscale('log')
+
+plt.ylim(1e17,1e23)
+
+plt.gca().get_legend().remove()
+
+
+# %%
+
+# da_cfd.plot()
+
+# %%
+
+
+
+
+# %%
+
+da_cfd_kappa = (da_cfd/da_cfd.max())*kappa_max
+
+da_cfd_kappa 
+
+Is = []
+
+for pos in da_cfd_kappa.coords['pos'].values:
+    da_sel = da_cfd_kappa.sel(pos=pos)
+    kappa_profile = pd.Series(da_sel.values, index=da_sel.coords['dist'].values)
+
+    I = calc_I_profile_deq(kappa_profile)
+
+    Is.append(I)
+
+
+da_I_pos = xr.DataArray(Is, coords=da_cfd_kappa.coords, dims=['pos', 'dist'])
+
+
+# %%
+
+da_I_pos.plot(hue='pos')
+
+
+# %%
+
+da_tau = da_I_pos[:,-1]/da_I_pos[:,0]
+
+da_alpha = -da_tau + 1
+
+da_alpha.plot(marker='o')
+
+plt.yscale('log')
+
+
+# %%
+
+da_sel = ds_absem['alpha'].mean('mnum').mean('run').sel(mp='mw_horns')
+da_sel.coords['motor'] = da_sel.coords['motor']
+
+da_sel_wl = da_sel.sel(wavelength=770, method='nearest')
+da_sel_max = da_sel.max('wavelength')
+
+da_sel_wl.plot(label='exp 770 nm', marker='o')
+da_sel_max.plot(label='exp max', marker='o')
+
+da_alpha.plot(label='cfd 770 nm', marker='o')
+
+plt.legend()
+
+plt.yscale('log')
+
+# .sel(wavelength=770, method='nearest')
+
+# %%
+
+
+def alpha_deq_solve(x,
+    nK_profile=None, #must be a kwarg...
+    nK_max =1e-7,
+    ):
+    """
+    Parameter
+    ---------
+    x : float array
+        wavelength [nm]
+    nK_profile : float array
+        normalized number density profile [dimensionless]
+    nK : float
+        maximum number density [1/nm^3]
+
+    Returns
+    -------
+    alpha : float array
+        absorption []
+    tau : float array
+        transmission []
+    kappa : float array
+        absorption coefficient [1/nm]
+    Qs : float array
+        cross section
+    """
+
+    if nK_profile is None:
+        raise ValueError('nK_profile must be provided')
+
+    Qs = Q_2peak(x)
+
+    nK_max = Quantity(nK_max, '1/nm^3')
+
+    # kappa0 = Quantity(0, '1/nm')
+
+    alphas = np.zeros_like(x)
+
+    for i, Q in enumerate(Qs):
+
+        kappa_max = (Q*nK_max).to('1/cm').magnitude
+
+        kappa_profile = kappa_max * nK_profile
+
+        I = calc_I_profile_euler(kappa_profile)
+
+        tau = Quantity(I[-1]/I[0], 'dimensionless')
+
+        alpha = -tau + Quantity(1, 'dimensionless')
+        alpha = alpha.magnitude
+
+        alphas[i] = alpha
+
+    return alphas
+
+# wls = ds_absem.coords['wavelength'].values
+
+
+# %%
+
+# test_spectum 
+
+ds_test = ds_absem.mean('mnum').mean('run').sel(mp='barrel')
+
+ds_test = ds_test.mean('motor')
+
+ds_test = ds_test.absem.reduce_keep_wings()
+
+# ds_test = ds_test.dropna('wavelength')
+
+ds_test['alpha_red'].plot(marker='o')
+
+
+# %%
+
+wls = ds_test.coords['wavelength'].values
+
+nK = Quantity(1e-6, '1/nm^3')
+
+x = np.linspace(0, 2, 100)
+nK_profile = tophat_profile(L.magnitude, 1, x)
+nK_profile = pd.Series(nK_profile, index=x)
+
+alpha = alpha_deq_solve(wls, nK_profile, nK_max=nK)
+ds_test['alpha'].plot(marker='o')
+plt.plot(wls, alpha)
+
+plt.ylim(0,1)
+
+
+# %%
+
+nK_profile
+
+# %%
+
+from lmfit import Model
+
+mod = Model(alpha_deq_solve, nK_profile=nK_profile)
+
+params = mod.make_params(nK_max=1e-5, )
+
+params.add('nK_m3', expr='nK_max*1e27')
+params['nK_m3'].vary = False
+
+
+# %%
+
+# ds_absem_fit, ds_p, ds_p_fit = ds_test.absem.perform_fit(mod, params)
+
+# # out = mod.fit(da_alpha.values, wls=wls, params=params)
+# # %%
+
+# ds_p
+
+# # out.plot_fit()
+
+# #%%
+# out
+
+
+# %%
+
+from mhdpy.xr_utils import fit_da_lmfit
+
+ds_fit = ds_absem.mean('mnum').mean('run').sel(mp='mw_horns').dropna('motor')
+
+ds_fit
+
+# %% [markdown]
+# # Tophat profile
+
+# %%
+
+ds_fit = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
+
+ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
+
+ds_absem_fit, ds_p, ds_p_fit = ds_fit['alpha'].absem.perform_fit(mod, params, method='iterative')
+
+ds_p_tophat = ds_p.copy()
+
+# ds_alpha_fit = ds_alpha_fit.dropna('wavelength')
+
+# ds_alpha_fit, ds_p, ds_p_stderr = ds_fit
+
+# %%
+
+ds_p['nK_m3'].plot()
+
+plt.yscale('log')
+
+
+# %%
+
+ds_absem_fit.to_array('var').plot(hue='var', row='motor')
+
+plt.ylim(0,1)
+
+plt.xlim(763,775)
+
+# %% [markdown]
+# # CFD Profiles
+
+# %%
+
+#TODO: pass a different profile in for each iteration
+
+dss_p = []
+dss_absem_fit = []
+
+for pos in ds_fit.coords['motor'].values:
+
+    ds_fit_sel = ds_fit.sel(motor=pos)
+
+    nK_profile = da_cfd_kappa.sel(pos=pos, method='nearest').to_series()
+    nK_max = nK_profile.max()
+    nK_profile = nK_profile/nK_max
+
+    mod = Model(alpha_deq_solve, nK_profile=nK_profile)
+
+    params = mod.make_params(nK_max=1e-5, )
+    params['nK_max'].min = 0
+
+    params.add('nK_m3', expr='nK_max*1e27')
+    params['nK_m3'].vary = False
+
+    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = ds_fit_sel['alpha'].absem.perform_fit(mod, params, method='iterative')
+
+    dss_p.append(ds_p_sel)
+    dss_absem_fit.append(ds_absem_fit_sel)
+
+    # break
+
+ds_p = xr.concat(dss_p, dim='motor')
+ds_absem_fit = xr.concat(dss_absem_fit, dim='motor')
+
+# %%
+ds_absem_fit.to_array('var').plot(hue='var', row='motor')
+
+plt.ylim(0,1)
+
+plt.xlim(763,775)
+
+# %%
+
+# Centerline profile
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles.cdf' )
+
+ds_cfd_cl = xr.load_dataset(fp_cfd)
+
+ds_cfd_cl['T'] = ds_cfd_cl['T'].pint.quantify('K')
+ds_cfd_cl['p'] = ds_cfd_cl['p'].pint.quantify('Pa')
+
+ds_cfd_cl = ds_cfd_cl.sel(kwt=1)
+
+ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values - ds_cfd_cl.coords['x'].values[0])
+ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values*1000)
+
+
+from mhdpy.pyvista_utils import calc_rho
+
+ds_cfd_cl['rho'] = calc_rho(ds_cfd_cl['T'], ds_cfd_cl['p'])
+
+ds_cfd_cl['nK_m3'] = ds_cfd_cl['K']*ds_cfd_cl['rho']
+
+
+
+
+# %%
+
+
+ds_p['nK_m3'].plot(marker='o', label='cfd profile')
+ds_p_tophat['nK_m3'].plot(marker='o', label='tophat profile')
+
+ds_cfd_cl['nK_m3'].plot(label='cfd centerline')
+
+
+plt.yscale('log')
+
+plt.legend()
+
+# %%
+
+
+
