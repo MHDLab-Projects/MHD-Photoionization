@@ -132,11 +132,13 @@ class AxiMesh:
         
         https://docs.pyvista.org/version/stable/api/core/_autosummary/pyvista.datasetfilters.sample_over_line
         """
+
+        if resolution is None:
+            resolution = int(self.mesh.n_cells)
+
         line = pv.Line(pointa, pointb, resolution)            
         self.points_to_axi(line.points)
         
-        if resolution is None:
-            resolution = int(self.mesh.n_cells)
         
         sampled_line = line.sample(self.mesh, tolerance=tolerance, progress_bar=progress_bar)
         return sampled_line
