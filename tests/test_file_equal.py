@@ -12,18 +12,24 @@ import os
 import pytest
 import glob
 
-test_data_path = pjoin(REPO_DIR, 'tests', 'test_data') 
-input_data_folder = pjoin(REPO_DIR, 'experiment','data','proc_data')
+test_data_path_exp = pjoin(REPO_DIR, 'tests', 'test_data') 
+input_data_folder_exp = pjoin(REPO_DIR, 'experiment','data','proc_data')
+
+test_data_path_modeling = pjoin(REPO_DIR, 'tests', 'test_data_modeling')
+input_data_folder_modeling = pjoin(REPO_DIR, 'modeling','dataset', 'output')
 
 # Get all TDMS files in the test_data folder
-tdms_files = glob.glob(os.path.join(test_data_path, '*.tdms'))
+tdms_files = glob.glob(os.path.join(test_data_path_exp, '*.tdms'))
 # strip test_data_path from the file names
 tdms_files = [os.path.basename(f) for f in tdms_files]
 
 # Get all cdf files in the test_data folder, and subfolders
-cdf_files = glob.glob(os.path.join(test_data_path, '**/*.cdf'), recursive=True)
+cdf_files = glob.glob(os.path.join(test_data_path_exp, '**/*.cdf'), recursive=True)
 # strip test_data_path from the file names
-cdf_files = [os.path.relpath(f, test_data_path) for f in cdf_files]
+cdf_files = [os.path.relpath(f, test_data_path_exp) for f in cdf_files]
+
+cdf_files_modeling = glob.glob(pjoin(test_data_path_modeling, '**/*.cdf'), recursive=True)
+cdf_files_modeling = [os.path.relpath(f, test_data_path_modeling) for f in cdf_files_modeling]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -34,8 +40,8 @@ logging.basicConfig(level=logging.INFO)
 @pytest.fixture(scope='function')
 def data_tuple_tdms(request, tdms_file) -> (xr.Dataset, xr.Dataset):
 
-    fp_old = os.path.join(test_data_path, tdms_file)
-    fp_new = os.path.join(input_data_folder, tdms_file)
+    fp_old = os.path.join(test_data_path_exp, tdms_file)
+    fp_new = os.path.join(input_data_folder_exp, tdms_file)
 
     # Log the files being processed
     logging.info(f'Processing files: {fp_old}, {fp_new}')
@@ -76,21 +82,34 @@ def test_output_equal_tdms(data_tuple_tdms):
 # CDF tests
 
 @pytest.fixture(scope='function')
-def data_tuple_cdf(request, cdf_file) -> (xr.Dataset, xr.Dataset):
+def data_tuple_cdf(request, cdf_file, new_data_dir, test_dir) -> (xr.Dataset, xr.Dataset):
 
-    fp_old = os.path.join(test_data_path, cdf_file)
-    fp_new = os.path.join(input_data_folder, cdf_file)
+    fp_test = os.path.join(test_dir, cdf_file)
+    fp_new = os.path.join(new_data_dir, cdf_file)
 
     # Log the files being processed
-    logging.info(f'Processing files: {fp_old}, {fp_new}')
+    logging.info(f'Processing files: {fp_test}, {fp_new}')
 
-    ds_old = xr.load_dataset(fp_old)
+    ds_old = xr.load_dataset(fp_test)
     ds_new = xr.load_dataset(fp_new)
 
     return (ds_new, ds_old)
 
-@pytest.mark.parametrize('cdf_file', cdf_files)
-def test_equals_cdf(data_tuple_cdf):
+
+params_exp = [(cdf_file, input_data_folder_exp, test_data_path_exp) for cdf_file in cdf_files]
+
+@pytest.mark.parametrize('cdf_file,new_data_dir,test_dir', params_exp)
+def test_equals_cdf_exp(data_tuple_cdf):
+    ds_new, ds_old = data_tuple_cdf
+
+    if not ds_new.equals(ds_old):
+        assertion_message = f'New and old datasets are not equal \n\n--New--\n{ds_new}\n\n--Old--{ds_old}'
+        raise AssertionError(assertion_message)
+
+params_modeling = [(cdf_file, input_data_folder_modeling, test_data_path_modeling) for cdf_file in cdf_files_modeling]
+
+@pytest.mark.parametrize('cdf_file,new_data_dir,test_dir', params_modeling)
+def test_equals_cdf_modeling(data_tuple_cdf):
     ds_new, ds_old = data_tuple_cdf
 
     if not ds_new.equals(ds_old):
