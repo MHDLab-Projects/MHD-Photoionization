@@ -10,21 +10,16 @@ fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles.cdf')
 
 ds = xr.load_dataset(fp)
 
-#%%
-
 ds['T'] = ds['T'].pint.quantify('K')
 ds['p'] = ds['p'].pint.quantify('Pa')
 
 #%%
 
-R = Quantity(8.31446261815324, 'J/(mol*K)')
-ds['rho'] = ds['p']/(ds['T']*R)
+from mhdpy.pyvista_utils import calc_rho
 
-NA = Quantity(6.02214076e23, '1/mol')
 
-ds['rho'] = ds['rho']*NA
+ds['rho'] = calc_rho(ds['T'], ds['p'])  
 
-ds['rho'].pint.to('1/cm^3')
 #%%
 
 ds['rho'].plot(hue='kwt')

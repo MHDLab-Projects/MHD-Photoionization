@@ -126,7 +126,7 @@ a,b = gen_beam_line(30)
 
 line = pv.Line(a, b, resolution=100)
 
-pv.plot([line, mesh])
+# pv.plot([line, mesh])
 
 #%%
 
@@ -204,7 +204,9 @@ plt.yscale('log')
 
 #%%
 
-ds_out = ds[['K']]
+ds_out = ds[['K', 'T', 'p']]
+
+
 
 ds_out.to_netcdf('output/nK_beam_profiles.cdf')
 

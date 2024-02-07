@@ -228,12 +228,22 @@ fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profile
 
 ds_cfd = xr.load_dataset(fp_cfd)
 
+ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
+ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
+
 ds_cfd = ds_cfd.sel(kwt=1)
 
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
 
-#TODO: Convert to number density
+
+from mhdpy.pyvista_utils import calc_rho
+
+ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
+
+ds_cfd['nK_m3'] = ds_cfd['K']*ds_cfd['rho']
+
+
 ds_cfd_norm = ds_cfd/ds_cfd.max()
 
 
@@ -288,6 +298,58 @@ ax2.set_title('')
 plt.xlim(0,310)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
+nK_barrel_mean = ds_p['nK_m3'].sel(mp='barrel').mean('motor').mean('run')
+nK_barrel_std = ds_p['nK_m3'].sel(mp='barrel').mean('motor').std('run')
+
+
+#%%
+
+plt.figure(figsize=(5,3))
+
+da = ds['nK_m3'].dropna('run', how='all')
+da = da.sel(motor = slice(50,300))
+
+g = da.isel(run=0).plot(x='motor', marker='o', label='2023-05-12 Run 1')
+g = da.isel(run=1).plot(x='motor', marker='o', label='2023-05-12 Run 2')
+plot.dropna(g)
+
+ax1 = plt.gca()
+ax1.set_yscale('log')
+ax1.set_title('')
+ax1.set_xlabel('Position [mm]')
+
+# ax1.get_legend().set_title('Experiment (date, #)')
+# ax1.get_legend().set_bbox_to_anchor([0,0,0.5,0.4])
+ax1.axvline(178, color='gold', linestyle='--')
+
+
+ds_cfd['nK_m3'].plot(color='black', label ='CFD centerline')
+
+plt.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg')
+
+plt.ylim(1e17,3e22)
+
+
+ax1.legend()
+ax1.set_title('')
+
+ax1.set_xlabel('Position [mm]')
+
+# ax2 = plt.gca()
+# ax2.legend()
+# ax2.set_ylabel('Normalized $n_{K, CFD}$')
+# ax2.set_yscale('log')
+# ax2.set_title('')
+
+# plt.xlim(0,310)
+
+# plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+
+
+
 
 # %%
 
