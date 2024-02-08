@@ -53,9 +53,20 @@ combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, analysis='perf_Bconst')
 
 cmap = plt.get_cmap('RdBu')
 beta_sel = beta.sel(combo_sel)
-beta_sel.plot(vmin=-1,vmax=1,xscale='log', cmap=cmap)
+g = beta_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', cmap=cmap)
 
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='black')
+# Set the colorbar label
+g.colorbar.set_label('$\\alpha - 1$')
+
+
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=4, linestyle='--')
+
+plt.gca().set_title('')
+
+plt.ylabel('Temperature (K)')
+plt.xlabel('Pressure (Pa)')
+
+
 
 plt.savefig('output/alpha_curve_demo.png')
 

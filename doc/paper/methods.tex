@@ -127,10 +127,24 @@ For numerical integration, we write $n_K(x) = n_{K,max} f(x)$, where $f(x)$ is t
 
 \subsection{Cantera}
 
-We perform 0D chemical equilibrium simulations with the Cantera python package to asses the viability of the photoionization process. 
-Assessing viability in hypothetical conditions using kr value
+We assess the viability of the photoionization process to produce a net return in energy with 0D chemical equilibrium simulations. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\alpha_{PI}$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an infitesimal amount of photoionization power input, $dP_{in}$. 
 
-TODO: copy methodology from PI modeling paper 
+
+TODO: replace alpha with another symbol to not be confused with absorption coefficient.
+
+
+\begin{equation}
+\alpha_{PI} = \left. \frac{{dP}_{MHD}}{{dP}_{in}} \right|_{P_{in}=0}
+\end{equation}
+
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{\repodir/modeling/analysis/output/alpha_curve_demo.png} 
+    \caption{Figure of merit for photoionization for various temperatures and pressures. The line}   
+    \label{fig:alpha_line_demo}
+\end{figure}
+
+Figure \ref{fig:alpha_line_demo} shows $\alpha_{PI}$ for various temperatures and pressures.  For $\alpha_{PI} > 1$ at low temperatures and pressures (blue region), the photoionization process exibits a net energy return and is viable. For $\alpha_{PI} < 1$, at high temperatures and pressures (red region) the photoionization process is not viable. The line $\alpha_{PI} = 1$ is the boundary between these two regions. To determine the boundary line (green dashed  line), we interpolate $\alpha_{PI}$ each temperature to determine the pressure at which $\alpha_{PI} = 1$. These boundary lines are then shown for various conditions in the results section.
 
 \subsection{CFD}
 

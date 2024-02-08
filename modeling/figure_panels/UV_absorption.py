@@ -52,7 +52,7 @@ for var in ds_cs:
 
 plt.legend(bbox_to_anchor = [0,0,1.4,1])
 
-plt.savefig('output/abscs.png')
+plt.savefig('output/abscs.png', bbox_inches = 'tight')
 
 # %%
 
