@@ -11,25 +11,16 @@ TODO: Species dependent cross section I do not believe have been implemented yet
 
 To calculate the recombination rate, we use the ionization cross sections, \(\sigma_{i,j}\), for collisions of alkali metals between various combustion product species (\emph{j =} Ar, H\textsubscript{2}, N\textsubscript{2}, CO, CO\textsubscript{2}, H\textsubscript{2}O) measured by Kelly and Padely.{[}13{]} This in principle allows for the calculation of the two-body ionization coefficient for a given gas mixture with the following formula.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[k_{i} = \sum_{j}^{}{\left( \frac{8kT}{\pi\mu_{M,j}\ } \right)\sigma_{i,j}\left\lbrack Z_{j} \right\rbrack e^{- \frac{E_{ion}}{kT}}\ }\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+k_{i} = \sum_{j}^{}{\left( \frac{8kT}{\pi\mu_{M,j}\ } \right)\sigma_{i,j}\left\lbrack Z_{j} \right\rbrack e^{- \frac{E_{ion}}{kT}}\ }
+\end{equation}
 
-2)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 Where \(\mu_{M,j}\) is the reduced mass of the alkali metal and collision partner and \(\lbrack Z_{j}\rbrack\) the density of the collision partner. \(k_{r}\) is then determined through the Saha law.
 
-\[k_{r} = \frac{k_{i}}{K_{eq}(T)}\]
+\begin{equation}
+k_{r} = \frac{k_{i}}{K_{eq}(T)}
+\end{equation}
 
 We note that this work used flames with various diluents and H2 fuel. Therefore, the applicability of the measured \(\sigma_{i,j}\) to oxy-fuel combustion products is unknown. However, as outlined in Alkemade, the coefficients do not seem to depend on the gas composition or fuel type within an order of magnitude, at least for diluted H2 and CO flames.
 
@@ -42,23 +33,10 @@ We then model different potential gas areas of the MHD channel by equilibrating 
 
 We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, This method also represents an improvement to previous analysis as we have detailed the collisional cross sections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross sections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8354}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\[\sigma = e\mu_{e}n_{e}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+\sigma = e\mu_{e}n_{e}
+\end{equation}
 
-2)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 \includegraphics[width=4.09929in,height=3.95663in]{./media/image1.png}
 
@@ -69,158 +47,59 @@ Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. 
 
 To study the fundamental potential of NEI, we develop a 0D model of an infinitesimal volume of gas described by the thermal equilibrium properties computed above. NEI is modeled as a perturbation on the seeded gas mixture in chemical equilibrium. We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[{\ G}_{NE} = \frac{\eta P_{In}}{eE_{IP}}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+{G}_{NE} = \frac{\eta P_{In}}{eE_{IP}}
+\end{equation}
 
-3)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\) and when \(\eta = 1\), the rate of energy transfer in the form of potential energy from bound to free electrons is \(P_{in}\). For \(\eta < 1\), a fraction \(\eta - 1\) of the input energy is wasted in the ionization process. It is important to note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} Later, we use this framework to study the particular case of photoionization, \(\eta_{PI}\) = \(\frac{\delta}{\delta_{K}\ }FA\).
 
 To determine \(n_{e}(P_{in}),\) we assume the system is in quasi-equilibrium, i.e. that the total generation rate of electrons (G) equals the recombination rate (R).
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[G = \ R\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-4)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+G = R
+\end{equation}
 
 The recombination rate is given by
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8354}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\[R = k_{r}n_{e}n_{K^{+}} = k_{r}n_{e}^{2}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-5)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+R = k_{r}n_{e}n_{K^{+}} = k_{r}n_{e}^{2}
+\end{equation}
 
 Where we have assumed \(n_{K^{+}}\)= \(n_{e}.\ \)We also assume that G is comprised of both \(G_{NE}\) as well as a thermal generation rate, \(G_{th} = k_{th}n_{K}\), such that.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8354}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\[G = G_{th} + G_{NE} = k_{th}n_{K} + \ \frac{\eta P_{In}}{eE_{IP}}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-6)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+G = G_{th} + G_{NE} = k_{th}n_{K} + \ \frac{\eta P_{In}}{eE_{IP}}
+\end{equation}
 
 Combining these expressions
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8354}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\[n_{e}(P_{in}) = \sqrt{\frac{{G_{th} + \ G}_{NE}(P_{in})}{k_{r}} = \ }\sqrt{\frac{k_{th}n_{K} + \frac{\eta P_{In}}{eE_{IP}}}{k_{r}}\ }\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-7)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+n_{e}(P_{in}) = \sqrt{\frac{{G_{th} + \ G}_{NE}(P_{in})}{k_{r}} = \ }\sqrt{\frac{k_{th}n_{K} + \frac{\eta P_{In}}{eE_{IP}}}{k_{r}}\ }
+\end{equation}
 
 \hypertarget{figure-of-merit}{%
 \subsection{Figure of merit}\label{figure-of-merit}}
 
 We are interested in finding the regimes in which a power input \(dP_{in}\) will generate a correspondingly larger amount of MHD power output \(dP_{MHD}\). We therefore define the figure of merit,
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[\alpha = \frac{{dP}_{MHD}}{dP_{in}} = \frac{{dP}_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\ \]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+\alpha = \frac{{dP}_{MHD}}{dP_{in}} = \frac{{dP}_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\ 
+\end{equation}
 
-8)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 and want to find the regimes in which \(\alpha > 1,\ \)We assume that \(\mu_{e}\) independent of \(n_{e}\) to arrive at
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[\alpha = K(1 - K)u^{2}B^{2}e\mu_{e}\frac{dn_{e}}{dP_{in}}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+\alpha = K(1 - K)u^{2}B^{2}e\mu_{e}\frac{dn_{e}}{dP_{in}}
+\end{equation}
 
-9)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 Calculating \(\frac{dn_{e}}{dP_{in}}\) with equation 7 gives
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[\alpha\ (P_{in}) = \eta\frac{K(1 - K)u^{2}B^{2}e\mu_{e}}{2E_{IP}k_{r}n_{e}(P_{in})}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+\alpha\ (P_{in}) = \eta\frac{K(1 - K)u^{2}B^{2}e\mu_{e}}{2E_{IP}k_{r}n_{e}(P_{in})}
+\end{equation}
 
-10)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 This expression can be interpreted as the ratio of the increases in MHD power to recombination losses (\(P_{R} = E_{IP}R = \ E_{IP}k_{r}n_{e}\)) with an induced increase in \(n_{e}\). Equation 10 and equation 7 show that the efficiency decreases as a function of \(P_{in}\) and recombination losses increase. We chose to examine the best-case scenario where \(P_{in}\)= 0, represents the absolute best infinitesimal energy return on energy investment possible for a given set of parameters. The regimes where \(\alpha\ \left( P_{in} = 0 \right)\ \)is high do not necessarily correspond to regimes in which NEI will result in a large \(P_{MHD}\) and can be large when the conductivity (and recombination) is low and correspondingly actual MHD power density (\(P_{MHD}\)) is near low.
 
@@ -239,21 +118,10 @@ Regarding B, we explore two options
   Set B to the approximate maximum value determined by ion slip. Due to the effect of ion slip increasing the B field will eventually not generate an increase in \(P_{MHD}\). We use the approximate expression below as determined for seeded nitrogen gas in Rosa.{[}5{]}
 \end{enumerate}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[B_{\max}(T,P) = \sqrt{3600/\mu_{e}(T,P)^{2}}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
+\begin{equation}
+B_{\max}(T,P) = \sqrt{3600/\mu_{e}(T,P)^{2}}
+\end{equation}
 
-11)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
 
 This B field can reach \textgreater1000 T (check) in the regimes explored.
 
@@ -291,43 +159,17 @@ We have previously investigated photoionization in a HVOF jet using a 3D CFD mod
 
 We model photoionization by calculating the ionization efficiency for photoionization, \(\eta_{PI}\) (See equation 3). Considering a fraction of the incident photons that are absorbed by potassium, \(FA_{K}\), and that any photon energy above the ionization potential is wasted, we conclude
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9149}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0851}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\[\eta_{PI} = \frac{E_{IP}}{E_{ph}}FA_{K} = \frac{E_{IP}}{E_{ph}}\frac{\delta}{\delta_{K}\ }FA\ \ \]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-15)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+\eta_{PI} = \frac{E_{IP}}{E_{ph}}FA_{K} = \frac{E_{IP}}{E_{ph}}\frac{\delta}{\delta_{K}\ }FA\ \ 
+\end{equation}
 
 Where \(FA_{K}\) has been expressed in terms of the optical attenuation length of each individual species \(\delta_{i}\) and the total optical attenuation length of the gas mixture, \(\delta\), and the fraction of incident light absorbed by the entire gas mixture, FA. To understand the fundamental limit of photoionization we assume FA = 1. The case of FA for a practical system of an optical cavity with finite reflectivity mirrors is explored in the appendix.
 
 \(\delta\) is calculated with the following equation:
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0869}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8354}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0777}}@{}}
-\toprule
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\[\ \delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}}\]
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-(
-
-16)
-\end{minipage} \\
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+\begin{equation}
+\delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}}
+\end{equation}
 
 Where \(Q_{i}\) is the optical absorption cross section of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{K} = n_{K}Q_{K}\)where the \(K\) stands for potassium.
 
@@ -340,5 +182,3 @@ Figure 5: Optical absorption cross sections of species with significant cross se
 Figure 6 shows\(\ \delta\), \(\delta_{K}\), and \(\frac{\delta}{\delta_{K}\ }\)for various UV wavelengths and temperatures.
 
 \includegraphics[width=1.68194in,height=3.26667in]{./media/image4.png}In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure 6. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
-
-\end{document}
