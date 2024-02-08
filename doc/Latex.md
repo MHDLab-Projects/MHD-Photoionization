@@ -28,3 +28,25 @@ There is a vscode extension for not having to type the citation key, but appears
 https://github.com/mblode/vscode-zotero
 
 https://github.com/mblode/vscode-zotero/issues/14
+
+
+## word conversion 
+
+### Word to latex
+
+https://tanghaoyu258.github.io/posts/2021/04/blog-post-1/
+
+`pandoc --extract-media=. --wrap=none -s input.docx -t latex –o output.tex`
+
+
+### Latex to word
+
+https://tex.stackexchange.com/questions/111886/how-to-convert-a-scientific-manuscript-from-latex-to-word-using-pandoc
+
+https://latex2rtf.sourceforge.net/
+
+`latex2rtf main.tex`
+
+pandoc: `pandoc main.tex -o test.docx`
+
+Just open pdf in word. 

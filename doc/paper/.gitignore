@@ -6,3 +6,6 @@ main.bbl
 *.markdown.in
 *.run.xml
 *.synctex.gz
+
+input
+output
