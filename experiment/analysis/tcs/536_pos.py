@@ -119,6 +119,19 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
 #%%
 
+da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+
+da_sel = da_sel.mean('run')
+
+da_sel.plot(hue='motor', x='time', marker='o')
+
+plt.yscale('log')
+
+plt.xlim(-1, 20)
+
+
+#%%
+
 # plt.figure(figsize=(4,6))
 
 # da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
