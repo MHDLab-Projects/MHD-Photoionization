@@ -13,6 +13,10 @@ import re
 import xarray as xr
 import xyzpy
 
+from pint import Quantity
+import pint_pandas
+import pint_xarray
+
 
 # import cantera_utils.et
 # import cantera_utils.util as ct_utils
@@ -130,13 +134,17 @@ ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciespara
 #Define reaction as kf = A(T)*B(X_i)
 
 
-e = 1.602e-19
-mp = 1.672e-27 
-kb = 8.617e-5
-Eion = 4.34
+e = Quantity(1.602e-19, 'coulomb')
+mp = Quantity(1.672e-27, 'kg')
+kb = Quantity(8.617e-5, 'eV/K')
+Eion = Quantity(4.34, 'eV')
 
+# Ion cross sections 
+# 1. Kelly, R., and Padley, P.J. (1972). Measurement of collisional ionization cross-sections for metal atoms in flames. Proc. R. Soc. Lond. A 327, 345–366. 10.1098/rspa.1972.0050.
+# Table 4 p 361
 s = pd.read_csv(os.path.join(physical_data_folder,'IonCrossSection.csv'), index_col=(0,1))['cs']
-cs = xr.DataArray.from_series(s) * 1e-14 #nm^2 to cm^2
+cs = xr.DataArray.from_series(s) 
+cs = cs.pint.quantify('nm**2/particle').pint.to('cm**2/particle')
 cs = cs.sel(metal = 'K').drop('metal') 
 
 masses = {
@@ -149,13 +157,14 @@ masses = {
     'N2': 28.01
 }
 
-redmass = cs.copy(deep=True).rename('redmass')
+masses = {
+    k: Quantity(v, 'amu') for k,v in masses.items()
+}
 
-for species in redmass.indexes['species']:
-    redmass.loc[{'species':species}] = ( (masses['K']*masses[species])/(masses['K'] + masses[species]) )*mp
-    
+redmass = { k: (masses['K']*v)/(masses['K']+v) for k,v in masses.items()}
+
 def calc_A(T):
-    A = np.sqrt(8*e*kb*T*np.pi)*np.exp(-Eion/(kb*T))
+    A = np.sqrt(8*kb*T*np.pi)*np.exp(-Eion/(kb*T))
     A = A*1e2 #m to cm (units are weird since mass has been pulled into B, but should end up like m/s per kg**1/2 or something)
     return A
 
@@ -164,28 +173,33 @@ def calc_B(ds_species, cs, redmass):
     for species in cs.indexes['species']:
         x_i = ds_species[species]
         cs_i = cs.sel(species=species)
-        redmass_i = redmass.sel(species=species)
+        redmass_i = redmass[species]
         b_i = x_i*cs_i/np.sqrt(redmass_i)
         b_tot = b_tot + b_i
     return b_tot
 
-Ts = ds_TP_species.indexes['T'].values
+Ts = Quantity(ds_TP_species.indexes['T'].values, 'K')
 A = xr.DataArray(calc_A(Ts), coords={'T':Ts}, dims = 'T')
 B = calc_B(ds_TP_species, cs, redmass)
 
-kth = ds_TP_params['rhocm3']*A*B
+kth = ds_TP_params['rhocm3'].pint.quantify("particle/cm**3")*A*B
 kth.name = '$k_{th}$'
-kth = kth.assign_attrs(units = '$(1/s)$' )
+kth = kth.pint.to('1/s')
+# kth = kth.assign_attrs(units = '$(1/s)$' )
 
-Keq = 2.42e15*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
+# Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
+# Manually adding temperature to units to match overall units of molecule/ml specified in paper
+Keq_prefactor = Quantity(2.42e15, 'molecule/ml/K**1.5')
+Keq = Keq_prefactor*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
 Keq = xr.DataArray(Keq, coords={'T':Ts}, dims = 'T')
 
 kr = kth/Keq
 kr.name =  '$k_{r}$'
-kr = kr.assign_attrs(units = '$(cm^3/molecule)(1/s)$' )
+# kr = kr.assign_attrs(units = '$(cm^3/molecule)(1/s)$' )
+kr = kr.pint.to('cm**3/molecule/s')
 
 ds_TP_params = ds_TP_params.assign({'kth':kth, 'kr':kr})
-Gth = ds_TP_params['kth']*ds_TP_species_rho['K']
+Gth = ds_TP_params['kth']*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
 Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 ds_TP_params = ds_TP_params.assign({'Gth':Gth})
 
@@ -234,3 +248,5 @@ ds_HP_species_rho.to_netcdf(os.path.join(output_path, 'ds_HP_species_rho.cdf'))
 
 # ds_HP_species_rho.to_dataframe().to_csv(os.path.join(output_path, 'ds_HP_species_rho.csv'))
 # writeunitsrowcsv(ds_HP_species_rho,os.path.join(output_path, 'ds_HP_species_rho.csv'))
+
+# %%
