@@ -77,30 +77,21 @@ ds_lecroy = xr.concat(dss, 'acq_time', join='override')
 
 ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 #%%
-from mhdpy.coords import assign_coords_multi
-dss_hvof = []
-dss_calor = []
-dss_motor = []
-dss_filterwheel =[]
-for date in dates:
-    data_folder = pjoin('munged',date) 
 
-    dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+# Narrow down dsst groups and concatenate across dates
 
-    dss_hvof.append(dsst['hvof'])
-    dss_calor.append(dsst['calorimetry'])
-    dss_motor.append(dsst['motor'])
-    dss_filterwheel.append(dsst['filterwheel'])
+keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel']
 
+dsst = {}
 
-# %%
+for key in keep_keys:
+    dss = []
+    for date in dates:
+        data_folder = pjoin('munged',date) 
+        dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+        dss.append(dsst_date[key])
+    dsst[key] = xr.concat(dss, 'time')
 
-dsst = {
-    'hvof': xr.concat(dss_hvof, 'time'),
-    'calorimetry': xr.concat(dss_calor, 'time'),
-    'motor': xr.concat(dss_motor, 'time'),
-    'filterwheel': xr.concat(dss_filterwheel, 'time')
-}
 # %%
 from mhdpy.fileio.tdms import dsst_to_tdms
 
