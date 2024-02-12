@@ -81,10 +81,10 @@ da_plot.plot(row='gatedelay')
 #%%
 
 # Create a figure and axes with the desired size
-fig, axes = plt.subplots(nrows=3, figsize=(4, 8), sharex=True, sharey=True)
+fig, axes = plt.subplots(nrows=2, figsize=(12,4), sharex=True, sharey=True)
 
 # Select the gatedelays
-gatedelays = [750, 800, 850]
+gatedelays = [800, 850]
 
 # Plot each gatedelay on a different axis
 for ax, gatedelay in zip(axes, gatedelays):
