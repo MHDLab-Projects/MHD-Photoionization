@@ -80,7 +80,7 @@ ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 
 # Narrow down dsst groups and concatenate across dates
 
-keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel']
+keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel', 'lasen_meter1', 'lasen_meter2']
 
 dsst = {}
 
