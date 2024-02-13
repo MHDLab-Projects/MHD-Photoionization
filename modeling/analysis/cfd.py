@@ -6,7 +6,7 @@ import pint_pandas
 import pint_xarray
 from pint import Quantity
 
-fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles.cdf')
+fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
 
 ds = xr.load_dataset(fp)
 
@@ -24,6 +24,26 @@ ds['rho'] = calc_rho(ds['T'], ds['p'])
 
 ds['rho'].plot(hue='kwt')
 
+#%%
+
+
+
+#%%
+
+ds[['K', 'Yeq_K']].to_array('var').plot(row='kwt', hue='var')
+
+plt.yscale('log')
+
+#%%
+
+ds[['Kp', 'Yeq_K+']].to_array('var').plot(row='kwt', hue='var')
+
+
+plt.yscale('log')
+
+#%%
+
+
 
 #%%
 
@@ -36,7 +56,7 @@ for species in species:
 
 #%%
 
-ds_sel = ds[['K', 'Kp']]
+ds_sel = ds[['Yeq_K', 'Yeq_K+']]
 
 g = ds_sel.to_array('var').plot(row='var', hue='kwt')
 

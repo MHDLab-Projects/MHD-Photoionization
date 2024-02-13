@@ -138,10 +138,10 @@ plt.plot(x, kappa_profile, 'r')
 # %%
 
 
-fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'nK_beam_profiles.cdf')
+fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'line_profiles_beam_Yeq.cdf')
 
 ds_cfd = xr.load_dataset(fp_cfd_profiles)
-ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
+# ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
 ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
 
@@ -152,12 +152,7 @@ from mhdpy.pyvista_utils import calc_rho
 
 ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
 
-ds_cfd
-
-
-# %%
-
-da_cfd = ds_cfd['rho']*ds_cfd['K']
+da_cfd = ds_cfd['rho']*ds_cfd['Yeq_K']
 
 da_cfd
 
@@ -165,56 +160,25 @@ da_cfd
 # %%
 
 
-
-# mirror the profiles along dist=0
-
-da_cfd_mirror = da_cfd.assign_coords(dist=-da_cfd.coords['dist'].values)
-
-da_cfd = xr.concat([da_cfd_mirror, da_cfd], dim='dist')
-
-da_cfd = da_cfd.groupby('dist').first()
-
-da_cfd = da_cfd.sortby('dist')
-
-# drop any dupicated dist values
-
-# da_cfd = da_cfd.where(~da_cfd.duplicated('dist'), drop=True)
-
-
-# %%
-
-da_cfd.coords['dist'].values
-
-
-
-
-
-
-
-# %%
-
-
-da_cfd.plot(hue='pos')
+da_cfd.plot(hue='pos', col='kwt')
 
 plt.yscale('log')
 
 plt.ylim(1e17,1e23)
 
-plt.gca().get_legend().remove()
+# plt.gca().get_legend().remove()
 
 
 # %%
 
 # da_cfd.plot()
 
-# %%
-
-
 
 
 # %%
+da_cfd_sel = da_cfd.sel(kwt=1)
 
-da_cfd_kappa = (da_cfd/da_cfd.max())*kappa_max
+da_cfd_kappa = (da_cfd_sel/da_cfd_sel.max())*kappa_max
 
 da_cfd_kappa 
 
@@ -346,7 +310,7 @@ ds_test['alpha_red'].plot(marker='o')
 
 wls = ds_test.coords['wavelength'].values
 
-nK = Quantity(1e-6, '1/nm^3')
+nK = Quantity(1e-5, '1/nm^3')
 
 x = np.linspace(0, 2, 100)
 nK_profile = tophat_profile(L.magnitude, 1, x)
@@ -398,16 +362,47 @@ ds_fit = ds_absem.mean('mnum').mean('run').sel(mp='mw_horns').dropna('motor')
 
 ds_fit
 
-# %% [markdown]
-# # Tophat profile
+#%%
 
-# %%
+# quick fix for calibraiton
+
+ds_fix = ds_fit.copy()
+
+rat = ds_fit['diff']/ds_fit['calib']
+
+rat = rat.sel(wavelength=slice(750,755)).mean('wavelength')
+
+ds_fix['calib'] = ds_fix['calib'] * rat
+
+ds_fix = ds_fix.absem.calc_alpha()
+
+ds_fix['alpha'].plot(row='motor')
+
+plt.ylim(-0.1,1.1)
+
+#%%
 
 ds_fit = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
 
 ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
 
-ds_absem_fit, ds_p, ds_p_fit = ds_fit['alpha'].absem.perform_fit(mod, params, method='iterative')
+ds_fit = ds_fit.groupby('motor').apply(lambda x: x.absem.reduce_keep_wings())
+
+ds_fit
+
+#%%
+
+ds_fit['alpha_red'].plot(row='motor')
+
+plt.yscale('log')
+
+# %% [markdown]
+# # Tophat profile
+
+# %%
+
+
+ds_absem_fit, ds_p, ds_p_fit = ds_fit['alpha_red'].absem.perform_fit(mod, params, method='iterative')
 
 ds_p_tophat = ds_p.copy()
 
@@ -456,7 +451,7 @@ for pos in ds_fit.coords['motor'].values:
     params.add('nK_m3', expr='nK_max*1e27')
     params['nK_m3'].vary = False
 
-    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = ds_fit_sel['alpha'].absem.perform_fit(mod, params, method='iterative')
+    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = ds_fit_sel['alpha_red'].absem.perform_fit(mod, params, method='iterative')
 
     dss_p.append(ds_p_sel)
     dss_absem_fit.append(ds_absem_fit_sel)
@@ -476,7 +471,7 @@ plt.xlim(763,775)
 # %%
 
 # Centerline profile
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles.cdf' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd_cl = xr.load_dataset(fp_cfd)
 
@@ -493,7 +488,7 @@ from mhdpy.pyvista_utils import calc_rho
 
 ds_cfd_cl['rho'] = calc_rho(ds_cfd_cl['T'], ds_cfd_cl['p'])
 
-ds_cfd_cl['nK_m3'] = ds_cfd_cl['K']*ds_cfd_cl['rho']
+ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K']*ds_cfd_cl['rho']
 
 
 
@@ -510,6 +505,8 @@ ds_cfd_cl['nK_m3'].plot(label='cfd centerline')
 plt.yscale('log')
 
 plt.legend()
+
+plt.ylim(1e18,1e23)
 
 # %%
 

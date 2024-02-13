@@ -237,7 +237,7 @@ plt.xscale('log')
 # %%
 
 
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles.cdf' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
 
@@ -254,7 +254,7 @@ from mhdpy.pyvista_utils import calc_rho
 
 ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
 
-ds_cfd['nK_m3'] = ds_cfd['K']*ds_cfd['rho']
+ds_cfd['nK_m3'] = ds_cfd['Yeq_K']*ds_cfd['rho']
 
 
 ds_cfd_norm = ds_cfd/ds_cfd.max()
@@ -299,7 +299,7 @@ ax1.axvline(178, color='gold', linestyle='--')
 
 plt.twinx()
 
-ds_cfd_norm['K'].plot(color='black', label ='CFD centerline')
+ds_cfd_norm['Yeq_K'].plot(color='black', label ='CFD centerline')
 # ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam conv (TODO)', marker='o')
 
 ax2 = plt.gca()
@@ -373,8 +373,8 @@ leg.set_title('Experiment (date, #)')
 leg.set_bbox_to_anchor([0,0,1.7,1])
 plt.twinx()
 
-ds_cfd_norm['KOH'].plot(color='black', label ='centerline')
-ds_cfd_beam_norm['KOH'].plot(color='gray', label = 'beam conv (TODO)')
+ds_cfd_norm['Yeq_KOH'].plot(color='black', label ='centerline')
+# ds_cfd_beam_norm['Yeq_KOH'].plot(color='gray', label = 'beam conv (TODO)')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,1.8,0.3])

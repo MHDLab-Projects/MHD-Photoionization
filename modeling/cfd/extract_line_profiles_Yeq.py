@@ -19,14 +19,13 @@ sp_dir = gen_path('sharepoint')
 results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
 # results_dir = 'input'
 
-# fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
-fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk')
+fps = {
+    '0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
+    '1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
+}
 
-mesh = pv.read(fp)
 
-mesh.set_active_scalars('K')
 
-mesh
 
 #%%
 
@@ -42,8 +41,7 @@ all_fields = [*soi, *soi_Yeq, *additional]
 from pv_axi_utils import AxiInterpolator,AxiMesh
 
 
-def gen_beam_line(position):
-    xy_ratio = 1.875/4.25
+def gen_beam_line(position, xy_ratio=1.875/4.25):
     # xy_ratio=1
 
     unit_cm = 1e-2
@@ -61,13 +59,11 @@ def gen_beam_line(position):
     return a, b
 
 
-
 def extract_line_axi(mesh, a, b):
 
     am = AxiMesh(mesh)
 
     line1 = am.sample_over_line(a, b, resolution=100)
-    line1.set_active_scalars('K')
 
     line_cart  = pv.Line(a, b, 100)
 
@@ -105,69 +101,119 @@ def interp_df_to_new_index(df_out, new_index):
 
     return df_interpolated
 
-a, b = gen_beam_line(10)
+#%%[markdown]
+
+# Demo
+
+#%%
+
+# fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
+# fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk')
+fp = fps['1.0']
+
+mesh = pv.read(fp)
+
+a, b = gen_beam_line(3, xy_ratio=1.875/4.25)
 
 line1 = extract_line_axi(mesh, a, b)
 
 p = pv.Plotter()
 
-p.add_mesh(mesh, scalars='K')
+p.add_mesh(mesh, scalars='T')
 p.add_mesh(line1, color='red')
-
 
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
-
 p.show()
-
 
 #%%
 
-df_lines = convert_line_df(line1, ['T','p','K'])
+df_lines = convert_line_df(line1, ['Yeq_K'])
 
 df_lines.plot()
 
-#%%
+# plt.yscale('log')
 
-beam_positions = np.arange(1, 30, 5)
+midpoint = max(df_lines.index)/2
+plt.axvline(midpoint, color='gray', linestyle='--')
+
+#%%[markdown]
+
+# # Extract lines along beam axis
+
+
+#%%
+tc = '536_pos'
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = ds_absem.xr_utils.stack_run()
+
+beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
+
+beam_positions = beam_positions.pint.to('cm').pint.magnitude
+
+beam_positions
+
+
+# beam_positions = np.arange(1, 30, 5)
 dist_grid = np.arange(0, 0.1, 0.001)
 
 dss = []
 
-for position in beam_positions:
 
-    a, b = gen_beam_line(position)
+for kwt, fp in fps.items():
 
-    line_out = extract_line_axi(mesh, a, b)
+    mesh = pv.read(fp)
+    for position in beam_positions:
 
-    df_lines = convert_line_df(line_out, ['T','p','K'])
+        a, b = gen_beam_line(position)
 
-    df_int = interp_df_to_new_index(df_lines, dist_grid)
+        line_out = extract_line_axi(mesh, a, b)
 
-    ds_out = xr.Dataset(df_int)
-    ds_out = ds_out.rename({'dim_0':'dist'})
-    ds_out = ds_out.assign_coords(pos=position)
+        df_lines = convert_line_df(line_out, ['T','p','Yeq_K'])
 
+        df_int = interp_df_to_new_index(df_lines, dist_grid)
 
-    dss.append(ds_out)
+        ds_out = xr.Dataset(df_int)
+        ds_out = ds_out.rename({'dim_0':'dist'})
+
+        ds_out = ds_out.assign_coords(pos=position)
+        ds_out = ds_out.assign_coords(kwt=float(kwt))
+
+        ds_out.expand_dims('pos').expand_dims('kwt').stack(temp=('pos', 'kwt'))
+
+        dss.append(ds_out)
 
     # break
 
-ds_lines = xr.concat(dss, dim='pos')
+ds_lines = xr.concat(dss, dim='temp')
+
+ds_lines = ds_lines.set_index(temp=['pos', 'kwt']).unstack('temp')
 
 #%%
 
-ds_lines['T'].plot()
+ds_lines
+#%%
+
+ds_lines['T'].plot(col='kwt', hue='pos')
 
 #%%
 
-ds_lines['K'].plot(hue='pos')
+ds_lines['Yeq_K'].plot(col='kwt', hue='pos')
 
 plt.yscale('log')
 
-plt.ylim(1e-9, 1e-3)
+plt.ylim(1e-14, 1e-2)
+
+#%%
+
+ds_lines.to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
 
 
+#%%[markdown]
+
+# # Extract lines along torch axis
 
 #%%
 
@@ -195,11 +241,6 @@ p.show()
 
 #TODO: add multi file for beam positions above. 
 
-fps = {
-    '0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
-    '1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
-}
-
 
 dss = []
 
@@ -219,7 +260,7 @@ for kwt, fp in fps.items():
     ds_out = ds_out.rename({'dim_0':'x'})
 
     ds_out
-    ds_out = ds_out.assign_coords(kwt=kwt)
+    ds_out = ds_out.assign_coords(kwt=float(kwt))
 
     dss.append(ds_out)
 
@@ -230,65 +271,5 @@ for kwt, fp in fps.items():
 
 ds_out = xr.concat(dss, 'kwt')
 
-ds_out.to_netcdf(pjoin('output', 'line_profiles_Yeq.cdf'))
+ds_out.to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
 
-
-#%%
-
-ds_out[['K', 'Yeq_K']].to_array('var').plot(row='var', hue='kwt')
-
-plt.yscale('log')
-
-#%%
-
-ds_out[['Kp', 'Yeq_K+']].to_array('var').plot(row='var', hue='kwt')
-
-
-plt.yscale('log')
-
-#%%
-
-
-
-#%%
-
-ds = ds_out
-
-ds['T'] = ds['T'].pint.quantify('K')
-ds['p'] = ds['p'].pint.quantify('Pa')
-
-from mhdpy.pyvista_utils import calc_rho
-
-ds['rho'] = calc_rho(ds['T'], ds['p'])  
-
-species = [var for var in ds.data_vars if var not in ['rho', 'T', 'p']]
-
-for species in species:
-    sp_rho = ds[species]*ds['rho']
-    sp_rho = sp_rho.pint.to('1/cm^3')
-    ds[species] = sp_rho
-
-#%%
-ds
-#%%
-
-
-ds_sel = ds[['Yeq_K', 'Yeq_K+']]
-
-g = ds_sel.to_array('var').plot(row='var', hue='kwt')
-
-plt.yscale('log')
-
-goldi_pos = ds['x'].min().item() + 0.18
-
-for ax in g.axes.flatten():
-    ax.axvline(goldi_pos, color='gray', linestyle='--')
-
-g.axes[0][0].set_ylim(1e3,)
-g.axes[1][0].set_ylim(1e3,)
-
-#%%
-
-ds_sel.sel(x=goldi_pos)
-
-# %%
