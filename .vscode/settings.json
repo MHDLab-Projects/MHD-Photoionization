@@ -7,7 +7,7 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.languageServer": "Jedi",
+    // "python.languageServer": "Jedi",
     "python.autoComplete.extraPaths": [
             "./mhdpy"
     ],
