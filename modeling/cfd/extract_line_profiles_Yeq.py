@@ -16,10 +16,11 @@ from mhdpy.analysis.standard_import import *
 
 sp_dir = gen_path('sharepoint')
 
-# results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
-results_dir = 'input'
+results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
+# results_dir = 'input'
 
-fp = pjoin(results_dir, 'frontCyl_chem1.vtk')
+# fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
+fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk')
 
 mesh = pv.read(fp)
 
@@ -192,39 +193,62 @@ p.show()
 
 #%%
 
-dist_grid = np.arange(0, 0.4, 0.001)
+#TODO: add multi file for beam positions above. 
 
-line_out = extract_line_axi(mesh, a, b)
+fps = {
+    '0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
+    '1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
+}
 
-df_lines = convert_line_df(line_out, all_fields)
 
-df_int = interp_df_to_new_index(df_lines, dist_grid)
+dss = []
 
-ds_out = xr.Dataset(df_int)
-ds_out = ds_out.rename({'dim_0':'x'})
+for kwt, fp in fps.items():
 
-ds_out
-ds_out = ds_out.assign_coords(kwt=[1])
+    mesh = pv.read(fp)
 
-# ds_out = ds_out.drop_vars(['K', 'Kp'])
-# ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
+    dist_grid = np.arange(0, 0.4, 0.001)
 
-# # 
+    line_out = extract_line_axi(mesh, a, b)
+
+    df_lines = convert_line_df(line_out, all_fields)
+
+    df_int = interp_df_to_new_index(df_lines, dist_grid)
+
+    ds_out = xr.Dataset(df_int)
+    ds_out = ds_out.rename({'dim_0':'x'})
+
+    ds_out
+    ds_out = ds_out.assign_coords(kwt=kwt)
+
+    dss.append(ds_out)
+
+    # ds_out = ds_out.drop_vars(['K', 'Kp'])
+    # ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
+
+    # # 
+
+ds_out = xr.concat(dss, 'kwt')
+
 ds_out.to_netcdf(pjoin('output', 'line_profiles_Yeq.cdf'))
 
 
 #%%
 
-ds_out[['K', 'Yeq_K']].to_array('var').plot(hue='var')
+ds_out[['K', 'Yeq_K']].to_array('var').plot(row='var', hue='kwt')
 
 plt.yscale('log')
 
 #%%
 
-ds_out[['Kp', 'Yeq_K+']].to_array('var').plot(hue='var')
+ds_out[['Kp', 'Yeq_K+']].to_array('var').plot(row='var', hue='kwt')
 
 
 plt.yscale('log')
+
+#%%
+
+
 
 #%%
 
@@ -260,6 +284,11 @@ goldi_pos = ds['x'].min().item() + 0.18
 for ax in g.axes.flatten():
     ax.axvline(goldi_pos, color='gray', linestyle='--')
 
+g.axes[0][0].set_ylim(1e3,)
+g.axes[1][0].set_ylim(1e3,)
+
 #%%
 
 ds_sel.sel(x=goldi_pos)
+
+# %%
