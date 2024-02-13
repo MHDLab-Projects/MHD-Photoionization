@@ -1,3 +1,10 @@
+"""
+Generation of a dataset of Cantera outputs for a range of conditions for oxyfuel combustion with seeded kerosene.
+Initializes a mixture of C12H26, and O2 at fixed enthalpy and pressure, then varies the temperature and pressure to generate a dataset of species and parameters.
+Finally a nonequilibrium model is applied to the dataset to calculate the thermal and recombination kinetics of potassium.
+"""
+
+
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -17,10 +24,6 @@ from pint import Quantity
 import pint_pandas
 import pint_xarray
 
-
-# import cantera_utils.et
-# import cantera_utils.util as ct_utils
-
 import mhdpy.cantera_utils.util as ct_utils 
 
 import matplotlib.pyplot as plt
@@ -30,12 +33,8 @@ mpl.rcParams.update({'font.size': 16})
 physical_data_folder = 'physical_data'
 physical_data_folder = os.path.abspath(physical_data_folder) # Cantera needs absolute path
 
-# from mhdpy.fp import gen_path
-# output_path = gen_path('sharepoint', 'lee','Data','Cantera Gasses')
-
 output_path = 'output'
 if not os.path.exists(output_path): os.mkdir(output_path)
-
 
 # In[2]:
 
@@ -119,6 +118,9 @@ ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciespara
 
 #Calculate potassium thermal kinetics
 
+# # Old method: 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
+# Direct calcualtion of kth and kr from Ashton and Hayhurst, for H2, O2, N2 flames. 
+
 # def calc_kth(rho):
 #     T = rho.coords['T'].values.item()
 #     return 1e-8*(np.sqrt(T))*np.exp(-(4.34)/(8.617e-5*T))*rho
@@ -131,8 +133,10 @@ ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciespara
 # kr = rho.groupby('T').apply(calc_kr)
 
 
-#Define reaction as kf = A(T)*B(X_i)
+# # New method: 1. Kelly, R., and Padley, P.J. (1972). Measurement of collisional ionization cross-sections for metal atoms in flames. Proc. R. Soc. Lond. A 327, 345–366. 10.1098/rspa.1972.0050.
+# Calculate kth from Kelly and Padley, using ionization cross sections for different species, then calculate kr using saha Keq from Ashton and Hayhurst.
 
+#Define reaction as kf = A(T)*B(X_i)
 
 e = Quantity(1.602e-19, 'coulomb')
 mp = Quantity(1.672e-27, 'kg')
@@ -140,7 +144,7 @@ kb = Quantity(8.617e-5, 'eV/K')
 Eion = Quantity(4.34, 'eV')
 
 # Ion cross sections 
-# 1. Kelly, R., and Padley, P.J. (1972). Measurement of collisional ionization cross-sections for metal atoms in flames. Proc. R. Soc. Lond. A 327, 345–366. 10.1098/rspa.1972.0050.
+# 
 # Table 4 p 361
 s = pd.read_csv(os.path.join(physical_data_folder,'IonCrossSection.csv'), index_col=(0,1))['cs']
 cs = xr.DataArray.from_series(s) 
@@ -228,25 +232,5 @@ ds_HP_params.to_netcdf(os.path.join(output_path, 'ds_HP_params.cdf'))
 ds_HP_species.to_netcdf(os.path.join(output_path, 'ds_HP_species.cdf'))
 ds_HP_species_rho.to_netcdf(os.path.join(output_path, 'ds_HP_species_rho.cdf'))
 
-
-# from mhdpy.xr_utils import writeunitsrowcsv
-
-# ds_TP_params.to_dataframe().to_csv(os.path.join(output_path, 'ds_TP_params.csv'))
-# writeunitsrowcsv(ds_TP_params,os.path.join(output_path, 'ds_TP_params.csv'))
-
-# ds_TP_species.to_dataframe().to_csv(os.path.join(output_path, 'ds_TP_species.csv'))
-# writeunitsrowcsv(ds_TP_species,os.path.join(output_path, 'ds_TP_species.csv'))
-
-# ds_TP_species_rho.to_dataframe().to_csv(os.path.join(output_path, 'ds_TP_species_rho.csv'))
-# writeunitsrowcsv(ds_TP_species_rho,os.path.join(output_path, 'ds_TP_species_rho.csv'))
-
-# ds_HP_params.to_dataframe().to_csv(os.path.join(output_path, 'ds_HP_params.csv'))
-# writeunitsrowcsv(ds_HP_params,os.path.join(output_path, 'ds_HP_params.csv'))
-
-# ds_HP_species.to_dataframe().to_csv(os.path.join(output_path, 'ds_HP_species.csv'))
-# writeunitsrowcsv(ds_HP_species,os.path.join(output_path, 'ds_HP_species.csv'))
-
-# ds_HP_species_rho.to_dataframe().to_csv(os.path.join(output_path, 'ds_HP_species_rho.csv'))
-# writeunitsrowcsv(ds_HP_species_rho,os.path.join(output_path, 'ds_HP_species_rho.csv'))
 
 # %%
