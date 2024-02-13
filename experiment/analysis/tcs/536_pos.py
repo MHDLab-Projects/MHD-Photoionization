@@ -106,7 +106,7 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
     da_sel.sel(motor=motor).plot(hue='run_plot', x='time', ax=ax)
     ax.set_title('Position: {} mm'.format(motor))
     ax.set_xlabel('')
-    ax.set_ylabel('AS [V]')
+    ax.set_ylabel('AS')
 
     if i == len(da_sel.coords['motor'].values) - 1:
         ax.set_xlabel('Time [us]')
@@ -164,7 +164,7 @@ ds = xr.merge([
     nK,
     ]).sortby('motor').dropna('run', how='all')
 
-ds['AS_max'].attrs = dict(long_name='AS Max', units='V')
+ds['AS_max'].attrs = dict(long_name='AS Max')
 ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
 ds['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
 ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.')

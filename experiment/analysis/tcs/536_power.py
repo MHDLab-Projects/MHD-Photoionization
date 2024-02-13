@@ -51,6 +51,8 @@ ds_stat
 
 #%%
 
+plt.figure()
+
 powers = ds_stat['power'].values
 
 fig, ax = plt.subplots()
@@ -76,7 +78,7 @@ plt.yscale('log')
 plt.xlim(-1,40)
 plt.ylim(1e-5,1e-1)
 
-plt.ylabel('AS [V]')
+plt.ylabel('AS')
 plt.xlabel('Time [us]')
 
 plt.legend(title='Power [relative]')
@@ -98,9 +100,14 @@ g = da_max.plot(hue ='run_plot', x='power', marker='o')
 
 # %%
 
+plt.figure()
+
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
 plt.yscale('log')
 plt.xscale('log')
+
+plt.title('')
+plt.xlabel('Power [relative]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max.png'))
 
