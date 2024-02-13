@@ -8,21 +8,12 @@ the PV power meter was used throughout the experiment, whereas the PE power mete
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.fileio.tdms import TFxr
+from mhdpy.coords.ct import downselect_acq_time
 dir_dataset = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
 
 dsst = TFxr(pjoin(dir_dataset,'dsst.tdms')).as_dsst()
 
 dsst
-
-#TODO: incorporate in mhdpy.coords.ct?
-def downselect_da_to_times(da, df_times):
-    das = []
-    for idx, row in df_times.iterrows():
-        tw = slice(row['Start Time'], row['Stop Time'])
-        das.append(da.sel(time=tw))
-
-    da = xr.concat(das, 'time')
-    return da
 
 #%%
 
@@ -44,7 +35,7 @@ df_fullpower_times = df_cuttimes[df_cuttimes['Event'].str.contains('fullpower')]
 
 df_fullpower_times
 
-pow_pe_fullpower = downselect_da_to_times(pow_pe, df_fullpower_times)
+pow_pe_fullpower = downselect_acq_time(pow_pe, df_fullpower_times, timeindex='time')
 
 pow_pe_fullpower.mean('time')
 
@@ -62,7 +53,7 @@ tw_sweeps = slice(df_sweep_times['Start Time'].iloc[0], df_sweep_times['Stop Tim
 pow_pe_sweep = assign_signal(pow_pe.sel(time=tw_sweeps), fw, 'time')
 
 # Downselect to only the sweep times. 
-pow_pe_sweep = downselect_da_to_times(pow_pe_sweep, df_sweep_times)
+pow_pe_sweep = downselect_acq_time(pow_pe_sweep, df_sweep_times, timeindex='time')
 
 pow_pe_sweep = unstack_multindexed_acq_dim(pow_pe_sweep, 'time')
 
