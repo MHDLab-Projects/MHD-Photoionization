@@ -169,7 +169,7 @@ redmass = { k: (masses['K']*v)/(masses['K']+v) for k,v in masses.items()}
 
 def calc_A(T):
     A = np.sqrt(8*kb*T*np.pi)*np.exp(-Eion/(kb*T))
-    A = A*1e2 #m to cm (units are weird since mass has been pulled into B, but should end up like m/s per kg**1/2 or something)
+    # A = A*1e2 #m to cm (units are weird since mass has been pulled into B, but should end up like m/s per kg**1/2 or something)
     return A
 
 def calc_B(ds_species, cs, redmass):
@@ -183,23 +183,21 @@ def calc_B(ds_species, cs, redmass):
     return b_tot
 
 Ts = Quantity(ds_TP_species.indexes['T'].values, 'K')
-A = xr.DataArray(calc_A(Ts), coords={'T':Ts}, dims = 'T')
+A = xr.DataArray(calc_A(Ts), coords={'T':Ts.magnitude}, dims = 'T')
 B = calc_B(ds_TP_species, cs, redmass)
 
 kth = ds_TP_params['rhocm3'].pint.quantify("particle/cm**3")*A*B
 kth.name = '$k_{th}$'
 kth = kth.pint.to('1/s')
-# kth = kth.assign_attrs(units = '$(1/s)$' )
 
 # Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
 # Manually adding temperature to units to match overall units of molecule/ml specified in paper
 Keq_prefactor = Quantity(2.42e15, 'molecule/ml/K**1.5')
 Keq = Keq_prefactor*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
-Keq = xr.DataArray(Keq, coords={'T':Ts}, dims = 'T')
+Keq = xr.DataArray(Keq, coords={'T':Ts.magnitude}, dims = 'T')
 
 kr = kth/Keq
 kr.name =  '$k_{r}$'
-# kr = kr.assign_attrs(units = '$(cm^3/molecule)(1/s)$' )
 kr = kr.pint.to('cm**3/molecule/s')
 
 ds_TP_params = ds_TP_params.assign({'kth':kth, 'kr':kr})
@@ -207,8 +205,7 @@ Gth = ds_TP_params['kth']*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
 Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 ds_TP_params = ds_TP_params.assign({'Gth':Gth})
 
-
-# %% 
+#%%
 
 ds_TP_species = ds_TP_species.drop('C12H26')
 ds_TP_species_rho = ds_TP_species_rho.drop('C12H26')
@@ -216,21 +213,24 @@ ds_TP_species_rho = ds_TP_species_rho.drop('C12H26')
 ds_HP_species = ds_HP_species.drop('C12H26')
 ds_HP_species_rho = ds_HP_species_rho.drop('C12H26')
 
-
 # In[18]:
 
+# kth calculation above converts temperature coordinate attrs to be Unit('K') which can't be written to cdf.
+# quick fix, not sure if this is the best way to do it
+for coord in ['T', 'P']:
+    ds_TP_params.coords[coord] = ds_TP_params.coords[coord].pint.dequantify()
 
 
-# df_input.to_csv(os.path.join(path, 'inputs.csv'))
+ds_dict = {
+    'ds_TP_params': ds_TP_params,
+    'ds_TP_species': ds_TP_species,
+    'ds_TP_species_rho': ds_TP_species_rho,
+    'ds_HP_params': ds_HP_params,
+    'ds_HP_species': ds_HP_species,
+    'ds_HP_species_rho': ds_HP_species_rho
 
-ds_TP_params.to_netcdf(os.path.join(output_path, 'ds_TP_params.cdf'))
-ds_TP_species.to_netcdf(os.path.join(output_path, 'ds_TP_species.cdf'))
-ds_TP_species_rho.to_netcdf(os.path.join(output_path, 'ds_TP_species_rho.cdf'))
+}
 
-
-ds_HP_params.to_netcdf(os.path.join(output_path, 'ds_HP_params.cdf'))
-ds_HP_species.to_netcdf(os.path.join(output_path, 'ds_HP_species.cdf'))
-ds_HP_species_rho.to_netcdf(os.path.join(output_path, 'ds_HP_species_rho.cdf'))
-
-
-# %%
+for key, ds in ds_dict.items():
+    ds = ds.pint.dequantify()
+    ds.to_netcdf(os.path.join(output_path, f'{key}.cdf'))
