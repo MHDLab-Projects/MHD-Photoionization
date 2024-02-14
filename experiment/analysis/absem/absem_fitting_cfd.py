@@ -47,14 +47,18 @@ plt.plot(x, nK_profile)
 
 # %%[markdown]
 
+# # I(x) solution functions
+#
+# Solve differential equation dI/dx = -kappa(x) I(x)
+#
 # We want to solve the differential equation for I(x) using the normalized number density profile nK_CFD(x).
-
+#
 # Given a max nK_max (Fit parameter) we calculate the absorption coefficient kappa(x) = Q(nK_max) * nK_profile(x).
-
+#
 # x is the distance along the beam axis.
-
+#
 # Below are three methods to solve the differential equation for I(x) using the kappa(x) profile.
-
+#
 # We first test everything with the tophat profile, and just selecting a single wavelength and nK_max
 
 # %%
@@ -257,6 +261,10 @@ plt.xlabel('Stage position [mm]')
 
 #%%
 
+from scipy.ndimage import gaussian_filter1d
+
+from scipy.interpolate import interp1d
+from scipy.ndimage import gaussian_filter1d
 
 def alpha_deq_solve(x,
     nK_profile=None, #must be a kwarg...
@@ -269,19 +277,13 @@ def alpha_deq_solve(x,
         wavelength [nm]
     nK_profile : float array
         normalized number density profile [dimensionless]
-    nK : float
+    nK_max : float
         maximum number density [1/nm^3]
 
     Returns
     -------
     alpha : float array
         absorption []
-    tau : float array
-        transmission []
-    kappa : float array
-        absorption coefficient [1/nm]
-    Qs : float array
-        cross section
     """
 
     if nK_profile is None:
@@ -310,6 +312,26 @@ def alpha_deq_solve(x,
 
         alphas[i] = alpha
 
+
+    # New method of spectrometer blurring, interpolate here then sample back. Allows for fitting fewer wavelengths
+    # TODO: incorporate this into other fitting methods
+    spect_res = 0.026
+    blur_pixels_amount = 1 # Was a parameter... 
+    wls_interp = np.arange(min(x), max(x), spect_res)
+
+    # Interpolate to wls_interp
+    f = interp1d(x, alphas, kind='linear', fill_value='extrapolate')
+    alphas_interp = f(wls_interp)
+
+    # Apply Gaussian blur
+    blur_pixels_amount = 1
+    alphas_blur = gaussian_filter1d(alphas_interp, blur_pixels_amount)
+
+    # Interpolate back to x
+    f = interp1d(wls_interp, alphas_blur, kind='linear', fill_value='extrapolate')
+    alphas = f(x)
+
+
     return alphas
 
 # wls = ds_absem.coords['wavelength'].values
@@ -317,7 +339,7 @@ def alpha_deq_solve(x,
 
 # %%
 
-# test_spectum 
+from mhdpy.analysis.absem.fit_prep import interp_alpha
 
 ds_test = ds_absem.mean('mnum').mean('run').sel(mp='barrel')
 
