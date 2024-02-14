@@ -236,26 +236,20 @@ plt.xscale('log')
 
 # %%
 
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
-
-ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
-ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
 
 ds_cfd = ds_cfd.sel(kwt=1)
 
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
 
+ds_cfd = ds_cfd.cfd.convert_species_rho()
 
-from mhdpy.pyvista_utils import calc_rho
-
-ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
-
-ds_cfd['nK_m3'] = ds_cfd['Yeq_K']*ds_cfd['rho']
-
+ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('1/m^3')
 
 ds_cfd_norm = ds_cfd/ds_cfd.max()
 

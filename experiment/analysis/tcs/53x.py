@@ -149,7 +149,7 @@ plt.yscale('log')
 
 # Load cfd K+
 
-from mhdpy.pyvista_utils import calc_rho
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
 
@@ -157,17 +157,8 @@ ds_cfd = xr.load_dataset(fp)
 
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
 
-ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
-ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
+ds_cfd = ds_cfd.cfd.convert_species_rho()
 
-ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])  
-
-species = [var for var in ds_cfd.data_vars if var not in ['rho', 'T', 'p']]
-
-for species in species:
-    sp_rho = ds_cfd[species]*ds_cfd['rho']
-    sp_rho = sp_rho.pint.to('1/cm^3')
-    ds_cfd[species] = sp_rho
 
 goldi_pos = ds_cfd['x'].min().item() + 0.18
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')

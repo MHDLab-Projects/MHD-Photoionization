@@ -161,6 +161,7 @@ plt.plot(x, kappa_profile, 'r')
 
 #%%
 
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'line_profiles_beam_Yeq.cdf')
 
@@ -169,14 +170,9 @@ ds_cfd = xr.load_dataset(fp_cfd_profiles)
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
 ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
 
-ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
-ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
+ds_cfd = ds_cfd.cfd.convert_species_rho()
 
-from mhdpy.pyvista_utils import calc_rho
-
-ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])
-
-da_cfd = ds_cfd['rho']*ds_cfd['Yeq_K']
+da_cfd = ds_cfd['Yeq_K']
 
 da_cfd
 
@@ -502,20 +498,15 @@ fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profile
 
 ds_cfd_cl = xr.load_dataset(fp_cfd)
 
-ds_cfd_cl['T'] = ds_cfd_cl['T'].pint.quantify('K')
-ds_cfd_cl['p'] = ds_cfd_cl['p'].pint.quantify('Pa')
-
 ds_cfd_cl = ds_cfd_cl.sel(kwt=1)
 
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values - ds_cfd_cl.coords['x'].values[0])
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values*1000)
 
+ds_cfd_cl = ds_cfd_cl.cfd.convert_species_rho()
 
-from mhdpy.pyvista_utils import calc_rho
 
-ds_cfd_cl['rho'] = calc_rho(ds_cfd_cl['T'], ds_cfd_cl['p'])
-
-ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K']*ds_cfd_cl['rho']
+ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('1/m^3')
 
 
 
