@@ -29,7 +29,7 @@ fps = {
 
 #%%
 
-soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH']
+soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O']
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
 additional = ['T', 'p']
 all_fields = [*soi, *soi_Yeq, *additional]

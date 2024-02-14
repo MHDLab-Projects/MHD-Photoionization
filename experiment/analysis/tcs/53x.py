@@ -37,9 +37,6 @@ from mhdpy.fileio.ct import load_df_cuttimes
 fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
-
-
-
 ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
 # %%
@@ -123,10 +120,117 @@ da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
 #%%
 
-
 g = da_fit.plot(hue='run_plot', row='kwt', x='time')
 
+plt.yscale('log')
+
 dropna(g)
+
+#%%[markdown]
+
+# # Exponential Fit
+
+#%%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_exp
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+
+#%%
+
+ds_mws_fit[['AS_all','AS_fit']].to_array('var').plot(hue='var', row='kwt', col='run')
+
+plt.yscale('log')
+
+#%%
+
+
+#%%
+
+# Load cfd K+
+
+from mhdpy.pyvista_utils import calc_rho
+
+fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
+
+ds_cfd = xr.load_dataset(fp)
+
+ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
+
+ds_cfd['T'] = ds_cfd['T'].pint.quantify('K')
+ds_cfd['p'] = ds_cfd['p'].pint.quantify('Pa')
+
+ds_cfd['rho'] = calc_rho(ds_cfd['T'], ds_cfd['p'])  
+
+species = [var for var in ds_cfd.data_vars if var not in ['rho', 'T', 'p']]
+
+for species in species:
+    sp_rho = ds_cfd[species]*ds_cfd['rho']
+    sp_rho = sp_rho.pint.to('1/cm^3')
+    ds_cfd[species] = sp_rho
+
+goldi_pos = ds_cfd['x'].min().item() + 0.18
+ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
+
+
+ds_cfd['Yeq_K+'].plot()
+
+
+#%%
+
+# Cantera data
+
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
+ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
+kr = ds_TP_params['kr']
+kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
+kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
+
+kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
+
+kr_sel = kr_sel.interp(Kwt=ds_lecroy.coords['kwt'], kwargs={'fill_value': 'extrapolate'})
+kr_sel = kr_sel.pint.quantify('um^3/us')
+
+kr_sel
+
+#%%
+
+from mhdpy.plot.common import xr_errorbar_axes
+from mhdpy.plot.common import xr_errorbar
+
+fig, axes = plt.subplots(3, 1, figsize=(5,10), sharex=True)
+
+
+da_mean = ds_p.mean('run')['decay']
+da_std = ds_p.std('run')['decay']
+
+xr_errorbar_axes(da_mean, da_std, axes=axes[0])
+
+plt.xscale('log')
+
+axes[0].set_ylabel('Decay Constant [us]')
+
+kr_sel.pint.to('cm^3/us').plot(label='Cantera', hue='T', marker='o', ax=axes[1])
+axes[1].set_title('')
+
+
+Kp_decay = 1/(2*ds_p['decay'].pint.quantify('us')*kr_sel)
+Kp_decay = Kp_decay.pint.to('1/cm^3')
+
+da_mean = Kp_decay.mean('run')
+da_std = Kp_decay.std('run')
+
+xr_errorbar_axes(da_mean, da_std, huedim='T', axes=axes[2])
+axes[2].get_legend().remove()
+
+ds_cfd['Yeq_K+'].plot(label='CFD Yeq_K+', marker='o', ax=axes[2])
+# ds_cfd['Yeq_OH'].plot(label='CFD Yeq_K+', marker='o', ax=axes[2])
+
+axes[2].legend()
+
+plt.yscale('log')
+plt.title('')
+
 
 #%%[markdown]
 
@@ -159,6 +263,10 @@ ds_ne0['std'] = ds_p_stderr['ne0']
 
 plot.common.xr_errorbar(ds_ne0['mean'], ds_ne0['std'], huedim='run')
 
+ds_cfd['Yeq_K+'].pint.quantify('1/cm^3').pint.to('1/um^3').plot(label='CFD', marker='o')
+
+plt.yscale('log')
+
 #%%[markdown]
 
 # ## Fixed ne0, vary kr, new pipeline
@@ -169,10 +277,26 @@ da_fit = ds_lecroy['AS']
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
+dss_mws_fit = []
+dss_p = []
+dss_p_stderr = []
 
-#TODO: sterr is nan where ds_p is not?
-ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
+for kwt in ds_cfd.coords['kwt']:
+    da_fit_sel = da_fit.sel(kwt=kwt)
+
+    Kp_val = ds_cfd['Yeq_K+'].sel(kwt=kwt).item()
+    ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit_sel, take_log=False, ne0=Kp_val)
+
+    #TODO: sterr is nan where ds_p is not?
+    ds_p['kr'] = ds_p['kr'].where(~ds_p_stderr['kr'].isnull())
+
+    dss_mws_fit.append(ds_mws_fit)
+    dss_p.append(ds_p)
+    dss_p_stderr.append(ds_p_stderr)
+
+ds_mws_fit = xr.concat(dss_mws_fit, dim='kwt')
+ds_p = xr.concat(dss_p, dim='kwt')
+ds_p_stderr = xr.concat(dss_p_stderr, dim='kwt')
 
 #%%
 ds_kr = ds_p['kr'].to_dataset(name='mean')
@@ -189,15 +313,7 @@ plt.yscale('log')
 # # Compare Lecroy and MWS
 #%%
 
-cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
-ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
-kr = ds_TP_params['kr']
-kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
-kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
 
-kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
-
-kr_sel
 
 
 
@@ -252,32 +368,54 @@ ds_p_stats
 
 vars = ['nK_m3_barrel', 'nK_m3_mw_horns', 'kr', 'AS_max']
 
-fig, axes = plt.subplots(len(vars), 1, figsize=(5,10), sharex=True)
+fig, axes = plt.subplots(3, 1, figsize=(5,10), sharex=True)
 
-for i, var in enumerate(vars):
+var = 'nK_m3_barrel'
+axes[0].errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_stderr'.format(var)], 
+    marker='o', capsize=5,
+    label='Barrel'
+    )
 
-    ax = axes[i]
+var = 'nK_m3_mw_horns'
+axes[0].errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_stderr'.format(var)], 
+    marker='o', capsize=5,
+    label='MW Horns'
+    )
 
-    ax.errorbar(
-        ds_p_stats.coords['kwt'], 
-        ds_p_stats['{}_mean'.format(var)], 
-        yerr=ds_p_stats['{}_stderr'.format(var)], 
-        marker='o', capsize=5,
-        label=var
-        )
+var = 'kr'
+axes[1].errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_stderr'.format(var)], 
+    marker='o', capsize=5
+    )
 
+kr_sel.sel(kwt=slice(0.1,1)).plot(hue='T', marker='o', ax=axes[1])
+axes[1].set_title('')
+
+var = 'AS_max'
+axes[2].errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_std'.format(var)], 
+    marker='o', capsize=5
+    )
+
+for ax in axes:
     ax.set_xscale('log')
     ax.set_yscale('log')
-    ax.set_ylabel(var)
 
 
-axes[0].set_ylabel("nK_m3 Barrel [#/m^3]")
-axes[1].set_ylabel("nK_m3 MW Horns [#/m^3]")
-axes[2].set_ylabel("kr [um^3/us]")
-axes[3].set_ylabel("AS Maximum")
+axes[0].set_ylabel("nK_m3 [#/m^3]")
+axes[1].set_ylabel("kr [um^3/us]")
+axes[2].set_ylabel("AS Maximum")
 
-kr_sel.sel(Kwt=slice(0.1,1)).plot(hue='T', marker='o', ax=axes[2])
-axes[2].set_title('')
 
 axes[-1].set_xlabel("K wt % nominal")
 

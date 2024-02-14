@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+from mhdpy.pyvista_utils import calc_rho
 
 import pint_pandas
 import pint_xarray
@@ -13,11 +14,6 @@ ds = xr.load_dataset(fp)
 ds['T'] = ds['T'].pint.quantify('K')
 ds['p'] = ds['p'].pint.quantify('Pa')
 
-#%%
-
-from mhdpy.pyvista_utils import calc_rho
-
-
 ds['rho'] = calc_rho(ds['T'], ds['p'])  
 
 #%%
@@ -26,6 +22,19 @@ ds['rho'].plot(hue='kwt')
 
 #%%
 
+ds['O2'].plot(hue='kwt')
+
+#%%
+
+ds['KOH'].plot(hue='kwt')
+
+#%%
+
+ds[['Yeq_K', 'Yeq_K+']].to_array('var').plot(row='kwt', hue='var')
+
+plt.yscale('log')
+
+plt.ylim(1e-6,)
 
 
 #%%
