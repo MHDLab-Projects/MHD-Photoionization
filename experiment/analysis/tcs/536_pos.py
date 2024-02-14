@@ -167,7 +167,7 @@ ds = xr.merge([
 ds['AS_max'].attrs = dict(long_name='AS Max')
 ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
 ds['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
-ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.')
+ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V')
 
 ds
 #%%
