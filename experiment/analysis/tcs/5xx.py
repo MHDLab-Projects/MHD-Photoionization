@@ -44,6 +44,26 @@ da_max.plot()
 
 da_max.plot(hue='phi', marker='o')
 
+#%%
+
+
+da_lecroy_mean = da_lecroy.mean('mnum')
+
+da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
+
+plt.xlim(-1,)
+
+#%%
+
+da_lecroy_mean = da_lecroy.mean('mnum')
+
+da_lecroy_mean.plot(row='motor',hue='phi')
+
+plt.yscale('log')
+
+
+plt.xlim(-1,)
+
 
 #%%
 
@@ -153,6 +173,26 @@ da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
 
 
 da_lecroy = da_lecroy.drop('run') # Only one run for this tc
+
+#%%
+
+
+da_lecroy_mean = da_lecroy.mean('mnum')
+
+da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
+
+plt.xlim(-1,)
+
+#%%
+
+da_lecroy_mean = da_lecroy.mean('mnum')
+
+da_lecroy_mean.plot(row='motor',hue='phi')
+
+plt.yscale('log')
+
+
+plt.xlim(-1,)
 
 #%%[markdown]
 

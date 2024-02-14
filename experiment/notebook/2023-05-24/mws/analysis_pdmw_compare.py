@@ -42,15 +42,11 @@ ds_lecroy = xr.load_dataset(fp)
 
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
-dapd = ds_lecroy['pd1']
-dapd.name='pd'
+ds_lecroy = ds_lecroy[['AS','pd1','pd2']]
 
-damw = ds_lecroy['AS']
-damw.name = 'mw'
+ds_lecroy = ds_lecroy.rename({'AS':'mw'})
 
-dapd.coords['time'] = damw.coords['time']
 
-ds_lecroy = xr.merge([dapd, damw])
 
 #%%[markdown]
 
@@ -73,13 +69,14 @@ ds = ds.dropna('mnum', how='all')
 
 ds.mean('mnum').to_array('var').plot(row='kwt', hue='var')
 
+
 #%%
 
 ds_2 = ds.mws._pulse_max().mean('mnum')
 
 ds_2['mw'].plot(marker='o')
 plt.twinx()
-ds_2['pd'].plot(marker='o', label ='photodiode', color='r')
+ds_2['pd1'].plot(marker='o', label ='photodiode', color='r')
 
 plt.legend()
 
@@ -102,7 +99,7 @@ ds_2 = ds.mws._pulse_max().mean('mnum')
 
 ds_2['mw'].plot(marker='o')
 plt.twinx()
-ds_2['pd'].plot(marker='o', label ='photodiode', color='r')
+ds_2['pd1'].plot(marker='o', label ='photodiode', color='r')
 
 plt.legend()
 
@@ -123,11 +120,39 @@ ds = assign_coords_multi(ds_sel, coord_signal_dict, min_mnum=2)
 
 #%%
 
+ds[['pd1','pd2']].mean('mnum').to_array('var').plot(hue='var', col='motor',row='phi', marker='o')
+
+# plt.ylim(0,)
+#%%
+
+ds['pd1'].mean('mnum').plot(hue='var', col='motor',row='phi', marker='o', sharey=False)
+
+plt.xlim(-2,10)
+
+#%%
+
 ds_2 = ds.mws._pulse_max()
 
-ds_2 = ds_2[['pd','mw']].to_array('var').mean('mnum')
+ds_2 = ds_2[['pd1','pd2','mw']].to_array('var').mean('mnum')
 
 ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
+
+#%%
+
+
+ds['delta_pd1'] = ds['pd1'] - ds['pd1'].sel(time=slice(-1,0)).mean('time')
+
+# For some reason can't use _pulse_max here
+ds_2 = ds.sel(time=slice(-1,1)).max('time')
+
+ds_2 = ds_2[['delta_pd1','mw']].to_array('var').mean('mnum')
+
+ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
+
+ds_2
+#%%
+
+
 
 # %%[markdown]
 
