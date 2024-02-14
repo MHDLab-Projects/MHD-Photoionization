@@ -26,11 +26,6 @@ ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 ds_absem
 
-
-# %%
-
-
-
 # %%
 
 # make an artifical tophat profile. zero outside of the beam, constant inside the beam 
@@ -50,8 +45,17 @@ nK_profile = tophat_profile(L.magnitude, 1, x)
 plt.plot(x, nK_profile)
 
 
-# %%
+# %%[markdown]
 
+# We want to solve the differential equation for I(x) using the normalized number density profile nK_CFD(x).
+
+# Given a max nK_max (Fit parameter) we calculate the absorption coefficient kappa(x) = Q(nK_max) * nK_profile(x).
+
+# x is the distance along the beam axis.
+
+# Below are three methods to solve the differential equation for I(x) using the kappa(x) profile.
+
+# We first test everything with the tophat profile, and just selecting a single wavelength and nK_max
 
 # %%
 
@@ -70,6 +74,10 @@ def dI_dx(x, I, kappa_profile):
     return -kappa * I
 
 def calc_I_profile_deq(kappa_profile):
+    """
+    Solve the differential equation for I(x) using the kappa(x) profile
+    """
+
     x = kappa_profile.index
 
     I_0 = 1
@@ -82,6 +90,9 @@ def calc_I_profile_deq(kappa_profile):
 from scipy.integrate import cumtrapz
 
 def calc_I_profile_num(kappa_profile):
+    """
+    numerically integrate the differential equation for I(x) using the kappa(x) profile
+    """
     x = kappa_profile.index
 
     # Compute -kappa(x) * I(x)
@@ -96,6 +107,11 @@ def calc_I_profile_num(kappa_profile):
     return I
 
 def calc_I_profile_euler(kappa_profile):
+    """
+    use the euler method to solve the differential equation for I(x) using the kappa(x) profile
+    """
+
+
     x = kappa_profile.index
     I = np.zeros_like(kappa_profile.values)
     I[0] = 1  # initial condition
@@ -135,7 +151,11 @@ plt.twinx()
 plt.plot(x, kappa_profile, 'r')
 
 
-# %%
+# %%[markdown]
+
+# Now pull in the CFD data to make a normalized number density profile nK_CFD(x) that is used to calculate the absorption coefficient kappa(x) = Q * nK(x).
+
+#%%
 
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'line_profiles_beam_Yeq.cdf')
@@ -170,12 +190,6 @@ plt.ylim(1e17,1e23)
 
 
 # %%
-
-# da_cfd.plot()
-
-
-
-# %%
 da_cfd_sel = da_cfd.sel(kwt=1)
 
 da_cfd_kappa = (da_cfd_sel/da_cfd_sel.max())*kappa_max
@@ -200,19 +214,14 @@ da_I_pos = xr.DataArray(Is, coords=da_cfd_kappa.coords, dims=['pos', 'dist'])
 
 da_I_pos.plot(hue='pos')
 
+plt.ylabel('I(x)')
+plt.xlabel('x_beam [cm]')
+
+plt.gca().get_legend().set_title('Stage position [mm]')
 
 # %%
 
-da_tau = da_I_pos[:,-1]/da_I_pos[:,0]
-
-da_alpha = -da_tau + 1
-
-da_alpha.plot(marker='o')
-
-plt.yscale('log')
-
-
-# %%
+# Compare to the experimental data
 
 da_sel = ds_absem['alpha'].mean('mnum').mean('run').sel(mp='mw_horns')
 da_sel.coords['motor'] = da_sel.coords['motor']
@@ -223,15 +232,30 @@ da_sel_max = da_sel.max('wavelength')
 da_sel_wl.plot(label='exp 770 nm', marker='o')
 da_sel_max.plot(label='exp max', marker='o')
 
+
+da_tau = da_I_pos[:,-1]/da_I_pos[:,0]
+
+da_alpha = -da_tau + 1
+
+da_alpha.plot(marker='o')
+
 da_alpha.plot(label='cfd 770 nm', marker='o')
 
 plt.legend()
 
 plt.yscale('log')
+plt.ylabel('alpha')
+plt.xlabel('Stage position [mm]')
 
 # .sel(wavelength=770, method='nearest')
 
-# %%
+# %%[markdown]
+
+# # Full spectrum fiitting
+
+# Now we perform the above for each individual wavelength in the spectrum
+
+#%%
 
 
 def alpha_deq_solve(x,
@@ -325,10 +349,6 @@ plt.ylim(0,1)
 
 # %%
 
-nK_profile
-
-# %%
-
 from lmfit import Model
 
 mod = Model(alpha_deq_solve, nK_profile=nK_profile)
@@ -337,21 +357,6 @@ params = mod.make_params(nK_max=1e-5, )
 
 params.add('nK_m3', expr='nK_max*1e27')
 params['nK_m3'].vary = False
-
-
-# %%
-
-# ds_absem_fit, ds_p, ds_p_fit = ds_test.absem.perform_fit(mod, params)
-
-# # out = mod.fit(da_alpha.values, wls=wls, params=params)
-# # %%
-
-# ds_p
-
-# # out.plot_fit()
-
-# #%%
-# out
 
 
 # %%
@@ -386,23 +391,22 @@ ds_fit = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
 
 ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
 
-ds_fit = ds_fit.groupby('motor').apply(lambda x: x.absem.reduce_keep_wings())
+# ds_fit = ds_fit.groupby('motor').apply(lambda x: x.absem.reduce_keep_wings())
 
-ds_fit
-
+alpha_fit = ds_fit['alpha']
 #%%
 
-ds_fit['alpha_red'].plot(row='motor')
+alpha_fit.plot(row='motor')
 
 plt.yscale('log')
 
 # %% [markdown]
-# # Tophat profile
+# ## Tophat profile
 
 # %%
 
 
-ds_absem_fit, ds_p, ds_p_fit = ds_fit['alpha_red'].absem.perform_fit(mod, params, method='iterative')
+ds_absem_fit, ds_p, ds_p_fit = alpha_fit.absem.perform_fit(mod, params, method='iterative')
 
 ds_p_tophat = ds_p.copy()
 
@@ -426,7 +430,7 @@ plt.ylim(0,1)
 plt.xlim(763,775)
 
 # %% [markdown]
-# # CFD Profiles
+# ## CFD Profiles
 
 # %%
 
@@ -437,7 +441,6 @@ dss_absem_fit = []
 
 for pos in ds_fit.coords['motor'].values:
 
-    ds_fit_sel = ds_fit.sel(motor=pos)
 
     nK_profile = da_cfd_kappa.sel(pos=pos, method='nearest').to_series()
     nK_max = nK_profile.max()
@@ -451,7 +454,9 @@ for pos in ds_fit.coords['motor'].values:
     params.add('nK_m3', expr='nK_max*1e27')
     params['nK_m3'].vary = False
 
-    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = ds_fit_sel['alpha_red'].absem.perform_fit(mod, params, method='iterative')
+    alpha_fit_sel = alpha_fit.sel(motor=pos)
+
+    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = alpha_fit_sel.absem.perform_fit(mod, params, method='iterative')
 
     dss_p.append(ds_p_sel)
     dss_absem_fit.append(ds_absem_fit_sel)
@@ -461,7 +466,7 @@ for pos in ds_fit.coords['motor'].values:
 ds_p = xr.concat(dss_p, dim='motor')
 ds_absem_fit = xr.concat(dss_absem_fit, dim='motor')
 
-# %%
+#%%
 ds_absem_fit.to_array('var').plot(hue='var', row='motor')
 
 plt.ylim(0,1)
