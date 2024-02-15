@@ -1,17 +1,34 @@
 \section{Discussion}
 
-\begin{markdown}
-* Evidence of KOH -> e-
-    * K dependence: 
-    * AS maximum varies with n_(K,barrel) while n_(K,goldilocks)  is constant. 
-* Position dependence: 
-    * AS peak is downstream, not exit of barrel
-    * TODO: compare to photodiode
-    * Previous evidence that optical emission is KOH and peaks at similar location
-    * Not same test conditions…Add old results to SI
-* Kr is similar to historical results. Electron recombination proceeds normally
-\end{markdown}
+We now discuss the model for the photoionization and recombination process. We tentatively propose a model:
 
-\subsection{Position dependence}
+1. KOH + $h\nu$ -> K* + OH 
 
-The temperature at the exit of the torch is sufficiently high for thermally induced conductivity. Variations in the flow or potassium distribution could cause these time dependent fluctuations. We provide some analysis of these background fluctuations in the SI (TODO).
+2. K* -> K + e- (in parallel with K* + OH -> KOH + $h\nu_{770 nm}$)
+
+3. e- + O2 -> O2-
+
+
+
+\begin{outline}
+\1 Evidence of KOH -> e-, instead of K -> e-:
+    \2 The photoluminescence lifetime, measured by the PIMAX Camera (see SI) consistent with UV induced chemiluminescence of KOH that has been observed in the literature. The photoluminescence is measured far from the center of the free jet, where the potassium density is low.
+    \2 The UV absorption cross section of KOH is much larger than other major species present (see SI).
+    \2 The AS signal linearly increases with the nominal potassium concentration, even though the potassium density measurements at the goldilocks region decreases. This   is dependent on the potassium concentration in the barrel, but not the goldilocks region. The measured nK However, CFD prediction of KOH concentrations scales with the AS signal. The photodiode measurement also scaled with the AS signal. We assume the photodiode signal is proportional to the chemiluminescence of KOH. We cannot measure the time decay of the chemiluminescence with the photodiode due to the bandwidth of the photodiode.
+    \2 The MWS and photodiode signals peak downstream of the exit. The CFD data predict a peak in KOH in a similar location (SI). However, the difference between the barrel exit and this peak location is not as large as the experimental data. TODO: why is barrel KOH high. 
+
+\1 Evidence for e- + O2 -> O2-
+    \2 The primary evidence of this is the predicted decay constants for different recombination partners. 
+
+\end{outline}
+
+
+
+\subsection{Viability}
+
+with this model, we examine the viability of photoionization for MHD power enhancement. 
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{\repodir/modeling/analysis/output/alpha_curve_analysis_lbk.png}
+    \caption{Cantera Alpha results}
+\end{figure}
