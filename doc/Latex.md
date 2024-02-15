@@ -50,3 +50,11 @@ https://latex2rtf.sourceforge.net/
 pandoc: `pandoc main.tex -o test.docx`
 
 Just open pdf in word. 
+
+## Interdocument references
+
+use the xr package for references
+
+The .aux files need to be compiled and kept for the references to work. Need to add \externaldocument for the specific document that the label is in. 
+
+when using \ref, the reference is a hyperlink to the figure with the same number in the document...just going to use non hyperlink references with the SI using \ref*

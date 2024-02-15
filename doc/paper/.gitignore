@@ -7,5 +7,7 @@ main.bbl
 *.run.xml
 *.synctex.gz
 
+*.aux
+
 input
 output

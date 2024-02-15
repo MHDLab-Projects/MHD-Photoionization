@@ -91,7 +91,14 @@
 			"args": [
                 "-c"
 			]
-		}
+		},
+        {
+    "name": "manual_clean",
+    "command" : "sh",
+    // "command" : "${workspaceFolder}/path/to/clean.sh", // for full path, for now putting a cleah.sh in each folder
+    "args": ["clean.sh"],
+    "env": {}
+        }
 ],
 // "latex-workshop.latex.outDir": "output", // https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#placeholders
 "latex-workshop.latex.recipe.default": "lualatexmk",
@@ -108,7 +115,9 @@
 			"name": "lualatexmk",
 			"tools": [
 				"lualatexmk",
-                "lualatexmk_clean"
+                "manual_clean"
+                // "lualatexmk_clean"
+
 			]
 		},
 
