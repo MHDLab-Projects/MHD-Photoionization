@@ -69,7 +69,7 @@ dss = []
 for date in dates:
     fp = pjoin(munged_dir, date, 'ds_lecroy_time.cdf')
     ds = xr.load_dataset(fp)
-    ds = ds[['i', 'q']]
+    # ds = ds[['i', 'q']] # Removes the photodiode data which is only present on 2023-05-24. Doubles size with mostly NaNs. TODO: better way to handle this?
 
     dss.append(ds)
 

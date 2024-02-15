@@ -126,12 +126,19 @@ da_stats = ds_lecroy['AS'].sel(time=slice(-1,1))
 mws_max = da_stats.mean('mnum').max('time')
 mws_std = da_stats.std('mnum').max('time')
 
+delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
+delta_pd1 = delta_pd1.dropna('run', how='all')
+delta_pd1 = delta_pd1.mean('mnum').max('time')
+delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+
+
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
     ds_p_absem['nK_m3'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
     mws_max.rename('AS_max'),
     mws_std.rename('AS_std'),
-    ds_p_mws['decay'].rename('mws_fit_decay')
+    ds_p_mws['decay'].rename('mws_fit_decay'),
+    delta_pd1.rename('delta_pd1')
     ])
 
 
@@ -153,12 +160,11 @@ for var in ds_params.data_vars:
 # %%
 
 
-vars = ['nK_m3_barrel', 'nK_m3_mw_horns', 'AS_max', 'mws_fit_decay']
 
 fig, axes = plt.subplots(3, 1, figsize=(5,10), sharex=True)
 
 var = 'nK_m3_barrel'
-axes[0].errorbar(
+line_nK_barrel = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_stderr'.format(var)], 
@@ -167,7 +173,7 @@ axes[0].errorbar(
     )
 
 var = 'nK_m3_mw_horns'
-axes[0].errorbar(
+line_nK_mwhorns = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_stderr'.format(var)], 
@@ -175,15 +181,35 @@ axes[0].errorbar(
     label='MW Horns'
     )
 
+axes[0].set_ylabel("nK_m3 [#/m^3]")
+axes[0].legend([line_nK_barrel, line_nK_mwhorns], ['Barrel', 'MW Horns'])
 
 var = 'AS_max'
-axes[1].errorbar(
+lineAS = axes[1].errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
-    marker='o', capsize=5
+    marker='o', capsize=5,
+    label='AS Maximum',
     )
 
+axes[1].set_ylabel("AS Maximum")
+
+
+ta = axes[1].twinx()
+#No standard deviation for delta_pd1 as only one run
+var = 'delta_pd1'
+linePD = ta.plot(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    marker='x',
+    label='Delta PD1',
+    color='red'
+    )
+
+ta.set_ylabel("Delta PD1 [mV]")
+
+axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
 
 var = 'mws_fit_decay'
 axes[2].errorbar(
@@ -197,11 +223,9 @@ axes[2].errorbar(
 for species in ds_tau.data_vars:
     ds_tau[species].plot(label="CFD: {}".format(species), ax=axes[2])
 
-axes[2].legend()
-
-axes[0].set_ylabel("nK_m3 [#/m^3]")
-axes[1].set_ylabel("AS Maximum")
+axes[2].legend(bbox_to_anchor=(0.85, 1), loc='upper left', framealpha=1) 
 axes[2].set_ylabel("Time Constant [us]")
+axes[2].set_title('')
 
 
 for ax in axes:
@@ -212,3 +236,4 @@ for ax in axes:
 axes[-1].set_xlabel("K wt % nominal")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params.png'), dpi=300, bbox_inches='tight')
+# %%
