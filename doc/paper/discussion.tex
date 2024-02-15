@@ -2,11 +2,11 @@
 
 We now discuss the model for the photoionization and recombination process. We tentatively propose a model:
 
-1. KOH + $h\nu$ -> K* + OH 
+1. KOH + $h\nu$ -> K+ + OH + e-
 
-2. K* -> K + e- (in parallel with K* + OH -> KOH + $h\nu_{770 nm}$)
+2. e- + O2 -> O2-
 
-3. e- + O2 -> O2-
+The details of step 1 are uncertain. The important point is that light absorption is through KOH, and not K. It is possible that other species contribute to the electron production through similar chemionization processes. However, KOH absorption is known to produce excited K atoms. [] That work showed that those excited K atoms decay through rapid (10ns) photoluminescence, but it is possible that chemiionization process occurs in parallel to the photoluminescence. Possibly, there is a collision with the excited K atoms that produces the e-. From Alkemade et al. we know that the K +M -> K+ + e- +M depends on a collision with a third body, and appears to be dependent on the potassium atom being in an excited state (known as the 'ladder model'). []
 
 
 
@@ -18,7 +18,9 @@ We now discuss the model for the photoionization and recombination process. We t
     \2 The MWS and photodiode signals peak downstream of the exit. The CFD data predict a peak in KOH in a similar location (SI). However, the difference between the barrel exit and this peak location is not as large as the experimental data. TODO: why is barrel KOH high. 
 
 \1 Evidence for e- + O2 -> O2-
-    \2 The primary evidence of this is the predicted decay constants for different recombination partners. 
+    \2 the decay time predicted for oxygen capture is the closest to the measured decay time. There is a significant uncertainty in the recombination coefficient for this process and our values fall within the range presented in the literature. 
+    \2 The decay time appears to be independent of the position along the free jet. The decay time is difficult to quantify outside of the goldilocks region due to the AS fluctuations, but the AS magnitude is still appreciable after a few microseconds regardless of position. a similar order of magnitude to the exponential fit time constants obtained in the goldilocks region. CFD simulations (SI) show that the oxygen concentration is relatively constant along the free jet. This constant oxygen concentration of ~20\% occurs from running fuel lean, and air entrainment. 
+    \2 Related, we have observed dependence of decay time on equivalence ratio (SI). However, similar to the position dependence, quantification of the decay time is difficult due to the AS fluctuations. Additionally, the profile of the torch changes with equivalence ratio (extends for high equivalence ratio), so it is difficult to deconvolve the effects of the profile change from the effects of the equivalence ratio.
 
 \end{outline}
 
