@@ -12,11 +12,17 @@ import os
 import pytest
 import glob
 
+#TODO: had to do hacky things with filepaths to get multiple test data folders to work. Need to fix this
+
 test_data_path_exp = pjoin(REPO_DIR, 'tests', 'test_data') 
 input_data_folder_exp = pjoin(REPO_DIR, 'experiment','data','proc_data')
 
 test_data_path_modeling = pjoin(REPO_DIR, 'tests', 'test_data_modeling')
 input_data_folder_modeling = pjoin(REPO_DIR, 'modeling','dataset', 'output')
+
+test_data_path_final = pjoin(REPO_DIR, 'tests', 'test_data_final')
+#TODO: final figure panels should be both experiment and modeling
+input_data_folder_final = pjoin(REPO_DIR, 'experiment','figure_panels', 'output')
 
 # Get all TDMS files in the test_data folder
 tdms_files = glob.glob(os.path.join(test_data_path_exp, '*.tdms'))
@@ -30,6 +36,10 @@ cdf_files = [os.path.relpath(f, test_data_path_exp) for f in cdf_files]
 
 cdf_files_modeling = glob.glob(pjoin(test_data_path_modeling, '**/*.cdf'), recursive=True)
 cdf_files_modeling = [os.path.relpath(f, test_data_path_modeling) for f in cdf_files_modeling]
+
+
+cdf_files_final = glob.glob(pjoin(test_data_path_final, '**/*.cdf'), recursive=True)
+cdf_files_final = [os.path.relpath(f, test_data_path_final) for f in cdf_files_final]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -110,6 +120,17 @@ params_modeling = [(cdf_file, input_data_folder_modeling, test_data_path_modelin
 
 @pytest.mark.parametrize('cdf_file,new_data_dir,test_dir', params_modeling)
 def test_equals_cdf_modeling(data_tuple_cdf):
+    ds_new, ds_old = data_tuple_cdf
+
+    if not ds_new.equals(ds_old):
+        assertion_message = f'New and old datasets are not equal \n\n--New--\n{ds_new}\n\n--Old--{ds_old}'
+        raise AssertionError(assertion_message)
+
+
+params_final = [(cdf_file, input_data_folder_final, test_data_path_final) for cdf_file in cdf_files_final]
+
+@pytest.mark.parametrize('cdf_file,new_data_dir,test_dir', params_final)
+def test_equals_cdf_final(data_tuple_cdf):
     ds_new, ds_old = data_tuple_cdf
 
     if not ds_new.equals(ds_old):

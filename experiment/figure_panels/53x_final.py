@@ -107,6 +107,8 @@ for var in ds_kr.data_vars:
 
 ds_tau = xr.merge(das)
 
+ds_tau.pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, 'ds_tau.cdf'))
+
 ds_tau
 
 
