@@ -1,1 +1,0 @@
-print("hello from mhdpi_utils/__init__.py")
