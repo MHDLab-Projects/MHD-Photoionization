@@ -9,11 +9,16 @@ from mhdpy.analysis.standard_import import *
 
 CHECK_FOR_EXISTING = False
 
+allowed_extensions = ['.cdf', '.tdms', '.csv', '.txt', '.xlsx']
+
 def copy_files(src_folder, dest_folder):
     for root, dirs, files in os.walk(src_folder):
         subdir = os.path.relpath(root, src_folder)
 
         for file in files:
+            if not any([file.endswith(ext) for ext in allowed_extensions]):
+                continue
+
             fp_old = os.path.join(root, file)
             fp_new = os.path.join(dest_folder, subdir, file)
 
