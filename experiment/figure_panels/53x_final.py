@@ -65,9 +65,9 @@ ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
 # Weighted average of collison partners for O2 rate
 k4_species = {
-    'N2' : Quantity(1e-32, 'cm^6/s'),
+    'N2' : Quantity(1e-31, 'cm^6/s'),
     'H2O': Quantity(8e-30, 'cm^6/s'),
-    'CO2': Quantity(1e-31, 'cm^6/s'), 
+    'CO2': Quantity(1.3e-31, 'cm^6/s'), 
     'O2' : Quantity(2e-30, 'cm^6/s'),
 }
 
@@ -84,6 +84,8 @@ rxn_rates = {
     'O2_C': Quantity(6e-34, 'cm^6/s')*ds_cfd['rho_number'],
     'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/ds_cfd['T'])),
 }
+
+print(rxn_rates)
 
 ds_kr = xr.Dataset(rxn_rates).pint.to('cm^3/s')
 
