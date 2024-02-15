@@ -11,7 +11,7 @@ plt.rcParams.update({
     "savefig.facecolor": 'white',
     "font.size": 11, 
     'savefig.dpi': 300, 
-    'font.sans-serif': 'arial', 
+    # 'font.sans-serif': 'arial', 
     # 'figure.figsize': (4.6, 3)
 })
 
