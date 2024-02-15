@@ -65,7 +65,10 @@ ds_cfd = xr.load_dataset(fp)
 
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
 
-ds_cfd = ds_cfd.cfd.convert_species_rho()
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
 goldi_pos = ds_cfd['x'].min().item() + 0.18
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
@@ -79,7 +82,7 @@ ds_cfd['T']
 
 #%%
 
-ds_cfd['rho'].pint.to('1/cm^3').plot()
+ds_cfd['rho_number'].pint.to('1/cm^3').plot()
 
 #%%
 
@@ -107,8 +110,8 @@ weighted_avg
 #%%
 
 rxn_rates = {
-    'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/ds_cfd['T'])*ds_cfd['rho'],
-    'OH': Quantity(3e-31, 'cm^6/s')*ds_cfd['rho'],
+    'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/ds_cfd['T'])*ds_cfd['rho_number'],
+    'OH': Quantity(3e-31, 'cm^6/s')*ds_cfd['rho_number'],
     # 'O2': Quantity(5e-31, 'cm^6/s')*ds_cfd['rho'],
     'O2': weighted_avg,
     # 'O2': Quantity(6e-34, 'cm^6/s')*ds_cfd['rho'],
@@ -191,7 +194,7 @@ plt.yscale('log')
 # %%
 
 tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
-k_eff = 1/(tau_exp*ds_cfd['rho']**2)
+k_eff = 1/(tau_exp*ds_cfd['rho_number']**2)
 
 k_eff = k_eff.pint.to('cm^6/s')
 

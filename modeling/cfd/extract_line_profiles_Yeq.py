@@ -31,7 +31,7 @@ fps = {
 
 soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
-additional = ['T', 'p']
+additional = ['T', 'p', 'rho']
 all_fields = [*soi, *soi_Yeq, *additional]
 
 
@@ -171,7 +171,8 @@ for kwt, fp in fps.items():
 
         line_out = extract_line_axi(mesh, a, b)
 
-        df_lines = convert_line_df(line_out, ['T','p','Yeq_K'])
+        #TODO: extract all soi
+        df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K'])
 
         df_int = interp_df_to_new_index(df_lines, dist_grid)
 

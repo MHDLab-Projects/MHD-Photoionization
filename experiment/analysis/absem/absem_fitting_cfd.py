@@ -170,7 +170,8 @@ ds_cfd = xr.load_dataset(fp_cfd_profiles)
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
 ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
 
-ds_cfd = ds_cfd.cfd.convert_species_rho()
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 da_cfd = ds_cfd['Yeq_K']
 
@@ -503,7 +504,8 @@ ds_cfd_cl = ds_cfd_cl.sel(kwt=1)
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values - ds_cfd_cl.coords['x'].values[0])
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values*1000)
 
-ds_cfd_cl = ds_cfd_cl.cfd.convert_species_rho()
+ds_cfd_cl = ds_cfd_cl.cfd.quantify_default()
+ds_cfd_cl = ds_cfd_cl.cfd.convert_all_rho_number()
 
 
 ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('1/m^3')

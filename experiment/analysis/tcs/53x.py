@@ -157,7 +157,8 @@ ds_cfd = xr.load_dataset(fp)
 
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
 
-ds_cfd = ds_cfd.cfd.convert_species_rho()
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 
 goldi_pos = ds_cfd['x'].min().item() + 0.18

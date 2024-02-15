@@ -49,13 +49,16 @@ ds_cfd = xr.load_dataset(fp)
 
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
 
-ds_cfd = ds_cfd.cfd.convert_species_rho()
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 goldi_pos = ds_cfd['x'].min().item() + 0.18
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 
 # Calculate kr
+
+ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
 # combining k4 from 
 # 1. Axford, S.D.T., and Hayhurst, A.N. (1997). Mass spectrometric sampling of negative ions from flames of hydrogen and oxygen: the kinetics of electron attachment and detachment in hot mixtures of H2O, O2, OH and HO2. Proceedings of the Royal Society of London. Series A: Mathematical, Physical and Engineering Sciences 452, 1007–1033. 10.1098/rspa.1996.0051.
@@ -74,11 +77,11 @@ for species, k4 in k4_species.items():
     weighted_avg += k4*ds_cfd[species]
 
 rxn_rates = {
-    'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/ds_cfd['T'])*ds_cfd['rho'],
-    'OH': Quantity(3e-31, 'cm^6/s')*ds_cfd['rho'],
-    'O2_A': weighted_avg,
-    'O2_B': Quantity(6e-34, 'cm^6/s')*ds_cfd['rho'],
-    'O2_C': Quantity(5e-31, 'cm^6/s')*ds_cfd['rho'],
+    'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/ds_cfd['T'])*ds_cfd['rho_number'],
+    'OH': Quantity(3e-31, 'cm^6/s')*ds_cfd['rho_number'],
+    'O2_A': Quantity(5e-31, 'cm^6/s')*ds_cfd['rho_number'],
+    'O2_B': weighted_avg,
+    'O2_C': Quantity(6e-34, 'cm^6/s')*ds_cfd['rho_number'],
     'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/ds_cfd['T'])),
 }
 
@@ -86,7 +89,7 @@ ds_kr = xr.Dataset(rxn_rates).pint.to('cm^3/s')
 
 # Calculate expected tau for recombination with those species
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'KOH']]
+ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
 
 ds_species_cfd = ds_species_cfd.pint.to('1/cm^3')
 
@@ -193,14 +196,15 @@ line_nK_mwhorns = axes[0].errorbar(
     )
 
 
-lineKOH = ds_species_cfd['KOH'].pint.to('1/m**3').plot(ax=axes[0], label='CFD: KOH')
+lineKOH = ds_species_cfd['Yeq_KOH'].pint.to('1/m**3').plot(ax=axes[0], label='CFD: KOH')
+linenK = ds_species_cfd['Yeq_K'].pint.to('1/m**3').plot(ax=axes[0], label='CFD: K')
 
 
-axes[0].set_ylabel("nK_m3 [#/m^3]")
+axes[0].set_ylabel("Species Concentration [#/m^3]")
 axes[0].legend(
-    [line_nK_barrel, line_nK_mwhorns, lineKOH[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ MW Horns', 'CFD KOH (MW Horn Pos.)'],
-    # bbox_to_anchor=(0.85, 1), loc='upper left', framealpha=1
+    [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0]], 
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)'],
+    bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
     )
 
 axes[0].set_title('')

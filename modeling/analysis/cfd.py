@@ -11,8 +11,8 @@ fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cd
 
 ds = xr.load_dataset(fp)
 
-ds = ds.cfd.convert_species_rho()
-
+# ds = ds.cfd.convert_all_rho_number()
+ds
 
 
 
@@ -22,11 +22,19 @@ ds['rho'].plot(hue='kwt')
 
 #%%
 
+ds['T'].plot(hue='kwt')
+
+#%%
+
 ds['O2'].plot(hue='kwt')
 
 #%%
 
 ds['Yeq_KOH'].plot(hue='kwt')
+
+plt.yscale('log')
+
+plt.ylim(1e-4,)
 
 #%%
 
