@@ -76,7 +76,9 @@ for species, k4 in k4_species.items():
 rxn_rates = {
     'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/ds_cfd['T'])*ds_cfd['rho'],
     'OH': Quantity(3e-31, 'cm^6/s')*ds_cfd['rho'],
-    'O2': weighted_avg,
+    'O2_A': weighted_avg,
+    'O2_B': Quantity(6e-34, 'cm^6/s')*ds_cfd['rho'],
+    'O2_C': Quantity(5e-31, 'cm^6/s')*ds_cfd['rho'],
     'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/ds_cfd['T'])),
 }
 
@@ -84,14 +86,21 @@ ds_kr = xr.Dataset(rxn_rates).pint.to('cm^3/s')
 
 # Calculate expected tau for recombination with those species
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O']]
+ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'KOH']]
 
 ds_species_cfd = ds_species_cfd.pint.to('1/cm^3')
 
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
-ds_tau = 1/(ds_species_cfd*ds_kr)
 
-ds_tau = ds_tau.pint.to('us')
+das = []
+for var in ds_kr.data_vars:
+    species_name = var.split('_')[0]
+    da_tau = 1/(ds_species_cfd[species_name]*ds_kr[var])
+    da_tau = da_tau.pint.to('us')
+    da_tau = da_tau.rename('{}'.format(var))
+    das.append(da_tau)
+
+ds_tau = xr.merge(das)
 
 ds_tau
 
@@ -161,6 +170,8 @@ for var in ds_params.data_vars:
 
 
 
+#%%
+
 fig, axes = plt.subplots(3, 1, figsize=(5,10), sharex=True)
 
 var = 'nK_m3_barrel'
@@ -181,8 +192,18 @@ line_nK_mwhorns = axes[0].errorbar(
     label='MW Horns'
     )
 
+
+lineKOH = ds_species_cfd['KOH'].pint.to('1/m**3').plot(ax=axes[0], label='CFD: KOH')
+
+
 axes[0].set_ylabel("nK_m3 [#/m^3]")
-axes[0].legend([line_nK_barrel, line_nK_mwhorns], ['Barrel', 'MW Horns'])
+axes[0].legend(
+    [line_nK_barrel, line_nK_mwhorns, lineKOH[0]], 
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ MW Horns', 'CFD KOH (MW Horn Pos.)'],
+    # bbox_to_anchor=(0.85, 1), loc='upper left', framealpha=1
+    )
+
+axes[0].set_title('')
 
 var = 'AS_max'
 lineAS = axes[1].errorbar(

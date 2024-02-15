@@ -26,7 +26,31 @@ ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
 
+
+# add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
+
+tc = '5x6_pos'
+
+ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_5x6 = ds_lecroy_5x6.xr_utils.stack_run()
+
+ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')
+
+ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
+
+ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
+
+
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
+
+#%%
+
+ds_lecroy['pd1'].isnull().all()
+
+# %%
+
+
+
 
 #%%[markdown]
 
@@ -45,19 +69,19 @@ plt.xlim(760,780)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_absem
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
-ds = ds_alpha_fit[['alpha', 'alpha_fit']]
-ds = ds.rename({'alpha': 'data', 'alpha_fit':'fit'})
+ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]
+ds = ds.rename({'alpha_red': 'data', 'alpha_fit':'fit'})
 ds = ds.to_array('var')
 
 ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
@@ -99,7 +123,7 @@ motor_sel = [34.81, 104.8, 178, 226.7]
 
 da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
 
-fig, axes = plt.subplots(4, figsize=(3,10), sharex=True, sharey=True)
+fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
 for i, motor in enumerate(da_sel.coords['motor'].values):
     ax = axes[i]
@@ -154,6 +178,15 @@ mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
 
 
+delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
+delta_pd1 = delta_pd1.dropna('run', how='all')
+delta_pd1 = delta_pd1.mean('mnum').max('time')
+# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+
+#%%
+
+ds_lecroy['pd1'].dropna('run', how='all')
+
 #%%
 
 ds = xr.merge([
@@ -162,6 +195,7 @@ ds = xr.merge([
     mws_pp_std,
     mws_max_std_ratio,
     nK,
+    delta_pd1.rename('delta_pd1') 
     ]).sortby('motor').dropna('run', how='all')
 
 ds['AS_max'].attrs = dict(long_name='AS Max')
@@ -179,12 +213,13 @@ dropna(g)
 #%%
 
 
-fig, axes = plt.subplots(4, figsize=(4,12), sharex=True)
+fig, axes = plt.subplots(5, figsize=(4,12), sharex=True)
 
 ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[0],marker='o')
 ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[1], marker='o')
 ds['mag_pp_std'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
 ds['AS_max_std_ratio'].plot(hue='run_plot', x='motor', ax=axes[3],marker='o')
+ds['delta_pd1'].plot(hue='run_plot', x='motor', ax=axes[4],marker='o')
 
 for ax in axes:
     ax.get_legend().remove()
@@ -205,9 +240,10 @@ for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
 
     # plot with confidence interval
 
-    ds_stat['mean'].plot(ax=ax)
+    # ds_stat['mean'].plot(ax=ax)
+    # ax.fill_between(ds_stat.coords['motor'], ds_stat['mean'] - ds_stat['std'], ds_stat['mean'] + ds_stat['std'], alpha=0.2)
 
-    ax.fill_between(ds_stat.coords['motor'], ds_stat['mean'] - ds_stat['std'], ds_stat['mean'] + ds_stat['std'], alpha=0.2)
+    ax.errorbar(ds_stat.coords['motor'], ds_stat['mean'], yerr=ds_stat['std'], marker='o', capsize=5)
 
     ax.set_title('')
     ax.set_xlabel('')
@@ -216,6 +252,14 @@ for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
     ax.set_ylabel(ds[var].attrs['long_name'] + unit_str)
     
 axes[2].set_xlabel('Position [mm]')
+
+ta = axes[0].twinx()
+
+delta_pd1 = ds['delta_pd1'].dropna('run', how='all')
+delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+delta_pd1.plot(ax=ta, color='red', marker='o')
+ta.set_ylabel('Delta PD1 [mV]')
+ta.set_title('')
 
 for mp in motor_sel:
     if mp == 178:
@@ -314,7 +358,7 @@ nK_barrel_std = ds_p['nK_m3'].sel(mp='barrel').mean('motor').std('run')
 
 #%%
 
-plt.figure(figsize=(5,3))
+plt.figure(figsize=(4.5,2))
 
 da = ds['nK_m3'].dropna('run', how='all')
 da = da.sel(motor = slice(50,300))
@@ -337,7 +381,9 @@ ds_cfd['nK_m3'].plot(color='black', label ='CFD centerline')
 
 plt.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg')
 
-plt.ylim(1e17,3e22)
+plt.ylim(1e16,3e22)
+plt.xlim(-10,250)
+
 
 
 ax1.legend()
@@ -353,7 +399,7 @@ ax1.set_xlabel('Position [mm]')
 
 # plt.xlim(0,310)
 
-# plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
 
 
 

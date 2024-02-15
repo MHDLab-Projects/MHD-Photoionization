@@ -3,8 +3,8 @@
 
 <svg
    width="164.05165mm"
-   height="216.916mm"
-   viewBox="0 0 164.05165 216.916"
+   height="270.27408mm"
+   viewBox="0 0 164.05165 270.27408"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -29,11 +29,11 @@
      inkscape:document-units="mm"
      inkscape:zoom="0.97890839"
      inkscape:cx="325.87319"
-     inkscape:cy="390.23059"
+     inkscape:cy="670.13421"
      inkscape:window-width="1450"
      inkscape:window-height="1020"
-     inkscape:window-x="150"
-     inkscape:window-y="0"
+     inkscape:window-x="544"
+     inkscape:window-y="28"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs1" /><g
@@ -94,4 +94,21 @@
          id="tspan1-4-6-6-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.299"
          x="84.480476"
-         y="193.27916">(D)</tspan></text></g></svg>
+         y="193.27916">(D)</tspan></text><text
+       xml:space="preserve"
+       style="font-size:4.23333px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.299"
+       x="22.85594"
+       y="268.72153"
+       id="text1-5-2-3-4-2"><tspan
+         sodipodi:role="line"
+         id="tspan1-4-6-6-9-1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.299"
+         x="22.85594"
+         y="268.72153">(E)</tspan></text><image
+       width="112.18333"
+       height="55.118"
+       preserveAspectRatio="none"
+       xlink:href="../experiment/analysis/tcs/output/figures/pos_nK_mws_cfd.png"
+       id="image1-2"
+       x="27.04096"
+       y="262.0784" /></g></svg>

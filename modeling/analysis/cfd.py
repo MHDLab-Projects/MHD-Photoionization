@@ -1,7 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-from mhdpy.pyvista_utils import calc_rho
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 import pint_pandas
 import pint_xarray
@@ -11,10 +11,10 @@ fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cd
 
 ds = xr.load_dataset(fp)
 
-ds['T'] = ds['T'].pint.quantify('K')
-ds['p'] = ds['p'].pint.quantify('Pa')
+ds = ds.cfd.convert_species_rho()
 
-ds['rho'] = calc_rho(ds['T'], ds['p'])  
+
+
 
 #%%
 
@@ -26,7 +26,7 @@ ds['O2'].plot(hue='kwt')
 
 #%%
 
-ds['KOH'].plot(hue='kwt')
+ds['Yeq_KOH'].plot(hue='kwt')
 
 #%%
 
