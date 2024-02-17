@@ -5,3 +5,4 @@ Directory for final dataset and figures in paper. The intention is cleaned up sc
 * dataset - scripts to generate final dataset including analysis (fitting/processing/etc.) used to generate final figures
 * figure_panels - scripts to produce plots from final dataset. 
 * figures - svg files that layout figure panels into final figures
+* analysis - analysis of final dataset (extra figures). migrating from experiment/analysis

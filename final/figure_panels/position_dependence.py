@@ -8,8 +8,8 @@ plt.style.use(['science', 'ieee', 'mhdpi_utils.mystyle'])
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-ds = xr.open_dataset(pjoin(data_directory, '536_pos_ds_p_stats.cdf')).pint.quantify().xr_utils.stack_run()
-ds_lecroy = xr.open_dataset(pjoin(data_directory, '536_pos_lecroy.cdf')).pint.quantify().xr_utils.stack_run()
+ds = xr.open_dataset(pjoin(data_directory, '536_pos_ds_p_stats.cdf')).xr_utils.stack_run()
+ds_lecroy = xr.open_dataset(pjoin(data_directory, '536_pos_lecroy.cdf')).xr_utils.stack_run()
 
 
 #%%
@@ -146,3 +146,5 @@ ax1.set_xlabel('Position [mm]')
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
 
 
+
+# %%
