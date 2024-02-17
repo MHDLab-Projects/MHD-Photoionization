@@ -22,7 +22,7 @@ input_data_folder_modeling = pjoin(REPO_DIR, 'modeling','dataset', 'output')
 
 test_data_path_final = pjoin(REPO_DIR, 'tests', 'test_data_final')
 #TODO: final figure panels should be both experiment and modeling
-input_data_folder_final = pjoin(REPO_DIR, 'experiment','figure_panels', 'output')
+input_data_folder_final = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 # Get all TDMS files in the test_data folder
 tdms_files = glob.glob(os.path.join(test_data_path_exp, '*.tdms'))
