@@ -44,14 +44,14 @@
        width="83.650665"
        height="216.916"
        preserveAspectRatio="none"
-       xlink:href="../experiment/analysis/tcs/output/figures/pos_mws_AS_sel.png"
+       xlink:href="../figure_panels/output/figures/pos_mws_AS_sel.png"
        id="image1"
        x="-0.92571926"
        y="46.92231" /><image
        width="81.618668"
        height="211.582"
        preserveAspectRatio="none"
-       xlink:href="../experiment/analysis/tcs/output/figures/pos_mws_stats.png"
+       xlink:href="../figure_panels/output/figures/pos_mws_stats.png"
        id="image1-0"
        x="81.507263"
        y="51.118267" /><text
@@ -108,7 +108,7 @@
        width="112.18333"
        height="55.118"
        preserveAspectRatio="none"
-       xlink:href="../experiment/analysis/tcs/output/figures/pos_nK_mws_cfd.png"
+       xlink:href="../../experiment/analysis/tcs/output/figures/pos_nK_mws_cfd.png"
        id="image1-2"
        x="27.04096"
        y="262.0784" /></g></svg>
