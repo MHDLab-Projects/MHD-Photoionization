@@ -286,7 +286,7 @@ fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profile
 
 ds_cfd = xr.load_dataset(fp_cfd)
 
-ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8)
+ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8).sel(offset=0)
 
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)

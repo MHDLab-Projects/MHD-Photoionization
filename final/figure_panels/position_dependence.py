@@ -123,7 +123,8 @@ ax1.set_xlabel('Position [mm]')
 ax1.axvline(178, color='gold', linestyle='--')
 
 
-ds_cfd['nK_m3'].plot(color='black', label ='CFD centerline')
+ds_cfd['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.')
+ds_cfd['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--')
 
 plt.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg')
 

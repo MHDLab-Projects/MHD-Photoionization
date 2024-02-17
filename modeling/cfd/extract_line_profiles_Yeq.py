@@ -28,6 +28,25 @@ fps = {
 
 
 
+#%%
+tc = '536_pos'
+DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = ds_absem.xr_utils.stack_run()
+
+beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
+
+beam_positions = beam_positions.pint.to('cm').pint.magnitude
+
+beam_positions
+
+#%%
+
+#offsets in cm (TODO: pint)
+beam_offsets = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
+
+
 
 #%%
 
@@ -43,20 +62,28 @@ all_fields = [*soi, *soi_Yeq, *additional]
 from pv_axi_utils import AxiInterpolator,AxiMesh
 
 
-def gen_beam_line(position, xy_ratio=1.875/4.25):
+def gen_beam_line(ta_position, ta_offset, xy_ratio=1.875/4.25):
+    """
+    Generate a line with respect to torch axis
+    ta_position: position down the torch axis
+    ta_offset: offset from the torch axis (z) 
+    """
     # xy_ratio=1
 
+    #TODO: pint
     unit_cm = 1e-2
     x_exit = 20.8*unit_cm
 
     #position of interseciton of line with z=0
-    x_beam = x_exit +  position*unit_cm
+    x_beam = x_exit +  ta_position*unit_cm
+
+    ta_offset = ta_offset*unit_cm
 
     # make two points that intersect this point and are in the direction of the beam
     y_distance = 5*unit_cm
 
-    a = [x_beam - y_distance*xy_ratio, y_distance , 0]
-    b = [x_beam + y_distance*xy_ratio, -y_distance, 0]
+    a = [x_beam - y_distance*xy_ratio, y_distance , ta_offset]
+    b = [x_beam + y_distance*xy_ratio, -y_distance, ta_offset]
 
     return a, b
 
@@ -115,7 +142,7 @@ fp = fps['0.8_1.0']
 
 mesh = pv.read(fp)
 
-a, b = gen_beam_line(3, xy_ratio=1.875/4.25)
+a, b = gen_beam_line(3, 0, xy_ratio=1.875/4.25)
 
 line1 = extract_line_axi(mesh, a, b)
 
@@ -126,7 +153,7 @@ p.add_mesh(line1, color='red')
 
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
-p.show()
+# p.show()
 
 #%%
 
@@ -143,21 +170,6 @@ plt.axvline(midpoint, color='gray', linestyle='--')
 
 # # Extract lines along beam axis
 
-
-#%%
-tc = '536_pos'
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
-
-beam_positions = beam_positions.pint.to('cm').pint.magnitude
-
-beam_positions
-
-
 # beam_positions = np.arange(1, 30, 5)
 dist_grid = np.arange(0, 0.1, 0.001)
 
@@ -170,47 +182,61 @@ for key, fp in fps.items():
 
     mesh = pv.read(fp)
     for position in beam_positions:
+        for offset in beam_offsets:
 
-        a, b = gen_beam_line(position)
+            a, b = gen_beam_line(position, offset)
 
-        line_out = extract_line_axi(mesh, a, b)
+            line_out = extract_line_axi(mesh, a, b)
 
-        #TODO: extract all soi
-        df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K'])
+            #TODO: extract all soi
+            df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K'])
 
-        df_int = interp_df_to_new_index(df_lines, dist_grid)
+            df_int = interp_df_to_new_index(df_lines, dist_grid)
 
-        ds_out = xr.Dataset(df_int)
-        ds_out = ds_out.rename({'dim_0':'dist'})
+            ds_out = xr.Dataset(df_int)
+            ds_out = ds_out.rename({'dim_0':'dist'})
 
-        ds_out = ds_out.assign_coords(pos=position)
-        ds_out = ds_out.assign_coords(kwt=float(kwt))
-        ds_out = ds_out.assign_coords(phi=float(phi))
+            ds_out = ds_out.assign_coords(pos=position)
+            ds_out = ds_out.assign_coords(kwt=float(kwt))
+            ds_out = ds_out.assign_coords(phi=float(phi))
+            ds_out = ds_out.assign_coords(offset=offset)
 
-        ds_out.expand_dims('pos').expand_dims('kwt').expand_dims('phi').stack(temp=('pos', 'kwt', 'phi'))
+            ds_out.expand_dims('pos').expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('pos', 'kwt', 'phi', 'offset'))
 
-        dss.append(ds_out)
+            dss.append(ds_out)
 
     # break
 
 ds_lines = xr.concat(dss, dim='temp')
 
-ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi']).unstack('temp')
+ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi', 'offset']).unstack('temp')
 
 #%%
 
 ds_lines
 #%%
 
-ds_lines['T'].plot(col='kwt', hue='pos', row='phi')
+ds_lines['T'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
 
 #%%
 
-ds_lines['Yeq_K'].plot(col='kwt', hue='pos', row='phi')
+
+ds_lines['T'].sel(kwt=1).plot(col='phi', hue='pos', row='offset')
+
+
+#%%
+
+ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
 
 plt.yscale('log')
 
 plt.ylim(1e-14, 1e-2)
+
+#%%
+
+ds_lines['Yeq_K'].sel(kwt=1).plot(col='phi', hue='pos', row='offset')
+plt.yscale('log')
+
 
 #%%
 
@@ -241,7 +267,7 @@ p.add_mesh(line1, color='red', line_width=5)
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
 
-p.show()
+# p.show()
 
 #%%
 
@@ -251,39 +277,46 @@ p.show()
 dss = []
 
 for key, fp in fps.items():
+    for offset in beam_offsets:
 
-    phi, kwt = key.split('_')
+        #TODO: pint
+        unit_cm = 1e-2
+        a = [x_exit - 1e-2 , 0 , offset*unit_cm]
+        b = [x_exit + 40e-2, 0, offset*unit_cm]
 
-    mesh = pv.read(fp)
+        phi, kwt = key.split('_')
 
-    dist_grid = np.arange(0, 0.4, 0.001)
+        mesh = pv.read(fp)
 
-    line_out = extract_line_axi(mesh, a, b)
+        dist_grid = np.arange(0, 0.4, 0.001)
 
-    df_lines = convert_line_df(line_out, all_fields)
+        line_out = extract_line_axi(mesh, a, b)
 
-    df_int = interp_df_to_new_index(df_lines, dist_grid)
+        df_lines = convert_line_df(line_out, all_fields)
 
-    ds_out = xr.Dataset(df_int)
-    ds_out = ds_out.rename({'dim_0':'x'})
+        df_int = interp_df_to_new_index(df_lines, dist_grid)
 
-    ds_out
-    ds_out = ds_out.assign_coords(kwt=float(kwt))
-    ds_out = ds_out.assign_coords(phi=float(phi))
+        ds_out = xr.Dataset(df_int)
+        ds_out = ds_out.rename({'dim_0':'x'})
+
+        ds_out
+        ds_out = ds_out.assign_coords(kwt=float(kwt))
+        ds_out = ds_out.assign_coords(phi=float(phi))
+        ds_out = ds_out.assign_coords(offset=offset)
 
 
-    ds_out.expand_dims('kwt').expand_dims('phi').stack(temp=('kwt', 'phi'))
+        ds_out.expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('kwt', 'phi', 'offset'))
 
-    dss.append(ds_out)
+        dss.append(ds_out)
 
-    # ds_out = ds_out.drop_vars(['K', 'Kp'])
-    # ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
+        # ds_out = ds_out.drop_vars(['K', 'Kp'])
+        # ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
 
-    # # 
+        # # 
 
 ds_out = xr.concat(dss, 'temp')
 
-ds_out = ds_out.set_index(temp=['kwt', 'phi']).unstack('temp')
+ds_out = ds_out.set_index(temp=['kwt', 'phi', 'offset']).unstack('temp')
 
 ds_out.to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
 
