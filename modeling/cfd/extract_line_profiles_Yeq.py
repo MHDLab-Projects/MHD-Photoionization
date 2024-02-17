@@ -20,8 +20,10 @@ results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_
 # results_dir = 'input'
 
 fps = {
-    '0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
-    '1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
+    '0.8_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
+    '0.8_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk'),
+    '0.6_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi060_K010', 'frontCyl_chem1.vtk'),
+    '0.6_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi060_K100', 'frontCyl_chem1.vtk'),
 }
 
 
@@ -109,7 +111,7 @@ def interp_df_to_new_index(df_out, new_index):
 
 # fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk')
 # fp = pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk')
-fp = fps['1.0']
+fp = fps['0.8_1.0']
 
 mesh = pv.read(fp)
 
@@ -162,7 +164,9 @@ dist_grid = np.arange(0, 0.1, 0.001)
 dss = []
 
 
-for kwt, fp in fps.items():
+for key, fp in fps.items():
+
+    phi, kwt = key.split('_')
 
     mesh = pv.read(fp)
     for position in beam_positions:
@@ -181,8 +185,9 @@ for kwt, fp in fps.items():
 
         ds_out = ds_out.assign_coords(pos=position)
         ds_out = ds_out.assign_coords(kwt=float(kwt))
+        ds_out = ds_out.assign_coords(phi=float(phi))
 
-        ds_out.expand_dims('pos').expand_dims('kwt').stack(temp=('pos', 'kwt'))
+        ds_out.expand_dims('pos').expand_dims('kwt').expand_dims('phi').stack(temp=('pos', 'kwt', 'phi'))
 
         dss.append(ds_out)
 
@@ -190,18 +195,18 @@ for kwt, fp in fps.items():
 
 ds_lines = xr.concat(dss, dim='temp')
 
-ds_lines = ds_lines.set_index(temp=['pos', 'kwt']).unstack('temp')
+ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi']).unstack('temp')
 
 #%%
 
 ds_lines
 #%%
 
-ds_lines['T'].plot(col='kwt', hue='pos')
+ds_lines['T'].plot(col='kwt', hue='pos', row='phi')
 
 #%%
 
-ds_lines['Yeq_K'].plot(col='kwt', hue='pos')
+ds_lines['Yeq_K'].plot(col='kwt', hue='pos', row='phi')
 
 plt.yscale('log')
 
@@ -245,7 +250,9 @@ p.show()
 
 dss = []
 
-for kwt, fp in fps.items():
+for key, fp in fps.items():
+
+    phi, kwt = key.split('_')
 
     mesh = pv.read(fp)
 
@@ -262,6 +269,10 @@ for kwt, fp in fps.items():
 
     ds_out
     ds_out = ds_out.assign_coords(kwt=float(kwt))
+    ds_out = ds_out.assign_coords(phi=float(phi))
+
+
+    ds_out.expand_dims('kwt').expand_dims('phi').stack(temp=('kwt', 'phi'))
 
     dss.append(ds_out)
 
@@ -270,7 +281,9 @@ for kwt, fp in fps.items():
 
     # # 
 
-ds_out = xr.concat(dss, 'kwt')
+ds_out = xr.concat(dss, 'temp')
+
+ds_out = ds_out.set_index(temp=['kwt', 'phi']).unstack('temp')
 
 ds_out.to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
 

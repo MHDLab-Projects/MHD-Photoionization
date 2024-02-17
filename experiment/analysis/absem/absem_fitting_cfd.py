@@ -165,7 +165,7 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'line_profiles_beam_Yeq.cdf')
 
-ds_cfd = xr.load_dataset(fp_cfd_profiles)
+ds_cfd = xr.load_dataset(fp_cfd_profiles).sel(phi=0.8)
 # ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
 ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
@@ -499,7 +499,7 @@ fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profile
 
 ds_cfd_cl = xr.load_dataset(fp_cfd)
 
-ds_cfd_cl = ds_cfd_cl.sel(kwt=1)
+ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values - ds_cfd_cl.coords['x'].values[0])
 ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values*1000)

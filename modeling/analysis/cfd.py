@@ -14,7 +14,13 @@ ds = xr.load_dataset(fp)
 # ds = ds.cfd.convert_all_rho_number()
 ds
 
+#%%
+ds['O2'].plot(hue='kwt', row='phi')
 
+#%%
+
+
+ds['KOH'].plot(row='kwt', hue='phi', sharey=False)
 
 #%%
 
@@ -26,7 +32,6 @@ ds['T'].plot(hue='kwt')
 
 #%%
 
-ds['O2'].plot(hue='kwt')
 
 #%%
 
