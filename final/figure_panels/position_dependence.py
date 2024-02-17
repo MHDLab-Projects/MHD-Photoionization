@@ -8,11 +8,10 @@ plt.style.use(['science', 'ieee', 'mhdpi_utils.mystyle'])
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-ds = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
+ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sel(phi=0.79)
-ds = ds.sel(phi=0.79)
 
 #%%
 
@@ -22,7 +21,7 @@ fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profile
 
 ds_cfd = xr.load_dataset(fp_cfd)
 
-ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8)
+ds_cfd = ds_cfd.sel(kwt=1)
 
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
 ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
@@ -60,12 +59,14 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tigh
 
 #%%
 
+ds_p_sel = ds_p.sel(phi=0.79, method='nearest') 
+
 fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
 
 for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
     ax = axes[i]
 
-    ds_stat = ds.wma.initialize_stat_dataset(var, 'run')
+    ds_stat = ds_p_sel.wma.initialize_stat_dataset(var, 'run')
 
     # plot with confidence interval
 
@@ -77,14 +78,14 @@ for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
     ax.set_title('')
     ax.set_xlabel('')
 
-    unit_str = '[' + ds[var].attrs['units']+ ']' if 'units' in ds[var].attrs else '' 
-    ax.set_ylabel(ds[var].attrs['long_name'] + unit_str)
+    unit_str = '[' + ds_p_sel[var].attrs['units']+ ']' if 'units' in ds_p_sel[var].attrs else '' 
+    ax.set_ylabel(ds_p_sel[var].attrs['long_name'] + unit_str)
     
 axes[2].set_xlabel('Position [mm]')
 
 ta = axes[0].twinx()
 
-delta_pd1 = ds['delta_pd1'].dropna('run', how='all')
+delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
 delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 delta_pd1.plot(ax=ta, color='red', marker='o')
 ta.set_ylabel('Delta PD1 [mV]')
@@ -101,53 +102,64 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight
 
 #%%
 
-nK_barrel_mean = ds['nK_barrel'].mean('motor').mean('run')
-nK_barrel_std = ds['nK_barrel'].mean('motor').std('run')
-
-plt.figure(figsize=(4.5,2))
-
-da = ds['nK_mw_horns'].dropna('run', how='all')
-da = da.sel(motor = slice(50,300))
-
-g = da.isel(run=0).plot(x='motor', marker='o', label='2023-05-12 Run 1')
-g = da.isel(run=1).plot(x='motor', marker='o', label='2023-05-12 Run 2')
-plot.dropna(g)
-
-ax1 = plt.gca()
-ax1.set_yscale('log')
-ax1.set_title('')
-ax1.set_xlabel('Position [mm]')
-
-# ax1.get_legend().set_title('Experiment (date, #)')
-# ax1.get_legend().set_bbox_to_anchor([0,0,0.5,0.4])
-ax1.axvline(178, color='gold', linestyle='--')
+fig, axes = plt.subplots(2, figsize=(6,6), sharex=True)
 
 
-ds_cfd['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.')
-ds_cfd['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--')
+# Phi =0.8
+ax1 = axes[0]
 
-plt.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg')
+ds_p_sel = ds_p.sel(phi=0.79, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.79, method='nearest')
 
-plt.ylim(1e16,3e22)
-plt.xlim(-10,250)
+nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
+nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
+
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = nK_mw_horns.sel(motor = slice(50,300))
+
+g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-18 Run 1', ax=ax1)
+g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2', ax=ax1)
+
+ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
+ds_cfd_sel['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
+
+ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax1.set_title('phi = 0.79')
 
 
+# Phi = 0.65
 
-ax1.legend()
-ax1.set_title('')
+ax2 = axes[1]
 
-ax1.set_xlabel('Position [mm]')
+ds_p_sel = ds_p.sel(phi=0.65, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.65, method='nearest')
 
-# ax2 = plt.gca()
-# ax2.legend()
-# ax2.set_ylabel('Normalized $n_{K, CFD}$')
-# ax2.set_yscale('log')
-# ax2.set_title('')
+nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
+nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
-# plt.xlim(0,310)
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = nK_mw_horns.sel(motor = slice(50,300))
+
+g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1', ax=ax2)
+
+ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
+ds_cfd_sel['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
+
+ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax2.set_title('phi = 0.65')
+
+for ax in axes:
+
+    ax.axvline(178, color='gold', linestyle='--')
+    ax.set_ylim(1e16,3e22)
+    ax.set_xlim(-10,250)
+    ax.set_yscale('log')
+    ax.legend()
+
+ax2.set_xlabel('Position [mm]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
 
-
-
+# Phi =0.65
+# ax2 = axes[1]
 # %%
