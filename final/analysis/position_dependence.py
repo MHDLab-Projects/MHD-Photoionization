@@ -9,12 +9,10 @@ plt.style.use(['science', 'ieee', 'mhdpi_utils.mystyle'])
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-ds_lecroy = xr.open_dataset(pjoin(data_directory, '536_pos_lecroy.cdf')).xr_utils.stack_run()
+ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
+ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
 
-ds_536 = xr.open_dataset(pjoin(data_directory, '536_pos_ds_p_stats.cdf')).xr_utils.stack_run()
-ds_516 = xr.open_dataset(pjoin(data_directory, '516_pos_ds_p_stats.cdf')).xr_utils.stack_run()
-
-ds_p = xr.concat([ds_516, ds_536], dim='phi')
+ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_p = ds_p.drop(34.81, 'motor')
 
 #%%

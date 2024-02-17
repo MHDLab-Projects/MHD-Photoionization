@@ -8,9 +8,11 @@ plt.style.use(['science', 'ieee', 'mhdpi_utils.mystyle'])
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-ds = xr.open_dataset(pjoin(data_directory, '536_pos_ds_p_stats.cdf')).xr_utils.stack_run()
-ds_lecroy = xr.open_dataset(pjoin(data_directory, '536_pos_lecroy.cdf')).xr_utils.stack_run()
+ds = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
+ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 
+ds_lecroy = ds_lecroy.sel(phi=0.79)
+ds = ds.sel(phi=0.79)
 
 #%%
 

@@ -11,36 +11,69 @@ from mhdpy.plot import dropna
 
 # plt.rcParams.update({'font.size': 16})
 
+stack_dims = ['date','run_num','motor','phi']
+
 # %%
 
 tc = '536_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
+ds_absem_536_pos = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 
-ds_absem = ds_absem.absem.calc_alpha()
+ds_absem_536_pos = ds_absem_536_pos.expand_dims('phi').stack(temp = stack_dims)
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
+ds_lecroy_536_pos = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_536_pos = ds_lecroy_536_pos.sortby('time') # Needed otherwise pre pulse time cannot be selected
 
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
+ds_lecroy_536_pos = ds_lecroy_536_pos.expand_dims('phi').stack(temp = stack_dims)
 
+#%%
 
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
 
 tc = '5x6_pos'
 
 ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy_5x6 = ds_lecroy_5x6.xr_utils.stack_run()
 
-ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')
+ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=[0.79]) # Cannot add 0.65 phi, because it conflicts with 516_pos. Need to change run_num for this measurement?
 
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 
-ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
+ds_lecroy_5x6 = ds_lecroy_5x6.stack(temp = stack_dims)
 
-ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, '536_pos_lecroy.cdf'))
+#%%
+
+tc = '516_pos'
+
+ds_absem_516 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem_516 = ds_absem_516.expand_dims('phi') # allows merging with 5x6_pos
+ds_absem_516 = ds_absem_516.stack(temp = stack_dims)
+
+ds_lecroy_516 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+
+ds_lecroy_516 = ds_lecroy_516.sortby('time') # Needed otherwise pre pulse time cannot be selected
+ds_lecroy_516 = ds_lecroy_516.expand_dims('phi') # allows merging with 5x6_pos
+ds_lecroy_516 = ds_lecroy_516.stack(temp = stack_dims)  
+
+#%%
+
+ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp')
+ds_absem = ds_absem.xr_utils.stack_run()
+ds_absem = ds_absem.absem.calc_alpha()
+
+ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp').unstack('temp')
+ds_lecroy = ds_lecroy.xr_utils.stack_run()
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
+
+
+#%%
+
+ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_lecroy.cdf'))
+
+#%%
+
+
+ds_absem.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
+
 
 #%%
 
@@ -102,4 +135,5 @@ ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V
 
 ds
 
-ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, '536_pos_ds_p_stats.cdf'))
+ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_pos.cdf'))
+# %%
