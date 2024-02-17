@@ -44,14 +44,14 @@
        width="107.86527"
        height="80.898949"
        preserveAspectRatio="none"
-       xlink:href="../experiment/analysis/tcs/output/figures/MWS_power_time.png"
+       xlink:href="../../experiment/analysis/tcs/output/figures/MWS_power_time.png"
        id="image1-4"
        x="-35.984634"
        y="91.744629" /><image
        width="107.86527"
        height="80.898949"
        preserveAspectRatio="none"
-       xlink:href="../experiment/analysis/tcs/output/figures/MWS_power_max.png"
+       xlink:href="../../experiment/analysis/tcs/output/figures/MWS_power_max.png"
        id="image1"
        x="62.170788"
        y="93.012787" /><text
