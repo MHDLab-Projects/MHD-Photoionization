@@ -64,7 +64,8 @@ ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 
 
 mws_max = ds_lecroy['AS'].mean('mnum').max('time').rename('AS_max')
-nK = ds_p['nK_m3'].sel(mp='mw_horns')
+nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop('mp')
+nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
 
 mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
 mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
@@ -89,7 +90,8 @@ ds = xr.merge([
     mws_pp,
     mws_pp_std,
     mws_max_std_ratio,
-    nK,
+    nK_mw_horns,
+    nK_barrel,
     delta_pd1.rename('delta_pd1') 
     ]).sortby('motor').dropna('run', how='all')
 

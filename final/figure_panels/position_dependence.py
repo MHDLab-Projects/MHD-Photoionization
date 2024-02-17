@@ -7,11 +7,25 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 ds = xr.open_dataset(pjoin(data_directory, '536_pos_ds_p_stats.cdf')).pint.quantify().xr_utils.stack_run()
 ds_lecroy = xr.open_dataset(pjoin(data_directory, '536_pos_lecroy.cdf')).pint.quantify().xr_utils.stack_run()
 
+
 #%%
 
-ds.drop('run_plot')['nK_m3']#.pint.quantify()
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-# ds
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
+
+ds_cfd = xr.load_dataset(fp_cfd)
+
+ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8)
+
+ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
+ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
+
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('1/m^3')
+
 
 #%%
 
@@ -78,3 +92,53 @@ for mp in motor_sel:
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
+nK_barrel_mean = ds['nK_barrel'].mean('motor').mean('run')
+nK_barrel_std = ds['nK_barrel'].mean('motor').std('run')
+
+plt.figure(figsize=(4.5,2))
+
+da = ds['nK_mw_horns'].dropna('run', how='all')
+da = da.sel(motor = slice(50,300))
+
+g = da.isel(run=0).plot(x='motor', marker='o', label='2023-05-12 Run 1')
+g = da.isel(run=1).plot(x='motor', marker='o', label='2023-05-12 Run 2')
+plot.dropna(g)
+
+ax1 = plt.gca()
+ax1.set_yscale('log')
+ax1.set_title('')
+ax1.set_xlabel('Position [mm]')
+
+# ax1.get_legend().set_title('Experiment (date, #)')
+# ax1.get_legend().set_bbox_to_anchor([0,0,0.5,0.4])
+ax1.axvline(178, color='gold', linestyle='--')
+
+
+ds_cfd['nK_m3'].plot(color='black', label ='CFD centerline')
+
+plt.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg')
+
+plt.ylim(1e16,3e22)
+plt.xlim(-10,250)
+
+
+
+ax1.legend()
+ax1.set_title('')
+
+ax1.set_xlabel('Position [mm]')
+
+# ax2 = plt.gca()
+# ax2.legend()
+# ax2.set_ylabel('Normalized $n_{K, CFD}$')
+# ax2.set_yscale('log')
+# ax2.set_title('')
+
+# plt.xlim(0,310)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+
+
