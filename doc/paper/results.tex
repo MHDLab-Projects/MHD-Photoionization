@@ -6,19 +6,27 @@
 
 \subsection{Position dependence and pre-pulse noise}
 
-We begin by motivating choices for nominal conditions for the position of the laser beam and the laser power. Figure \ref{fig:pos_dependence} shows the MWS signal as a function of the position of the laser beam. 
+We begin by motivating choices for nominal conditions for the position of the laser beam and the laser power. Figure \ref{fig:pos_dependence_mws} shows the MWS signal as a function of the position of the laser beam. 
 
 We observe that near the exit of the torch there is a significant fluctuation in the MWS signal in the absence of a laser pulse. The temperature at the exit of the torch is sufficiently high for thermally induced conductivity. Variations in the flow or potassium distribution could cause these time dependent fluctuations. We provide some analysis of these background fluctuations in the SI (TODO).
 
 For the present discussion, the important point is that these fluctuations are significant compared to the signal induced by the laser pulse, and they therefore preclude accurate measurement of the time decay of the AS signal. 
 
-In Figure \ref{fig:pos_dependence}B the we quantify the signal to fluctuation ratio to find the optimal position for the MWS diagnostic. We define the signal as the maximum of $AS$ ($AS_{max}$) within a microsecond of the laser pulse, and the fluctuation as the standard deviation of $AS$ in the time prior to the laser pulse ($PP_{std}$). We observe that both $AS_{max}$ and $PP_{std}$ increase until about 100 mm downstream from the torch, and then decrease. However, $PP_{std}$ decreases more rapidly than $AS_{max}$, so the signal to fluctuation ratio increases to a maximum at approximately 180 mm downstream from the torch. 
+In Figure \ref{fig:pos_dependence_mws}B the we quantify the signal to fluctuation ratio to find the optimal position for the MWS diagnostic. We define the signal as the maximum of $AS$ ($AS_{max}$) within a microsecond of the laser pulse, and the fluctuation as the standard deviation of $AS$ in the time prior to the laser pulse ($PP_{std}$). We observe that both $AS_{max}$ and $PP_{std}$ increase until about 100 mm downstream from the torch, and then decrease. However, $PP_{std}$ decreases more rapidly than $AS_{max}$, so the signal to fluctuation ratio increases to a maximum at approximately 180 mm downstream from the torch. 
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/MWS_Position.png} 
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Position_MWS.png} 
     \caption{Position dependence of the MWS signal. The data are taken for full laser power and 1\% nominal K mass fraction. A) AS profiles taken at various positions downstream of the barrel exit. The hue represents different repeats of the test case sequence, with each line being an average of all oscilloscope acquisitions in a given test case. B) The maximum of the AS signal within 1 $\mu s$ of the laser pulse (0 $\mu s$). The change in potassium photodiode with laser pulse is also shown. The photodiode data for the nominal test case was only obtained on 2024-05-24, but comparisons between the AS and PD signals for different equivalence ratios are presented in the SI.   C) The standard deviation of the magnitude data before the laser pulse. D) The ratio of the Max AS and pre-pulse magnitude statistics. For B, C, and D the confidence intervals represent the standard deviation across runs. } E) position dependence of potassium mass fraction measured through experiment and predicted by CFD. 
-    \label{fig:pos_dependence}
+    \label{fig:pos_dependence_mws}
+\end{figure}
+
+Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. 
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Position_AES.png} 
+    \caption{Position dependence of atomic potassium as measured by AES and predicted by CFD. The CFD data is sampled along a line on the torch axis, either directly on the torch axis or offset perpindicular to simulate misalignment in the AES beam. }
+    \label{fig:pos_dependence_aes}
 \end{figure}
 
 \subsection{Laser power dependence}
@@ -26,12 +34,12 @@ In Figure \ref{fig:pos_dependence}B the we quantify the signal to fluctuation ra
 Figure \ref{fig:power_dependence} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential decay time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
 
 \begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/MWS_Power.png} 
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Power_MWS.png} 
     \caption{Power dependence}
     \label{fig:power_dependence}
 \end{figure}
 
-Together the position (Figure \ref{fig:pos_dependence}) and the power dependence (Figure \ref{fig:power_dependence}) motivate the conditions used for the Kwt dependence presented below: Measurements are taken at 178 mm downstream of the barrel in order to maximize the signal to fluctuation ratio and accurately measure the profile of the AS decay after the laser pulse. We note, as discussed further later, that the AS decay rate does not appear to depend sensitively on the position (see \ref{fig:pos_dependence} and SI). We take measurements at full laser power (~7 mJ) to maximize the signal and as the exponential time constant does not appear to depend sensitively on the laser power
+Together the position (Figure \ref{fig:pos_dependence_mws}) and the power dependence (Figure \ref{fig:power_dependence}) motivate the conditions used for the Kwt dependence presented below: Measurements are taken at 178 mm downstream of the barrel in order to maximize the signal to fluctuation ratio and accurately measure the profile of the AS decay after the laser pulse. We note, as discussed further later, that the AS decay rate does not appear to depend sensitively on the position (see \ref{fig:pos_dependence_mws} and SI). We take measurements at full laser power (~7 mJ) to maximize the signal and as the exponential time constant does not appear to depend sensitively on the laser power
 
 \clearpage
 

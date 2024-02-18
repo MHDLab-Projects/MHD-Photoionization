@@ -151,6 +151,7 @@ for ax in axes:
     ax.legend()
 
 ax2.set_xlabel('Position [mm]')
+ax1.set_xlabel('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
 
