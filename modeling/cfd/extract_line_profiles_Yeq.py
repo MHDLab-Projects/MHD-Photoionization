@@ -59,7 +59,7 @@ all_fields = [*soi, *soi_Yeq, *additional]
 
 # %%
 
-from pv_axi_utils import AxiInterpolator,AxiMesh
+from mhdpy.pyvista_utils import AxiMesh
 
 
 def gen_beam_line(ta_position, ta_offset, xy_ratio=1.875/4.25):
