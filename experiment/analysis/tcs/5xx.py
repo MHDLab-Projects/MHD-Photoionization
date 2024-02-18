@@ -120,12 +120,13 @@ plt.xlim(-1,)
 
 da_lecroy_mean = da_lecroy.mean('mnum')
 
-da_lecroy_mean.plot(row='motor',hue='phi')
+da_lecroy_mean.plot(col='motor',hue='phi', col_wrap=3)
 
 plt.yscale('log')
 
-
 plt.xlim(-1,)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_AStime_phi.png'), dpi=300)
 
 
 #%%

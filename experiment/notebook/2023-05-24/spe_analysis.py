@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+import pi_paper_utils
 create_standard_folders()
 
 datestr = '2023-05-24'
@@ -81,6 +82,10 @@ da = das['84']
 da.mean('estime').mean('gatedelay').plot(robust=True)
 
 #%%
+# Timewindow for these files is entire seedramp
+da['estime'].plot()
+
+#%%
 
 da_sel = da.mean('estime').sel(x=slice(650,780), y=slice(450,575))
 
@@ -89,3 +94,38 @@ da_sel.mean('gatedelay').plot(robust=True)
 #%%
 
 da_sel.mean(['x', 'y']).plot(marker='o')
+# %%
+# downselect to 1% kwt time window
+tw = slice(Timestamp('2023-05-24 22:25:55.952985600'), Timestamp('2023-05-24 22:28:12.304348160'), None) 
+
+da_sel = da.sel(estime=tw).sel(gatedelay=slice(780,802))
+
+da_sel
+
+#%%
+
+# plt.figure(figsize=(8,4))
+
+da_sel.mean('estime').plot(col='gatedelay', col_wrap=4, figsize=(8,4))  
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
+
+# %%
+
+da_sel2 = da_sel.sel(x=slice(650,780), y=slice(450,575))
+
+da_sel2.mean('estime').mean('gatedelay').plot()
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
+
+#%%
+
+da_sel2.mean(['x', 'y']).mean('estime').plot(marker='o')
+
+plt.ylabel('Counts')
+plt.xlabel('Gate Delay (ns)')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_timedecay.png'))
+
+
+# %%

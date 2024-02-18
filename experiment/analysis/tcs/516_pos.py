@@ -3,6 +3,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
+import pi_paper_utils
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
@@ -25,6 +26,8 @@ ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
+
+ds_lecroy = ds_lecroy.isel(run=0) # There is only one 516
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
 
@@ -79,3 +82,58 @@ plt.yscale('log')
 ds_p['nK_m3'].sel(mp='mw_horns').plot(hue='run_plot', x='motor', marker='o')
 
 plt.yscale('log')
+
+#%%[markdown]
+
+# # 516 MWS Analysis
+
+# only on 2023-05-24
+
+#%%
+
+
+da_max = ds_lecroy['AS'].mws._pulse_max()
+
+
+
+da_max.mean('mnum').plot()
+
+
+#%%
+
+ds_lecroy['AS'].mean('mnum').plot(row='motor')
+
+plt.yscale('log')
+
+
+# %%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_exp
+
+da_fit = ds_lecroy['AS'].mean('mnum')
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
+                                da_fit, 
+                                method='iterative', 
+                                fit_timewindow = slice(Quantity(5, 'us'), Quantity(15, 'us'))
+                                )
+
+
+# %%
+
+ds_p['decay'].plot(marker='o')
+
+plt.ylabel('Decay Time (us)')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '516_mws_decaytime.png'))
+
+#%%
+
+ds_mws_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
+
+plt.yscale('log')
+
+plt.ylim(1e-4,)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '516_mws_AS_fit.png'))
+# %%
