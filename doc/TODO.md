@@ -4,5 +4,5 @@
 
 - [] Refactor kinetics and update viability modeling to use oxygen 
 - [] Create supporting information
-- [] analyze position dependence of kwt = 0.1 and phi 0.6 and compare to CFD
-- [] convert final folder to create dataset then generate figures. add more data. 
+- [x] analyze position dependence of kwt = 0.1 and phi 0.6 and compare to CFD
+- [x] convert final folder to create dataset then generate figures. add more data.  

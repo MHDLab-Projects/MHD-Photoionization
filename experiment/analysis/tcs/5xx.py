@@ -15,6 +15,20 @@ dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
+#%%
+
+from mhdpy.pyvista_utils import CFDDatasetAccessor
+
+fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
+
+ds_cfd = xr.load_dataset(fp)
+
+ds_cfd = ds_cfd.sel(offset=0)
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+
+
 
 # %%
 
@@ -43,6 +57,18 @@ da_max.plot()
 #%%
 
 da_max.plot(hue='phi', marker='o')
+
+#%%
+
+da_max.plot(hue='phi', marker='o')
+
+plt.twinx()
+
+da_cfd_sel = ds_cfd.sel(kwt=1)['Yeq_KOH']
+
+da_cfd_sel.plot(hue='phi', linestyle='--')
+
+plt.gca().get_legend().set_bbox_to_anchor((1, 0.6))
 
 #%%
 
@@ -304,4 +330,20 @@ plt.yscale('log')
 da_count = ds_absem['alpha'].isel(wavelength=0).count('mnum')
 
 da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
+
+# %%
+
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K']
+
+da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
+
+g = da.plot(hue='phi', marker='o')
+
+dropna(g)
+
+da_sel.pint.to('1/m^3').plot(hue='phi', linestyle='--')
+
+plt.ylim(1e17,)
+
+plt.yscale('log')
 # %%
