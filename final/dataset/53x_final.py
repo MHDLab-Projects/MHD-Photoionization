@@ -63,7 +63,7 @@ ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
-from mhdpi_utils.kinetics import get_kinetics
+from pi_paper_utils.kinetics import get_kinetics
 
 ds_kr = get_kinetics(ds_cfd)
 

@@ -2,7 +2,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import mhdpi_utils #Sets matplotlib style
+import pi_paper_utils #Sets matplotlib style
 
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')

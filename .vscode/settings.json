@@ -10,7 +10,7 @@
     // "python.languageServer": "Jedi",
     "python.autoComplete.extraPaths": [
             "./mhdpy",
-            "./mhdpi_utils"
+            "./pi_paper_utils"
     ],
     "audioCues.volume": 0,
     

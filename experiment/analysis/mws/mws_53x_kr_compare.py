@@ -89,7 +89,7 @@ ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
 #%%
 
 
-from mhdpi_utils.kinetics import get_kinetics
+from pi_paper_utils.kinetics import get_kinetics
 
 ds_kr = get_kinetics(ds_cfd)
 

@@ -2,10 +2,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-
-import scienceplots
-import mhdpi_utils
-plt.style.use(['science', 'ieee', 'mhdpi_utils.mystyle'])
+import pi_paper_utils
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
