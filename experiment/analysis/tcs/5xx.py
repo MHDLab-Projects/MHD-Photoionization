@@ -2,6 +2,7 @@
 
 from mhdpy.analysis.standard_import import *
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -69,6 +70,42 @@ da_cfd_sel = ds_cfd.sel(kwt=1)['Yeq_KOH']
 da_cfd_sel.plot(hue='phi', linestyle='--')
 
 plt.gca().get_legend().set_bbox_to_anchor((1, 0.6))
+
+
+#%%
+
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
+
+da_cfd_sel = ds_cfd.sel(kwt=1)['Yeq_KOH']
+
+lines = []
+labels = []
+
+for phi in da_max['phi']:
+    # line, = ax1.plot(da_max.sel(phi=phi), label=phi.values, marker='o')
+    line, = da_max.sel(phi=phi).plot(label=phi.values, marker='o', ax=ax1)
+    lines.append(line)
+    labels.append(phi.values)
+
+ax1.legend(lines, labels, title="Expt.", loc="upper right")
+ax1.set_ylim(-0.05,0.3)
+
+lines = []
+labels = []
+
+for phi in da_cfd_sel['phi']:
+    line, = ax2.plot(da_cfd_sel.sel(phi=phi), label=phi.values, linestyle='--')
+    lines.append(line)
+    labels.append(phi.values)
+
+ax2.legend(lines, labels, title="CFD", loc="upper right")
+ax2.set_ylim(0.4e16,)
+
+ax1.set_xlim(0,260)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_KOH.png'), dpi=300)
+
 
 #%%
 
@@ -273,6 +310,8 @@ ds_sel['alpha'].sel(motor=50, method='nearest').plot(hue='phi')
 
 plt.ylim(0,1)
 
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_alpha.png'), dpi=300)
+
 
 # %%
 
@@ -290,6 +329,44 @@ da_max.plot()
 #%%
 
 da_max.plot(hue='phi', marker='o')
+
+#%%
+
+da_max
+
+#%%
+
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
+
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_KOH']
+
+lines = []
+labels = []
+
+for phi in da_max['phi']:
+    # line, = ax1.plot(da_max.sel(phi=phi), label=phi.values, marker='o')
+    line, = da_max.sel(phi=phi).plot(label=phi.values, marker='o', ax=ax1)
+    lines.append(line)
+    labels.append(phi.values)
+
+ax1.legend(lines, labels, title="Expt.", loc="upper right")
+ax1.set_ylim(-0.01j,0.05)
+
+lines = []
+labels = []
+
+for phi in da_cfd_sel['phi']:
+    line, = ax2.plot(da_cfd_sel.sel(phi=phi), label=phi.values, linestyle='--')
+    lines.append(line)
+    labels.append(phi.values)
+
+ax2.legend(lines, labels, title="CFD", loc="lower right")
+
+ax1.set_xlim(0,260)
+ax2.set_ylim(0.4e15)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_mws_KOH.png'), dpi=300)
 
 
 #%%
@@ -333,17 +410,63 @@ da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
 
 # %%
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K']
+
+
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('1/m^3')
 
 da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
 
-g = da.plot(hue='phi', marker='o')
 
-dropna(g)
+for phi in da['phi']:
+    da.sel(phi=phi).plot(label=phi.values, marker='o')
 
-da_sel.pint.to('1/m^3').plot(hue='phi', linestyle='--')
 
+for phi in da_cfd_sel['phi']:
+    da_cfd_sel.sel(phi=phi).plot(label=phi.values, linestyle='--')
+
+
+plt.legend()
 plt.ylim(1e17,)
+plt.xlim(0,300)
 
 plt.yscale('log')
-# %%
+#%%
+
+plt.figure(figsize=(6,4))
+
+import matplotlib.lines as mlines
+
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('1/m^3')
+
+da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
+
+lines = []
+labels = []
+
+for phi in da['phi']:
+    line, = da.sel(phi=phi).plot(label=phi.values, marker='o')
+    lines.append(line)
+    labels.append(phi.values)
+
+legend1 = plt.legend(lines, labels, title="Expt.", loc="lower right",)
+
+lines = []
+labels = []
+
+for phi in da_cfd_sel['phi']:
+    line, = da_cfd_sel.sel(phi=phi).plot(label=phi.values, linestyle='--')
+    lines.append(line)
+    labels.append(phi.values)
+
+legend2 = plt.legend(lines, labels, title="CFD", loc="lower left")
+
+plt.gca().add_artist(legend1)
+
+plt.ylim(1e17,)
+plt.xlim(0,360)
+
+plt.title('')
+
+plt.yscale('log')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_nK_m3.png'), dpi=300)

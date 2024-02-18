@@ -46,8 +46,17 @@ Test case sequences (TODO: improve names)
 \end{itemize}
 
 
+The results in this paper derive from an experimental campaign that was conducted over 4 dates: 2023-04-07, 2023-05-12, 2023-05-18, and 2023-05-24. Throughout the campaign the above test case sequences were repeated to ensure reproducibility of the results. On some dates, the same test case sequence was repeated within a date, so we define a 'Run' as a unique instance of a test case sequence labeled by the date and an integer ("run number").  Unless otherwise noted, error bars in the results represent the standard deviation across Runs. 
+
+On later experiment dates, additional test case sequences were performed. Further, additional diagnostic measurements were added. 2023-05-12: PI Max Camera and position dependent nK measurement. 2023-05-24: Photodiode. Importantly, the position dependent nK measurement was taken by multiplexing both AES diagnostics to the same spectrometer, meaning only one AES measurement could be taken at a time. Througout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements are not simultaneous. Equivalence ratio measurements occurred on 2023-05-24 (see SI). 
 
 We note that the syringe pump based feeding method has the disadvantage of a finite amount of emulsion that can be fed into the torch. This limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. For this reason, it was note possible to maintain consistent durations for the different test case sequences. Furthermore, the finite time allowed by the syringe pump means that exploration of experimental conditions was limited. 
+
+The time limitation on seeding duration limits the AES diagnostic more than the MWS diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWS diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (10 Hz check this). Therefore for some test case sequences, the MWS diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, ~1 minute was used for each test case and data presented for both diagnostics.  
+
+Another limitation of the AES diagnostic is that it must be calibrated to the spectral LED intensity without any absorbing medium. It is not possible to stop and start the HVOF system on a given experiment without risking the system not being able to restart. Therefore, measurements of the AES calibration can only be performed at the beginning and end of a given experiment. We interpolate this calibration throughout the time of the experiment to help reduce the influence of calibration drift, but it is not always possible to eliminate this effect which shows as an offset in the off-peak absorption coefficient.
+
+
 
 
 Diagnostic processing is shown in Figure \ref{fig:diagnostic_processing}.

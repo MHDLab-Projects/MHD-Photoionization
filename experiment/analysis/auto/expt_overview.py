@@ -4,6 +4,9 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
+#have time axes show up in PST
+plt.rcParams['timezone'] = 'US/Pacific'
+
 # %%
 
 fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')

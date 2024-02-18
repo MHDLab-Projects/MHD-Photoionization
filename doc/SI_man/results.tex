@@ -1,0 +1,76 @@
+\section{Supplemental Results}
+
+\subsection{Experiment Overviews}
+
+Below are overviews of the experiments performed. The colored regions are test case sequences. Times are PST. 
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-04-07.png} 
+    \caption{Experiment Overview for 2023-04-07 }
+    \label{fig:expt_overview_2023-04-07}
+\end{figure}
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-12.png} 
+    \caption{Experiment Overview for 2023-05-12 }
+    \label{fig:expt_overview_2023-05-12}
+\end{figure}
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-18.png} 
+    \caption{Experiment Overview for 2023-05-18}
+    \label{fig:expt_overview_2023-05-18}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-24.png} 
+    \caption{Experiment Overview for 2023-05-24}
+    \label{fig:expt_overview_2023-05-24}
+\end{figure}
+
+\clearpage
+
+\subsection{Equivalence Ratio Dependence}
+
+On 2023-05-24, we performed measurements with equivalence ratio varying from the standard value of 0.8. 
+
+\begin{itemize}
+    \item 516 - a position sweep at fixed equivalence ratio 0.6
+    \item 5x3\_pos - a position and equivalence ratio sweep at 5 equivalence ratios and 0.1\% potassium mass fraction. The lower potassium mass fraction allowed for longer times on each test case and therefore AES nK measurements. 
+    \item 5x6\_pos - a position and equivalence ratio sweep at 5 equivalence ratios and 1\% potassium mass fraction. The high potassium mass fraction meant short times on each test case with only enough time for MWS measurements. 
+\end{itemize}
+
+Figure \ref{fig:5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos test case. Note the calibration of the AES signal for this test case exhibited significant calibration drift (see \ref{fig:5x3_pos_alpha}), and systematic error may be present in the nK values. 
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x3_pos_nK_m3.png}
+\caption{AES measurements 5x3\_pos}
+\label{fig:5x3_pos_nK_m3}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x3_pos_alpha.png}
+\caption{absorption data for AES measurements 5x3\_pos. The absorption offset at high wavelength is due to drift in calibration.}
+\label{fig:5x3_pos_alpha}
+\end{figure}
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x3_pos_mws_KOH.png}
+\caption{MWS measurements 5x3\_pos. CFD centerline values for KOH are also shown.}
+\label{fig:5x3_pos_mws_KOH}
+\end{figure}
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mws_KOH.png}
+\caption{MWS measurements 5x6\_pos. CFD centerline values for KOH are also shown.}
+\label{fig:5x6_pos_mws_KOH}
+\end{figure}
+
