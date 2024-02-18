@@ -151,7 +151,7 @@ plt.yscale('log')
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
+fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
 ds_cfd = xr.load_dataset(fp).sel(phi=0.8).sel(offset=0)
 

@@ -6,7 +6,7 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 def test_convert_rho():
     #TODO: create a file like this from a vtk, and then test that it loads correctly. Move tests to mhdpy
-    fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
+    fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
     ds = xr.load_dataset(fp)
 
@@ -17,7 +17,7 @@ def test_convert_rho():
 def test_calc_rho_number():
 
     #TODO: create a file like this from a vtk, and then test that it loads correctly. Move tests to mhdpy
-    fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
+    fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
     ds = xr.load_dataset(fp)
 

@@ -163,7 +163,7 @@ plt.plot(x, kappa_profile, 'r')
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp_cfd_profiles = pjoin(REPO_DIR, 'modeling', 'cfd', 'output', 'line_profiles_beam_Yeq.cdf')
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
 
 ds_cfd = xr.load_dataset(fp_cfd_profiles).sel(phi=0.8).sel(offset=0)
 # ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
@@ -495,7 +495,7 @@ plt.xlim(763,775)
 # %%
 
 # Centerline profile
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd_cl = xr.load_dataset(fp_cfd)
 

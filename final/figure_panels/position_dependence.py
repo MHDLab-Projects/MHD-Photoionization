@@ -17,7 +17,7 @@ ds_lecroy = ds_lecroy.sel(phi=0.79)
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
 

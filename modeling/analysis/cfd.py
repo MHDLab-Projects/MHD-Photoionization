@@ -7,7 +7,7 @@ import pint_pandas
 import pint_xarray
 from pint import Quantity
 
-fp = pjoin(REPO_DIR, 'modeling', 'cfd','output', 'line_profiles_torchaxis_Yeq.cdf')
+fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
 ds = xr.load_dataset(fp)
 
