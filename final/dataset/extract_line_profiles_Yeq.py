@@ -13,6 +13,7 @@ import os
 from mhdpy.fileio import gen_path
 
 from mhdpy.analysis.standard_import import *
+import pint_pandas
 
 sp_dir = gen_path('sharepoint')
 
@@ -38,6 +39,7 @@ ds_absem = ds_absem.xr_utils.stack_run()
 beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
 
 beam_positions = beam_positions.pint.to('cm').pint.magnitude
+beam_positions = [Quantity(pos, 'cm') for pos in beam_positions]
 
 beam_positions
 
@@ -45,6 +47,7 @@ beam_positions
 
 #offsets in cm (TODO: pint)
 beam_offsets = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
+beam_offsets = [Quantity(offset, 'cm') for offset in beam_offsets]
 
 
 
@@ -62,25 +65,24 @@ all_fields = [*soi, *soi_Yeq, *additional]
 from mhdpy.pyvista_utils import AxiMesh
 
 
-def gen_beam_line(ta_position, ta_offset, xy_ratio=1.875/4.25):
+def gen_beam_line(
+        ta_position: Quantity, 
+        ta_offset: Quantity, 
+        xy_ratio=Quantity(1.875/4.25, 'cm/cm'),
+        ):
     """
     Generate a line with respect to torch axis
     ta_position: position down the torch axis
     ta_offset: offset from the torch axis (z) 
     """
-    # xy_ratio=1
 
-    #TODO: pint
-    unit_cm = 1e-2
-    x_exit = 20.8*unit_cm
+    x_exit = Quantity(20.8, 'cm')
 
     #position of interseciton of line with z=0
-    x_beam = x_exit +  ta_position*unit_cm
-
-    ta_offset = ta_offset*unit_cm
+    x_beam = x_exit +  ta_position
 
     # make two points that intersect this point and are in the direction of the beam
-    y_distance = 5*unit_cm
+    y_distance = Quantity(5, 'cm')
 
     a = [x_beam - y_distance*xy_ratio, y_distance , ta_offset]
     b = [x_beam + y_distance*xy_ratio, -y_distance, ta_offset]
@@ -88,9 +90,13 @@ def gen_beam_line(ta_position, ta_offset, xy_ratio=1.875/4.25):
     return a, b
 
 
-def extract_line_axi(mesh, a, b):
+def extract_line_axi(mesh, a: Quantity, b:Quantity):
 
     am = AxiMesh(mesh)
+
+
+    a = [e.to('m').magnitude for e in a]
+    b = [e.to('m').magnitude for e in b]
 
     line1 = am.sample_over_line(a, b, resolution=100)
 
@@ -142,7 +148,7 @@ fp = fps['0.8_1.0']
 
 mesh = pv.read(fp)
 
-a, b = gen_beam_line(3, 0, xy_ratio=1.875/4.25)
+a, b = gen_beam_line(Quantity(3, 'cm'), Quantity(0,'cm'), xy_ratio=Quantity(1.875/4.25, 'cm/cm'))
 
 line1 = extract_line_axi(mesh, a, b)
 
@@ -172,6 +178,7 @@ plt.axvline(midpoint, color='gray', linestyle='--')
 
 # beam_positions = np.arange(1, 30, 5)
 dist_grid = np.arange(0, 0.1, 0.001)
+dist_grid = Quantity(dist_grid, 'm')
 
 dss = []
 
@@ -191,15 +198,15 @@ for key, fp in fps.items():
             #TODO: extract all soi
             df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K'])
 
-            df_int = interp_df_to_new_index(df_lines, dist_grid)
+            df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 
             ds_out = xr.Dataset(df_int)
             ds_out = ds_out.rename({'dim_0':'dist'})
 
-            ds_out = ds_out.assign_coords(pos=position)
+            ds_out = ds_out.assign_coords(pos=position.to('m').magnitude)
             ds_out = ds_out.assign_coords(kwt=float(kwt))
             ds_out = ds_out.assign_coords(phi=float(phi))
-            ds_out = ds_out.assign_coords(offset=offset)
+            ds_out = ds_out.assign_coords(offset=offset.to('m').magnitude)
 
             ds_out.expand_dims('pos').expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('pos', 'kwt', 'phi', 'offset'))
 
@@ -213,7 +220,14 @@ ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi', 'offset']).unstack('tem
 
 #%%
 
+ds_lines['pos'] = ds_lines['pos'].pint.quantify('m').pint.to('cm')
+ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('cm')
+ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('m')
+
+#%%
+
 ds_lines
+
 #%%
 
 ds_lines['T'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
@@ -240,7 +254,7 @@ plt.yscale('log')
 
 #%%
 
-ds_lines.to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
+ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
 
 
 #%%[markdown]
@@ -250,11 +264,10 @@ ds_lines.to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
 #%%
 
 
-unit_cm = 1e-2
-x_exit = 20.8*unit_cm
+x_exit = Quantity(20.8, 'cm')
 
-a = [x_exit - 1e-2 , 0 , 0]
-b = [x_exit + 40e-2, 0, 0]
+a = [x_exit - Quantity(1, 'cm') , Quantity(0, 'cm') , Quantity(0, 'cm')]
+b = [x_exit + Quantity(40, 'cm'), Quantity(0, 'cm'), Quantity(0, 'cm')]
 
 line1 = extract_line_axi(mesh, a, b)
 
@@ -280,21 +293,21 @@ for key, fp in fps.items():
     for offset in beam_offsets:
 
         #TODO: pint
-        unit_cm = 1e-2
-        a = [x_exit - 1e-2 , 0 , offset*unit_cm]
-        b = [x_exit + 40e-2, 0, offset*unit_cm]
+        a = [x_exit - Quantity(1, 'cm') , Quantity(0, 'cm'), offset]
+        b = [x_exit + Quantity(40, 'cm'), Quantity(0, 'cm'), offset]
 
         phi, kwt = key.split('_')
 
         mesh = pv.read(fp)
 
         dist_grid = np.arange(0, 0.4, 0.001)
+        dist_grid = Quantity(dist_grid, 'm')
 
         line_out = extract_line_axi(mesh, a, b)
 
         df_lines = convert_line_df(line_out, all_fields)
 
-        df_int = interp_df_to_new_index(df_lines, dist_grid)
+        df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 
         ds_out = xr.Dataset(df_int)
         ds_out = ds_out.rename({'dim_0':'x'})
@@ -302,7 +315,7 @@ for key, fp in fps.items():
         ds_out
         ds_out = ds_out.assign_coords(kwt=float(kwt))
         ds_out = ds_out.assign_coords(phi=float(phi))
-        ds_out = ds_out.assign_coords(offset=offset)
+        ds_out = ds_out.assign_coords(offset=offset.to('m').magnitude)
 
 
         ds_out.expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('kwt', 'phi', 'offset'))
@@ -318,5 +331,8 @@ ds_out = xr.concat(dss, 'temp')
 
 ds_out = ds_out.set_index(temp=['kwt', 'phi', 'offset']).unstack('temp')
 
-ds_out.to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
+ds_out['x'] = ds_out['x'].pint.quantify('m').pint.to('m')
+ds_out['offset'] = ds_out['offset'].pint.quantify('m').pint.to('cm')
+
+ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
 
