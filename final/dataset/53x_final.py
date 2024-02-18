@@ -45,17 +45,20 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
-ds_cfd = xr.load_dataset(fp).sel(phi=0.8).sel(offset=0)
+ds_cfd = xr.load_dataset(fp)
 
+ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
-
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
-goldi_pos = ds_cfd['x'].min().item() + 0.18
+goldi_pos =  Quantity(178, 'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 
+
+
+#%%
 # Calculate kr
 
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
@@ -155,3 +158,5 @@ for var in ds_params.data_vars:
 ds_p_stats = ds_p_stats.pint.dequantify()
 
 ds_p_stats.to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_p_stats.cdf'))
+
+# %%

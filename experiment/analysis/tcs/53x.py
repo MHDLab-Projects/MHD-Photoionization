@@ -153,15 +153,14 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
 
-ds_cfd = xr.load_dataset(fp).sel(phi=0.8).sel(offset=0)
-
+ds_cfd = xr.load_dataset(fp)
 ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
-
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
+ds_fit = ds_cfd.sel(phi=0.8).sel(offset=0)
 
-goldi_pos = ds_cfd['x'].min().item() + 0.18
+goldi_pos = Quantity(178,'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 

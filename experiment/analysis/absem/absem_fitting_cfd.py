@@ -165,13 +165,12 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
 
-ds_cfd = xr.load_dataset(fp_cfd_profiles).sel(phi=0.8).sel(offset=0)
-# ds_cfd = ds_cfd.coarsen(dist=5000, boundary='trim').mean()
-ds_cfd.coords['dist'] = ds_cfd.coords['dist'] * 100
-ds_cfd.coords['pos'] = ds_cfd.coords['pos'] * 10
-
+ds_cfd = xr.load_dataset(fp_cfd_profiles)
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
+ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
 da_cfd = ds_cfd['Yeq_K']
 
@@ -185,7 +184,7 @@ da_cfd.plot(hue='pos', col='kwt')
 
 plt.yscale('log')
 
-plt.ylim(1e17,1e23)
+# plt.ylim(1e17,1e23)
 
 # plt.gca().get_legend().remove()
 
@@ -498,15 +497,10 @@ plt.xlim(763,775)
 fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd_cl = xr.load_dataset(fp_cfd)
-
-ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
-
-ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values - ds_cfd_cl.coords['x'].values[0])
-ds_cfd_cl = ds_cfd_cl.assign_coords(x = ds_cfd_cl.coords['x'].values*1000)
-
 ds_cfd_cl = ds_cfd_cl.cfd.quantify_default()
 ds_cfd_cl = ds_cfd_cl.cfd.convert_all_rho_number()
 
+ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
 ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('1/m^3')
 
@@ -528,8 +522,8 @@ ds_p['nK_m3'].plot(marker='o', label='cfd profile')
 ds_p_tophat['nK_m3'].plot(marker='o', label='tophat profile')
 
 ds_cfd_cl['nK_m3'].sel(offset=0).plot(label='cfd centerline')
-ds_cfd_cl['nK_m3'].sel(offset=0.1).plot(label='cfd 0.1')
-ds_cfd_cl['nK_m3'].sel(offset=0.2).plot(label='cfd 0.3')
+ds_cfd_cl['nK_m3'].sel(offset=1).plot(label='cfd 0.1')
+ds_cfd_cl['nK_m3'].sel(offset=2).plot(label='cfd 0.3')
 
 
 plt.yscale('log')

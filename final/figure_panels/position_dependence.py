@@ -20,14 +20,10 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
-
-ds_cfd = ds_cfd.sel(kwt=1)
-
-ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
-ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
-
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd = ds_cfd.sel(kwt=1)
 
 ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('1/m^3')
 
@@ -121,7 +117,7 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-18 Run 1'
 g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2', ax=ax1)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
-ds_cfd_sel['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
+ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
 
 ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax1.set_title('phi = 0.79')
@@ -143,7 +139,7 @@ nK_mw_horns = nK_mw_horns.sel(motor = slice(50,300))
 g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1', ax=ax2)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
-ds_cfd_sel['nK_m3'].sel(offset=0.3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
+ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
 
 ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax2.set_title('phi = 0.65')

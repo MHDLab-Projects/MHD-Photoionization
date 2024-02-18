@@ -285,14 +285,10 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
-
-ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8).sel(offset=0)
-
-ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values - ds_cfd.coords['x'].values[0])
-ds_cfd = ds_cfd.assign_coords(x = ds_cfd.coords['x'].values*1000)
-
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8).sel(offset=0)
 
 ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('1/m^3')
 

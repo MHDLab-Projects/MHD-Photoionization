@@ -220,9 +220,9 @@ ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi', 'offset']).unstack('tem
 
 #%%
 
-ds_lines['pos'] = ds_lines['pos'].pint.quantify('m').pint.to('cm')
-ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('cm')
-ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('m')
+ds_lines['pos'] = ds_lines['pos'].pint.quantify('m').pint.to('mm')
+ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('mm')
+ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
 
 #%%
 
@@ -266,7 +266,7 @@ ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf
 
 x_exit = Quantity(20.8, 'cm')
 
-a = [x_exit - Quantity(1, 'cm') , Quantity(0, 'cm') , Quantity(0, 'cm')]
+a = [x_exit , Quantity(0, 'cm') , Quantity(0, 'cm')]
 b = [x_exit + Quantity(40, 'cm'), Quantity(0, 'cm'), Quantity(0, 'cm')]
 
 line1 = extract_line_axi(mesh, a, b)
@@ -331,8 +331,13 @@ ds_out = xr.concat(dss, 'temp')
 
 ds_out = ds_out.set_index(temp=['kwt', 'phi', 'offset']).unstack('temp')
 
-ds_out['x'] = ds_out['x'].pint.quantify('m').pint.to('m')
-ds_out['offset'] = ds_out['offset'].pint.quantify('m').pint.to('cm')
+ds_out['x'] = ds_out['x'].pint.quantify('m').pint.to('mm')
+ds_out['offset'] = ds_out['offset'].pint.quantify('m').pint.to('mm')
 
 ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
 
+
+#%%
+
+df_lines
+# %%
