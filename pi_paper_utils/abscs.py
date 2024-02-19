@@ -28,7 +28,7 @@ def calc_ds_cs(
     ds_cs
     """
     packagepath = os.path.dirname(os.path.realpath(__file__))
-    abscs_folder = os.path.join(packagepath, 'Absorption Cross Sections')
+    abscs_folder = os.path.join(packagepath, 'uv_abs_data')
 
     fp_KOH = os.path.join(
         abscs_folder,

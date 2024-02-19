@@ -12,7 +12,7 @@ import pint_xarray
 from dotenv import load_dotenv
 load_dotenv()
 
-from noneq_utils import abscs, noneq
+from pi_paper_utils import abscs, noneq
 
 
 physical_data_folder = 'physical_data'

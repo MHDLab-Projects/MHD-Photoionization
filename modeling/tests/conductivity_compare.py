@@ -27,7 +27,7 @@ sig_cant = ds_TP_params['sigma']/100 # convert to S/cm
 import sys
 sys.path.append('..')
 
-from noneq_utils import noneq
+from pi_paper_utils import noneq
 
 G_NE = 0
 G_th = ds_TP_params['Gth']
