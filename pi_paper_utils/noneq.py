@@ -9,34 +9,11 @@ K_MHD = 0.5
 
 def calc_G_NE(P_in, eta):
     G_NE = eta*P_in/(e*E_IP)
-
-    # G_NE.name = 'G_NE'
-    # G_NE.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Maximum Generation Rate')
-    # # G_NE.coords['P_in'].attrs = dict(units = '$W/cm^3$', long_name = 'Input Power Density')
-
     return G_NE
-
 
 def calc_ne(G_th, G_NE, krb):
     ne = np.sqrt((G_NE + G_th)/krb)
-    ne.name = 'ne'
-    ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
     return ne
-
-
-def calc_P_mhd(sig, u, B):
-    """
-    calculates mhd power density from simple 0d formula
-    u is fluid velocity in cm/s
-    """
-    fac = K_MHD*(1-K_MHD)*(u**2)*(B**2)
-    P_mhd = fac*sig
-    P_mhd = P_mhd.assign_attrs(units = '$W/cm^3$', long_name = 'MHD power')
-    return P_mhd
-
-
-### Figures of merit
-
 
 def calc_alpha(ne, mue, krb, u, B, eta):
     """
@@ -51,6 +28,47 @@ def calc_alpha(ne, mue, krb, u, B, eta):
 
     return alpha
 
+
+def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
+    """
+    # If wl in combos calculate eta based on photoionization, vs if not use eta = 1
+    # Further, If L and R in combos calculate fractional absorption (FA) based on optical cavity approach, else FA = 1
+    # If P_in not in combos P_in = 0
+    # If l_bk (fractional length of bulk vs contact) not in combos l_bk = 0 (Tbulk = 3000K)
+    """
+    
+    G_NE = calc_G_NE(P_in, eta)
+
+    # G_NE.name = 'G_NE'
+    # G_NE.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Maximum Generation Rate')
+    # G_NE.coords['P_in'].attrs = dict(units = '$W/cm^3$', long_name = 'Input Power Density')
+
+    ne = calc_ne(G_th, G_NE, krb)
+    ne.name = 'ne'
+    ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
+
+    sig_NE = calc_sig(ne, mue_cant)
+    sig_NE.name = 'sigma'
+
+    alpha = calc_alpha(ne, mue_cant, krb, u, B, eta)
+    alpha.name = 'alpha'
+
+    #TODO: Can't figure out to get xyzpy to work when passing these as separate returns, had to use var_names= None 
+    ds = xr.merge([ne, sig_NE, alpha])
+
+    return ds
+
+## Legacy
+
+def calc_P_mhd(sig, u, B):
+    """
+    calculates mhd power density from simple 0d formula
+    u is fluid velocity in cm/s
+    """
+    fac = K_MHD*(1-K_MHD)*(u**2)*(B**2)
+    P_mhd = fac*sig
+    P_mhd = P_mhd.assign_attrs(units = '$W/cm^3$', long_name = 'MHD power')
+    return P_mhd
 
 def calc_ureq(P_mhd_set, sig, B):
     """
@@ -149,28 +167,5 @@ def calc_eta_PI(lamtot, lamK, FA):
     # Ratio of attenuation length of total mixture to potassum is the  the fractional absorbance of potassium. Have a onenote page that proves this is valid
     eta_PI = (lamtot/lamK)*FA*(e*E_IP/E_ph)
     return eta_PI
-
-def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
-    """
-    # If wl in combos calculate eta based on photoionization, vs if not use eta = 1
-    # Further, If L and R in combos calculate fractional absorption (FA) based on optical cavity approach, else FA = 1
-    # If P_in not in combos P_in = 0
-    # If l_bk (fractional length of bulk vs contact) not in combos l_bk = 0 (Tbulk = 3000K)
-    """
-    
-    G_NE = calc_G_NE(P_in, eta)
-
-    ne = calc_ne(G_th, G_NE, krb)
-
-    sig_NE = calc_sig(ne, mue_cant)
-    sig_NE.name = 'sigma'
-
-    alpha = calc_alpha(ne, mue_cant, krb, u, B, eta)
-    alpha.name = 'alpha'
-
-    #TODO: Can't figure out to get xyzpy to work when passing these as separate returns, had to use var_names= None 
-    ds = xr.merge([ne, sig_NE, alpha])
-
-    return ds
 
 
