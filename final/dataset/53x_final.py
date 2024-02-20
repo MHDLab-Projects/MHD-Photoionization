@@ -63,9 +63,9 @@ ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
-from pi_paper_utils.kinetics import get_kinetics
+from pi_paper_utils.kinetics import gen_ds_krb
 
-ds_kr = get_kinetics(ds_cfd)
+ds_krb = gen_ds_krb(ds_cfd)
 
 # Calculate expected tau for recombination with those species
 
@@ -76,9 +76,9 @@ ds_species_cfd = ds_species_cfd.pint.to('1/cm^3')
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
 das = []
-for var in ds_kr.data_vars:
+for var in ds_krb.data_vars:
     species_name = var.split('_')[0]
-    da_tau = 1/(ds_species_cfd[species_name]*ds_kr[var])
+    da_tau = 1/(ds_species_cfd[species_name]*ds_krb[var])
     da_tau = da_tau.pint.to('us')
     da_tau = da_tau.rename('{}'.format(var))
     das.append(da_tau)

@@ -1,5 +1,9 @@
 """
 module for handling kinetics (recombination, ionization) data
+
+krt - termolecular recombination rate (cm^6/s)
+krb - bimolecular recombination rate  (cm^3/s)
+krm - monomolecular recombination rate (1/s)
 """
 
 from pint import Quantity
@@ -8,7 +12,7 @@ import xarray as xr
 import os
 import pandas as pd
 
-def get_kinetics(ds_cfd):
+def gen_ds_krb(ds_cfd):
 
     rho_number = ds_cfd['rho_number'].pint.to('1/cm^3')
     T = ds_cfd['T'].pint.to('K')
@@ -23,24 +27,24 @@ def get_kinetics(ds_cfd):
         'O2' : Quantity(2e-30, 'cm^6/s'),
     }
 
-    weighted_avg = 0
+    weighted_sum = 0
 
     for species, k4 in k4_species.items():
-        weighted_avg += k4*ds_cfd[species]
+        weighted_sum += k4*ds_cfd[species].pint.to('1/cm^3')
 
-    rxn_rates = {
+    krb_dict = {
         'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/T)*rho_number,
         'OH': Quantity(3e-31, 'cm^6/s')*rho_number,
         'O2_A': Quantity(5e-31, 'cm^6/s')*rho_number,
-        'O2_B': weighted_avg,
+        'O2_B': weighted_sum,
         'O2_C': Quantity(6e-34, 'cm^6/s')*rho_number,
         'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/T)),
     }
 
 
-    ds_kr = xr.Dataset(rxn_rates).pint.to('cm^3/s')
+    ds_krb = xr.Dataset(krb_dict).pint.to('cm^3/s')
 
-    return ds_kr
+    return ds_krb
 
 
 
@@ -53,12 +57,12 @@ def get_kinetics(ds_cfd):
 #     T = rho.coords['T'].values.item()
 #     return 1e-8*(np.sqrt(T))*np.exp(-(4.34)/(8.617e-5*T))*rho
 
-# def calc_kr(rho):
+# def calc_krb(rho):
 #     T = rho.coords['T'].values.item()
 #     return 4e-24*(1/T)*rho
 
 # kth = rho.groupby('T').apply(calc_kth)
-# kr = rho.groupby('T').apply(calc_kr)
+# krb = rho.groupby('T').apply(calc_krb)
 
 
 e = Quantity(1.602e-19, 'coulomb')
@@ -106,7 +110,7 @@ def calc_B(ds_species, cs, redmass):
         b_tot = b_tot + b_i
     return b_tot
 
-def calc_kth_kr_kelly(ds_TP_params, ds_TP_species, cs=cs, redmass=redmass):
+def calc_kth_krb_kelly(ds_TP_params, ds_TP_species, cs=cs, redmass=redmass):
     # # New method: 1. Kelly, R., and Padley, P.J. (1972). Measurement of collisional ionization cross-sections for metal atoms in flames. Proc. R. Soc. Lond. A 327, 345–366. 10.1098/rspa.1972.0050.
     # Calculate kth from Kelly and Padley, using ionization cross sections for different species, then calculate kr using saha Keq from Ashton and Hayhurst.
 
@@ -126,8 +130,8 @@ def calc_kth_kr_kelly(ds_TP_params, ds_TP_species, cs=cs, redmass=redmass):
     Keq = Keq_prefactor*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
     Keq = xr.DataArray(Keq, coords={'T':Ts.magnitude}, dims = 'T')
 
-    kr = kth/Keq
-    kr.name =  '$k_{r}$'
-    kr = kr.pint.to('cm**3/molecule/s')
+    krb = kth/Keq
+    krb.name =  '$k_{r,b}$'
+    krb = krb.pint.to('cm**3/molecule/s')
 
-    return kth, kr
+    return kth, krb

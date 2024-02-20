@@ -89,12 +89,12 @@ ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
 #%%
 
 
-from pi_paper_utils.kinetics import get_kinetics
+from pi_paper_utils.kinetics import gen_ds_krb
 
-ds_kr = get_kinetics(ds_cfd)
+ds_krb = gen_ds_krb(ds_cfd)
 
 
-ds_kr.to_array('species').plot(hue='species', marker='o')
+ds_krb.to_array('species').plot(hue='species', marker='o')
 
 plt.yscale('log')
 
@@ -108,7 +108,7 @@ plt.yscale('log')
 
 # Factor of 2 only occurs for K+
 
-ds_species_decay = 1/(ds_p['decay'].pint.quantify('us')*ds_kr)
+ds_species_decay = 1/(ds_p['decay'].pint.quantify('us')*ds_krb)
 
 ds_species_decay = ds_species_decay.pint.to('1/cm^3')
 
@@ -143,7 +143,7 @@ ds_species_cfd
 
 #%%
 
-ds_tau = 1/(ds_species_cfd*ds_kr.rename({'O2_B':'O2'}))
+ds_tau = 1/(ds_species_cfd*ds_krb.rename({'O2_B':'O2'}))
 
 ds_tau = ds_tau.pint.to('us')
 

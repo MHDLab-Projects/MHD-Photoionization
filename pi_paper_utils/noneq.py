@@ -17,8 +17,8 @@ def calc_G_NE(P_in, eta):
     return G_NE
 
 
-def calc_ne(G_th, G_NE, kr):
-    ne = np.sqrt((G_NE + G_th)/kr)
+def calc_ne(G_th, G_NE, krb):
+    ne = np.sqrt((G_NE + G_th)/krb)
     ne.name = 'ne'
     ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
     return ne
@@ -38,14 +38,14 @@ def calc_P_mhd(sig, u, B):
 ### Figures of merit
 
 
-def calc_alpha(ne, mue, kr, u, B, eta):
+def calc_alpha(ne, mue, krb, u, B, eta):
     """
     calculates alpha=dP_net/dP_in
     """
 
     DPmhd_Dne = e*K_MHD*(1-K_MHD)*(u**2)*(B**2)*mue
 
-    DPR_Dne = 2*e*E_IP*kr*ne
+    DPR_Dne = 2*e*E_IP*krb*ne
 
     alpha = eta*(DPmhd_Dne/DPR_Dne)
 
@@ -80,12 +80,12 @@ def calc_eff_NE(P_mhd):
     eff_NE.attrs = dict(long_name = 'NonEq Generation Efficiency')
     return eff_NE
 
-def calc_ne_finite(G_th, G_NE, kr, K):
+def calc_ne_finite(G_th, G_NE, krb, K):
     """Calculates ne but with a finite number of K that can be ionized"""
     k_NE = G_NE/K
     k_th = G_th/K
 
-    frac = (k_NE + k_th)/(kr)
+    frac = (k_NE + k_th)/(krb)
     ne_finite = (frac/2)*(np.sqrt(1+(4/frac)*K) - 1)
     ne_finite.name = 'ne_finite'
     ne_finite.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated finite electron density')
@@ -150,7 +150,7 @@ def calc_eta_PI(lamtot, lamK, FA):
     eta_PI = (lamtot/lamK)*FA*(e*E_IP/E_ph)
     return eta_PI
 
-def calc_NE_all(P_in, eta, G_th, kr, mue_cant, B, u):
+def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
     """
     # If wl in combos calculate eta based on photoionization, vs if not use eta = 1
     # Further, If L and R in combos calculate fractional absorption (FA) based on optical cavity approach, else FA = 1
@@ -160,12 +160,12 @@ def calc_NE_all(P_in, eta, G_th, kr, mue_cant, B, u):
     
     G_NE = calc_G_NE(P_in, eta)
 
-    ne = calc_ne(G_th, G_NE, kr)
+    ne = calc_ne(G_th, G_NE, krb)
 
     sig_NE = calc_sig(ne, mue_cant)
     sig_NE.name = 'sigma'
 
-    alpha = calc_alpha(ne, mue_cant, kr, u, B, eta)
+    alpha = calc_alpha(ne, mue_cant, krb, u, B, eta)
     alpha.name = 'alpha'
 
     #TODO: Can't figure out to get xyzpy to work when passing these as separate returns, had to use var_names= None 

@@ -29,9 +29,9 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho
 
 #%%
 
-kth, kr = kinetics.calc_kth_kr_kelly(ds_TP_params, ds_TP_species)
+kth, krb = kinetics.calc_kth_krb_kelly(ds_TP_params, ds_TP_species)
 
-ds_TP_params = ds_TP_params.assign({'kth':kth, 'kr':kr})
+ds_TP_params = ds_TP_params.assign({'kth':kth, 'krb':krb})
 Gth = ds_TP_params['kth']*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
 Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 ds_TP_params = ds_TP_params.assign({'Gth':Gth})
@@ -50,7 +50,7 @@ combos = {
 
 constants = {
     'G_th': ds_TP_params['Gth'],
-    'kr': ds_TP_params['kr'],
+    'krb': ds_TP_params['krb'],
     'mue_cant': ds_TP_params['mobility']*10000,
     'u': 1e5
 }

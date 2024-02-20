@@ -290,10 +290,10 @@ ds_p = xr.concat(dss_p, dim='kwt')
 ds_p_stderr = xr.concat(dss_p_stderr, dim='kwt')
 
 #%%
-ds_kr = ds_p['kr'].to_dataset(name='mean')
-ds_kr['std'] = ds_p_stderr['kr']
+ds_krb = ds_p['kr'].to_dataset(name='mean')
+ds_krb['std'] = ds_p_stderr['kr']
 
-plot.common.xr_errorbar(ds_kr['mean'], ds_kr['std'], huedim='run')
+plot.common.xr_errorbar(ds_krb['mean'], ds_krb['std'], huedim='run')
 
 plt.yscale('log')
 # plt.ylim(1e-15,2e-14)
@@ -326,7 +326,7 @@ ds_params = xr.merge([
     ds_nK['mean'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
     ds_nK['mean'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
     ds_ne0['mean'].rename('ne0'),
-    ds_kr['mean'].rename('kr'),
+    ds_krb['mean'].rename('kr'),
     mws_max.rename('AS_max'),
     mws_std.rename('AS_std')
     ])

@@ -37,7 +37,7 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_specie
 
 
 G_th = ds_TP_params['Gth']
-kr = ds_TP_params['kr']
+krb = ds_TP_params['krb']
 
 coords_P_in = np.array([0, *np.logspace(-20,10,31)])
 
@@ -47,13 +47,13 @@ r = xyzpy.Runner(noneq.calc_G_NE, constants = {'eta' :eta }, var_names = ['G_NE'
 G_NE = r.run_combos({'P_in' : coords_P_in})
 G_NE = G_NE['G_NE']
 
-ne = noneq.calc_ne(G_th, G_NE, kr)
+ne = noneq.calc_ne(G_th, G_NE, krb)
 
 mue_cant = ds_TP_params['mobility']*10000
 u=1e5
 B=5e-4
 
-alpha = noneq.calc_alpha(ne, mue_cant, kr, u, B, eta) #Why does eta need to be specified here as well...o
+alpha = noneq.calc_alpha(ne, mue_cant, krb, u, B, eta) #Why does eta need to be specified here as well...o
 
 beta = alpha -1 
 beta = beta.sel(P_in=alpha.coords['P_in'][::4])
