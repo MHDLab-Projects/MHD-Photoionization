@@ -78,26 +78,19 @@ ds_krb
 # Calculate expected tau for recombination with those species
 
 ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
-
-ds_species_cfd = ds_species_cfd.pint.to('particle/ml')
-
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
-das = []
-for var in ds_krb.data_vars:
-    species_name = var.split('_')[0]
-    da_tau = 1/(ds_species_cfd[species_name]*ds_krb[var])
-    da_tau = da_tau.pint.to('us')
-    da_tau = da_tau.rename('{}'.format(var))
-    das.append(da_tau)
+from pi_paper_utils.kinetics import calc_krm
 
-ds_tau = xr.merge(das)
+ds_krm = calc_krm(ds_krb, ds_species_cfd)
 
-ds_tau
+ds_tau = (1/ds_krm).pint.to('us')
+
 
 #%%
 ds_tau.pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, 'ds_tau.cdf'))
 
+ds_species_cfd = ds_species_cfd.pint.to('particle/ml')
 ds_species_cfd.pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_species_cfd.cdf'))
 
 #%%

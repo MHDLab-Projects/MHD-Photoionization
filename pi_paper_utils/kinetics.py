@@ -51,6 +51,18 @@ def gen_ds_krb(da_Ts, da_rho_number):
 
     return ds_krb
 
+def calc_krm(ds_krb, ds_species):
+    """
+    Calculate monomolecular recombination rate from bimolecular recombination rate and species concentrations
+    """
+    ds_krm = xr.Dataset()
+    for species in ds_krb.data_vars:
+        species_name = species.split('_')[0]
+        ds_krm[species] = ds_krb[species].pint.to('ml/particle/s')*ds_species[species_name].pint.to('particle/ml')
+    
+    ds_krm = ds_krm.pint.to('1/s')
+
+    return ds_krm
 
 
 #Calculate potassium thermal kinetics

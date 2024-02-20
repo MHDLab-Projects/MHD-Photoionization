@@ -135,21 +135,15 @@ plt.yscale('log')
 
 #%%
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O']]
-
-ds_species_cfd = ds_species_cfd.pint.to('particle/ml')
-
+ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
-ds_species_cfd
+from pi_paper_utils.kinetics import calc_krm
 
-#%%
+ds_krm = calc_krm(ds_krb, ds_species_cfd)
 
-ds_tau = 1/(ds_species_cfd*ds_krb.rename({'O2_B':'O2'}))
+ds_tau = (1/ds_krm).pint.to('us')
 
-ds_tau = ds_tau.pint.to('us')
-
-ds_tau
 
 #%%
 for species in ds_tau.data_vars:
@@ -166,7 +160,7 @@ ds_tau
 
 #%%
 
-ds_tau['O2'].plot()
+ds_tau['O2_C'].plot()
 
 ds_p['decay'].mean('run').plot(marker='o', label='experiment')
 
