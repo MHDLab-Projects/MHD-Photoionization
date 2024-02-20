@@ -16,7 +16,7 @@ We calculate the conductivity of our working fluids following the method outline
 \end{equation}
 
 
-\includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/output/Cantera_T.png}
+\includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
 
 Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.
 
@@ -78,7 +78,7 @@ Calculating \(\frac{dn_{e}}{dP_{in}}\) with equation 7 gives
 \alpha\ (P_{in}) = \eta\frac{K(1 - K)u^{2}B^{2}e\mu_{e}}{2E_{IP}k_{r}n_{e}(P_{in})}
 \end{equation}
 
-#TODO: Extra e on top here? should cancel?
+TODO: Extra e on top here? should cancel?
 
 This expression can be interpreted as the ratio of the increases in MHD power to recombination losses (\(P_{R} = E_{IP}R = \ E_{IP}k_{r}n_{e}\)) with an induced increase in \(n_{e}\). Equation 10 and equation 7 show that the efficiency decreases as a function of \(P_{in}\) and recombination losses increase. We chose to examine the best-case scenario where \(P_{in}\)= 0, represents the absolute best infinitesimal energy return on energy investment possible for a given set of parameters. The regimes where \(\alpha\ \left( P_{in} = 0 \right)\ \)is high do not necessarily correspond to regimes in which NEI will result in a large \(P_{MHD}\) and can be large when the conductivity (and recombination) is low and correspondingly actual MHD power density (\(P_{MHD}\)) is near low.
 
@@ -177,13 +177,13 @@ Where \(Q_{i}\) is the optical absorption cross section of the \emph{i}\textsupe
 
 To calculate \(\frac{\delta}{\delta_{K}\ }\) we compile data on the UV optical absorption cross sections for the major species in the calculated gas mixtures in the relevant wavelength range for potassium photoionization (190-285 nm). For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.{[}17{]} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.{[}18{]} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.{[}19{]} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.{[}20{]} empirical formulas for the wavelength and temperature dependent UV cross sections exist for CO2{[}21{]}, H2O,{[}22{]} and O2.{[}22{]} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et all and extrapolate it in the range 190-200 nm.{[}23{]} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.{[}24{]}
 
-\includegraphics[width=\textwidth]{\repodir/modeling/figure_panels/output/abscs.png}
+\includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/abscs.png}
 
 Figure 5: Optical absorption cross sections of species with significant cross section and UV absorption in the relevant range
 
 Figure 6 shows\(\ \delta\), \(\delta_{K}\), and \(\frac{\delta}{\delta_{K}\ }\)for various UV wavelengths and temperatures.
 
-\includegraphics[]{\repodir/modeling/figure_panels/output/atten_length.png}
+\includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
 
 
 In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure 6. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
@@ -194,6 +194,6 @@ In the following work we analyze these gasses excited by 248 nm light. This is p
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{\repodir/modeling/figure_panels/output/beta_boundary_layer.png}
+\includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/beta_boundary_layer.png}
 \caption{Supplemental results}
 \end{figure}

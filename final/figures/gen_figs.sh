@@ -5,17 +5,24 @@
 
 mkdir -p output
 
+echo "Converting SVG to PNG for figures folder"
+
 for i in *.svg; do
   BN=$(basename $i .svg)
   inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
 done
 
-# with Tiff conversion
+cd SI
 
-# for i in *.svg; do
-#   BN=$(basename $i .svg)
-#   inkscape --without-gui --export-filename="output/$BN.png" --export-dpi 300 $i
-#   magick -compress LZW output/$BN.png output/$BN.tiff
-# #   mogrify -alpha off $BN.tiff
-#   rm output/$BN.png
-# done
+mkdir -p output
+
+echo "Converting SVG to PNG for SI folder"
+
+
+for i in *.svg; do
+  echo $i
+  BN=$(basename $i .svg)
+  inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
+done
+
+cd ..
