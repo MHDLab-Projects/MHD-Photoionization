@@ -12,11 +12,9 @@ import xarray as xr
 import os
 import pandas as pd
 
-def gen_ds_krb(ds_cfd):
 
-    rho_number = ds_cfd['rho_number'].pint.to('1/cm^3')
-    T = ds_cfd['T'].pint.to('K')
-    # combining k4 from 
+def calc_krbO2_weighted(ds_species):
+    # combining krt from 
     # 1. Axford, S.D.T., and Hayhurst, A.N. (1997). Mass spectrometric sampling of negative ions from flames of hydrogen and oxygen: the kinetics of electron attachment and detachment in hot mixtures of H2O, O2, OH and HO2. Proceedings of the Royal Society of London. Series A: Mathematical, Physical and Engineering Sciences 452, 1007–1033. 10.1098/rspa.1996.0051.
 
     # Weighted average of collison partners for O2 rate
@@ -29,18 +27,25 @@ def gen_ds_krb(ds_cfd):
 
     weighted_sum = 0
 
-    for species, k4 in k4_species.items():
-        weighted_sum += k4*ds_cfd[species].pint.to('1/cm^3')
+    for species, krt in k4_species.items():
+        weighted_sum += krt*ds_species[species].pint.to('1/cm^3')
+
+    return weighted_sum.pint.to('cm^3/s')
+
+
+def gen_ds_krb(da_Ts, da_rho_number):
+
+    da_rho_number = da_rho_number.pint.to('1/cm^3')
+    da_Ts = da_Ts.pint.to('K')
+
 
     krb_dict = {
-        'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/T)*rho_number,
-        'OH': Quantity(3e-31, 'cm^6/s')*rho_number,
-        'O2_A': Quantity(5e-31, 'cm^6/s')*rho_number,
-        'O2_B': weighted_sum,
-        'O2_C': Quantity(6e-34, 'cm^6/s')*rho_number,
-        'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/T)),
+        'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/da_Ts)*da_rho_number,
+        'OH': Quantity(3e-31, 'cm^6/s')*da_rho_number,
+        'O2_A': Quantity(5e-31, 'cm^6/s')*da_rho_number,
+        'O2_B': Quantity(6e-34, 'cm^6/s')*da_rho_number,
+        'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/da_Ts)),
     }
-
 
     ds_krb = xr.Dataset(krb_dict).pint.to('cm^3/s')
 

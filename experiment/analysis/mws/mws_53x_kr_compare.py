@@ -87,11 +87,13 @@ ds_cfd['rho_number'].pint.to('1/cm^3').plot()
 
 ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
 #%%
+ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
+from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
 
-from pi_paper_utils.kinetics import gen_ds_krb
+ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
 
-ds_krb = gen_ds_krb(ds_cfd)
+ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
 
 
 ds_krb.to_array('species').plot(hue='species', marker='o')

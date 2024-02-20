@@ -55,17 +55,24 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 goldi_pos =  Quantity(178, 'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
-
-
-
 #%%
 # Calculate kr
 
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
-from pi_paper_utils.kinetics import gen_ds_krb
+from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
 
-ds_krb = gen_ds_krb(ds_cfd)
+ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
+
+ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
+
+ds_krb
+
+#%%
+
+ds_cfd['T']*Quantity(1, 'K')
+
+#%%
 
 # Calculate expected tau for recombination with those species
 
