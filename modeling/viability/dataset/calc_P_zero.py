@@ -16,8 +16,12 @@ ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.s
 
 ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
-ds_NE = xr.open_dataset('output/ds_NE_O2.cdf').squeeze()
-alpha = ds_NE['alpha']
+ds_NE_O2 = xr.open_dataset('output/ds_NE_O2.cdf').squeeze()
+ds_NE_Kp = xr.open_dataset('output/ds_NE_Kp.cdf').squeeze()
+
+ds_alpha = xr.merge([ds_NE_O2['alpha'].rename('O2'), ds_NE_Kp['alpha'].rename('Kp')])
+alpha = ds_alpha.to_array('rxn').rename('alpha')
+# alpha = ds_NE['alpha']
 
 # Add enhancement factor
 da_dsigma_tot = xr.load_dataset('output/da_dsigma_tot.cdf')['enhancement factor']
@@ -75,11 +79,12 @@ r = xyzpy.Runner(calc_beta_zero,
 
 combos = {
     'T' : beta.coords['T'].values,
-    'phi':beta.coords['phi'].values,
-    'Kwt': beta.coords['Kwt'].values,
+    'phi': [0.8, 1, 1.2],
+    'Kwt': [0.001, 0.01, 0.1],
     'P_in' : beta.coords['P_in'].values,
     'analysis': beta.coords['analysis'].values,
-    'l_bk': beta.coords['l_bk'].values
+    'l_bk': beta.coords['l_bk'].values,
+    'rxn': beta.coords['rxn'].values
 }
 
 ds_out = r.run_combos(combos)

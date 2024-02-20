@@ -28,23 +28,16 @@ ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'
 ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
+ds_P_zero = ds_P_zero.sel(rxn='Kp')
 
-# %%
-
-
-# alpha = xr.open_dataset(os.path.join(PI_modeling_dataset_dir,'alpha_bl.cdf')).squeeze()['alpha_bl']
-ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
+ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE_Kp.cdf')).squeeze()
 alpha = ds_NE['alpha']
-
 
 # Add enhancement factor
 da_dsigma_tot = xr.load_dataset(os.path.join(PI_modeling_dataset_dir,'da_dsigma_tot.cdf'))['enhancement factor']
 alpha = alpha*da_dsigma_tot
 
-
 beta = alpha -1 
-
-
 
 # %%
 

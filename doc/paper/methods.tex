@@ -149,15 +149,6 @@ TODO: replace alpha with another symbol to not be confused with absorption coeff
 \alpha_{PI} = \left. \frac{{dP}_{MHD}}{{dP}_{in}} \right|_{P_{in}=0}
 \end{equation}
 
-
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{\repodir/modeling/analysis/output/alpha_curve_demo.png} 
-    \caption{Figure of merit for photoionization for various temperatures and pressures. The line}   
-    \label{fig:alpha_line_demo}
-\end{figure}
-
-Figure \ref{fig:alpha_line_demo} shows $\alpha_{PI}$ for various temperatures and pressures.  For $\alpha_{PI} > 1$ at low temperatures and pressures (blue region), the photoionization process exhibits a net energy return and is viable. For $\alpha_{PI} < 1$, at high temperatures and pressures (red region) the photoionization process is not viable. The line $\alpha_{PI} = 1$ is the boundary between these two regions. To determine the boundary line (green dashed  line), we interpolate $\alpha_{PI}$ each temperature to determine the pressure at which $\alpha_{PI} = 1$. These boundary lines are then shown for various conditions in the results section.
-
 \subsection{CFD}
 
 CFD modeling methodology. 
