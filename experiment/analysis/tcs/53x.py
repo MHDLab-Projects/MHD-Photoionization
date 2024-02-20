@@ -171,7 +171,7 @@ ds_cfd['Yeq_K+'].plot()
 
 # Cantera data
 
-cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
 ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
 kr = ds_TP_params['kr']
 kr = kr.pint.quantify('ml/particle/s').pint.to('um^3/us')

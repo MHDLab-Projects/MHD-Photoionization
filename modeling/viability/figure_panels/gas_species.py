@@ -18,7 +18,7 @@ load_dotenv()
 REPO_DIR = os.getenv('REPO_DIR')
 
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling' , 'dataset', 'output')
-PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
+PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset','output')
 if not os.path.exists('output'): os.mkdir('output')
 # %%
 ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf'))

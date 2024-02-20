@@ -49,7 +49,7 @@ if not os.path.exists(test_data_folder_final):
 input_data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'proc_data')
 copy_files(input_data_folder, test_data_folder)
 
-modeling_data_folder = os.path.join(REPO_DIR, 'modeling', 'dataset', 'output')
+modeling_data_folder = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
 copy_files(modeling_data_folder, test_data_folder_modeling)
 
 final_data_folder = os.path.join(REPO_DIR, 'final', 'dataset', 'output')

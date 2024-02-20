@@ -135,7 +135,7 @@ powers
 
 #%%
 
-cantera_results_dir = pjoin(REPO_DIR, 'modeling', 'dataset', 'output')
+cantera_results_dir = pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
 
 ds_TP_params = xr.load_dataset(pjoin(cantera_results_dir, 'ds_TP_params.cdf'))
 

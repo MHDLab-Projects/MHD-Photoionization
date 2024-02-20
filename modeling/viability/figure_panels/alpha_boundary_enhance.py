@@ -21,8 +21,8 @@ REPO_DIR = os.getenv('REPO_DIR')
 
 from pi_paper_utils import abscs, noneq
 
-cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
-PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'dataset','output')
+cantera_data_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
+PI_modeling_dataset_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset','output')
 if not os.path.exists('output'): os.mkdir('output')
 # %%
 ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
