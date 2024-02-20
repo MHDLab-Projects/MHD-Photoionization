@@ -38,3 +38,29 @@ plt.yscale('log')
 #%%
 
 ds_p['AS_max'].mean('run').plot(hue='phi')
+#%%
+motor_sel = [34.81, 104.8, 178, 226.7]
+
+ds_lecroy = ds_lecroy.sel(phi=0.79)
+
+da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+
+fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
+
+for i, motor in enumerate(da_sel.coords['motor'].values):
+    ax = axes[i]
+    da_sel.sel(motor=motor).plot(hue='run_plot', x='time', ax=ax)
+    ax.set_title('Position: {} mm'.format(motor))
+    ax.set_xlabel('')
+    ax.set_ylabel('AS')
+
+    if i == len(da_sel.coords['motor'].values) - 1:
+        ax.set_xlabel('Time [us]')
+
+    else:
+        ax.get_legend().remove()
+
+# da_sel.plot(row='motor', hue='run_plot', x='time', figsize=(8,25))
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
+

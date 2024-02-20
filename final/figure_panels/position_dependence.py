@@ -32,24 +32,33 @@ motor_sel = [34.81, 104.8, 178, 226.7]
 
 da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
 
+da_sel_mean = da_sel.mean('run')
+da_sel_std = da_sel.std('run')
+
 fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
 for i, motor in enumerate(da_sel.coords['motor'].values):
     ax = axes[i]
-    da_sel.sel(motor=motor).plot(hue='run_plot', x='time', ax=ax)
+    
+    # Calculate mean and standard deviation
+    mean = da_sel.sel(motor=motor).mean(dim='run')
+    std = da_sel.sel(motor=motor).std(dim='run')
+    
+    # Plot mean and shaded region for standard deviation
+    mean.plot(x='time', ax=ax)
+    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color='b', alpha=0.2)
+    
     ax.set_title('Position: {} mm'.format(motor))
     ax.set_xlabel('')
     ax.set_ylabel('AS')
 
     if i == len(da_sel.coords['motor'].values) - 1:
         ax.set_xlabel('Time [us]')
-
-    else:
-        ax.get_legend().remove()
-
-# da_sel.plot(row='motor', hue='run_plot', x='time', figsize=(8,25))
+    # else:
+    #     ax.get_legend().remove()
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
+
 
 #%%
 
