@@ -81,7 +81,7 @@ ds_cfd['T']
 
 #%%
 
-ds_cfd['rho_number'].pint.to('1/cm^3').plot()
+ds_cfd['rho_number'].pint.to('particle/ml').plot()
 
 #%%
 
@@ -112,7 +112,7 @@ plt.yscale('log')
 
 ds_species_decay = 1/(ds_p['decay'].pint.quantify('us')*ds_krb)
 
-ds_species_decay = ds_species_decay.pint.to('1/cm^3')
+ds_species_decay = ds_species_decay.pint.to('particle/ml')
 
 #%%
 
@@ -137,7 +137,7 @@ plt.yscale('log')
 
 ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O']]
 
-ds_species_cfd = ds_species_cfd.pint.to('1/cm^3')
+ds_species_cfd = ds_species_cfd.pint.to('particle/ml')
 
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
@@ -176,7 +176,7 @@ plt.yscale('log')
 tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
 k_eff = 1/(tau_exp*ds_cfd['rho_number']**2)
 
-k_eff = k_eff.pint.to('cm^6/s')
+k_eff = k_eff.pint.to('cm^6/particle^2/s')
 
 k_eff.plot(marker='o')
 

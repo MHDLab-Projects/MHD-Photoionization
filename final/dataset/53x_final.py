@@ -52,6 +52,10 @@ ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
+ds_cfd
+
+#%%
+
 goldi_pos =  Quantity(178, 'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
@@ -68,9 +72,6 @@ ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
 
 ds_krb
 
-#%%
-
-ds_cfd['T']*Quantity(1, 'K')
 
 #%%
 
@@ -78,7 +79,7 @@ ds_cfd['T']*Quantity(1, 'K')
 
 ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
 
-ds_species_cfd = ds_species_cfd.pint.to('1/cm^3')
+ds_species_cfd = ds_species_cfd.pint.to('particle/ml')
 
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 

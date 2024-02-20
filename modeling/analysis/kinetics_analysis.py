@@ -25,21 +25,23 @@ from pi_paper_utils import abscs, noneq
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
 
 # %%
-ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf')).sel({'phi': 0.8, 'Kwt': 0.01})
-ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.8, 'Kwt': 0.01})
-#%$ 
+ds_NE = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_NE.cdf')).sel({'phi': 0.8, 'Kwt': 0.01})
+# ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.8, 'Kwt': 0.01})
 
-ds_TP_params['krb'].pint.quantify()
+ds_NE
+#%%
+
+ds_NE['krb'].pint.quantify()
 
 
 # %%
-ds_TP_params['krb'].plot()
+ds_NE['krb'].plot()
 
 #%%
 
-da_sel = ds_TP_params.sel(T=slice(1500,2000)).sel(P=1e5)['krb']
+da_sel = ds_NE.sel(T=slice(1500,2000)).sel(P=1e5)['krb']
 
-da_sel = da_sel.pint.quantify().pint.to('cm^3/(particle s)')
+da_sel = da_sel.pint.quantify().pint.to('ml/(particle s)')
 
 
 da_sel.plot()

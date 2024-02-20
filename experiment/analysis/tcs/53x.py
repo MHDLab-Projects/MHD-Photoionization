@@ -174,7 +174,7 @@ ds_cfd['Yeq_K+'].plot()
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling','dataset','output')
 ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
 kr = ds_TP_params['kr']
-kr = kr.pint.quantify('cm^3/s').pint.to('um^3/us')
+kr = kr.pint.quantify('ml/particle/s').pint.to('um^3/us')
 kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
 
 kr_sel = kr_sel.assign_coords(Kwt = kr_sel.coords['Kwt']*1e2)
@@ -201,12 +201,12 @@ plt.xscale('log')
 
 axes[0].set_ylabel('Decay Constant [us]')
 
-kr_sel.pint.to('cm^3/us').plot(label='Cantera', hue='T', marker='o', ax=axes[1])
+kr_sel.pint.to('ml/us').plot(label='Cantera', hue='T', marker='o', ax=axes[1])
 axes[1].set_title('')
 
 
 Kp_decay = 1/(2*ds_p['decay'].pint.quantify('us')*kr_sel)
-Kp_decay = Kp_decay.pint.to('1/cm^3')
+Kp_decay = Kp_decay.pint.to('particle/ml')
 
 da_mean = Kp_decay.mean('run')
 da_std = Kp_decay.std('run')
@@ -254,7 +254,7 @@ ds_ne0['std'] = ds_p_stderr['ne0']
 
 plot.common.xr_errorbar(ds_ne0['mean'], ds_ne0['std'], huedim='run')
 
-ds_cfd['Yeq_K+'].pint.quantify('1/cm^3').pint.to('1/um^3').plot(label='CFD', marker='o')
+ds_cfd['Yeq_K+'].pint.quantify('particle/ml').pint.to('particle/ml').plot(label='CFD', marker='o')
 
 plt.yscale('log')
 

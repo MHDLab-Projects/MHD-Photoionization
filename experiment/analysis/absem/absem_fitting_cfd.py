@@ -502,7 +502,7 @@ ds_cfd_cl = ds_cfd_cl.cfd.convert_all_rho_number()
 
 ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
-ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('1/m^3')
+ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('particle/m^3')
 
 
 #%%

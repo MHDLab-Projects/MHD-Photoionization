@@ -1,8 +1,8 @@
 """
 module for handling kinetics (recombination, ionization) data
 
-krt - termolecular recombination rate (cm^6/s)
-krb - bimolecular recombination rate  (cm^3/s)
+krt - termolecular recombination rate (ml^2/particle^2/s)
+krb - bimolecular recombination rate  (ml/particle/s)
 krm - monomolecular recombination rate (1/s)
 """
 
@@ -19,35 +19,35 @@ def calc_krbO2_weighted(ds_species):
 
     # Weighted average of collison partners for O2 rate
     k4_species = {
-        'N2' : Quantity(1e-31, 'cm^6/s'),
-        'H2O': Quantity(8e-30, 'cm^6/s'),
-        'CO2': Quantity(1.3e-31, 'cm^6/s'), 
-        'O2' : Quantity(2e-30, 'cm^6/s'),
+        'N2' : Quantity(1e-31, 'ml^2/particle^2/s'),
+        'H2O': Quantity(8e-30, 'ml^2/particle^2/s'),
+        'CO2': Quantity(1.3e-31, 'ml^2/particle^2/s'), 
+        'O2' : Quantity(2e-30, 'ml^2/particle^2/s'),
     }
 
     weighted_sum = 0
 
     for species, krt in k4_species.items():
-        weighted_sum += krt*ds_species[species].pint.to('1/cm^3')
+        weighted_sum += krt*ds_species[species].pint.to('particle/ml')
 
-    return weighted_sum.pint.to('cm^3/s')
+    return weighted_sum.pint.to('ml/particle/s')
 
 
 def gen_ds_krb(da_Ts, da_rho_number):
 
-    da_rho_number = da_rho_number.pint.to('1/cm^3')
+    da_rho_number = da_rho_number.pint.to('particle/ml')
     da_Ts = da_Ts.pint.to('K')
 
 
     krb_dict = {
-        'K+':  Quantity(4e-24, 'K*cm^6/s')*(1/da_Ts)*da_rho_number,
-        'OH': Quantity(3e-31, 'cm^6/s')*da_rho_number,
-        'O2_A': Quantity(5e-31, 'cm^6/s')*da_rho_number,
-        'O2_B': Quantity(6e-34, 'cm^6/s')*da_rho_number,
-        'H2O': Quantity(1.6e-6, 'cm^3/s')*np.exp(-(Quantity(36060, 'K')/da_Ts)),
+        'K+':  Quantity(4e-24, 'K*ml^2/particle^2/s')*(1/da_Ts)*da_rho_number,
+        'OH': Quantity(3e-31, 'ml^2/particle^2/s')*da_rho_number,
+        'O2_A': Quantity(5e-31, 'ml^2/particle^2/s')*da_rho_number,
+        'O2_B': Quantity(6e-34, 'ml^2/particle^2/s')*da_rho_number,
+        'H2O': Quantity(1.6e-6, 'ml/particle/s')*np.exp(-(Quantity(36060, 'K')/da_Ts)),
     }
 
-    ds_krb = xr.Dataset(krb_dict).pint.to('cm^3/s')
+    ds_krb = xr.Dataset(krb_dict).pint.to('ml/particle/s')
 
     return ds_krb
 

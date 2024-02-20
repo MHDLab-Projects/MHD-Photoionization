@@ -12,6 +12,8 @@ fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.
 ds = xr.load_dataset(fp)
 
 # ds = ds.cfd.convert_all_rho_number()
+
+ds = ds.sel(offset=0)
 ds
 
 #%%
@@ -73,7 +75,7 @@ species = [var for var in ds.data_vars if var not in ['rho', 'T', 'p']]
 
 for species in species:
     sp_rho = ds[species]*ds['rho']
-    sp_rho = sp_rho.pint.to('1/cm^3')
+    sp_rho = sp_rho.pint.to('particle/ml')
     ds[species] = sp_rho
 
 #%%

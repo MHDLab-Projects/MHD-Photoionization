@@ -290,7 +290,7 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8).sel(offset=0)
 
-ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('1/m^3')
+ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 ds_cfd_norm = ds_cfd/ds_cfd.max()
 

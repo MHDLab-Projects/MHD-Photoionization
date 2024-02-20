@@ -413,7 +413,7 @@ da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
 
 
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('1/m^3')
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('particle/m^3')
 
 da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
 
@@ -437,7 +437,7 @@ plt.figure(figsize=(6,4))
 
 import matplotlib.lines as mlines
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('1/m^3')
+da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('particle/m^3')
 
 da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
 

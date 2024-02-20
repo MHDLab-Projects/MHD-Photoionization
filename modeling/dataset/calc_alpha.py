@@ -29,14 +29,33 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho
 
 #%%
 
-kth, krb = kinetics.calc_kth_krb_kelly(ds_TP_params, ds_TP_species)
+# kth, krb = kinetics.calc_kth_krb_kelly(ds_TP_params, ds_TP_species)
 
-ds_TP_params = ds_TP_params.assign({'kth':kth, 'krb':krb})
-Gth = ds_TP_params['kth']*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
+from pi_paper_utils.kinetics import gen_ds_krb
+
+e = Quantity(1.602e-19, 'coulomb')
+mp = Quantity(1.672e-27, 'kg')
+kb = Quantity(8.617e-5, 'eV/K')
+Eion = Quantity(4.34, 'eV')
+
+# 
+Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
+
+krb = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
+krb = krb['K+']
+
+# Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
+# Manually adding temperature to units to match overall units of molecule/ml specified in paper
+Keq_prefactor = Quantity(2.42e15, 'molecule/ml/K**1.5')
+Keq = Keq_prefactor*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
+Keq = xr.DataArray(Keq, coords={'T':Ts.pint.magnitude}, dims = 'T')
+
+kth = Keq*krb
+kth.name =  '$k_{th}$'
+kth = kth.pint.to('1/s')
+
+Gth = kth*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
 Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
-ds_TP_params = ds_TP_params.assign({'Gth':Gth})
-
-ds_TP_params = ds_TP_params.pint.dequantify()
 
 #Perfect Ionization
 
@@ -49,8 +68,8 @@ combos = {
 }
 
 constants = {
-    'G_th': ds_TP_params['Gth'],
-    'krb': ds_TP_params['krb'],
+    'G_th': Gth.pint.dequantify(),
+    'krb': krb.pint.dequantify(),
     'mue_cant': ds_TP_params['mobility']*10000,
     'u': 1e5
 }
@@ -65,7 +84,11 @@ ds_NE_perf_Bhall = xyzpy.Runner(noneq.calc_NE_all, constants = constants, var_na
 # #Photoionization
 ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squeeze()
 gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
-FA = xr.DataArray([1], name='FA_1')
+# FA = xr.DataArray([1], name='FA_1')
+
+FA = gas_lam['K'].where(False).fillna(1.0)
+FA.name = 'FA_1'
+
 eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['K'], FA)
 constants['eta'] = eta_PI
 
@@ -76,6 +99,9 @@ constants['B'] = B_hall
 ds_NE_PI_Bhall  = xyzpy.Runner(noneq.calc_NE_all, constants = constants, var_names=None).run_combos(combos).assign_coords(analysis='PI_Bhall')
 
 ds_NE = xr.concat([ds_NE_perf_Bconst, ds_NE_perf_Bhall, ds_NE_PI_Bconst, ds_NE_PI_Bhall], 'analysis')
+
+ds_NE['krb'] = krb.pint.dequantify()
+
 # %%
 ds_NE.attrs = {}
 
