@@ -28,6 +28,47 @@ def calc_alpha(ne, mue, krb, u, B, eta):
 
     return alpha
 
+def calc_alpha_const_nx(krm, mue, u, B, eta):
+    """
+    calculates alpha=dP_net/dP_in for a constant nx, where x is recombination partner
+    """
+
+    DPmhd_Dne = e*K_MHD*(1-K_MHD)*(u**2)*(B**2)*mue
+
+    DPR_Dne = e*E_IP*krm
+
+    alpha = eta*(DPmhd_Dne/DPR_Dne)
+
+    return alpha
+
+def calc_ne_const_nx(ne0, krm, G_NE):
+    """
+    calculates ne for a constant nx, where x is recombination partner 
+    """
+
+    ne = ne0 + G_NE/krm
+
+    return ne
+
+
+def calc_NE_all_const_nx(P_in, eta, krm, mue_cant, B, u, ne0):
+
+    G_NE = calc_G_NE(P_in, eta)
+
+    ne = calc_ne_const_nx(ne0, krm, G_NE)
+    ne.name = 'ne'
+    ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
+
+    sig_NE = calc_sig(ne, mue_cant)
+    sig_NE.name = 'sigma'
+
+    alpha = calc_alpha_const_nx(krm, mue_cant, u, B, eta)
+    alpha.name = 'alpha'
+
+    ds = xr.merge([ne, sig_NE, alpha])
+
+    return ds
+
 
 def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
     """
