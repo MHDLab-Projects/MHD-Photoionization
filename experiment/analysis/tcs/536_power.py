@@ -133,6 +133,10 @@ powers = da_max2['power'].values*laser_power*f_A
 
 powers
 
+#%%[markdown]
+
+# Laser heating calculation
+
 #%%
 
 cantera_results_dir = pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
@@ -160,6 +164,18 @@ Cp_final.to('J/K')
 deltaTs = powers / Cp_final
 
 deltaTs.to('K')
+
+#%%[markdown]
+
+# Max ionized potassium calculation
+
+#%%
+
+Ei = Quantity(4.34, 'eV/particle')
+
+n_max = powers/Ei/heated_volume
+
+n_max.to('particle/cm^3').magnitude
 
 
 #%%

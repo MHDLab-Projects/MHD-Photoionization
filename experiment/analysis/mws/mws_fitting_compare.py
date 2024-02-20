@@ -35,6 +35,48 @@ da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
 
 #%%[markdown]
 
+# # new fitting method combination Kp and O2
+
+# Todo: where to put this?
+
+#%%
+
+da_fit = da_sel.mean('mnum').sel(kwt=1, method='nearest')
+
+da_fit = da_fit.mws.fit_prep(pre_norm_cutoff=5e-4, remove_negative=False, min_mnum=None)
+
+
+
+da_fit.plot(hue='run_plot', x='time')
+
+plt.yscale('log')
+
+#%%
+
+from mhdpy.analysis.mws.fitting import gen_model_dnedt_v2
+
+mod, params = gen_model_dnedt_v2(take_log=False)
+
+ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us')))
+
+#%%
+
+ds_mws_fit.to_array('var').plot(hue='var', row='run')
+
+plt.yscale('log')
+
+plt.xlim(-1,30)
+
+plt.ylim(1e-3,)
+
+#%%
+
+dne = ds_p['dne'].pint.quantify('particle/um**3').pint.to('particle/cm**3')
+
+dne.mean('run').pint.magnitude
+
+#%%[markdown]
+
 # ## fitting after averaging mnum
 
 # %%
