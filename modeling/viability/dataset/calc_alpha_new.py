@@ -108,11 +108,12 @@ ds_NE_PI_Bhall  = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants
 ds_NE = xr.concat([ds_NE_perf_Bconst, ds_NE_perf_Bhall, ds_NE_PI_Bconst, ds_NE_PI_Bhall], 'analysis')
 
 ds_NE['krb'] = krb.pint.dequantify()
+ds_NE['krm'] = krm_O2.pint.dequantify()
 
 # %%
 ds_NE.attrs = {}
 
-ds_NE.to_netcdf('output/ds_NE.cdf')
+ds_NE.to_netcdf('output/ds_NE_O2.cdf')
 # %%
 
 sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
