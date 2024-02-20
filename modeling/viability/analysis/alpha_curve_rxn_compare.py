@@ -60,7 +60,9 @@ g = P_zero.plot(col='phi', hue='rxn', y='T', figsize=(4,2))
 
 plt.xscale('log')
 g.axes[0][0].set_ylabel('Temperature (K)')
-plt.xlabel('Pressure (Pa)')
+
+for ax in g.axes.flatten():
+    ax.set_xlabel('Pressure (Pa)')
 
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
