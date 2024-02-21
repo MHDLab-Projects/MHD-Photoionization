@@ -16,20 +16,17 @@ fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.
 
 ds_cfd = xr.load_dataset(fp)
 
-ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-ds_cfd = ds_cfd.sel(kwt=1)
+ds_cfd = ds_cfd.sel(offset=0)
+# ds_cfd = ds_cfd.sel(kwt=1)
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 ds_cfd
 
-#%%
-
 goldi_pos =  Quantity(178, 'mm')
-ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 #%%
-# Calculate kr
+# Calculate krb
 
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
@@ -41,7 +38,55 @@ ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
 
 ds_krb
 
+#%%
 
-# %%
+g = ds_krb[['K+', 'OH', 'O2_A', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
 
-ds_krb['']
+plt.yscale('log')
+
+plt.ylim(1e-14,)
+
+for ax in g.axes.flatten():
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+#%%
+
+# show species densities on similar plot 
+
+g = ds_cfd[['Yeq_K+', 'OH', 'O2', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+
+plt.yscale('log')
+
+plt.ylim(1e12,)
+
+
+for ax in g.axes.flatten():
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+#%%
+
+from pi_paper_utils.kinetics import calc_krm
+
+ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Yeq_K+": "K+"}))
+
+ds_tau = (1/ds_krm).pint.to('us')
+
+g = ds_tau[['K+','O2_A', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+
+plt.yscale('log')
+
+plt.ylim(0.1,1e3)
+
+
+for ax in g.axes[:,0]:
+    ax.set_ylabel("Tau [$\mu s$]")
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'krm_cfd_pos.png'))
+
+#%%
+
+ds_cfd_gold = ds_cfd.sel(x = goldi_pos, method='nearest')
+
+#%%
