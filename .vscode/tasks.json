@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Shell Script with fig",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh fig",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Shell Script with latex",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh latex",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Shell Script with fig and latex",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh fig latex",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -1,7 +1,7 @@
+#TODO: untested in automation folder
+source ../.env
 
-source .env
-
-mkdir -p experiment/data/munged
+mkdir -p $REPO_DIR/experiment/data/munged
 
 date_list=('2023-04-07' '2023-05-12' '2023-05-18' '2023-05-24')
 
