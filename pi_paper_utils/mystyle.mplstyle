@@ -31,3 +31,10 @@ figure.dpi          : 300
 axes.prop_cycle: (cycler('color', ['377eb8', 'e41a1c', '4daf4a', 'ff7f00', '984ea3', 'a65628']) + cycler('ls', ['-', '--', ':', '-.','--', '-']))
 
 image.cmap: RdPu
+
+
+axes.grid: True
+axes.grid.which: both
+grid.color: d3d3d3
+grid.linestyle: --
+grid.linewidth: 0.5
