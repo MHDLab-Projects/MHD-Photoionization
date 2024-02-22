@@ -13,6 +13,7 @@ import os
 from mhdpy.fileio import gen_path
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import pint_pandas
 
 sp_dir = gen_path('sharepoint')
@@ -58,15 +59,19 @@ mesh = pv.read(fp)
 
 # %%
 
-mesh = downsel_arrays(mesh, soi)
+mesh = downsel_arrays(mesh, [*soi_Yeq, *additional])
 
 ds = pv_to_xr(mesh)['point']
 
 df = ds.drop('pos_z').drop('dir').to_dataframe()
 
 df
+
 # pv_to_unstack_xr(mesh)
 
 # %%
 
 
+
+df.to_csv('output/mdot0130_phi080_K100.csv')
+# %%
