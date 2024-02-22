@@ -12,6 +12,8 @@
 
 - [] implement numerical integration nK determination to final pipeline
 - [] improve main pimax image
+    - [] calibration
+    - [] compare width to cfd beam profile
 
 - [x] try fitting mws to a profile with O2 tau and K+ bimolecular combo
     - [] try refactoring dnedt models
