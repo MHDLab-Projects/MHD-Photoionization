@@ -12,6 +12,26 @@
             "problemMatcher": []
         },
         {
+            "label": "Run Shell Script with data",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh data",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Shell Script with panels",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh panels",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Run Shell Script with latex",
             "type": "shell",
             "command": "./automation/gen_vis_latex.sh latex",
@@ -22,9 +42,9 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Shell Script with fig and latex",
+            "label": "Run Shell Script with all",
             "type": "shell",
-            "command": "./automation/gen_vis_latex.sh fig latex",
+            "command": "./automation/gen_vis_latex.sh data panels fig latex",
             "group": {
                 "kind": "build",
                 "isDefault": true

@@ -2,16 +2,21 @@ source ../.env
 
 source $REPO_DIR/venv/bin/activate
 
-# Figures
-if [[ "$@" =~ "fig" ]]
+
+if [[ "$@" =~ "data" ]]
 then
-    echo "Running fig part"
+    echo "Generating Dataset"
     cd $REPO_DIR/final/dataset
 
     for f in *.py 
     do
         python $f
     done
+fi
+
+if [[ "$@" =~ "panels" ]]
+then
+    echo "Generating figure panels"
 
     cd $REPO_DIR/final/figure_panels
 
@@ -19,6 +24,14 @@ then
     do
         python $f
     done
+fi
+
+
+# Figures
+if [[ "$@" =~ "fig" ]]
+then
+    echo "Rendering figures"
+
 
     cd $REPO_DIR/final/figures
 
