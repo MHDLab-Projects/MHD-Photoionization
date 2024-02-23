@@ -2,21 +2,28 @@
 
 We now discuss the model for the photoionization and recombination process. We tentatively propose a model:
 
-1. KOH + $h\nu$ -> K+ + OH + e-
+1. KOH + $h\nu$ -> K* + OH
 
-2. e- + O2 -> O2-
+2. K* + M -> K+ + e- + M
 
-The details of step 1 are uncertain. The important point is that light absorption is through KOH, and not K. It is possible that other species contribute to the electron production through similar chemionization processes. However, KOH absorption is known to produce excited K atoms. [] That work showed that those excited K atoms decay through rapid (10ns) photoluminescence, but it is possible that chemiionization process occurs in parallel to the photoluminescence. Possibly, there is a collision with the excited K atoms that produces the e-. From Alkemade et al. we know that the K +M -> K+ + e- +M depends on a collision with a third body, and appears to be dependent on the potassium atom being in an excited state (known as the 'ladder model'). []
+3. e- + O2 -> O2-, or e- + K+ + M -> K + M
 
+Step 1 is the well-known phenomenon of laser-induced fluoresce in Alkali compounds (hydroxides, chlorides, etc.) which has been used to measure the species concentration of these alkali compounds in flames.[Oldenbork 1986] The excited states of the alkali compounds are weakly bound and dissociate. For KOH, there is a UV absorption band with a peak near the 248 nm wavelength of our laser, and the dissociated state creates a K atom in the excited 2P0 state [Oldenbork and Leffler 2017]. This excited K atom is known to rapidly photo luminesce. We observe this photoluminescence in our ICCD camera measurements (see Figure S\ref*{fig:SI_536_iccd}) which is on the order of our laser pulse width (10ns) (TODO: add laser pulse to figure). We have measured this photoluminescence decay in similar flames as a time-resolved spectrograph in previous experiments, and present those results in the SI. The radiative lifetime of an isolated 2P0 state K atom is about 25 ns, but this lifetime will be reduced by collisional quenching, consistent with our measurements. [leffler 2017, (Smirinov (Fund. Of Ionized Gases - Table 2.8)]. 
 
+The measurement of free electrons in addition to the photoluminescence is evidence for a parallel process to the photoluminescence proposed in step 2. In this step the excited K atom will be ionized by a collision with a third body. It is also possible that the excited K atom is ionized by additional UV photons. The UV cross section of K is much smaller than KOH, but it is possible that the 2P0 state of K has a much higher UV cross section. From Alkemade et al. we know that the K +M -> K+ + e- +M depends on a collision with a third body, and appears to be dependent on the potassium atom being in an excited state (known as the 'ladder model'). []
 
 \begin{outline}
-\1 Evidence of KOH -> e-, instead of K -> e-:
+\1 Summary Evidence of KOH -> e-, instead of K -> e-:
     \2 The photoluminescence lifetime, measured by the ICCD Camera (see Figure S\ref*{fig:SI_536_iccd}) consistent with UV induced chemiluminescence of KOH that has been observed in the literature. The photoluminescence is measured far from the center of the free jet, where the potassium density is low.
-    \2 The UV absorption cross section of KOH is much larger than other major species present (see SI).
+    \2 The UV absorption cross section of KOH is much larger than other major species present including K (see SI).
     \2 The AS signal linearly increases with the nominal potassium concentration, even though the potassium density measurements at the goldilocks region decreases. This   is dependent on the potassium concentration in the barrel, but not the goldilocks region. The measured nK However, CFD prediction of KOH concentrations scales with the AS signal. The photodiode measurement also scaled with the AS signal. We assume the photodiode signal is proportional to the chemiluminescence of KOH. We cannot measure the time decay of the chemiluminescence with the photodiode due to the bandwidth of the photodiode.
     \2 The MWS and photodiode signals peak downstream of the exit. The CFD data predict a peak in KOH in a similar location (SI). However, the difference between the barrel exit and this peak location is not as large as the experimental data. TODO: why is barrel KOH high. 
+\end{outline}
 
+Finally, in step 3 the excited free electron is captured by an oxygen molecule. For high excitation densities or near the barrel exit other species can capture the electron. TODO: how to present? 
+
+\begin{outline}
+    
 \1 Evidence for e- + O2 -> O2-
     \2 the decay time predicted for oxygen capture is the closest to the measured decay time. There is a significant uncertainty in the recombination coefficient for this process and our values fall within the range presented in the literature. 
     \2 The decay time appears to be independent of the position along the free jet. The decay time is difficult to quantify outside of the goldilocks region due to the AS fluctuations, but the AS magnitude is still appreciable after a few microseconds regardless of position. a similar order of magnitude to the exponential fit time constants obtained in the goldilocks region. CFD simulations (SI) show that the oxygen concentration is relatively constant along the free jet. This constant oxygen concentration of ~20\% occurs from running fuel lean, and air entrainment. 

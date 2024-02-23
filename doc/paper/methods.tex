@@ -3,45 +3,38 @@
 
 \subsection{Experimental}
 
-Figure \ref{fig:expt_setup} shows the experimental setup. 
-
-HVOF torch with syringe pump potassium feeding. 
-
-Throughout the experiment, the HVOF process is monitored with a variety of diagnostics. 
-
-
+To study the photoionization process we performed experiments with a modified Praxair JP-8200 high-velocity oxy fuel (HVOF) system as shown in Figure \ref{fig:expt_setup}. We have previously reported experiments with this system and a MHD generator attachment [AIAA 2020]. In the experiment presented here, the HVOF torch is used without the generator attachment so that the free jet can be studied.  The HVOF is powered with K1 kerosene combusted with >99\% pure oxygen and the volumetric flows of the HVOF process inputs are monitored independently with NIST traceable devices as described in Zeuthen et al.[1] Potassium is introduced to the flame with a custom-built liquid seeding system. The liquid-seeding system utilizes a Harvard Apparatus PHD Ultra(tm) Syringe pump to inject a potassium emulsion into the fuel line before the combustor. The potassium emulsion is a mixture of (by weight) 19.4\% K1 Kerosene, 15\% K2CO3,  ~1\% surfactant, and remainder water (TODO: check/finish). The flow of the emulsion is set to achieve a nominal weight percentage of potassium atoms (K wt\%) in the flame. The JP-8200 fuel flow and oxygen flows are set to maintain a target total mass flow of 13 g/s, which is used throughout the experiments presented in this report.
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{\repodir/final/figures/output/Fig_expt_setup.png} 
-    \caption{Experimental setup of the Photoionization experiment. D) Time-resolved photolumniscence images from the ICCD camera. TODO: the images are currently averaged over the entire run (streaks are different positions) }
+    \caption{Experimental setup of the Photoionization experiment. D) Time-resolved photoluminescence images from the ICCD camera. TODO: the images are currently averaged over the entire run (streaks are different positions) }
     \label{fig:expt_setup}
 \end{figure}
 
-There are a variety of independent variables that have been controlled through out the experiments to explore the photoionization process. For the HVOF process, the total mass flow, equivalence ratio, and atomic potassium mass fraction are controlled. Additionally, the position of the mobile MWS and AES diagnostics are controlled, as well as the excimer laser power. 
+The resulting free jet is then observed with a variety of custom-built diagnostics. These diagnostics are described in more detail below (or SI), but briefly outlined here.The diagnostics include a microwave scattering (MWS) diagnostic and an absorption-emission spectroscopy (AES) diagnostic. The MWS diagnostic measures the change in microwave transmission through the free jet in response to a laser pulse, which is related to relative changes in the free electron density. The AES diagnostic measures the absorption of a 780 nm LED through the free jet, which is related to the potassium number density. There is an AES system at the exit of the HVOF barrel (AES1), which probes the potassium density at the start of the free jet where the dimensions of the flow are well characterized. The MWS diagnostic, a second AES diagnostic (AES2), and a photodiode (PD) are located on motorized stage and probe the free jet at various locations downstream from the barrel exit. The PD isolates the potassium D line (~770 nm) to a Thorlabs photodiode to measure the fluctuation of the optical emission with time resolution. Finally, a PI-MAX4 ICCD Camera (check) is positioned above the entire system at a fixed position to capture time-resolved images of the free jet. The ICCD camera has a 775 +- 25 nm bandpass filter to isolate the potassium D line.
 
-Experiments consist of a variety of 'test cases', where the the system is brought to a specific combination of the independent variables and measurements are performed. In particular, 'sequences' of test cases are performed where one of these independent variables is changed. 
+Additionally, the position of the mobile MWS and AES diagnostics are controlled, as well as the excimer laser power. 
 
-For the results presented in this report the total mass flow rate is held constant at 13 g/s. In this report, we focus on three sequences where the potassium mass fraction, the laser power, and the position of the laser downstream from the exit of the free jet are varied. (TODO: incorporate phi variation). Notably, when not being varied, the position of the AES/MWS diagnostics is held fixed downstream of the torch at a 'nominal position' of 178 mm downstream of the exit of the HVOF torch (TODO: improve). The motivation for this position is discussed in the results section.  
+Experiments consist of a variety of 'test cases', where the the system is brought to a specific combination of the independent variables and measurements are performed. In particular, 'sequences' of test cases are performed where one of these independent variables is changed. For the HVOF process, the equivalence ratio and potassium mass fraction are the primary independent variables. The position of the motorized stage and power of the excimer laser are also varied. Notably, when not being varied, the position of the motorized is held fixed such that the diagnostics probe a location of the free jet 178 mm downstream of the exit of the HVOF barrel. We refer to this location as the 'nominal position' (TODO: improve naming) and the motivation for this position is discussed in the results section.  
 
-Test case sequences (TODO: improve names)
+The syringe pump based feeding method has the disadvantage of a finite amount of emulsion that can be fed into the torch. This limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. For this reason, it was not possible to maintain consistent durations for the different test case sequences. Furthermore, the finite time allowed by the syringe pump means that exploration of experimental conditions was limited. 
+
+We investigate the following test case sequences (May eventually remove or move to SI):
 \begin{itemize}
-    \item 536 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%
-    \item 536 Power: Varying laser power. MWS/AES diagnostic at nominal position. Kwt = 1\%
+    \item 536 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.8
+    \item 516 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.6
+    \item 536 Power: Varying laser power. MWS/AES diagnostic at nominal position. Kwt = 1\%, 
     \item 53x: Varying potassium mass fraction. MWS/AES diagnostic at nominal position. Full laser power.
+    \item 5xx: Varying potassium mass fraction and equivalence ratio. MWS/AES diagnostic at nominal position. Full laser power.
+    \item 5x6\_pos/5x3\_pos: Varying MWS/AES diagnostic position and equivalence ratio. Full laser power. Kwt = 1\%
 \end{itemize}
-
 
 The results in this paper derive from an experimental campaign that was conducted over 4 dates: 2023-04-07, 2023-05-12, 2023-05-18, and 2023-05-24. Throughout the campaign the above test case sequences were repeated to ensure reproducibility of the results. On some dates, the same test case sequence was repeated within a date, so we define a 'Run' as a unique instance of a test case sequence labeled by the date and an integer ("run number").  Unless otherwise noted, error bars in the results represent the standard deviation across Runs. 
 
-On later experiment dates, additional test case sequences were performed. Further, additional diagnostic measurements were added. 2023-05-12: PI Max Camera and position dependent nK measurement. 2023-05-24: Photodiode. Importantly, the position dependent nK measurement was taken by multiplexing both AES diagnostics to the same spectrometer, meaning only one AES measurement could be taken at a time. Througout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements are not simultaneous. Equivalence ratio measurements occurred on 2023-05-24 (see SI). 
-
-We note that the syringe pump based feeding method has the disadvantage of a finite amount of emulsion that can be fed into the torch. This limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. For this reason, it was note possible to maintain consistent durations for the different test case sequences. Furthermore, the finite time allowed by the syringe pump means that exploration of experimental conditions was limited. 
+On later experiment dates, additional test case sequences were performed. Further, additional diagnostic measurements were added. 2023-05-12: PI Max Camera and position dependent nK measurement. 2023-05-24: Photodiode. Importantly, the position dependent nK measurement was taken by multiplexing both AES diagnostics to the same spectrometer, meaning only one AES measurement could be taken at a time. Throughout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements are not simultaneous. Equivalence ratio measurements occurred on 2023-05-24 (see SI). 
 
 The time limitation on seeding duration limits the AES diagnostic more than the MWS diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWS diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (10 Hz check this). Therefore for some test case sequences, the MWS diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, ~1 minute was used for each test case and data presented for both diagnostics.  
 
 Another limitation of the AES diagnostic is that it must be calibrated to the spectral LED intensity without any absorbing medium. It is not possible to stop and start the HVOF system on a given experiment without risking the system not being able to restart. Therefore, measurements of the AES calibration can only be performed at the beginning and end of a given experiment. We interpolate this calibration throughout the time of the experiment to help reduce the influence of calibration drift, but it is not always possible to eliminate this effect which shows as an offset in the off-peak absorption coefficient.
-
-
-
 
 Diagnostic processing is shown in Figure \ref{fig:diagnostic_processing}.
 
@@ -54,11 +47,11 @@ Diagnostic processing is shown in Figure \ref{fig:diagnostic_processing}.
 
 \subsubsection{Microwave scattering}
 
- In previous experiments we have determined that the optical emission lifetime is on the order of 10 nanoseconds (SI), which is much shorter than what is predicted for electron-ion recombination. This fast optical decay is consistent with a chemiluminescence process associated with laser-induced dissociation of KOH. [] 
 
-To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, etc. The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. 
 
-The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation.
+To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] (refs use IQ terminology). The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, (TODO: finish). The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. 
+
+The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation. 
 
 A more detailed schematic of the MWS setup is shown in figure S\ref*{fig:SI_MWS_Setup_Silicon}
 
@@ -80,11 +73,26 @@ Finally, we calculate the combined absorption and scattering, AS, by
     AS(t) = 1 - T(t)
 \end{equation}
 
-We fit the AS data with a kinetic model. 
+Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
+
+We fit the AS time profile with a kinetic model, assuming that $AS \propto \Delta n_e$. 
+
+
+The fit is performed by numerically solving the following differential equation: 
 
 \begin{equation}
-    \frac{d\Delta n_e}{dt} = - k_r [2 n_{K+,0}\Delta n_e + \Delta{n_e}^2]
+    \frac{d\Delta n_e}{dt} = - k_{r, m, X} \Delta n_e - k_{r, bm, K+}\Delta{n_e}^2
 \end{equation}
+
+$\Delta n_e$ is the change in free electron density from the steady state concentration, $n_{e,0}$ and $k_{r, m, X}$ is the monomolecular recombination rate coefficient for an electron capturing species $X$. $k_{r, bm, X}$ is the bimolecular recombination rate coefficient for the electron capturing species X. 
+
+\begin{equation}
+    k_{r, m, X} = \frac{1}{\tau} = k_{r, b, X}n_{X,0}
+\end{equation}
+
+Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium species concentration of X. The use of the equilibrium value arises from the assumption that X does not change with the perturbation of the laser. If the capturing species is the background concentration of K+, then a factor of two is added (See SI, TODO/needed?). For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay with time constant $\tau = \frac{1}{k_{r,bm,X}n_{X,0}}$. For high $\Delta n_e$, the second term dominates and the solution is a power law decay. The second term arises because the potassium ion density also changes with the laser pulse, i.e. $\Delta n_{K+} = \Delta n_e$. (TODO: derivation in SI). 
+
+In the fit, the free parameters are $\tau$ and $\Delta n_e$. The AS profile is normalized for the fit. 
 
 \subsubsection{Absorption spectroscopy}
 
