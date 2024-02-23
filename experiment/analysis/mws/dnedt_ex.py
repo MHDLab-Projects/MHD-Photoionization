@@ -109,7 +109,7 @@ plt.legend(bbox_to_anchor=(1, 0.6), loc='right')
 6
 plt.title('')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnent.png'), bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt.png'), bbox_inches='tight')
 
 #%%[markdown]
 
@@ -160,3 +160,47 @@ plt.text(0.2, 0.95, decay_str, transform=plt.gca().transAxes)
 plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_exp.png'))
 
 # %%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(
+    da_fit.mean('mnum'),
+    fit_timewindow=slice(Quantity(0,'us'),Quantity(30,'us')),
+    )
+
+#%%
+
+plt.figure()
+
+ds = ds_mws_fit.sel(run=('2023-05-24', 1))
+
+ds['AS_all'].plot(label='Data (all)')
+ds['AS_sel'].plot(label='Data (fitted)')
+ds['AS_fit'].plot(label='Fit', color='black', linestyle='--')
+
+plt.legend()
+
+plt.yscale('log')
+plt.ylabel('AS')
+
+plt.xlim(-1,50)
+
+
+tau = 1/ds_p['krm'].pint.quantify('us**-1')
+tau = tau.sel(run=('2023-05-24', 1)).item()
+
+dne = ds_p['dne'].pint.quantify('particle/um**3').pint.to('particle/cm**3')
+dne = dne.sel(run=('2023-05-24', 1)).item()
+
+# add text to plot of tau and dne with uncertianties
+
+tau_str = '$\\tau$ = {:.3f}  us'.format(tau.magnitude)
+dne_str = '$\Delta n_e$ = {:.2e} #/um^3'.format(dne.magnitude)
+
+plt.text(0.2, 0.92, tau_str, transform=plt.gca().transAxes, fontsize=12)
+plt.text(0.2, 0.85, dne_str, transform=plt.gca().transAxes, fontsize=12)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt_v2.png'))
+
+#%%
+

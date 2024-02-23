@@ -41,11 +41,9 @@ da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
 
 #%%
 
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
+
 da_fit = da_sel.mean('mnum').sel(kwt=1, method='nearest')
-
-da_fit = da_fit.mws.fit_prep(pre_norm_cutoff=5e-4, remove_negative=False, min_mnum=None)
-
-
 
 da_fit.plot(hue='run_plot', x='time')
 
@@ -53,11 +51,7 @@ plt.yscale('log')
 
 #%%
 
-from mhdpy.analysis.mws.fitting import gen_model_dnedt_v2
-
-mod, params = gen_model_dnedt_v2(take_log=False)
-
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us')))
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False)
 
 #%%
 
