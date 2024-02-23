@@ -13,6 +13,21 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged', datestr)
 spe_dir = pjoin(munged_dir, 'spe')
 
+
+image_calibration = Quantity(66.3, 'pixels/inch')
+centerline_pixel = 512
+barrel_exit_x_pixel = 250
+
+def calibrate_da_pimax(da):
+    #TODO: implement calbiration that takes into account perspective
+    da['y'] = da['y'] - centerline_pixel
+    da['x'] = da['x'] - barrel_exit_x_pixel
+
+    da['x'] = da['x']/image_calibration.to('pixels/mm').magnitude
+    da['y'] = da['y']/image_calibration.to('pixels/mm').magnitude
+
+    return da
+
 das = {}
 names = ['21', '63', '126']
 
@@ -61,7 +76,9 @@ plt.legend()
 
 #%%
 
-da = das['21']
+da = das['21'].copy()
+
+da = calibrate_da_pimax(da)
 
 da.mean('estime').mean('gatedelay').plot(robust=True)
 
@@ -81,7 +98,7 @@ da_plot.plot(row='gatedelay')
 #%%
 
 # Create a figure and axes with the desired size
-fig, axes = plt.subplots(nrows=2, figsize=(12,4), sharex=True, sharey=True)
+fig, axes = plt.subplots(nrows=2, figsize=(8,4), sharex=True, sharey=True)
 
 # Select the gatedelays
 gatedelays = [800, 850]
@@ -92,8 +109,12 @@ for ax, gatedelay in zip(axes, gatedelays):
     da_plot.coords['gatedelay'].attrs['units'] = 'ns'
     da_plot.plot(ax=ax)
 
+    ax.set_xlim(-10,220)
+
 axes[0].set_xlabel('')
-axes[1].set_xlabel('')
+axes[0].set_ylabel('y (mm)')
+axes[1].set_xlabel('x (mm)')
+axes[1].set_ylabel('y (mm)')
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img.png'), bbox_inches='tight', dpi=300)
@@ -179,3 +200,4 @@ da.mean('estime').mean('gatedelay').plot(robust=True)
 da_sel = da.mean('estime').sel(gatedelay=slice(790,820))
 
 da_sel.plot(col='gatedelay', col_wrap=4)
+# %%

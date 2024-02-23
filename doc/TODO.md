@@ -12,8 +12,13 @@
 
 - [] implement numerical integration nK determination to final pipeline
 - [] improve main pimax image
-    - [] calibration
+    - [x] calibration
     - [] compare width to cfd beam profile
+
+- [] use beam profile, CFD KOH, and KOH absorption cross seciton to estimate delta n_e
+
+- [x] laser profile. 
+= [] fix MWS data based on no torch transmission. What dates do we have No Torch MWS data for? can we check it is the same as far downstream. 
 
 - [x] try fitting mws to a profile with O2 tau and K+ bimolecular combo
     - [] try refactoring dnedt models

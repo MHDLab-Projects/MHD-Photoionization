@@ -14,6 +14,20 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged', datestr)
 spe_dir = pjoin(munged_dir, 'spe')
 
+image_calibration = Quantity(66.3, 'pixels/inch')
+centerline_pixel = 512
+barrel_exit_x_pixel = 250
+
+def calibrate_da_pimax(da):
+    #TODO: implement calbiration that takes into account perspective
+    da['y'] = da['y'] - centerline_pixel
+    da['x'] = da['x'] - barrel_exit_x_pixel
+
+    da['x'] = da['x']/image_calibration.to('pixels/mm').magnitude
+    da['y'] = da['y']/image_calibration.to('pixels/mm').magnitude
+
+    return da
+
 das = {}
 names = ['4', '84']
 
@@ -77,9 +91,13 @@ da.mean('estime').plot(col='gatedelay')
 
 #%%
 
-da = das['84']
+da = das['84'].copy()
+
+da = calibrate_da_pimax(da)
 
 da.mean('estime').mean('gatedelay').plot(robust=True)
+
+#%%
 
 #%%
 # Timewindow for these files is entire seedramp
@@ -87,9 +105,16 @@ da['estime'].plot()
 
 #%%
 
-da_sel = da.mean('estime').sel(x=slice(650,780), y=slice(450,575))
+beam_yslice = slice(-21,21)
+beam_xslice = slice(160,195)
+
+da_sel = da.mean('estime').sel(x=beam_xslice, y=beam_yslice)
 
 da_sel.mean('gatedelay').plot(robust=True)
+
+plt.xlabel('x (mm)')
+plt.ylabel('y (mm)')
+
 
 #%%
 
@@ -103,16 +128,54 @@ da_sel = da.sel(estime=tw).sel(gatedelay=slice(780,802))
 da_sel
 
 #%%
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 
-# plt.figure(figsize=(8,4))
 
-da_sel.mean('estime').plot(col='gatedelay', col_wrap=4, figsize=(8,4))  
+# Define the overload threshold
+overload_threshold = 1100
+
+# Create a colormap that has a different color for overloaded values
+cmap = plt.get_cmap('viridis')
+colors_under_overload = cmap(np.linspace(0, 1, overload_threshold))
+overload_color = np.array([[1, 0, 0, 1]])  # Red color for overload
+new_colors = np.vstack((colors_under_overload, overload_color))
+new_cmap = colors.LinearSegmentedColormap.from_list('new_cmap', new_colors)
+
+# Create a normalization that maps the minimum value in the data to the start of the colormap,
+# and values above the overload threshold to the end of the colormap
+norm = colors.Normalize(vmin=np.min(da_sel.values), vmax=overload_threshold)
+
+
+g = da_sel.mean('estime').plot(
+    col='gatedelay', 
+    col_wrap=4, 
+    figsize=(8,4), 
+    cmap = new_cmap,
+    norm=norm,
+    # robust=True
+    # vmax=1200
+    )  
+
+for ax in g.axes[:,0]:
+    ax.set_ylabel('y (mm)')
+for ax in g.axes[-1,:]:
+    ax.set_xlabel('x (mm)')
+
+# remove grid
+for ax in g.axes.flatten():
+    ax.grid(False)
+    ax.xaxis.grid(False, which='both')
+    ax.yaxis.grid(False, which='both')
+
+
+
 
 plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
 
 # %%
 
-da_sel2 = da_sel.sel(x=slice(650,780), y=slice(450,575))
+da_sel2 = da_sel.sel(x=beam_xslice, y=beam_yslice)
 
 da_sel2.mean('estime').mean('gatedelay').plot()
 
