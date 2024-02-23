@@ -470,8 +470,9 @@ def extruded_mesh_from_dataset(ds, tri, exclude=["Q","kappa_dL"], add_bc=True):
     mesh.points[:] = ds["pos"].to_numpy().reshape(mesh.points.shape)
 
     output_variables = [x for x in ds.data_vars]
-    for name in ["Q","kappa_dL"]:
-        output_variables.remove(name)
+    for name in exclude:
+        if name in output_variables:
+            output_variables.remove(name)
 
     for name in output_variables:
         d = ds[name]
@@ -492,6 +493,9 @@ def extruded_mesh_from_dataset(ds, tri, exclude=["Q","kappa_dL"], add_bc=True):
     blocks["beam"] = mesh
 
     # source data
+    if add_bc == False:
+        return blocks
+
     bc_loc = {"source":0, "target":-1}
     for bc_name, s_bc in bc_loc.items():
         pos1 = ds.pos.isel(s=s_bc).to_numpy()
