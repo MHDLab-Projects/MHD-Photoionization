@@ -124,67 +124,6 @@ da_max2.plot(marker='o')
 
 #%%
 
-from pint import Quantity
-
-f_A = Quantity(0.05, 'dimensionless')
-laser_power = Quantity(10, 'mJ')
-
-powers = da_max2['power'].values*laser_power*f_A
-
-powers
-
-#%%[markdown]
-
-# Laser heating calculation
-
-#%%
-
-cantera_results_dir = pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
-
-ds_TP_params = xr.load_dataset(pjoin(cantera_results_dir, 'ds_TP_params.cdf'))
-
-ds_sel = ds_TP_params[['Cp', 'rho']].sel(T=2000, P=1e5, phi=0.8, method='nearest')
-
-
-
-Cp = Quantity(ds_sel['Cp'].mean('Kwt').item(), ds_sel['Cp'].attrs['units'])
-rho = Quantity(ds_sel['rho'].mean('Kwt').item(), ds_sel['rho'].attrs['units'].replace("m3", 'm**3'))
-
-Cp_vol = Cp * rho
-Cp_vol
-
-heated_volume = Quantity(1, 'cm^3') # Unknown/not well defined
-
-Cp_final = Cp_vol * heated_volume
-
-Cp_final.to('J/K')
-
-#%%
-
-deltaTs = powers / Cp_final
-
-deltaTs.to('K')
-
-#%%[markdown]
-
-# Max ionized potassium calculation
-
-#%%
-
-Ei = Quantity(4.34, 'eV/particle')
-
-n_max = powers/Ei/heated_volume
-
-n_max.to('particle/cm^3').magnitude
-
-
-#%%
-
-ds_TP_params['rho']
-
-
-# %%
-
 da_fit = da_lecroy.copy()
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
