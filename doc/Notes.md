@@ -203,4 +203,14 @@ look at CFD e- Kp and OH
 - [x] check zero of signals
     fuel flow 
     o2 flow
-    
+
+# 2024-02-26 
+
+## Lmfit notes
+
+figuring out how to pass in parameters to fit_da_lmfit
+
+- nK profile for numerical fitting. challenging as it is a 1d array, different for each combo
+- temperature, different for each combo
+
+in the case of temperature, a default float cannot be defined in the model function, as that will make it a param. So kwargs that are going to vary across fits need to be None. Then passed in as model opts. 

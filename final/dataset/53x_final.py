@@ -127,7 +127,7 @@ ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
 ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
 
 #TODO: extrapolate based on log, downselect to kwt. should have simulations for other kwt. 
-ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'], kwargs={'fill_value': 'extrapolate'})
+ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'].values, kwargs={'fill_value': 'extrapolate'})
 
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=goldi_pos,method='nearest')
 
