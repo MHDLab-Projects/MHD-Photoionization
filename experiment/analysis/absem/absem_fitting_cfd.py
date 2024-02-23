@@ -526,11 +526,13 @@ ds_cfd_cl['nK_m3'].sel(offset=1).plot(label='cfd 0.1')
 ds_cfd_cl['nK_m3'].sel(offset=2).plot(label='cfd 0.3')
 
 
+
+
 plt.yscale('log')
 
 plt.legend()
 
-plt.ylim(1e18,1e23)
+plt.ylim(1e21,1e22)
 
 # %%
 

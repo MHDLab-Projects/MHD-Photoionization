@@ -3,22 +3,27 @@
 # Immediate
 
 - [] respond comments
-- [] move diagnostics to SI
+- [] move diagnostics to SI?
 - [] update noneq in SI
 - [] run through writing
-- [] add summary of KOH model (email)
+- [x] add summary of KOH model (email)
 
 # Medium
 
 - [] implement numerical integration nK determination to final pipeline
 - [] improve main pimax image
     - [x] calibration
-    - [] compare width to cfd beam profile
+    - [] compare width to cfd beam profile, also compare shock diamonds
+
+- [] laser calculation with number of KOH to e- 
+- [] make AS plot with n_e as y axis
 
 - [] use beam profile, CFD KOH, and KOH absorption cross seciton to estimate delta n_e
 
 - [x] laser profile. 
-= [] fix MWS data based on no torch transmission. What dates do we have No Torch MWS data for? can we check it is the same as far downstream. 
+- [] fix MWS data based on no torch transmission. What dates do we have No Torch MWS data for? can we check it is the same as far downstream. 
+
+
 
 - [x] try fitting mws to a profile with O2 tau and K+ bimolecular combo
     - [] try refactoring dnedt models

@@ -192,10 +192,11 @@ tau = tau.sel(run=('2023-05-24', 1)).item()
 dne = ds_p['dne'].pint.quantify('particle/um**3').pint.to('particle/cm**3')
 dne = dne.sel(run=('2023-05-24', 1)).item()
 
+
 # add text to plot of tau and dne with uncertianties
 
 tau_str = '$\\tau$ = {:.3f}  us'.format(tau.magnitude)
-dne_str = '$\Delta n_e$ = {:.2e} #/um^3'.format(dne.magnitude)
+dne_str = '$\Delta n_e$ = {:.2e} #/cm^3'.format(dne.magnitude)
 
 plt.text(0.2, 0.92, tau_str, transform=plt.gca().transAxes, fontsize=12)
 plt.text(0.2, 0.85, dne_str, transform=plt.gca().transAxes, fontsize=12)
@@ -203,4 +204,12 @@ plt.text(0.2, 0.85, dne_str, transform=plt.gca().transAxes, fontsize=12)
 plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt_v2.png'))
 
 #%%
+
+n_e_profile = ds['AS_all']*dne
+n_e_profile.name = 'delta n_e'
+
+n_e_profile.plot()
+
+plt.yscale('log')
+
 
