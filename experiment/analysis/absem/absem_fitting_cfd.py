@@ -357,29 +357,33 @@ plt.xlim(763,775)
 # %% [markdown]
 # ## CFD Profiles
 
-# %%
+#%%
 
 #TODO: pass a different profile in for each iteration
 
 dss_p = []
 dss_absem_fit = []
 
+mod = Model(alpha_deq_solve)
+
+params = mod.make_params(nK_max=1e-5, )
+params['nK_max'].min = 0
+
+params.add('nK_m3', expr='nK_max*1e27')
+params['nK_m3'].vary = False
+
+
+da_cfd_kappa_norm = da_cfd_kappa/da_cfd_kappa.groupby('pos').max('dist')
+
+#%%
+
 for pos in ds_fit.coords['motor'].values:
 
-
-    nK_profile = da_cfd_kappa.sel(pos=pos, method='nearest').to_series()
-    nK_max = nK_profile.max()
-    nK_profile = nK_profile/nK_max
-
-    mod = Model(alpha_deq_solve, nK_profile=nK_profile)
-
-    params = mod.make_params(nK_max=1e-5, )
-    params['nK_max'].min = 0
-
-    params.add('nK_m3', expr='nK_max*1e27')
-    params['nK_m3'].vary = False
-
     alpha_fit_sel = alpha_fit.sel(motor=pos)
+
+    nK_profile = da_cfd_kappa_norm.sel(pos=pos, method='nearest').to_series()
+
+    mod.opts.update(nK_profile=nK_profile)
 
     ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = alpha_fit_sel.absem.perform_fit(mod, params, method='iterative')
 
