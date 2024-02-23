@@ -359,11 +359,6 @@ plt.xlim(763,775)
 
 #%%
 
-#TODO: pass a different profile in for each iteration
-
-dss_p = []
-dss_absem_fit = []
-
 mod = Model(alpha_deq_solve)
 
 params = mod.make_params(nK_max=1e-5, )
@@ -373,27 +368,22 @@ params.add('nK_m3', expr='nK_max*1e27')
 params['nK_m3'].vary = False
 
 
-da_cfd_kappa_norm = da_cfd_kappa/da_cfd_kappa.groupby('pos').max('dist')
+da_cfd_nK = ds_cfd['Yeq_K'].sel(kwt=1)
+
+da_cfd_nK_norm = da_cfd_nK/da_cfd_nK.groupby('pos').max('dist')
+da_cfd_nK_norm = da_cfd_nK_norm.rename(pos='motor')
+
+#TODO: motor coordinates not exactly the same, why? 
+da_cfd_nK_norm = da_cfd_nK_norm.sel(motor=alpha_fit.coords['motor'].values, method='nearest')
+da_cfd_nK_norm = da_cfd_nK_norm.assign_coords(motor=alpha_fit.coords['motor'].values) 
+da_cfd_nK_norm
+
 
 #%%
 
-for pos in ds_fit.coords['motor'].values:
 
-    alpha_fit_sel = alpha_fit.sel(motor=pos)
 
-    nK_profile = da_cfd_kappa_norm.sel(pos=pos, method='nearest').to_series()
-
-    mod.opts.update(nK_profile=nK_profile)
-
-    ds_absem_fit_sel, ds_p_sel, ds_p_fit_sel = alpha_fit_sel.absem.perform_fit(mod, params, method='iterative')
-
-    dss_p.append(ds_p_sel)
-    dss_absem_fit.append(ds_absem_fit_sel)
-
-    # break
-
-ds_p = xr.concat(dss_p, dim='motor')
-ds_absem_fit = xr.concat(dss_absem_fit, dim='motor')
+ds_absem_fit, ds_p, ds_p_stderr = alpha_fit.absem.perform_fit(mod, params, method='iterative', nK_profile = da_cfd_nK_norm)
 
 #%%
 ds_absem_fit.to_array('var').plot(hue='var', row='motor')
@@ -446,6 +436,8 @@ plt.legend()
 plt.ylim(1e21,1e22)
 
 # %%
+
+ds_p['nK_m3'].plot(marker='o', label='cfd profile')
 
 
 
