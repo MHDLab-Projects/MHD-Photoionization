@@ -222,6 +222,17 @@ ds_lines
 ds_lines['T'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
 
 #%%
+ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
+
+#%%
+
+ds_lines.sel(kwt=1, phi=0.8)['Yeq_K'].plot(row='pos', hue='offset')
+
+plt.yscale('log')
+
+plt.ylim(1e-10,)
+
+#%%
 
 
 ds_lines['T'].sel(kwt=1).plot(col='phi', hue='pos', row='offset')

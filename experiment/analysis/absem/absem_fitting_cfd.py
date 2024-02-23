@@ -67,69 +67,49 @@ from scipy.integrate import solve_ivp
 from mhdpy.analysis.absem.fitting import Q_2peak
 from pint import Quantity
 
+from mhdpy.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
 
+# def dI_dx(x, I, kappa_profile):
 
-def dI_dx(x, I, kappa_profile):
+#     # differential equation for I(x)
+#     # dI/dx = -kappa(x) * I(x)
 
-    # differential equation for I(x)
-    # dI/dx = -kappa(x) * I(x)
+#     kappa = np.interp(x, kappa_profile.index, kappa_profile)
+#     return -kappa * I
 
-    kappa = np.interp(x, kappa_profile.index, kappa_profile)
-    return -kappa * I
+# def calc_I_profile_deq(kappa_profile):
+#     """
+#     Solve the differential equation for I(x) using the kappa(x) profile
+#     """
 
-def calc_I_profile_deq(kappa_profile):
-    """
-    Solve the differential equation for I(x) using the kappa(x) profile
-    """
+#     x = kappa_profile.index
 
-    x = kappa_profile.index
+#     I_0 = 1
+#     sol = solve_ivp(dI_dx, [x[0], x[-1]], [I_0], args=(kappa_profile,), t_eval=x, method='BDF', max_step=0.1)
 
-    I_0 = 1
-    sol = solve_ivp(dI_dx, [x[0], x[-1]], [I_0], args=(kappa_profile,), t_eval=x, method='BDF', max_step=0.1)
+#     I = sol.y[0]
 
-    I = sol.y[0]
+#     return I
 
-    return I
+# from scipy.integrate import cumtrapz
 
-from scipy.integrate import cumtrapz
+# def calc_I_profile_num(kappa_profile):
+#     """
+#     numerically integrate the differential equation for I(x) using the kappa(x) profile
+#     """
+#     x = kappa_profile.index
 
-def calc_I_profile_num(kappa_profile):
-    """
-    numerically integrate the differential equation for I(x) using the kappa(x) profile
-    """
-    x = kappa_profile.index
+#     # Compute -kappa(x) * I(x)
+#     dI_dx = -kappa_profile.values
 
-    # Compute -kappa(x) * I(x)
-    dI_dx = -kappa_profile.values
+#     # Compute the cumulative integral
+#     I = cumtrapz(dI_dx, x, initial=0)
 
-    # Compute the cumulative integral
-    I = cumtrapz(dI_dx, x, initial=0)
+#     # Add the initial condition
+#     I += 1
 
-    # Add the initial condition
-    I += 1
+#     return I
 
-    return I
-
-def calc_I_profile_euler(kappa_profile):
-    """
-    use the euler method to solve the differential equation for I(x) using the kappa(x) profile
-    """
-
-
-    x = kappa_profile.index
-    I = np.zeros_like(kappa_profile.values)
-    I[0] = 1  # initial condition
-
-    # Euler method
-    for i in range(1, len(x)):
-        dI_dx = -kappa_profile.values[i-1] * I[i-1]
-        deltax = x[i] - x[i-1]
-        I[i] = I[i-1] + dI_dx * deltax
-
-        if I[i] < 0:
-            I[i] = 0
-
-    return I
 
 
 # %%
@@ -202,7 +182,7 @@ for pos in da_cfd_kappa.coords['pos'].values:
     da_sel = da_cfd_kappa.sel(pos=pos)
     kappa_profile = pd.Series(da_sel.values, index=da_sel.coords['dist'].values)
 
-    I = calc_I_profile_deq(kappa_profile)
+    I = calc_I_profile_euler(kappa_profile)
 
     Is.append(I)
 
@@ -256,79 +236,6 @@ plt.xlabel('Stage position [mm]')
 # Now we perform the above for each individual wavelength in the spectrum
 
 #%%
-
-from scipy.ndimage import gaussian_filter1d
-
-from scipy.interpolate import interp1d
-from scipy.ndimage import gaussian_filter1d
-
-def alpha_deq_solve(x,
-    nK_profile=None, #must be a kwarg...
-    nK_max =1e-7,
-    ):
-    """
-    Parameter
-    ---------
-    x : float array
-        wavelength [nm]
-    nK_profile : float array
-        normalized number density profile [dimensionless]
-    nK_max : float
-        maximum number density [1/nm^3]
-
-    Returns
-    -------
-    alpha : float array
-        absorption []
-    """
-
-    if nK_profile is None:
-        raise ValueError('nK_profile must be provided')
-
-    Qs = Q_2peak(x)
-
-    nK_max = Quantity(nK_max, '1/nm^3')
-
-    # kappa0 = Quantity(0, '1/nm')
-
-    alphas = np.zeros_like(x)
-
-    for i, Q in enumerate(Qs):
-
-        kappa_max = (Q*nK_max).to('1/cm').magnitude
-
-        kappa_profile = kappa_max * nK_profile
-
-        I = calc_I_profile_euler(kappa_profile)
-
-        tau = Quantity(I[-1]/I[0], 'dimensionless')
-
-        alpha = -tau + Quantity(1, 'dimensionless')
-        alpha = alpha.magnitude
-
-        alphas[i] = alpha
-
-
-    # New method of spectrometer blurring, interpolate here then sample back. Allows for fitting fewer wavelengths
-    # TODO: incorporate this into other fitting methods
-    spect_res = 0.026
-    blur_pixels_amount = 1 # Was a parameter... 
-    wls_interp = np.arange(min(x), max(x), spect_res)
-
-    # Interpolate to wls_interp
-    f = interp1d(x, alphas, kind='linear', fill_value='extrapolate')
-    alphas_interp = f(wls_interp)
-
-    # Apply Gaussian blur
-    blur_pixels_amount = 1
-    alphas_blur = gaussian_filter1d(alphas_interp, blur_pixels_amount)
-
-    # Interpolate back to x
-    f = interp1d(wls_interp, alphas_blur, kind='linear', fill_value='extrapolate')
-    alphas = f(x)
-
-
-    return alphas
 
 # wls = ds_absem.coords['wavelength'].values
 
