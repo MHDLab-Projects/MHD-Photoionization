@@ -118,7 +118,9 @@ nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
 nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
-nK_mw_horns = nK_mw_horns.sel(motor = slice(50,300))
+
+#TODO: removing last datapoint. Can this be fixed with calibraiton/processing?
+nK_mw_horns = nK_mw_horns.sel(motor = slice(50,220))
 
 g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-18 Run 1', ax=ax1)
 g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2', ax=ax1)
@@ -141,7 +143,9 @@ nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
 nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
-nK_mw_horns = nK_mw_horns.sel(motor = slice(50,300))
+
+#TODO: final datapoint for 516 has no potassium peaks. However, calibration is off and fit gives a large absorption value. Removing is probably best as any absorption is not meaninful anyway. 
+nK_mw_horns = nK_mw_horns.sel(motor = slice(50,200)) 
 
 g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1', ax=ax2)
 

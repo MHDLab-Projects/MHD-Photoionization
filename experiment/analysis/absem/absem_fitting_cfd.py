@@ -26,21 +26,42 @@ ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 ds_absem
 
+#%%
+
+from mhdpy.pyvista_utils import CFDDatasetAccessor
+
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
+
+ds_cfd = xr.load_dataset(fp_cfd_profiles)
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
+ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
+
+da_cfd = ds_cfd['Yeq_K']
+
+da_cfd
+
+
+
 # %%
 
 # make an artifical tophat profile. zero outside of the beam, constant inside the beam 
 
 L = Quantity(1, 'cm')
-L_center = Quantity(1, 'cm')
+#TODO: why centered at 5.5?
+L_center = Quantity(5.5, 'cm')
 
 def tophat_profile(L, L_center, x):
     nK = np.zeros_like(x)
     nK[(x > L_center - L/2) & (x < L_center + L/2)] = 1
     return nK
 
-x = np.linspace(0, 2, 100)
+# x = np.linspace(0, 2, 100)
+x = da_cfd.coords['dist'].values
 
-nK_profile = tophat_profile(L.magnitude, 1, x) 
+nK_profile = tophat_profile(L.magnitude, L_center.magnitude, x) 
 
 plt.plot(x, nK_profile)
 
@@ -139,32 +160,20 @@ plt.plot(x, kappa_profile, 'r')
 
 # Now pull in the CFD data to make a normalized number density profile nK_CFD(x) that is used to calculate the absorption coefficient kappa(x) = Q * nK(x).
 
-#%%
-
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp_cfd_profiles)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
-ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
-ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-
-da_cfd = ds_cfd['Yeq_K']
-
-da_cfd
-
 
 # %%
 
 
-da_cfd.plot(hue='pos', col='kwt')
+g = da_cfd.plot(hue='motor', col='kwt')
 
 plt.yscale('log')
 
-# plt.ylim(1e17,1e23)
+for ax in g.axes.flatten():
+    ax.plot(x, nK_profile*nK.to('1/cm^3'), 'k--')
+
+plt.ylim(1e13,1e16)
+
+plt.xlim(3,7)
 
 # plt.gca().get_legend().remove()
 
@@ -178,8 +187,8 @@ da_cfd_kappa
 
 Is = []
 
-for pos in da_cfd_kappa.coords['pos'].values:
-    da_sel = da_cfd_kappa.sel(pos=pos)
+for motor in da_cfd_kappa.coords['motor'].values:
+    da_sel = da_cfd_kappa.sel(motor=motor)
     kappa_profile = pd.Series(da_sel.values, index=da_sel.coords['dist'].values)
 
     I = calc_I_profile_euler(kappa_profile)
@@ -187,12 +196,12 @@ for pos in da_cfd_kappa.coords['pos'].values:
     Is.append(I)
 
 
-da_I_pos = xr.DataArray(Is, coords=da_cfd_kappa.coords, dims=['pos', 'dist'])
+da_I_pos = xr.DataArray(Is, coords=da_cfd_kappa.coords, dims=['motor', 'dist'])
 
 
 # %%
 
-da_I_pos.plot(hue='pos')
+da_I_pos.plot(hue='motor')
 
 plt.ylabel('I(x)')
 plt.xlabel('x_beam [cm]')
@@ -274,19 +283,8 @@ plt.ylim(0,1)
 
 # %%
 
-from lmfit import Model
-
-mod = Model(alpha_deq_solve, nK_profile=nK_profile)
-
-params = mod.make_params(nK_max=1e-5, )
-
-params.add('nK_m3', expr='nK_max*1e27')
-params['nK_m3'].vary = False
-
 
 # %%
-
-from mhdpy.xr_utils import fit_da_lmfit
 
 ds_fit = ds_absem.mean('mnum').mean('run').sel(mp='mw_horns').dropna('motor')
 
@@ -312,26 +310,33 @@ plt.ylim(-0.1,1.1)
 
 #%%
 
-ds_fit = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
 
-ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
+ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix, method='iterative')
 
-# ds_fit = ds_fit.groupby('motor').apply(lambda x: x.absem.reduce_keep_wings())
+ds_p_beer = ds_p.copy()
 
-alpha_fit = ds_fit['alpha']
-#%%
-
-alpha_fit.plot(row='motor')
-
-plt.yscale('log')
 
 # %% [markdown]
 # ## Tophat profile
 
 # %%
+from lmfit import Model
+
+mod = Model(alpha_deq_solve, nK_profile=nK_profile)
+
+params = mod.make_params(nK_max=1e-5, )
+
+params.add('nK_m3', expr='nK_max*1e27')
+params['nK_m3'].vary = False
 
 
-ds_absem_fit, ds_p, ds_p_fit = alpha_fit.absem.perform_fit(mod, params, method='iterative')
+
+from mhdpy.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+
+da_fit = pipe_fit_prep_alpha_2(ds_fix)
+
+ds_absem_fit, ds_p, ds_p_fit = da_fit.absem.perform_fit(mod, params, method='iterative')
 
 ds_p_tophat = ds_p.copy()
 
@@ -359,31 +364,24 @@ plt.xlim(763,775)
 
 #%%
 
-mod = Model(alpha_deq_solve)
-
-params = mod.make_params(nK_max=1e-5, )
-params['nK_max'].min = 0
-
-params.add('nK_m3', expr='nK_max*1e27')
-params['nK_m3'].vary = False
-
 
 da_cfd_nK = ds_cfd['Yeq_K'].sel(kwt=1)
 
-da_cfd_nK_norm = da_cfd_nK/da_cfd_nK.groupby('pos').max('dist')
-da_cfd_nK_norm = da_cfd_nK_norm.rename(pos='motor')
+da_cfd_nK_norm = da_cfd_nK/da_cfd_nK.max('dist')
 
 #TODO: motor coordinates not exactly the same, why? 
-da_cfd_nK_norm = da_cfd_nK_norm.sel(motor=alpha_fit.coords['motor'].values, method='nearest')
-da_cfd_nK_norm = da_cfd_nK_norm.assign_coords(motor=alpha_fit.coords['motor'].values) 
+da_cfd_nK_norm = da_cfd_nK_norm.sel(motor=ds_fit.coords['motor'].values, method='nearest')
+da_cfd_nK_norm = da_cfd_nK_norm.assign_coords(motor=ds_fit.coords['motor'].values) 
 da_cfd_nK_norm
 
 
 #%%
 
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
+ds_absem_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, da_cfd_nK_norm)
 
-ds_absem_fit, ds_p, ds_p_stderr = alpha_fit.absem.perform_fit(mod, params, method='iterative', nK_profile = da_cfd_nK_norm)
+ds_p_cfd = ds_p.copy()
 
 #%%
 ds_absem_fit.to_array('var').plot(hue='var', row='motor')
@@ -405,39 +403,23 @@ ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
 ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('particle/m^3')
 
-
-#%%
-
-# ds_cfd_cl.sel(offset=0.1)['nK_m3'].plot()
-
-# plt.yscale('log')
-
-ds_cfd_cl
-
-
-
 # %%.
 
 
-ds_p['nK_m3'].plot(marker='o', label='cfd profile')
+ds_p_cfd['nK_m3'].plot(marker='o', label='cfd profile')
 ds_p_tophat['nK_m3'].plot(marker='o', label='tophat profile')
+ds_p_beer['nK_m3'].plot(marker='o', label='beer lambert')
 
 ds_cfd_cl['nK_m3'].sel(offset=0).plot(label='cfd centerline')
 ds_cfd_cl['nK_m3'].sel(offset=1).plot(label='cfd 0.1')
 ds_cfd_cl['nK_m3'].sel(offset=2).plot(label='cfd 0.3')
 
-
-
-
 plt.yscale('log')
 
 plt.legend()
 
-plt.ylim(1e21,1e22)
+# plt.ylim(1e21,1e22)
+plt.ylim(1e17,1e22)
+
 
 # %%
-
-ds_p['nK_m3'].plot(marker='o', label='cfd profile')
-
-
-

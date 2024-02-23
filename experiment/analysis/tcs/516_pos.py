@@ -47,6 +47,14 @@ ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wav
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 
+#%%
+
+ds_absem['alpha'].sel(mp='mw_horns').mean('mnum').mean('run').plot(hue='motor', x='wavelength')
+
+plt.gca().get_legend().remove()
+
+plt.ylim(-0.1,0.1)
+
 
 #%%
 

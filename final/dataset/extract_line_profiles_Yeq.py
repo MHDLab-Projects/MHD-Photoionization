@@ -192,12 +192,12 @@ for key, fp in fps.items():
             ds_out = xr.Dataset(df_int)
             ds_out = ds_out.rename({'dim_0':'dist'})
 
-            ds_out = ds_out.assign_coords(pos=position.to('m').magnitude)
+            ds_out = ds_out.assign_coords(motor=position.to('m').magnitude)
             ds_out = ds_out.assign_coords(kwt=float(kwt))
             ds_out = ds_out.assign_coords(phi=float(phi))
             ds_out = ds_out.assign_coords(offset=offset.to('m').magnitude)
 
-            ds_out.expand_dims('pos').expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('pos', 'kwt', 'phi', 'offset'))
+            ds_out.expand_dims('motor').expand_dims('kwt').expand_dims('phi').expand_dims('offset').stack(temp=('motor', 'kwt', 'phi', 'offset'))
 
             dss.append(ds_out)
 
@@ -205,11 +205,11 @@ for key, fp in fps.items():
 
 ds_lines = xr.concat(dss, dim='temp')
 
-ds_lines = ds_lines.set_index(temp=['pos', 'kwt', 'phi', 'offset']).unstack('temp')
+ds_lines = ds_lines.set_index(temp=['motor', 'kwt', 'phi', 'offset']).unstack('temp')
 
 #%%
 
-ds_lines['pos'] = ds_lines['pos'].pint.quantify('m').pint.to('mm')
+ds_lines['motor'] = ds_lines['motor'].pint.quantify('m').pint.to('mm')
 ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('mm')
 ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
 
@@ -219,14 +219,14 @@ ds_lines
 
 #%%
 
-ds_lines['T'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
+ds_lines['T'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
 
 #%%
-ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
+ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
 
 #%%
 
-ds_lines.sel(kwt=1, phi=0.8)['Yeq_K'].plot(row='pos', hue='offset')
+ds_lines.sel(kwt=1, phi=0.8)['Yeq_K'].plot(row='motor', hue='offset')
 
 plt.yscale('log')
 
@@ -235,12 +235,12 @@ plt.ylim(1e-10,)
 #%%
 
 
-ds_lines['T'].sel(kwt=1).plot(col='phi', hue='pos', row='offset')
+ds_lines['T'].sel(kwt=1).plot(col='phi', hue='motor', row='offset')
 
 
 #%%
 
-ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='pos', row='phi')
+ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
 
 plt.yscale('log')
 
@@ -248,7 +248,7 @@ plt.ylim(1e-14, 1e-2)
 
 #%%
 
-ds_lines['Yeq_K'].sel(kwt=1).plot(col='phi', hue='pos', row='offset')
+ds_lines['Yeq_K'].sel(kwt=1).plot(col='phi', hue='motor', row='offset')
 plt.yscale('log')
 
 
@@ -256,6 +256,77 @@ plt.yscale('log')
 
 ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
 
+#%%[markdown]
+
+# # extract barrel exit profile
+
+#%%
+
+x_exit = Quantity(20.8, 'cm')
+exit_offset = Quantity(5, 'mm') #TODO: measure
+
+a = [x_exit , Quantity(-5, 'cm') , Quantity(0, 'cm')]
+b = [x_exit , Quantity(5, 'cm'), Quantity(0, 'cm')]
+
+line1 = extract_line_axi(mesh, a, b)
+
+p = pv.Plotter()
+
+p.add_mesh(mesh, scalars='K')
+p.add_mesh(line1, color='red', line_width=5)
+
+
+p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
+
+# p.show()
+
+#%%
+
+df_lines = convert_line_df(line1, ['Yeq_K'])
+
+df_lines.plot()
+
+#%%
+dist_grid = np.arange(0, 0.1, 0.001)
+dist_grid = Quantity(dist_grid, 'm')
+
+dss = []
+
+for key, fp in fps.items():
+
+    phi, kwt = key.split('_')
+
+    mesh = pv.read(fp)
+
+    line_out = extract_line_axi(mesh, a, b)
+
+    df_lines = convert_line_df(line_out, all_fields)
+    df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
+
+    ds_out = xr.Dataset(df_int)
+    ds_out = ds_out.rename({'dim_0':'dist'})
+
+    ds_out = ds_out.assign_coords(kwt=float(kwt))
+    ds_out = ds_out.assign_coords(phi=float(phi))
+
+    ds_out.expand_dims('kwt').expand_dims('phi').stack(temp=('kwt', 'phi'))
+
+    dss.append(ds_out)
+
+
+
+ds_out = xr.concat(dss, 'temp')
+
+ds_out = ds_out.set_index(temp=['kwt', 'phi']).unstack('temp')
+
+ds_out['dist'] = ds_out['dist'].pint.quantify('m').pint.to('mm')
+
+ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_barrelexit_Yeq.cdf'))
+
+
+#%%
+
+ds_out['Yeq_K'].plot(col='kwt', hue='phi')
 
 #%%[markdown]
 

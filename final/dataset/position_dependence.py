@@ -74,17 +74,53 @@ ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos
 
 ds_absem.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
+#%%
+
+
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdpy.pyvista_utils import CFDDatasetAccessor
+
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
+ds_cfd_beam_mobile = xr.load_dataset(fp_cfd_profiles)
+
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
+ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
+
+
+ds_cfd_beam = xr.concat([
+                    ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
+                    ds_cfd_beam_barrel.assign_coords(mp='barrel')
+                    ], dim='mp')
+
+
+
+ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
+ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
+
+ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+ds_cfd_beam = ds_cfd_beam.sel(offset=0)
+
+da_cfd_beam = ds_cfd_beam['Yeq_K']
+
+da_cfd_beam = da_cfd_beam.assign_coords(phi=ds_absem.coords['phi'].values)
+da_cfd_beam = da_cfd_beam.sel(kwt=1)
+
+#TODO: motor coordinates not exactly the same, why? 
+da_cfd_beam = da_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
+da_cfd_beam = da_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values) 
+
+da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
+
+da_cfd_beam
 
 #%%
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
-spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
-ds_fit = ds_absem
+ds_fit = ds_absem.mean('mnum')
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, da_nK_profile=da_cfd_beam)
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]
 ds = ds.rename({'alpha_red': 'data', 'alpha_fit':'fit'})

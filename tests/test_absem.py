@@ -66,6 +66,30 @@ def test_pipe_fit_alpha_1(ds_absem):
 
     assert ds_p['nK_m3'].item() == pytest.approx(1.17677e+22, rel=1e-4)
 
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+def test_pipe_fit_alpha_num_1(ds_absem):
+
+    from mhdpy.pyvista_utils import CFDDatasetAccessor
+
+    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
+    ds_cfd_beam = xr.load_dataset(fp_cfd_profiles)
+
+    ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
+    ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
+
+    ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+
+    #TODO: extrapolate based on log, downselect to kwt. should have simulations for other kwt. 
+    ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'].values, kwargs={'fill_value': 'extrapolate'})
+
+    ds_cfd_beam = ds_cfd_beam.sel(phi=0.8)
+
+    da_cfd_beam = ds_cfd_beam['Yeq_K']
+    da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
+
+    ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_absem, da_nK_profile=da_cfd_beam)
+
+
 
 def test_pipe_fit_alpha_2(ds_absem_all_mnum):
     ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_2(ds_absem_all_mnum)
