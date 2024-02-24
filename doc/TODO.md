@@ -2,7 +2,7 @@
 
 # Immediate
 
-- [] respond comments
+- [x] respond comments
 - [] move diagnostics to SI?
 - [] update noneq in SI
 - [] run through writing
@@ -37,6 +37,7 @@
 
 - [] lifetime comparison of 536 and 516. Need to compare across positions. Relevant location for 516 may be inward. 
 
+- [] collect diagnostic information
 
 # Long
 

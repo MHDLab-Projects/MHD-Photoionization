@@ -211,7 +211,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img_2023-05-24.png'), bbox_inches=
 
 da_sel2 = da_sel.sel(x=beam_xslice, y=beam_yslice)
 
-da_sel2.mean('estime').mean('gatedelay').plot()
+da_sel2.mean('gatedelay').plot()
 
 plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
 

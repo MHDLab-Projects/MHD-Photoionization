@@ -47,27 +47,23 @@ Diagnostic processing is shown in Figure \ref{fig:diagnostic_processing}.
 
 \subsubsection{Microwave scattering}
 
-
-
 To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] (refs use IQ terminology). The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, (TODO: finish). The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. 
 
-The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation. 
+The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude ($U(t)$) of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation. 
 
 A more detailed schematic of the MWS setup is shown in figure S\ref*{fig:SI_MWS_Setup_Silicon}
 
 \begin{equation}
-    Mag(t) = \sqrt{I(t)^2 + Q(t)^2}
+    U(t) = \sqrt{I(t)^2 + Q(t)^2}
 \end{equation}
 
-The signal is then converted to a transmission by 
+We calculate the relative transmission, ($T(t)$), by normalizing by the average magnitude in a 1 $\mu s$ time window before the laser pulse, $U_{PP}$,   
 
 \begin{equation}
-    T(t) = \frac{Mag(t)}{Mag_{Pre Pulse}}
+    T(t) = \frac{U(t)}{U_{PP}}
 \end{equation}
 
-Where $Mag_{Pre Pulse}$ is the average magnitude within a time window of one microsecond before the laser pulse. 
-
-Finally, we calculate the combined absorption and scattering, AS, by
+Finally, we calculate the combined absorption and scattering, $AS$, by
 
 \begin{equation}
     AS(t) = 1 - T(t)
@@ -75,58 +71,48 @@ Finally, we calculate the combined absorption and scattering, AS, by
 
 Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
 
-We fit the AS time profile with a kinetic model, assuming that $AS \propto \Delta n_e$. 
+We fit the $AS (t)$ profile with a kinetic model of the electron recombination process. We first normalize $AS (t)$ by its maximum value at the laser pulse, defining $AS_{norm} = AS(t)/max(AS(t))$. We assume that $AS_{norm}(t) \propto \Delta n_e (t)$, where $\Delta n_e (t)$ is the time dependent change in the free electron density from the steady state concentration. 
 
-
-The fit is performed by numerically solving the following differential equation: 
+We fit $AS_{norm}$ by solving the following differential equation: 
 
 \begin{equation}
-    \frac{d\Delta n_e}{dt} = - k_{r, m, X} \Delta n_e - k_{r, bm, K+}\Delta{n_e}^2
+    \label{eq:fit_eq}
+    \frac{d\Delta n_e (t)}{dt} = - k_{r, m, eff} \Delta n_e (t) - k_{r, bm, K+}\Delta{n_e (t)}^2
 \end{equation}
 
-$\Delta n_e$ is the change in free electron density from the steady state concentration, $n_{e,0}$ and $k_{r, m, X}$ is the monomolecular recombination rate coefficient for an electron capturing species $X$. $k_{r, bm, X}$ is the bimolecular recombination rate coefficient for the electron capturing species X. 
+where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The motivation for the form of this equation is elaborated further in the discussion section.
+
+In the fitting process, the differential equation is numerically solved and the solution is normalized to have the have the same form as $AS_{norm}$. This solution is performed iteratively in a least squares optimization with the free fit parameters being $k_{r,m,X}$ and $\Delta{n_e,0}$, where $\Delta{n_e,0}$ is the initial excited electron density. for $k_{r, bm, K+}$ we use the value obtained by Kelley and Padley 1973 (TODO).
+
+Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
+
+Immediately after the laser pulse, there is a region of of changing slope in the logarithm of the $\Delta n_e (t)$ profile. This region arises for high $\Delta n_e$ when the second term in equation \ref{eq:fit_eq} dominates.  For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay. The time constant of the exponential decay for capture with species X, $\tau$, is given by
 
 \begin{equation}
     k_{r, m, X} = \frac{1}{\tau} = k_{r, b, X}n_{X,0}
 \end{equation}
 
-Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium species concentration of X. The use of the equilibrium value arises from the assumption that X does not change with the perturbation of the laser. If the capturing species is the background concentration of K+, then a factor of two is added (See SI, TODO/needed?). For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay with time constant $\tau = \frac{1}{k_{r,bm,X}n_{X,0}}$. For high $\Delta n_e$, the second term dominates and the solution is a power law decay. The second term arises because the potassium ion density also changes with the laser pulse, i.e. $\Delta n_{K+} = \Delta n_e$. (TODO: derivation in SI). 
-
-In the fit, the free parameters are $\tau$ and $\Delta n_e$. The AS profile is normalized for the fit. 
+Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium species concentration of X. The use of the equilibrium value arises from the assumption that X does not change with the perturbation of the laser.
 
 \subsubsection{Absorption spectroscopy}
 
-The absorption emission spectroscopy is used to determine the potassium number density, $n_K$. the AES system uses a 780 nm LED source and a high resolution HR4000 spectrometer. $n_K$ is determined at the exit of the barrel and at the center of the microwave horns (see Figure \ref{fig:expt_setup}).
+The absorption emission spectroscopy (AES) is used to determine the potassium number density, $n_K$. the AES system uses a 780 nm LED source and a high resolution HR4000 spectrometer. Two separate AES setups are applied to the exit of the barrel and at the center of the microwave horns (see Figure \ref{fig:expt_setup}).
 
-TODO: how much should this be copied from AIAA 2020
-
-The spectrally dependent absorption, $\alpha(\lambda)$, is measured from the intensity of the LED with no free jet, $I_0$, the intensity
-of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet and LED together $I_{L+F}$
+The spectrally dependent absorption, $\alpha(\lambda)$, is measured from the intensity of the LED with no free jet, $I_0$, the intensity of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet and LED together $I_{L+F}$
 
 
 \begin{equation}
     \alpha(\lambda) = 1 - \left(\frac{I_{L+F}(\lambda) - I_{F}(\lambda)}{I_F(\lambda)}\right)
 \end{equation}
 
-Currently the absorption is fit with the Beer-Lambert law, but we are working on numerical integration of the absorption to determine the number density and this section will be rewritten. 
 
-The differential equation is 
-
-\begin{equation}
-    \frac{dI}{dx} = -\kappa(\lambda) n_K(x) I
-\end{equation}
-
-If we assume $n_K$ is constant, we can solve the differential equation to get the Beer lambert law:
+We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K, max}$, by numerically integrating the Beer-Lambert law along the path of the beam (x).
 
 \begin{equation}
-    \alpha(\lambda) = 1 - \exp(-\kappa(\lambda) n_K L)
+    \frac{dI}{dx}(\lambda) = -\kappa(\lambda) n_{K,max} f_{K, CFD}(x)
 \end{equation}
 
-Where $L$ is the path length.
-
-For numerical integration, we write $n_K(x) = n_{K,max} f(x)$, where $f(x)$ is the profile of the number density along the beam path determined by CFD. 
-
-
+Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,max}$ is the maximum potassium number density, and $f_{K, CFD}(x)$ is the profile of the potassium number density along the beam path determined by CFD. to determine $\alpha(\lambda)$, we solve this equation for each wavelength with the Euler method.  
 
 
 \subsection{Viability modeling (Cantera)}

@@ -5,9 +5,9 @@
 \hypertarget{species-concentration-and-conductivity-calculations}{%
 \subsection{Species concentration and Conductivity calculations}\label{species-concentration-and-conductivity-calculations}}
 
-We begin by modeling the combustion of seeded oxy-kerosene mixture with Cantera. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction. This mixture is initialized at a inlet temperature (300 K) then allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (1e6 Pa).
+We begin by modeling the combustion of seeded oxy-kerosene mixture with the Cantera python package. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction. This mixture is initialized at a inlet temperature (300 K) then allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (1e6 Pa).
 
-We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atomspheric pressure.
+We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
 We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, This method also represents an improvement to previous analysis as we have detailed the collisional cross sections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross sections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
 

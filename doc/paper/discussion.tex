@@ -1,12 +1,13 @@
 \section{Discussion}
 
-We now discuss the model for the photoionization and recombination process. We tentatively propose a model:
+We now discuss the model for the photoionization and recombination process. 
+
+\subsection{PhotoIonization Process}
 
 1. KOH + $h\nu$ -> K* + OH
 
 2. K* + M -> K+ + e- + M
 
-3. e- + O2 -> O2-, or e- + K+ + M -> K + M
 
 Step 1 is the well-known phenomenon of laser-induced fluoresce in Alkali compounds (hydroxides, chlorides, etc.) which has been used to measure the species concentration of these alkali compounds in flames.[Oldenbork 1986] The excited states of the alkali compounds are weakly bound and dissociate. For KOH, there is a UV absorption band with a peak near the 248 nm wavelength of our laser, and the dissociated state creates a K atom in the excited 2P0 state [Oldenbork and Leffler 2017]. This excited K atom is known to rapidly photo luminesce. We observe this photoluminescence in our ICCD camera measurements (see Figure S\ref*{fig:SI_536_iccd}) which is on the order of our laser pulse width (10ns) (TODO: add laser pulse to figure). We have measured this photoluminescence decay in similar flames as a time-resolved spectrograph in previous experiments, and present those results in the SI. The radiative lifetime of an isolated 2P0 state K atom is about 25 ns, but this lifetime will be reduced by collisional quenching, consistent with our measurements. [leffler 2017, (Smirinov (Fund. Of Ionized Gases - Table 2.8)]. 
 
@@ -20,6 +21,15 @@ The measurement of free electrons in addition to the photoluminescence is eviden
     \2 The MWS and photodiode signals peak downstream of the exit. The CFD data predict a peak in KOH in a similar location (SI). However, the difference between the barrel exit and this peak location is not as large as the experimental data. TODO: why is barrel KOH high. 
 \end{outline}
 
+\subsection{Recombination Process}
+
+
+After ionization, the excited electron population decays back to equilibrium through a recombination process. We propose: 
+
+3. e- + X + M -> X- + M
+    * X = O2 (Low Power) 
+    * X = K+ (High Power)
+
 Finally, in step 3 the excited free electron is captured by an oxygen molecule. For high excitation densities or near the barrel exit other species can capture the electron. TODO: how to present? 
 
 \begin{outline}
@@ -28,12 +38,11 @@ Finally, in step 3 the excited free electron is captured by an oxygen molecule. 
     \2 the decay time predicted for oxygen capture is the closest to the measured decay time. There is a significant uncertainty in the recombination coefficient for this process and our values fall within the range presented in the literature. 
     \2 The decay time appears to be independent of the position along the free jet. The decay time is difficult to quantify outside of the goldilocks region due to the AS fluctuations, but the AS magnitude is still appreciable after a few microseconds regardless of position. a similar order of magnitude to the exponential fit time constants obtained in the goldilocks region. CFD simulations (SI) show that the oxygen concentration is relatively constant along the free jet. This constant oxygen concentration of ~20\% occurs from running fuel lean, and air entrainment. 
     \2 Related, we have observed dependence of decay time on equivalence ratio (SI). However, similar to the position dependence, quantification of the decay time is difficult due to the AS fluctuations. Additionally, the profile of the torch changes with equivalence ratio (extends for high equivalence ratio), so it is difficult to deconvolve the effects of the profile change from the effects of the equivalence ratio.
-
 \end{outline}
 
 
 
-\subsection{Viability}
+\subsection{Viability Analysis}
 
 with this model, we examine the viability of photoionization for MHD power enhancement. 
 
