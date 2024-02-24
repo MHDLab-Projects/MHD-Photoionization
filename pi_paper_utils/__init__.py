@@ -13,3 +13,12 @@ style_path = (Path(__file__).parent / 'mystyle.mplstyle').as_posix()
 plt.style.use(['science', style_path])
 # plt.style.use(['science', 'ieee', style_path])
 # plt.style.use(['science', 'seaborn-v0_8-deep', style_path])
+
+# constant properties
+
+from pint import Quantity
+# Determined in experiment/analysis/various/power_calibration.py
+LASER_POWER = Quantity(6.98836, 'mJ')
+
+# Determined in experiment/analysis/mws/laser_profile.py
+LASER_AREA = Quantity(40.77, 'mm^2')

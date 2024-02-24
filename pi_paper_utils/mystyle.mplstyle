@@ -17,7 +17,7 @@ text.usetex         :  False # use latex for all text handling. The following fo
 legend.frameon       : True   # whether or not to draw a frame around legend
 
 ### FIGURE
-figure.figsize   : 3.42, 2.5    # figure size in inches
+figure.figsize   : 4, 3    # figure size in inches
 savefig.transparent :  False     # transparent figures
 figure.dpi          : 300
 

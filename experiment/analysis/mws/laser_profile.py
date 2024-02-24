@@ -80,46 +80,63 @@ da_mean = da.mean('x').mean('y')
 da_mean.plot()
 
 #%%
+
+fig, axes = plt.subplots(1,2, figsize=(10,4))
+
+
+
+plt.sca(axes[0])
+
+vertical_xs = 5.5
+horizontal_xs = 8
 # keep only frames where the laser is on
 
 da_on = da.where(da_mean > 10)
 
 da_on.mean('frame').plot.imshow(cmap='gray')
 
-# %%
+plt.axhline(horizontal_xs, color='r', linestyle='--')
+plt.axvline(vertical_xs, color='r', linestyle='-.')
 
+axes[0].set_title('Image of laser beam')
+axes[0].set_xlabel('x (mm)')
+axes[0].set_ylabel('y (mm)')
+
+plt.sca(axes[1])
 da_on_mean = da_on.mean('frame')
 
-hori_line = da_on_mean.sel(y=8, method='nearest')
-hori_line.plot(label='horizontal line')
-vert_line = da_on_mean.sel(x=5.5, method='nearest')
-vert_line.plot(label='vertical line')
+hori_line = da_on_mean.sel(y=horizontal_xs, method='nearest')
+hori_line.plot(label='horizontal line', linestyle='--')
+vert_line = da_on_mean.sel(x=vertical_xs, method='nearest')
+vert_line.plot(label='vertical line', linestyle='-.')
 
 # find the positions along the lines where the intensity is half of the maximum
 hori_half_max = hori_line.where(hori_line > hori_line.max()/2, drop=True)
-hori_half_max.plot(color='r')
+hori_half_max.plot(color='r', alpha=0.5)
 
 vert_half_max = vert_line.where(vert_line > vert_line.max()/2, drop=True)
-vert_half_max.plot(color='r')
-
-plt.legend()
-# 
-# %%
-
-vert_half_max
-
-#%%
+vert_half_max.plot(color='r', alpha=0.5)
 
 delta_vert = vert_half_max['y'].values[-1] - vert_half_max['y'].values[0]
 delta_hori = hori_half_max['x'].values[-1] - hori_half_max['x'].values[0]
 
-print(f'Vertical FWHM: {delta_vert:.2f} mm')
-print(f'Horizontal FWHM: {delta_hori:.2f} mm')
-
 area = delta_vert * delta_hori
 
-print(f'Area: {area:.2f} mm^2')
+# Add the 'delta_vert', 'delta_hori', and 'area' values to the plot
+plt.text(0.05, 0.95, f'Vertical FWHM: {delta_vert:.2f} mm', transform=plt.gca().transAxes)
+plt.text(0.05, 0.90, f'Horiz. FWHM: {delta_hori:.2f} mm', transform=plt.gca().transAxes)
+plt.text(0.05, 0.85, f'Area: {area:.2f} mm^2', transform=plt.gca().transAxes)
 
+plt.ylim(0, 100)
+
+axes[1].set_title('')
+axes[1].set_xlabel('Position along line (mm)')
+
+plt.legend()
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'laser_profile.png'), bbox_inches='tight')
+# 
+# %%
 #%%
 
 from pint import Quantity

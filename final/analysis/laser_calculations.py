@@ -29,9 +29,7 @@ goldi_pos =  Quantity(178, 'mm')
 
 #%%
 
-laser_power = Quantity(10, 'mJ')
-laser_area = Quantity(0.4, 'cm^2')
-
+from pi_paper_utils import LASER_POWER, LASER_AREA
 
 #TODO: this needs to be calculated from CFD KOH
 # f_A = Quantity(0.05, 'dimensionless')
@@ -45,13 +43,13 @@ f_A
 #%%
 
 
-heated_volume = laser_area * absorption_length
+heated_volume = LASER_AREA * absorption_length
 
 heated_volume
 
 #%%
 
-powers = ds_lecroy['power'].values*laser_power*f_A
+powers = ds_lecroy['power'].values*LASER_POWER*f_A
 
 powers
 

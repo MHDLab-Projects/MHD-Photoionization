@@ -174,6 +174,11 @@ plt.figure()
 
 ds = ds_mws_fit.sel(run=('2023-05-24', 1))
 
+dne = ds_p['dne'].pint.quantify('particle/um**3').pint.to('particle/cm**3')
+dne = dne.sel(run=('2023-05-24', 1)).item()
+
+ds = ds*dne
+
 ds['AS_all'].plot(label='Data (all)')
 ds['AS_sel'].plot(label='Data (fitted)')
 ds['AS_fit'].plot(label='Fit', color='black', linestyle='--')
@@ -181,7 +186,9 @@ ds['AS_fit'].plot(label='Fit', color='black', linestyle='--')
 plt.legend()
 
 plt.yscale('log')
-plt.ylabel('AS')
+plt.ylabel('$\Delta n_e (cm^{-3})$')
+
+plt.title('')
 
 plt.xlim(-1,50)
 
@@ -189,8 +196,6 @@ plt.xlim(-1,50)
 tau = 1/ds_p['krm'].pint.quantify('us**-1')
 tau = tau.sel(run=('2023-05-24', 1)).item()
 
-dne = ds_p['dne'].pint.quantify('particle/um**3').pint.to('particle/cm**3')
-dne = dne.sel(run=('2023-05-24', 1)).item()
 
 
 # add text to plot of tau and dne with uncertianties
@@ -202,6 +207,10 @@ plt.text(0.2, 0.92, tau_str, transform=plt.gca().transAxes, fontsize=12)
 plt.text(0.2, 0.85, dne_str, transform=plt.gca().transAxes, fontsize=12)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt_v2.png'))
+
+#%%
+
+dne
 
 #%%
 
