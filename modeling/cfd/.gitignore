@@ -3,6 +3,9 @@
 *.vtk
 *.vtu
 *.vtp
+*.vtm
+*.vtmp
+*.pvtu
 
 !
 *.xyz

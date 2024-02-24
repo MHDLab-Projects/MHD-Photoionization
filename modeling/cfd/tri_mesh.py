@@ -238,7 +238,9 @@ def new_cylinder(x=[0,1], r=1.0, n_theta=30, angle=30.0, area_scale=1.1, correct
     tri['vertices'] *= r
     tri['area'] *= r**2
     tri['v_area'] *= r**2
-    return new_extrusion(tri, x, do_plot)
+    d = new_extrusion(tri, x, do_plot)
+    d.update({"tri":tri})
+    return d
 
 
 def tri_print_center_area(tri):
@@ -310,7 +312,10 @@ def new_extrusion(tri, x=[0,1], do_plot=True):
     u_tri[:,:] = tri["area"][np.newaxis,:]
     mesh.cell_data["tri_area"] = u_tri.reshape(n_cells)
 
-
-
-
     return {"raw":pos,"ds":ds,"mesh":mesh}
+
+
+
+
+
+

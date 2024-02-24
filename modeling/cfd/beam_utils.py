@@ -440,6 +440,89 @@ def coordinate_tensor(e_1, e_2, method="cross"):
 
     return ehat
 
+def extruded_mesh_from_dataset(ds, tri, exclude=["Q","kappa_dL"], add_bc=True):
+    """create
+
+    Parameters
+    ----------
+    tri : dict
+        triangle mesh of surface perpendicular to the beam
+    ds : xr.Dataset
+        beam data
+    exclude : list of str
+        names of variables to exclude from the dataset
+    add_bc : bool
+        include source and target data
+
+    Returns
+    -------
+    pv.Multiblock
+        "beam"   - beam mesh
+    if bc==true
+        "source" - data at source
+        "target" - data at target
+
+
+    """
+    tri_out = tri_mesh.new_extrusion(tri, x=ds.s.to_numpy(), do_plot=False)
+    mesh = tri_out["mesh"]
+
+    mesh.points[:] = ds["pos"].to_numpy().reshape(mesh.points.shape)
+
+    output_variables = [x for x in ds.data_vars]
+    for name in ["Q","kappa_dL"]:
+        output_variables.remove(name)
+
+    for name in output_variables:
+        d = ds[name]
+        if d.dims == ('s','ray'):
+            d1 = d.to_numpy()
+            try:
+                mesh.point_data[name] =  d1.flat
+            except Exception as e:
+                print(e)
+                print(name, d.shape, d1.size)
+        if d.dims == ('s','ray','wavelength'):
+            for i_wave,w in enumerate(ds.wavelength):
+                d1 = d.isel(wavelength=i_wave).to_numpy()
+                n1 = "{}_w{:03d}".format(name,i_wave)
+                mesh.point_data[n1] = d1.flat
+
+    blocks = pv.MultiBlock()
+    blocks["beam"] = mesh
+
+    # source data
+    bc_loc = {"source":0, "target":-1}
+    for bc_name, s_bc in bc_loc.items():
+        pos1 = ds.pos.isel(s=s_bc).to_numpy()
+        mesh1 = pv.UnstructuredGrid({pv.CellType.TRIANGLE: tri["triangles"]}, pos1)
+        for i, mp in enumerate(ds.mp):
+            for j, w in enumerate(ds.wavelength):
+                var_name = "I_{}".format(bc_name)
+                mesh1.point_data["I_mp{}_w{:03d}".format(i,j)] = ds[var_name].isel(mp=i,wavelength=j)
+                if bc_name == "target":
+                    mesh1.point_data["I_mp{}_w{:03d}".format(i,j)] = ds[var_name].isel(mp=i,wavelength=j)
+        blocks[bc_name] = mesh1
+
+    return blocks
+
+def calc_intensity(ds, mp=0):
+    """calculate the intensity along the beam and add to *ds*
+
+    Parameters
+    ----------
+    ds : xr.Dataset
+        contain beam data - output from calc absorption
+    mp : int
+        measurement location index
+    """
+    n_s = len(ds["s"])
+    ds["I"] = ds["kappa_dL"]*0.0
+    ds["I"][0,:,:] = ds["I_source"].isel(mp=0)
+    for i_s in range(0,n_s-1):
+        val = ds["I"].isel(s=i_s)*np.exp(-ds["kappa_dL"].isel(s=i_s))
+        ds["I"][i_s+1,:,:] = val.to_numpy()
+
 
 def test():
 
