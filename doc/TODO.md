@@ -15,7 +15,8 @@
 - [x] implement numerical integration nK determination to final pipeline
 - [] improve main pimax image
     - [x] calibration
-    - [] compare width to cfd beam profile, also compare shock diamonds
+    - [x] compare width to cfd beam profile, also compare shock diamonds
+    - [ ] double check dimensions
 
 - [] laser calculation with number of KOH to e- 
 - [] make AS plot with n_e as y axis

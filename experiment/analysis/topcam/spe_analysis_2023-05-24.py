@@ -4,6 +4,8 @@ from mhdpy.analysis.standard_import import *
 import pi_paper_utils
 create_standard_folders()
 
+from calib_utils import calibrate_da_pimax_simple
+
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
@@ -13,20 +15,6 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged', datestr)
 spe_dir = pjoin(munged_dir, 'spe')
-
-image_calibration = Quantity(66.3, 'pixels/inch')
-centerline_pixel = 512
-barrel_exit_x_pixel = 250
-
-def calibrate_da_pimax(da):
-    #TODO: implement calbiration that takes into account perspective
-    da['y'] = da['y'] - centerline_pixel
-    da['x'] = da['x'] - barrel_exit_x_pixel
-
-    da['x'] = da['x']/image_calibration.to('pixels/mm').magnitude
-    da['y'] = da['y']/image_calibration.to('pixels/mm').magnitude
-
-    return da
 
 das = {}
 names = ['4', '84']
@@ -93,7 +81,7 @@ da.mean('estime').plot(col='gatedelay')
 
 da = das['84'].copy()
 
-da = calibrate_da_pimax(da)
+da = calibrate_da_pimax_simple(da)
 
 da.mean('estime').mean('gatedelay').plot(robust=True)
 

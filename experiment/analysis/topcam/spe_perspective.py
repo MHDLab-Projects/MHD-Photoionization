@@ -81,10 +81,18 @@ ax.imshow(tf_img)
 
 #%%
 
-# save the transformation matrix
+tform.inverse
 
-fp_out = pjoin(DIR_DATA_OUT, 'perspective_transform_matrix.npy')
-np.save(fp_out, tform.params)
+#%%k
+
+# save the transformation matrix object
+
+import pickle
+
+fp_out = pjoin(DIR_DATA_OUT, 'tform_projective.pkl')
+with open(fp_out, 'wb') as f:
+    pickle.dump(tform, f)
+
 
 
 #%%
@@ -151,19 +159,11 @@ imshow(img_test_tf[460:550, 100:600])
 #%%
 # interpolate to 2d grid and use skimage.transform.warp to apply the transformation
 
-from utils import transform_projective
+from experiment.analysis.topcam.calib_utils import pipe_transform_projective
 
-x_grid = np.arange(0, 1024, 1)
-y_grid = np.arange(0, 1024, 1)
-ds_sel_int = ds_sel.interp(x=xs, y=ys)#.fillna(0)
+da_tf = pipe_transform_projective(ds_sel, tform)
 
-da_tf = ds_sel_int.groupby('gatedelay').apply(lambda x: transform_projective(x, tform))
 
-# downsel_range = {'x': slice(0, 1024), 'y': slice(412, 612)}
-# downsel_range = {'x': slice(0, 1024), 'y': slice(312, 712)}
-downsel_range = {'x': slice(0, 1024), 'y': slice(460, 550)}
-
-da_tf = da_tf.sel(downsel_range)
 #%%
 
 da_tf.plot(col='gatedelay')
