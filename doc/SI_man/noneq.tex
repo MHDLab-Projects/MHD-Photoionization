@@ -9,12 +9,11 @@ We begin by modeling the combustion of seeded oxy-kerosene mixture with the Cant
 
 We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
-We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, This method also represents an improvement to previous analysis as we have detailed the collisional cross sections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross sections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
+We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross sections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross sections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
 
 \begin{equation}
 \sigma = e\mu_{e}n_{e}
 \end{equation}
-
 
 \includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
 
@@ -23,36 +22,77 @@ Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. 
 \hypertarget{nonequilibrium-conductivity}{%
 \subsection{Nonequilibrium conductivity}\label{nonequilibrium-conductivity}}
 
-To study the fundamental potential of NEI, we develop a 0D model of an infinitesimal volume of gas described by the thermal equilibrium properties computed above. NEI is modeled as a perturbation on the seeded gas mixture in chemical equilibrium. We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
+To study the fundamental potential of NEI, we develop a 0D model of an infinitesimal control volume of gas described by the thermal equilibrium properties computed above. NEI is modeled as a perturbation on the seeded gas mixture in chemical equilibrium. We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
 
 \begin{equation}
 {G}_{NE} = \frac{\eta P_{In}}{eE_{IP}}
 \end{equation}
 
 
-This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\) and when \(\eta = 1\), the rate of energy transfer in the form of potential energy from bound to free electrons is \(P_{in}\). For \(\eta < 1\), a fraction \(\eta - 1\) of the input energy is wasted in the ionization process. It is important to note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} Later, we use this framework to study the particular case of photoionization, \(\eta_{PI}\) = \(\frac{\delta}{\delta_{K}\ }FA\).
+This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} In this work, we consider $\eta =1$ or lower. 
 
-To determine \(n_{e}(P_{in}),\) we assume the system is in quasi-equilibrium, i.e. that the total generation rate of electrons (G) equals the recombination rate (R).
+We consider the control volume of this gas subjected to a steady $G_{NE}$ and calculate the power dependent electron concentration, \(n_{e}(P_{in}),\), assuming the system is in quasi-equilibrium. The total generation rate of electrons (G) equals the recombination rate (R).
 \begin{equation}
 G = R
 \end{equation}
 
-The recombination rate is given by
-
-\begin{equation}
-R = k_{r}n_{e}n_{K^{+}} = k_{r}n_{e}^{2}
-\end{equation}
-
-Where we have assumed \(n_{K^{+}}\)= \(n_{e}.\ \)We also assume that G is comprised of both \(G_{NE}\) as well as a thermal generation rate, \(G_{th} = k_{th}n_{K}\), such that.
+G will be given both by $G_{NE}$ as well as a thermal generation rate from potassium ionization, \(G_{th} = k_{th}n_{K}\), where $k_{th}$ is the thermal generation rate constant.
 
 \begin{equation}
 G = G_{th} + G_{NE} = k_{th}n_{K} + \ \frac{\eta P_{In}}{eE_{IP}}
 \end{equation}
 
+$k_{th}$ is determined from the Saha equation and the bimolecular recombination coefficient for potassium, $k_{r,b,K+}$. 
+
+\begin{equation}
+    k_{th} = 2.42e^{15}*T^{3/2}*e^{-E_{ion}/k_bT}*k_{r,b,K+}
+\end{equation}
+
+
+The recombination rate is given by
+
+\begin{equation}
+R = k_{r, b, K+}*n_{e}^2  + k_{r, b, O2}*n_e*n_{O2}
+\end{equation}
+
+Where we have assumed \(n_{K^{+}}\)= \(n_{e}.\ \)
+
+
+
 Combining these expressions
 
 \begin{equation}
+0 = k_{r, b, K+}*n_{e}^2  + k_{r, b, O2}*n_e*n_{O2} - G
+\end{equation}
+
+solving for $n_{e}$
+
+\begin{equation}
+n_e = \frac{-k_{r, b, O2}*n_{O2} + \sqrt{k_{r, b, O2}^2*n_{O2}^2 + 4*k_{r, b, K+}*G}}{2*k_{r, b, K+}}
+\end{equation}
+
+
+\begin{equation}
+n_e = \frac{-k_{r, b, O2}*n_{O2}}{2*k_{r,b,K+}} + \sqrt{\frac{k_{r, b, O2}^2*n_{O2}^2 + 4*k_{r, b, K+}*G}{4*k_{r,b,K+}^2}}
+\end{equation}
+
+
+\begin{equation}
+n_e = \frac{-k_{r, b, O2}*n_{O2}}{2*k_{r,b,K+}} + 
+\sqrt{(\frac{k_{r, b, O2}*n_{O2}}{4*k_{r,b,K+}})^2 + \frac{G}{k_{r,b,K+}}}
+\end{equation}
+
+
+In the regime that K+ recombination dominates
+
+\begin{equation}
 n_{e}(P_{in}) = \sqrt{\frac{{G_{th} + \ G}_{NE}(P_{in})}{k_{r}} = \ }\sqrt{\frac{k_{th}n_{K} + \frac{\eta P_{In}}{eE_{IP}}}{k_{r}}\ }
+\end{equation}
+
+conversely when the O2 recombination dominates
+
+\begin{equation}
+  n_e = \frac{G}{k_{r,b,O2}*n_{O2}}
 \end{equation}
 
 \hypertarget{figure-of-merit}{%
@@ -81,67 +121,6 @@ Calculating \(\frac{dn_{e}}{dP_{in}}\) with equation 7 gives
 TODO: Extra e on top here? should cancel?
 
 This expression can be interpreted as the ratio of the increases in MHD power to recombination losses (\(P_{R} = E_{IP}R = \ E_{IP}k_{r}n_{e}\)) with an induced increase in \(n_{e}\). Equation 10 and equation 7 show that the efficiency decreases as a function of \(P_{in}\) and recombination losses increase. We chose to examine the best-case scenario where \(P_{in}\)= 0, represents the absolute best infinitesimal energy return on energy investment possible for a given set of parameters. The regimes where \(\alpha\ \left( P_{in} = 0 \right)\ \)is high do not necessarily correspond to regimes in which NEI will result in a large \(P_{MHD}\) and can be large when the conductivity (and recombination) is low and correspondingly actual MHD power density (\(P_{MHD}\)) is near low.
-
-
-\hypertarget{recombination-rate}{%
-\subsection{Recombination rate}\label{recombination-rate}}
-
-TODO: check this calculation
-
-To calculate the recombination rate, we use the ionization cross sections, \(\sigma_{i,j}\), for collisions of alkali metals between various combustion product species (\emph{j =} Ar, H\textsubscript{2}, N\textsubscript{2}, CO, CO\textsubscript{2}, H\textsubscript{2}O) measured by Kelly and Padely.{[}13{]} This in principle allows for the calculation of the two-body ionization coefficient for a given gas mixture with the following formula.
-
-\begin{equation}
-k_{i} = \sum_{j}^{}{\left( \frac{8kT}{\pi\mu_{M,j}\ } \right)\sigma_{i,j}\left\lbrack Z_{j} \right\rbrack e^{- \frac{E_{ion}}{kT}}\ }
-\end{equation}
-
-
-Where \(\mu_{M,j}\) is the reduced mass of the alkali metal and collision partner and \(\lbrack Z_{j}\rbrack\) the density of the collision partner. \(k_{r}\) is then determined through the Saha law.
-
-\begin{equation}
-k_{r} = \frac{k_{i}}{K_{eq}(T)}
-\end{equation}
-
-We note that this work used flames with various diluents and H2 fuel. Therefore, the applicability of the measured \(\sigma_{i,j}\) to oxy-fuel combustion products is unknown. However, as outlined in Alkemade, the coefficients do not seem to depend on the gas composition or fuel type within an order of magnitude, at least for diluted H2 and CO flames.
-
-
-
-\hypertarget{magnetic-field-fluid-velocity-and-loading-factor}{%
-\subsection{Magnetic field, fluid velocity, and loading factor}\label{magnetic-field-fluid-velocity-and-loading-factor}}
-
-For the following calculations we choose a loading factor K=0.5, which produces the maximum \(P_{MHD}\) from equation 1. \(\alpha\) is proportional to \(B^{2}\) and \(u^{2}\) and so the regions in which \(\alpha > 1\) are therefore somewhat arbitrary depending on the choices of \(B\) and u.
-
-Regarding B, we explore two options
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\item
-  Set B=5T. This roughly approximates the B field in the proposed design of a modern terrestrial open-cycle MHD generator due to the limits of split-coil NbTi superconducting magnets. A constant B makes interpretation easier as effects due to other parameters easier to interpret.
-\item
-  Set B to the approximate maximum value determined by ion slip. Due to the effect of ion slip increasing the B field will eventually not generate an increase in \(P_{MHD}\). We use the approximate expression below as determined for seeded nitrogen gas in Rosa.{[}5{]}
-\end{enumerate}
-
-\begin{equation}
-B_{\max}(T,P) = \sqrt{3600/\mu_{e}(T,P)^{2}}
-\end{equation}
-
-
-This B field can reach \textgreater1000 T (check) in the regimes explored.
-
-\begin{enumerate}
-\def\labelenumi{\alph{enumi}.}
-\item
-  Plasma instabilities I believe also limit the magnetic field
-\end{enumerate}
-
-A plot of \(B_{\max}\) is shown below
-
-\includegraphics[width=4.24627in,height=2.28101in]{./media/image2.png}
-
-Figure 2: Maximum magnetic field determined by ion slip
-
-For now we set u = 1000 m/s. This is roughly the velocity of a terrestrial MHD application and facilitates interpretation.
-
-TODO: Revisit max velocity. We considered the approach of defining a set MHD power output and determining the velocity required. Perhaps u could be set to some multiple of the speed of sound? Perhaps we will also need to consider a reduction in temperature due to the kinetic energy.
 
 \hypertarget{photoionization}{%
 \subsection{Photoionization}\label{photoionization}}
@@ -175,16 +154,11 @@ Where \(FA_{K}\) has been expressed in terms of the optical attenuation length o
 
 Where \(Q_{i}\) is the optical absorption cross section of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{K} = n_{K}Q_{K}\)where the \(K\) stands for potassium.
 
-To calculate \(\frac{\delta}{\delta_{K}\ }\) we compile data on the UV optical absorption cross sections for the major species in the calculated gas mixtures in the relevant wavelength range for potassium photoionization (190-285 nm). For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.{[}17{]} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.{[}18{]} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.{[}19{]} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.{[}20{]} empirical formulas for the wavelength and temperature dependent UV cross sections exist for CO2{[}21{]}, H2O,{[}22{]} and O2.{[}22{]} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et all and extrapolate it in the range 190-200 nm.{[}23{]} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.{[}24{]}
-
-\includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/abscs.png}
-
-Figure 5: Optical absorption cross sections of species with significant cross section and UV absorption in the relevant range
+To calculate \(\frac{\delta}{\delta_{K}\ }\) we utilize the compiled UV absorption cross section data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross sections for the major species in the calculated gas mixtures.
 
 Figure 6 shows\(\ \delta\), \(\delta_{K}\), and \(\frac{\delta}{\delta_{K}\ }\)for various UV wavelengths and temperatures.
 
 \includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
-
 
 In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure 6. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
 
