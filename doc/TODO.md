@@ -19,10 +19,10 @@
     - [ ] double check dimensions
     - [ ] reduce downsampling. 
 
-- [] laser calculation with number of KOH to e- 
-- [] make AS plot with n_e as y axis
+- [x] make AS plot with n_e as y axis
+    - [] all dates for main plot
 
-- [] use beam profile, CFD KOH, and KOH absorption cross seciton to estimate delta n_e
+- [x] use beam profile, CFD KOH, and KOH absorption cross seciton to estimate delta n_e
 
 - [x] laser profile. 
 

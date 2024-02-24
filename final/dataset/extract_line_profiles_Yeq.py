@@ -185,7 +185,7 @@ for key, fp in fps.items():
             line_out = extract_line_axi(mesh, a, b)
 
             #TODO: extract all soi
-            df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K'])
+            df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K','Yeq_KOH'])
 
             df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 

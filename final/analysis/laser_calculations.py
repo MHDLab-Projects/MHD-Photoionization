@@ -1,3 +1,8 @@
+"""
+Calcualtions of theoretical laser heating and ionization
+"""
+
+
 #%%
 
 from mhdpy.analysis.standard_import import *
@@ -13,29 +18,42 @@ ds_lecroy['power']
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
 
-ds_cfd = xr.load_dataset(fp)
-
-ds_cfd = ds_cfd.sel(offset=0)
-# ds_cfd = ds_cfd.sel(kwt=1)
+ds_cfd = xr.load_dataset(fp_cfd_profiles)
 ds_cfd = ds_cfd.cfd.quantify_default()
 ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
-ds_cfd
+ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
+ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
-goldi_pos =  Quantity(178, 'mm')
+da_cfd = ds_cfd['Yeq_KOH']
+
+goldi_pos = Quantity(178, 'cm')
+
+da_cfd = da_cfd.sel(motor=goldi_pos.magnitude, method='nearest').sel(kwt=1)
+
+da_cfd.plot()
+
+#%%
+
+abscs = Quantity(1e-17, 'cm^2/particle')
+kappa = (da_cfd*abscs).pint.to('1/cm')
+kappa.plot()
+
+#%%
+
+f_A_nint = np.trapz(kappa, x=da_cfd.coords['dist'].pint.magnitude)
+
+f_A_nint
 
 
 #%%
 
 from pi_paper_utils import LASER_POWER, LASER_AREA
 
-#TODO: this needs to be calculated from CFD KOH
-# f_A = Quantity(0.05, 'dimensionless')
-abscs = Quantity(1e-17, 'cm^2/particle')
-absorption_length = Quantity(2, 'cm')
-n_KOH = ds_cfd.sel(x=goldi_pos.magnitude, method='nearest').sel(kwt=1, phi=0.8)['Yeq_KOH'].item()
+absorption_length = Quantity(3, 'cm')
+n_KOH = da_cfd.max('dist').item()
 
 f_A = 1 - np.exp(-abscs*absorption_length*n_KOH)
 f_A
@@ -49,7 +67,7 @@ heated_volume
 
 #%%
 
-powers = ds_lecroy['power'].values*LASER_POWER*f_A
+powers = ds_lecroy['power'].values*LASER_POWER*f_A_nint
 
 powers
 
