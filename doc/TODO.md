@@ -8,9 +8,11 @@
 - [] run through writing
 - [x] add summary of KOH model (email)
 
+- [x] fix MWS data based on no torch transmission. What dates do we have No Torch MWS data for? can we check it is the same as far downstream. 
+    - [] calculate additional statistics of mws position data. Probably don't need T0 to explain decrease in AS. Compare using T0 to pre pulse magnitude average. 
 # Medium
 
-- [] implement numerical integration nK determination to final pipeline
+- [x] implement numerical integration nK determination to final pipeline
 - [] improve main pimax image
     - [x] calibration
     - [] compare width to cfd beam profile, also compare shock diamonds
@@ -21,8 +23,6 @@
 - [] use beam profile, CFD KOH, and KOH absorption cross seciton to estimate delta n_e
 
 - [x] laser profile. 
-- [] fix MWS data based on no torch transmission. What dates do we have No Torch MWS data for? can we check it is the same as far downstream. 
-
 
 
 - [x] try fitting mws to a profile with O2 tau and K+ bimolecular combo
