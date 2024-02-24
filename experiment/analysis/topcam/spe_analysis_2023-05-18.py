@@ -367,13 +367,27 @@ plt.ylabel('y (mm)')
 
 plt.title('CFD vs. Topcam, 2023-05-18, 536_pos_1')
 
+plt.ylim(-30,30)
+plt.xlim(0,280)
+
 # %%
 
 #%%
 
+
 ds['las_off'].plot()
 
-plt.xlim(0,150)
+
+plt.ylim(-30,30)
+
+plt.xlim(0,280)
+#%%
+
+ds_cfd['Yeq_K'].plot(x = 'pos_x')
+
+plt.ylim(-30,30)
+plt.xlim(0,280)
+
 
 #%%
 
@@ -395,4 +409,7 @@ axes[1].set_ylabel('CFD pressure [Pa]')
 plt.xlim(0,100)
 
 plt.xlabel('x (mm)')
+
+for ax in axes:
+    ax.set_title('')
 # %%

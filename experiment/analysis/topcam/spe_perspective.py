@@ -36,7 +36,7 @@ img.shape
 # Tweaked final value unti output image ruler had consistent inch spacing
 # This will scale the image but not correct for y distortion
 center_value = 512
-dy_barrel = 73
+dy_barrel = 71
 dy_horns = 66
 
 y_barrel_1 = center_value - dy_barrel/2
@@ -172,10 +172,6 @@ da_tf.plot(col='gatedelay')
 
 
 # %%
-
-ds_int
-
-
 
 # plt.xlim(400, 600)
 
