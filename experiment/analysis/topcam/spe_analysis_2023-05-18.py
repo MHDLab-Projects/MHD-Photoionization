@@ -104,7 +104,7 @@ axes[1].set_xlabel('x (mm)')
 axes[1].set_ylabel('y (mm)')
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img.png'), bbox_inches='tight', dpi=300)
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img_2023-05-18.png'), bbox_inches='tight', dpi=300)
 
 #%%
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
@@ -182,12 +182,10 @@ da_sel.mean(['x','y']).plot(marker='o')
 #%%
 
 
+import pickle
 from calib_utils import pipe_transform_projective, CORRECTED_IMG_SCALE, LOC_BARREL_EXIT, LOC_BARREL_CENTERLINE
 
 fp_transform = pjoin(DIR_DATA_OUT, 'tform_projective.pkl')
-
-
-import pickle
 with open(fp_transform, 'rb') as f:
     tform = pickle.load(f)
 
