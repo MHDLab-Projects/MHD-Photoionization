@@ -46,6 +46,8 @@ def calc_ne_const_nx(ne0, krm, G_NE):
     calculates ne for a constant nx, where x is recombination partner 
     """
 
+    #TODO: replace ne0 with calc_ne G_NE=0 and compare
+
     ne = ne0 + G_NE/krm
 
     return ne
