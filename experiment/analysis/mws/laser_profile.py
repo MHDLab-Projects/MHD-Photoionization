@@ -11,7 +11,7 @@ from mhdpy.analysis.standard_import import *
 
 from tifffile import TiffFile
 
-fp_in = 'output/image_18_crop.tif'
+fp_in = pjoin(REPO_DIR, 'experiment','data','manual', 'Thorcam', 'image_18_crop.tif')
 
 # Get the XResolution and YResolution tags
 
