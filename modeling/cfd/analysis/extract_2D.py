@@ -57,21 +57,58 @@ fp = fps['0.8_1.0']
 
 mesh = pv.read(fp)
 
+mesh.set_active_scalars('CO2')
+
+#%%
+
+spacing = 0.001
+# bounds = mesh.GetBounds()
+
+bounds = (0.2, 0.6, -0.05, 0.05, 0.0, 0.0)
+
+l_x = bounds[1] - bounds[0]
+l_y = bounds[3] - bounds[2]
+
+n_x = int(l_x/spacing)
+n_y = int(l_y/spacing)
+
+grid = pv.ImageData()
+grid.origin = (bounds[0], bounds[2], 0)
+grid.spacing = (spacing, spacing, 0)
+grid.dimensions = (n_x, n_y, 1)
+
+#%%
+
+grid.points
+
+#%%
+
+sys.path.append(pjoin(REPO_DIR, 'modeling', 'cfd'))
+from pv_axi_utils import AxiInterpolator
+
+#%%
+
+ai = AxiInterpolator(mesh, var_names = all_fields)
+
+# ai returns a 2D array of the fields at the points in the grid.
+f_out = ai(grid.points)
+
+#%%
+
+# Create a 2D array where the first dimension corresponds to the 'pos_x' and 'pos_y' coordinates,
+# and the second dimension corresponds to the 'T' and 'K' variables.
+# data = np.stack([f_out[:,i] for i in range(f_out.shape[1])], axis=-1)
+
+df = pd.DataFrame(f_out, columns=ai.names)
+
+df['pos_x'] = grid.points[:,0]
+df['pos_y'] = grid.points[:,1]
+
+df = df.set_index(['pos_x', 'pos_y'])
+
+df.to_csv('output/mdot0130_phi080_K100.csv')
 # %%
-
-mesh = downsel_arrays(mesh, [*soi_Yeq, *additional])
-
-ds = pv_to_xr(mesh)['point']
-
-df = ds.drop('pos_z').drop('dir').to_dataframe()
 
 df
 
-# pv_to_unstack_xr(mesh)
-
-# %%
-
-
-
-df.to_csv('output/mdot0130_phi080_K100.csv')
 # %%
