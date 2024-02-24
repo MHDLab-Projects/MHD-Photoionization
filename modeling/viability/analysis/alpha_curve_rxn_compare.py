@@ -92,14 +92,15 @@ line_O2 = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='O2')
 line_O2.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_O2)
 
 ax_O2.set_title('O2')
-ax_O2.set_ylabel('Temperature (K)')
 
 ax_Kp = g.axes[0][0]
 line_Kp = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='Kp')
 line_Kp.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_Kp)
 
 ax_Kp.set_title('K+')
-ax_Kp.set_ylabel('')
+
+g.axes[0][0].set_ylabel('Temperature (K)')
+g.axes[0][1].set_ylabel('')
 
 
 x_ticks = np.logspace(3, 7, num=5)  # 5 ticks between 10^3 and 10^7
