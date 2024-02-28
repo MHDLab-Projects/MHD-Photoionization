@@ -10,108 +10,85 @@ TODO: read file attributes to categorize
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.fileio.spe import spe2ds_img, _get_gatedelays
-
-datestr = '2023-05-24'
-
-folder = r'Z:\HVOF Booth\H\{}\PI_TopCam'.format(datestr)
-
-# %%
-
-output_dir = os.path.join('munged',datestr, 'spe')
-if not os.path.exists(output_dir): os.makedirs(output_dir)
-
-#%%
-
-fns = os.listdir(folder)#[0:10]
-
-# for fn in fns:
-#     _get_gatedelays()
-
-fn_groups = {}
-
-# group all files in folder by their file size on disk, rounded to mega bytes
-
+from tqdm import tqdm
 from collections import defaultdict
 
-fn_grouped = defaultdict(list)
-
-for fn in fns:
-    fp = os.path.join(folder, fn)
-    size = os.path.getsize(fp)
-    size_mb = round(size/1e6)
-    fn_grouped[size_mb].append(fn)
-
-fn_grouped
-
-#%%
-fn_grouped_count = {k: len(v) for k, v in fn_grouped.items()}
-
-fn_grouped_count = {k: v for k, v in fn_grouped_count.items() if v > 10}
-
-fn_grouped_count
-
-print(fn_grouped_count)
-
-#quick hack to skip these as they are repetitive. Can we check that all files are repetitive quickly? Think checking attrs requires loading of whole file. 
-if datestr == '2023-05-18':
-    del fn_grouped_count[210] 
 
 
-#%%
+def main(datestr):
+    folder = r'Z:\HVOF Booth\H\{}\PI_TopCam'.format(datestr)
 
-from tqdm import tqdm
 
-for size in fn_grouped_count:
-    print("loading files of size: {}".format(size))
+    output_dir = os.path.join('munged',datestr, 'spe')
+    if not os.path.exists(output_dir): os.makedirs(output_dir)
 
-    dss = []
+    fns = os.listdir(folder)#[0:10]
 
-    fns = fn_grouped[size]
-    # fns = fns[0:5]
+    # group all files in folder by their file size on disk, rounded to mega bytes
 
-    for fn in tqdm(fns):
+    fn_grouped = defaultdict(list)
 
+    for fn in fns:
         fp = os.path.join(folder, fn)
+        size = os.path.getsize(fp)
+        size_mb = round(size/1e6)
+        fn_grouped[size_mb].append(fn)
 
-        #TODO: add the repetitve images? 
-        ds = spe2ds_img(fp, roiy=slice(412,612), gatingmode_require='Sequential')
+    fn_grouped_count = {k: len(v) for k, v in fn_grouped.items()}
+
+    fn_grouped_count = {k: v for k, v in fn_grouped_count.items() if v > 10}
+
+    #quick hack to skip these as they are repetitive. Can we check that all files are repetitive quickly? Think checking attrs requires loading of whole file. 
+    if datestr == '2023-05-18':
+        del fn_grouped_count[210] 
 
 
-        if ds is None:
-            print("Got None for dataset, skipping")
+    for size in fn_grouped_count:
+        print("loading files of size: {}".format(size))
+
+        dss = []
+
+        fns = fn_grouped[size]
+        # fns = fns[0:5]
+
+        for fn in tqdm(fns):
+
+            fp = os.path.join(folder, fn)
+
+            #TODO: add the repetitve images? 
+            ds = spe2ds_img(fp, roiy=slice(412,612), gatingmode_require='Sequential')
+
+
+            if ds is None:
+                print("Got None for dataset, skipping")
+                continue
+
+            dss.append(ds)
+
+        if len(dss) == 0:
+            print("Did not get any datasets for file size {}".format(size))
             continue
 
-        dss.append(ds)
+        # Gate delays should be same sinze file sizes are the same, exact asserts this
+        # ds_out = xr.concat(dss,'estime', join='exact')
 
-    if len(dss) == 0:
-        print("Did not get any datasets for file size {}".format(size))
-        continue
-
-    # Gate delays should be same sinze file sizes are the same, exact asserts this
-    # ds_out = xr.concat(dss,'estime', join='exact')
-
-    # Gate delays can be different if the start time was changed through run
-    #TODO: outer should be ok, but maybe interpolate gatedelays before exact join to be more explicit. 
-    ds_out = xr.concat(dss, 'estime', join='outer')
+        # Gate delays can be different if the start time was changed through run
+        #TODO: outer should be ok, but maybe interpolate gatedelays before exact join to be more explicit. 
+        ds_out = xr.concat(dss, 'estime', join='outer')
 
 
-    #Coarsen to reduce file size. TODO: Remove for final analysis
-    ds_out = ds_out.coarsen(y=4, boundary='trim').mean()
-    ds_out = ds_out.coarsen(x=4, boundary='trim').mean()
+        #Coarsen to reduce file size. TODO: Remove for final analysis
+        ds_out = ds_out.coarsen(y=4, boundary='trim').mean()
+        ds_out = ds_out.coarsen(x=4, boundary='trim').mean()
 
-    fp_out = os.path.join(output_dir, 'PI_topcam_{}.cdf'.format(size))
+        fp_out = os.path.join(output_dir, 'PI_topcam_{}.cdf'.format(size))
 
-    ds_out.to_netcdf(fp_out)
+        ds_out.to_netcdf(fp_out)
 
 
-    
 
-#%%
+datestrs = ['2023-05-18', '2023-05-24']
 
-# not any faster and shows xml errors
+for datestr in datestrs:
+    main(datestr)
 
-# import spe_loader as sl
-
-# fps = [pjoin(folder, fn) for fn in fns]
-
-# spe_file = sl.load_from_files(fps)
