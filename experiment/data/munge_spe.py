@@ -13,6 +13,7 @@ from mhdpy.fileio.spe import spe2ds_img, _get_gatedelays
 from tqdm import tqdm
 from collections import defaultdict
 
+#%%
 
 
 def main(datestr):
@@ -77,14 +78,13 @@ def main(datestr):
         ds_out = xr.concat(dss, 'estime', join='outer')
 
 
-        #Coarsen to reduce file size. TODO: Remove for final analysis
-        ds_out = ds_out.coarsen(y=4, boundary='trim').mean()
-        ds_out = ds_out.coarsen(x=4, boundary='trim').mean()
+        # #Coarsen to reduce file size. TODO: Remove for final analysis
+        # ds_out = ds_out.coarsen(y=4, boundary='trim').mean()
+        # ds_out = ds_out.coarsen(x=4, boundary='trim').mean()
 
         fp_out = os.path.join(output_dir, 'PI_topcam_{}.cdf'.format(size))
 
         ds_out.to_netcdf(fp_out)
-
 
 
 datestrs = ['2023-05-18', '2023-05-24']
@@ -92,3 +92,21 @@ datestrs = ['2023-05-18', '2023-05-24']
 for datestr in datestrs:
     main(datestr)
 
+#%%
+
+# Convert calibration images to cdf 
+
+folder_calibration_image = r'Z:\HVOF Booth\H\2023-05-18\PI_TopCam\Manual_Image'
+output_dir = pjoin('munged','2023-05-18', 'spe', 'calibration')
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+for fn in os.listdir(folder_calibration_image):
+    fp = pjoin(folder_calibration_image, fn)
+    ds = spe2ds_img(fp, gatingmode_require='Repetitive')
+
+    fn_base = os.path.splitext(fn)[0]
+    fp_out = pjoin(output_dir, "{}.cdf".format(fn_base))
+
+    ds.to_netcdf(fp_out)
