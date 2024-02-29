@@ -80,7 +80,7 @@ We fit $AS_{norm}$ by solving the following differential equation:
     \frac{d\Delta n_e (t)}{dt} = - k_{r, m, eff} \Delta n_e (t) - k_{r, bm, K+}\Delta{n_e (t)}^2
 \end{equation}
 
-where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The motivation for the form of this equation is elaborated further in the discussion section.
+where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The derivation of this equation is shown in the SI.
 
 In the fitting process, the differential equation is numerically solved and the solution is normalized to have the have the same form as $AS_{norm}$. This solution is performed iteratively in a least squares optimization with the free fit parameters being $k_{r,m,X}$ and $\Delta{n_e,0}$, where $\Delta{n_e,0}$ is the initial excited electron density. for $k_{r, bm, K+}$ we use the value obtained by Kelley and Padley 1973 (TODO).
 
@@ -117,14 +117,11 @@ Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,max}$ is t
 
 \subsection{Viability modeling (Cantera)}
 
-We assess the viability of the photoionization process to produce a net return in energy with 0D chemical equilibrium simulations. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\alpha_{PI}$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an intestinal amount of photoionization power input, $dP_{in}$. 
-
-
-TODO: replace alpha with another symbol to not be confused with absorption coefficient.
+We assess the viability of the photoionization process to produce a net return in energy with 0D chemical equilibrium simulations. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\beta{PI}$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an intestinal amount of photoionization power input, $dP_{in}$. 
 
 
 \begin{equation}
-\alpha_{PI} = \left. \frac{{dP}_{MHD}}{{dP}_{in}} \right|_{P_{in}=0}
+\beta = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0}
 \end{equation}
 
 \subsection{CFD}
