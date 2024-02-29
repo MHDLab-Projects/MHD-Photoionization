@@ -56,4 +56,17 @@ then
     source clean.sh
 fi
 
+# Collect Files
+if [[ "$@" =~ "collect" ]]
+then
+    echo "Collecting files"
+
+    cd $REPO_DIR/doc/paper
+
+    cp main.pdf output/Photoionization\ Draft.pdf
+
+    cp ../SI_man/SI_man.pdf output/Supporting\ Information.pdf
+
+fi
+
 cd $REPO_DIR/automation

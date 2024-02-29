@@ -12,6 +12,16 @@
             "problemMatcher": []
         },
         {
+            "label": "Run Shell Script with collect",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh collect",
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Run Shell Script with data",
             "type": "shell",
             "command": "./automation/gen_vis_latex.sh data",
