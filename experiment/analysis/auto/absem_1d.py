@@ -10,7 +10,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 figsize = (10, 8)
 # plt.rcParams.update({'figure.figsize':(3,3), 'figure.dpi':100})
@@ -52,7 +52,7 @@ figure_out_dir = pjoin(DIR_DATA_OUT, 'absem_1d', tc)
 if not os.path.exists(figure_out_dir): os.makedirs(figure_out_dir)
 
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 # Scipp cannot handle multindex, casts to a custom 'PyObject' dtype that does not go back to xarray
 
 #TODO: having to do this on office comp?

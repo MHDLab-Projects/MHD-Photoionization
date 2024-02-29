@@ -2,17 +2,17 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 #have time axes show up in PST
 plt.rcParams['timezone'] = 'US/Pacific'
 
 # %%
 
-fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
-fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')

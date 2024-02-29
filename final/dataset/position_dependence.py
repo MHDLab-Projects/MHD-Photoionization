@@ -3,7 +3,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -17,11 +17,11 @@ stack_dims = ['date','run_num','motor','phi']
 
 tc = '536_pos'
 
-ds_absem_536_pos = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 
 ds_absem_536_pos = ds_absem_536_pos.expand_dims('phi').stack(temp = stack_dims)
 
-ds_lecroy_536_pos = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy_536_pos = ds_lecroy_536_pos.sortby('time') # Needed otherwise pre pulse time cannot be selected
 
 ds_lecroy_536_pos = ds_lecroy_536_pos.expand_dims('phi').stack(temp = stack_dims)
@@ -32,7 +32,7 @@ ds_lecroy_536_pos = ds_lecroy_536_pos.expand_dims('phi').stack(temp = stack_dims
 
 tc = '5x6_pos'
 
-ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
 ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=[0.79]) # Cannot add 0.65 phi, because it conflicts with 516_pos. Need to change run_num for this measurement?
 
@@ -44,11 +44,11 @@ ds_lecroy_5x6 = ds_lecroy_5x6.stack(temp = stack_dims)
 
 tc = '516_pos'
 
-ds_absem_516 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem_516 = ds_absem_516.expand_dims('phi') # allows merging with 5x6_pos
 ds_absem_516 = ds_absem_516.stack(temp = stack_dims)
 
-ds_lecroy_516 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
 ds_lecroy_516 = ds_lecroy_516.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy_516 = ds_lecroy_516.expand_dims('phi') # allows merging with 5x6_pos

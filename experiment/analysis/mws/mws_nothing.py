@@ -6,20 +6,20 @@
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 #have time axes show up in PST
 plt.rcParams['timezone'] = 'US/Pacific'
 
 # %%
 
-fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 da_motor = dsst['motor']['Motor C Relative'].rename(time='acq_time')
 da_motor    
 
-# fp_dst = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+# fp_dst = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 # dst = mhdpy.fileio.TFxr(fp_dst).as_dsst()['coords']
 
 # da_motor_coords = dst['motor'].rename(time='acq_time')
@@ -262,13 +262,13 @@ ds['mag'].mean('acq_time').plot()
 
 tc = '536_pos'
 
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected

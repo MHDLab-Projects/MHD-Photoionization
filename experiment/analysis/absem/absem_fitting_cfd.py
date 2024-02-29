@@ -7,7 +7,7 @@
 # %%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.plot import dropna
@@ -18,7 +18,7 @@ from mhdpy.analysis import absem
 
 tc = '536_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()

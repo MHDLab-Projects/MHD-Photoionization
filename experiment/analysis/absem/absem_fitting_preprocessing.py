@@ -13,7 +13,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 from mhdpy.analysis import absem
@@ -27,7 +27,7 @@ dss_p_stderr = []
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 
 #TODO: having to do this on office comp?
 ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)

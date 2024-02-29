@@ -7,7 +7,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.plot import dropna
@@ -27,7 +27,7 @@ df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 tc = '53x'
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 

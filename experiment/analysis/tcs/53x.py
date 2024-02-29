@@ -6,7 +6,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.plot import dropna
@@ -22,7 +22,7 @@ from mhdpy.coords.ct import downselect_acq_time
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 
 ds_absem = ds_absem.absem.calc_alpha()
@@ -104,7 +104,7 @@ ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 
 #%%
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 

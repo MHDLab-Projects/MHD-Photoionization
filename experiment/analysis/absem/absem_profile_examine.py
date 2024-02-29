@@ -1,7 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis.absem.fitting import Q_2peak
 

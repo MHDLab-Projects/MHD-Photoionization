@@ -8,7 +8,6 @@ from calib_utils import calibrate_da_pimax_simple
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 # %%

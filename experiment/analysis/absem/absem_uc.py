@@ -1,7 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.xr_utils import WeightedMeanAccessor
@@ -10,7 +10,7 @@ from mhdpy.xr_utils import WeightedMeanAccessor
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 # Scipp cannot handle multindex, casts to a custom 'PyObject' dtype that does not go back to xarray
 
 

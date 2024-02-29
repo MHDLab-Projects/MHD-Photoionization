@@ -2,7 +2,7 @@
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.plot import dropna
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import absem
 
@@ -14,7 +14,7 @@ data_folder = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr)
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
 
 ds_Absem = ds_absem.absem.calc_alpha()
 
@@ -62,7 +62,7 @@ from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
 
-coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
+coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
 coords_to_assign
 # %%
 
