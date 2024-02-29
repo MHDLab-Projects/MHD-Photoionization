@@ -6,7 +6,8 @@ Script to munge all relevant lecroy dates. This should probably be incorporated 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 
-from mhdpy.fileio.lecroy import get_matching_filepath_mnums, NoMatchingFilesError, load_trc_mnum_simple, setupfile_timeoffset
+from mhdpy.fileio.lecroy import get_matching_filepath_mnums, load_trc_mnum_simple, setupfile_timeoffset
+from mhdpy.fileio.lecroy import NoMatchingFilesError, NotAllFilenameBaseMatchingError
 
 # # Setup File to calibrate time difference between lecroy and lab computer. 
 # https://stackoverflow.com/questions/312443/how-do-i-split-a-list-into-equally-sized-chunks
@@ -16,9 +17,16 @@ def get_chunks(lst, n):
         yield lst[i:i + n]
 
 
+
 def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000):
 
     channel_list = list(channel_dict.keys())
+
+    middle_regex = '(?:IQ_)?\w+'
+    channel_regex_str = "".join(channel_list)
+
+    full_regex = 'C([{}])--_({})_--(\d+).trc'.format(channel_regex_str, middle_regex)
+
 
     #TODO: Check for regex matching here (i.e. ignore C3 and C4)
     for dirpath, dirnames, filenames in os.walk(lecroy_wfm_dir):
@@ -27,10 +35,20 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
 
             subfolder = os.path.relpath(dirpath, lecroy_wfm_dir)
 
+            out_fn = subfolder.replace('\\','_')
+            fp_out = os.path.join(output_dir, 'ds_{}.cdf'.format(out_fn))
+
+            # if os.path.exists(fp_out):
+            #     print("{} exists, skipping".format(fp_out))
+            #     continue
+
             try:
-                mnums = get_matching_filepath_mnums(filenames, channels=channel_list)
+                fname_middle, mnums = get_matching_filepath_mnums(filenames, full_regex)
             except NoMatchingFilesError as e:
                 print("No Matching files at all, skipping")
+                continue
+            except NotAllFilenameBaseMatchingError as e:
+                print("Middle portion of files did not all match in folder: {}".format(dirpath))
                 continue
 
             dss_chunk = []
@@ -38,7 +56,7 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
             for mnum_list in get_chunks(mnums, chunk_size):
                 # mnum_list = mnum_list[::500]    
                 try:
-                    ds = load_trc_mnum_simple(dirpath, mnum_list, channels=channel_list, time_offset=time_offset)
+                    ds = load_trc_mnum_simple(dirpath, fname_middle, mnum_list, channels=channel_list, time_offset=time_offset)
                 except NoMatchingFilesError as e:
                     print("No Matching files")
                 except AttributeError as e:
@@ -63,10 +81,7 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
 
                 ds = xr.concat(dss_chunk, 'acq_time')
 
-                out_fn = subfolder.replace('\\','_')
-                
-
-                ds.to_netcdf(os.path.join(output_dir, 'ds_{}.cdf'.format(out_fn)))
+                ds.to_netcdf(fp_out)
 
 #TODO: Figure out better multi-date handling. 
 
@@ -93,6 +108,8 @@ channel_dicts = [
 
 
 for i, datestr in enumerate(dates):
+
+    print("Processing Lecroy Data {}".format(datestr))
 
     lecroy_setup_dir = r'Z:\HVOF Booth\F\Lecroy Oscope\Setups'
     lecroy_wfm_dir = os.path.join(r'Z:\HVOF Booth\F\Lecroy Oscope\Waveforms', datestr)
