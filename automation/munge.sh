@@ -1,4 +1,6 @@
-#TODO: untested in automation folder
+# Munge raw experimental data. 
+# source munge.sh > output/output.txt to capture all error logs
+
 source ../.env
 
 mkdir -p $REPO_DIR/experiment/data/munged
@@ -17,9 +19,4 @@ echo " --- Additional Munging and Processing --- "
 cd $REPO_DIR/experiment/data
 
 python munge_lecroy.py
-
-./run_all.sh
-
-echo " --- Rendering final notebooks --- "
-cd $REPO_DIR/experiment/analysis
-./render_all.sh
+python munge_spe.py
