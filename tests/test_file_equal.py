@@ -18,7 +18,7 @@ test_data_path_exp = pjoin(REPO_DIR, 'tests', 'test_data')
 input_data_folder_exp = pjoin(REPO_DIR, 'experiment','data','proc_data')
 
 test_data_path_modeling = pjoin(REPO_DIR, 'tests', 'test_data_modeling')
-input_data_folder_modeling = pjoin(REPO_DIR, 'modeling','dataset', 'output')
+input_data_folder_modeling = pjoin(REPO_DIR, 'modeling','viability','dataset', 'output')
 
 test_data_path_final = pjoin(REPO_DIR, 'tests', 'test_data_final')
 #TODO: final figure panels should be both experiment and modeling
