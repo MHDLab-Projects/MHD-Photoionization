@@ -37,12 +37,13 @@ line_nK_mwhorns = axes[0].errorbar(
 
 lineKOH = ds_species_cfd['Yeq_KOH'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: KOH')
 linenK = ds_species_cfd['Yeq_K'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: K')
+line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
 
 
 axes[0].set_ylabel("Species Concentration [#/m^3]")
 axes[0].legend(
-    [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)'],
+    [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)' , 'CFD All K (Goldi)'],
     bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
     )
 

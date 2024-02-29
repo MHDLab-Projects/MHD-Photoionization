@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils #Sets matplotlib style
+import pi_paper_utils as ppu
 
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
@@ -13,13 +13,7 @@ ds_lecroy = ds_lecroy.sel(phi=0.79)
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
-
-ds_cfd = xr.load_dataset(fp_cfd)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(kwt=1)
 

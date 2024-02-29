@@ -92,6 +92,11 @@ def load_cfd_centerline(kwt_interp = None):
     ds_cfd = ds_cfd.cfd.quantify_default()
     ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
+
+    all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
+    ds_cfd['all_K_Yeq'] = sum([ds_cfd[field] for field in all_K_species])
+
     ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
     return ds_cfd
+
 
