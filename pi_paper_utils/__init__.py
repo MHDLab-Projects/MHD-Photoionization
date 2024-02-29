@@ -1,3 +1,5 @@
+from . import fileio
+
 import matplotlib.pyplot as plt
 import scienceplots
 

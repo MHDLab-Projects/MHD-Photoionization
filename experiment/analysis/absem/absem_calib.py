@@ -2,6 +2,7 @@
 
 from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import absem
 
@@ -145,15 +146,7 @@ rat.sel(wavelength_bins=pd.Interval(725,735)).plot()
 
 #%%
 
-tc = '53x'
-
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
-
-ds_absem = ds_absem.mean('mnum')
-
-ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ppu.fileio.load_absem('53x', avg_mnum=True)
 
 ds_absem = ds_absem.sel(mp='barrel')
 

@@ -1,8 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-import pi_paper_utils
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -10,6 +9,8 @@ from mhdpy.analysis import absem
 from mhdpy.plot import dropna
 
 #%%
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
@@ -18,18 +19,8 @@ dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
-
+ds_cfd = ppu.fileio.load_cfd_centerline()
 ds_cfd = ds_cfd.sel(offset=0)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
-
-
 
 # %%
 
@@ -352,7 +343,7 @@ for phi in da_max['phi']:
     labels.append(phi.values)
 
 ax1.legend(lines, labels, title="Expt.", loc="upper right")
-ax1.set_ylim(-0.01j,0.05)
+ax1.set_ylim(-0.01,0.05)
 
 lines = []
 labels = []
@@ -471,3 +462,4 @@ plt.title('')
 plt.yscale('log')
 
 plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_nK_m3.png'), dpi=300)
+# %%

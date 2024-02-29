@@ -10,7 +10,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 figsize = (10, 8)
 # plt.rcParams.update({'figure.figsize':(3,3), 'figure.dpi':100})
@@ -51,19 +51,7 @@ tc_dim = tc_dim_dict[tc]
 figure_out_dir = pjoin(DIR_DATA_OUT, 'absem_1d', tc)
 if not os.path.exists(figure_out_dir): os.makedirs(figure_out_dir)
 
-
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-# Scipp cannot handle multindex, casts to a custom 'PyObject' dtype that does not go back to xarray
-
-#TODO: having to do this on office comp?
-ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
-ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
-
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
+ds_absem = ppu.fileio.load_absem(tc)
 
 ds_absem = ds_absem.drop('acq_time')
 

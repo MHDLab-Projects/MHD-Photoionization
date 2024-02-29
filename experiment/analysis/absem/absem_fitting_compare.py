@@ -6,7 +6,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
@@ -23,18 +23,7 @@ model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
 # %%
 
-tc = '53x'
-
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-
-#TODO: having to do this on office comp?
-ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
-ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
-
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_absem
+ds_absem = ppu.fileio.load_absem('53x')
 
 #%%
 

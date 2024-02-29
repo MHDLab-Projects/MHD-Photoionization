@@ -4,6 +4,7 @@
 # %%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
+import pi_paper_utils as ppu
 
 # enable dark mode
 # plt.style.use('dark_background')
@@ -169,15 +170,7 @@ da.plot(hue='var', col='mp', row='time')
 #%%
 
 
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-
-tc = '53x'
-
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
+ds_absem = ppu.fileio.load_absem('53x')
 
 #%%
 

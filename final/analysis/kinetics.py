@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils
+import pi_paper_utils as ppu
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -9,18 +9,9 @@ ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils
 ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
 
 
-
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
+ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(offset=0)
-# ds_cfd = ds_cfd.sel(kwt=1)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
 ds_cfd
 
 goldi_pos =  Quantity(178, 'mm')

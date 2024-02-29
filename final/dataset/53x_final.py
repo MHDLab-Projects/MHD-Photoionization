@@ -6,53 +6,25 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords.ct import downselect_acq_time
 
+
+#%%
+
 tc = '53x'
-
-#%%
-
 # Load Absem Data 
-
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
-
-ds_absem = ds_absem.drop(0, 'kwt')
-
-#%%
+ds_absem = ppu.fileio.load_absem(tc)
 
 # # Load MWS Data
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
-
-ds_lecroy = ds_lecroy.drop(0,'kwt')
-
-#%%
+ds_lecroy = ppu.fileio.load_lecroy(tc)
 
 # Load cfd line profiles
-
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
+ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_lecroy.coords['kwt'].values)
 
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
-ds_cfd
 
 #%%
 

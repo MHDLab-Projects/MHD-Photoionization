@@ -4,7 +4,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.plot import dropna
@@ -12,13 +12,9 @@ from mhdpy.xr_utils import WeightedMeanAccessor
 
 
 #%%
-tc = '53x'
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
+ds_lecroy = ppu.fileio.load_lecroy('53x')
 
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
 #%%
 

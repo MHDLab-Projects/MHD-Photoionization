@@ -5,26 +5,15 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis.mws.fitting import calc_dnedt
 from scipy.integrate import solve_ivp
 
 #%%
 
-tc = '53x'
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
-
-
+ds_lecroy = ppu.fileio.load_lecroy('53x')
 da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
-
-# sol = solve_ivp(lambda t, y: calc_dnedt(t, y, ne0, kr), t_span=(min(t_eval),max(t_eval)), y0 = [dne], t_eval=t_eval)
-
 
 # %%
 

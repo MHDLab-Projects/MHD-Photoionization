@@ -1,17 +1,13 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+import pi_paper_utils as ppu
 
 import pint_pandas
 import pint_xarray
 from pint import Quantity
 
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds = xr.load_dataset(fp)
-
-# ds = ds.cfd.convert_all_rho_number()
+ds = ppu.fileio.load_cfd_centerline()
 
 ds = ds.sel(offset=0)
 ds
