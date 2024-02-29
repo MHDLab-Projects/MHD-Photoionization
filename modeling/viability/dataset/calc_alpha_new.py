@@ -47,6 +47,9 @@ krb_O2 = krb_all['O2_A']
 krm_O2 = krb_O2*ds_TP_species_rho['O2'].pint.quantify("particle/ml")
 krm_O2 = krm_O2.pint.to('1/s')
 
+krm_Kp = krb_all['K+']*ds_TP_species_rho['K+'].pint.quantify("particle/ml")
+krm_Kp = krm_Kp.pint.to('1/s')
+
 krb_Kp = krb_all['K+']
 
 ne0 = ds_TP_species['e-']
@@ -96,7 +99,13 @@ constants_temp['ne0'] = ne0.pint.dequantify()
 ds_NE_O2 = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
 ds_NE_O2 = ds_NE_O2.assign_coords(rxn='O2')
 
-ds_NE = xr.concat([ds_NE_Kp, ds_NE_O2], 'rxn')
+constants_temp = constants.copy()
+constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['ne0'] = ne0.pint.dequantify()
+ds_NE_sum = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+ds_NE_sum = ds_NE_sum.assign_coords(rxn='mm_sum')
+
+ds_NE = xr.concat([ds_NE_Kp, ds_NE_O2, ds_NE_sum], 'rxn')
 
 # %%
 ds_NE.attrs = {}

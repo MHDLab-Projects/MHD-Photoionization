@@ -34,7 +34,8 @@ alpha = alpha*da_dsigma_tot
 
 # alpha.sel(Kwt=0.1, phi=1, analysis='PI_Bhall', P_in=0, T=1.6e3).plot()
 
-beta = alpha -1 
+#TODO: gamma used to be beta, search for other instances. 
+gamma = alpha -1 
 
 # %%
 
@@ -78,10 +79,10 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'P_zero_rxn_phi.png'))
 combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8)
 
 cmap = plt.get_cmap('RdBu')
-beta_sel = beta.sel(combo_sel)
+gamma_sel = gamma.sel(combo_sel)
 
 #TODO: fig size with number of ticks
-g = beta_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', col='rxn', cmap=cmap, figsize=(5,2.6))
+g = gamma_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', col='rxn', cmap=cmap, figsize=(5,2.6))
 
 # Set the colorbar label
 # g.fig.colorbar().set_label('$\\alpha - 1$')
@@ -115,7 +116,8 @@ for ax in g.axes.flatten():
 colorbar = g.axes[0, -1].collections[0].colorbar
 
 # Set the colorbar label
-colorbar.set_label('$1-\\alpha$')
+
+colorbar.set_label('$1-\\beta$')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'alpha_curve_demo_rxn.png'))
 # %%
