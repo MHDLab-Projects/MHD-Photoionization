@@ -17,11 +17,15 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_specie
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
-ds_NE_O2 = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE_O2.cdf')).squeeze()
-ds_NE_Kp = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE_Kp.cdf')).squeeze()
+ds_NE = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE_rxn_comp.cdf')).squeeze()
 
-ds_alpha = xr.merge([ds_NE_O2['alpha'].rename('O2'), ds_NE_Kp['alpha'].rename('Kp')])
-alpha = ds_alpha.to_array('rxn').rename('alpha')
+#%%
+
+alpha = ds_NE['alpha']
+
+#%%
+
+# alpha = ds_alpha.to_array('rxn').rename('alpha')
 # alpha = ds_NE['alpha']
 
 # Add enhancement factor
@@ -40,7 +44,7 @@ combo_downsel = {
     'l_bk': 0,
     'Kwt': 0.01,
     'phi': [0.8,1,1.2],
-    'analysis': 'perf_Bconst'
+    # 'analysis': 'perf_Bconst'
 
 }
 
@@ -71,7 +75,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'P_zero_rxn_phi.png'))
 
 
 # %%
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, analysis='perf_Bconst')
+combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8)
 
 cmap = plt.get_cmap('RdBu')
 beta_sel = beta.sel(combo_sel)
@@ -83,19 +87,20 @@ g = beta_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', col='rxn', cmap=cmap, figsize
 # g.fig.colorbar().set_label('$\\alpha - 1$')
 
 
-ax_O2 = g.axes[0][0]
+ax_O2 = g.axes[0][1]
 line_O2 = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='O2')
 line_O2.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_O2)
 
 ax_O2.set_title('O2')
-ax_O2.set_ylabel('Temperature (K)')
 
-ax_Kp = g.axes[0][1]
+ax_Kp = g.axes[0][0]
 line_Kp = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='Kp')
 line_Kp.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_Kp)
 
 ax_Kp.set_title('K+')
-ax_Kp.set_ylabel('')
+
+g.axes[0][0].set_ylabel('Temperature (K)')
+g.axes[0][1].set_ylabel('')
 
 
 x_ticks = np.logspace(3, 7, num=5)  # 5 ticks between 10^3 and 10^7
@@ -113,3 +118,4 @@ colorbar = g.axes[0, -1].collections[0].colorbar
 colorbar.set_label('$1-\\alpha$')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'alpha_curve_demo_rxn.png'))
+# %%

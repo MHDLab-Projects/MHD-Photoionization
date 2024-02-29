@@ -36,6 +36,7 @@ dir = pjoin(REPO_DIR, 'experiment', 'data','munged')
 dates = {
     '2023-04-07': ['ds_Nothing_init_mp.cdf'],
     # '2023-05-12': ['ds_Shutdown.cdf'], # I believe this was taken with the jet still on. #TODO: check 
+    '2023-05-12': ['ds_Init_Nothing.cdf'],
     '2023-05-18': ['ds_nothing_after.cdf', 'ds_Nothing.cdf', 'ds_Nothing_2.cdf', 'ds_Nothing_3.cdf'],
     '2023-05-24': ['ds_nothing_2.cdf', 'ds_Nothing_Init.cdf']
 }
@@ -131,6 +132,7 @@ ds_2 = unstack_multindexed_acq_dim(ds_2, 'acq_time')
 
 ds_2['mag'].mean('mnum').plot(row='temp', marker='o')
 
+
 #%%
 
 
@@ -145,7 +147,6 @@ plt.xlabel("Stage Postion (mm)")
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_motor_2023-05-24.png'))
 
-#%%
 
 #%%
 
@@ -200,20 +201,50 @@ plt.errorbar(m['date'], m, yerr=std, fmt='o')
 
 #%%
 
+# Need to make a correction factor for 2023-05-12 because the Nothing data was only taken at mp = 35. At this location it appears there is a slight distortion, probably from torch. Measure this factor for other dates and apply to get 
+
+ds35 = ds_2.mean('mnum').sel(motor=35, method='nearest')
+
+ds178 = ds_2.mean('mnum').sel(motor=178, method='nearest')
+
+rat = ds178/ds35
+
+corr_factor = rat['mag'].mean('temp').item()
+
+corr_factor
+
+
+#%%
+
+# Calculate value for 178 motor position for 05-12
+
+ds_35_0512 = ds_2.sel(temp=('2023-05-12', 'Init_Nothing')).sel(motor=35, method='nearest').mean('mnum')
+
+val_178_05_12 = ds_35_0512['mag']*corr_factor
+
+val_178_05_12 = val_178_05_12.item()
+
+val_178_05_12
+
+
+#%%
+
 s = m.to_pandas()
+s.loc['2023-05-12'] = val_178_05_12
+
+s = s.sort_index()
 
 s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0.csv'))
 
 # 2023-05-12 is missing, but the setup was the same as 2023-04-07. Diagnotsitcs were added and system realigned on 2023-05-18.
 
-s.loc['2023-05-12'] = s.loc['2023-04-07']
 
 s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0_copy2023-05-12.csv'))
 
 
 #%%
 
-ds
+s.plot(marker='o')
 
 # %%
 

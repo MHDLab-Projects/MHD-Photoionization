@@ -34,7 +34,7 @@ image.cmap: RdPu
 
 
 axes.grid: True
-axes.grid.which: both
+axes.grid.which: major
 grid.color: d3d3d3
 grid.linestyle: --
 grid.linewidth: 0.5

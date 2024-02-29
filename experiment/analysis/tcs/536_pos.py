@@ -407,14 +407,19 @@ g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
 
 leg = plt.gca().get_legend()
 leg.set_title('Experiment (date, #)')
-leg.set_bbox_to_anchor([0,0,1.7,1])
+leg.set_bbox_to_anchor([0,0,1.5,1])
+
+plt.title('CFD KOH and MWS AS compare')
+
 plt.twinx()
 
-ds_cfd_norm['Yeq_KOH'].plot(color='black', label ='centerline')
+ds_cfd_norm['Yeq_KOH'].plot(color='black', label ='CFD centerline')
 # ds_cfd_beam_norm['Yeq_KOH'].plot(color='gray', label = 'beam conv (TODO)')
 
 ax2 = plt.gca()
-ax2.legend(bbox_to_anchor=[0,0,1.8,0.3])
+ax2.legend(bbox_to_anchor=[0,0,1.5,0.3])
 
 plt.xlim(0,310)
+plt.title('')
+
 # %%

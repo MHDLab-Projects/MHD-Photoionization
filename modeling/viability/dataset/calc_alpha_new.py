@@ -41,11 +41,13 @@ Eion = Quantity(4.34, 'eV')
 # 
 Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
 
-krb = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
-krb = krb['O2_A']
+krb_all = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
 
-krm_O2 = krb*ds_TP_species_rho['O2'].pint.quantify("particle/ml")
+krb_O2 = krb_all['O2_A']
+krm_O2 = krb_O2*ds_TP_species_rho['O2'].pint.quantify("particle/ml")
 krm_O2 = krm_O2.pint.to('1/s')
+
+krb_Kp = krb_all['K+']
 
 ne0 = ds_TP_species['e-']
 
@@ -57,7 +59,7 @@ Keq_prefactor = Quantity(2.42e15, 'molecule/ml/K**1.5')
 Keq = Keq_prefactor*(Ts**(3/2))*np.exp(-(Eion/(kb*Ts)))
 Keq = xr.DataArray(Keq, coords={'T':Ts.pint.magnitude}, dims = 'T')
 
-kth = Keq*krb
+kth = Keq*krb_Kp
 kth.name =  '$k_{th}$'
 kth = kth.pint.to('1/s')
 
@@ -75,45 +77,31 @@ combos = {
 }
 
 constants = {
-    'ne0': ne0.pint.dequantify(),
-    'krm': krm_O2.pint.dequantify(),
     'mue_cant': ds_TP_params['mobility']*10000,
-    'u': 1e5
+    'u': 1e5,
+    'eta': 1,
+    'B': B_const
 }
 
-constants['eta'] = 1
-constants['B'] = B_const
-ds_NE_perf_Bconst = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants, var_names=None).run_combos(combos).assign_coords(analysis='perf_Bconst')
 
-constants['B'] = B_hall
-ds_NE_perf_Bhall = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants, var_names=None).run_combos(combos).assign_coords(analysis='perf_Bhall')
+constants_temp = constants.copy()
+constants_temp['G_th'] = Gth.pint.dequantify()
+constants_temp['krb'] = krb_Kp.pint.dequantify()
+ds_NE_Kp = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None).run_combos(combos)
+ds_NE_Kp = ds_NE_Kp.assign_coords(rxn='Kp')
 
-# #Photoionization
-ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squeeze()
-gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
-# FA = xr.DataArray([1], name='FA_1')
+constants_temp = constants.copy()
+constants_temp['krm'] = krm_O2.pint.dequantify()
+constants_temp['ne0'] = ne0.pint.dequantify()
+ds_NE_O2 = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+ds_NE_O2 = ds_NE_O2.assign_coords(rxn='O2')
 
-FA = gas_lam['K'].where(False).fillna(1.0)
-FA.name = 'FA_1'
-
-eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['K'], FA)
-constants['eta'] = eta_PI
-
-constants['B'] = B_const
-ds_NE_PI_Bconst  = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants, var_names=None).run_combos(combos).assign_coords(analysis='PI_Bconst')
-
-constants['B'] = B_hall
-ds_NE_PI_Bhall  = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants, var_names=None).run_combos(combos).assign_coords(analysis='PI_Bhall')
-
-ds_NE = xr.concat([ds_NE_perf_Bconst, ds_NE_perf_Bhall, ds_NE_PI_Bconst, ds_NE_PI_Bhall], 'analysis')
-
-ds_NE['krb'] = krb.pint.dequantify()
-ds_NE['krm'] = krm_O2.pint.dequantify()
+ds_NE = xr.concat([ds_NE_Kp, ds_NE_O2], 'rxn')
 
 # %%
 ds_NE.attrs = {}
 
-ds_NE.to_netcdf('output/ds_NE_O2.cdf')
+ds_NE.to_netcdf('output/ds_NE_rxn_comp.cdf')
 # %%
 
 sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
