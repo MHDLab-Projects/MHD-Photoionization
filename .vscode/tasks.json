@@ -44,6 +44,11 @@
             "label": "Render Exp. Analysis Notebooks",
             "type": "shell",
             "command": "./automation/render_all_expt.sh",
+        },
+        {
+            "label": "Process Munged Data",
+            "type": "shell",
+            "command": "./automation/process_munged.sh",
         }
     ]
 }
