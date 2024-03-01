@@ -237,17 +237,9 @@ s = s.sort_index()
 
 s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0.csv'))
 
-# 2023-05-12 is missing, but the setup was the same as 2023-04-07. Diagnotsitcs were added and system realigned on 2023-05-18.
-
-
-s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0_copy2023-05-12.csv'))
-
-
 #%%
 
 s.plot(marker='o')
-
-
 
 
 # %%
@@ -279,6 +271,23 @@ ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
 
 
+#%%
+
+fp_nothing = pjoin(REPO_DIR, 'experiment','analysis','mws','output','mws_T0.csv')
+
+df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
+da_nothing = xr.DataArray(df_nothing).pint.quantify('volt')
+
+da_nothing
+
+#%%
+
+ds_lecroy = ds_lecroy.unstack('run').mws.calc_mag_phase_AS(mag_0=da_nothing)#[['mag', 'phase','AS']]
+
+#%%
+ds_lecroy
+
+
 # %%
 
 da_sel = ds_lecroy['mag_pp'].mean('mnum')
@@ -302,14 +311,6 @@ da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
 # Ignore 2023-05-12. No explicity T0 calibration 
 
 
-#%%
-
-fp_nothing = pjoin(REPO_DIR, 'experiment','analysis','mws','output','mws_T0.csv')
-
-df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
-da_nothing = xr.DataArray(df_nothing)
-
-da_nothing
 
 #%%
 
@@ -324,6 +325,14 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_motor_2023-05-12.png'))
 #%%
 
 da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+
+#%%
+
+# da_nothing
+da_sel.unstack('run')#.mws.calc_mag_phase_AS(mag_0=da_nothing)
+
+#%%
+
 
 da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
 da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
