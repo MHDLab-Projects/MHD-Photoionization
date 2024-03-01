@@ -1,5 +1,40 @@
 # TODO list 
 
+# Figures 
+
+Fig 1 
+    - [] torch cross section with CD nozzle 
+    - [] make jet flare
+    - [] dimensions on schematic (jet size and goldilocks)
+    - [] flip C, crop the top a bit. 
+
+Fig 2
+
+ - [] CFD camera compare  and lifetime measurement
+ - [] heat balance 
+
+Fig 3 - 
+    Comparison to CFD nK
+    - [] add absorption measurement and fit
+
+Figure 4
+- [] 2 positions 
+- [] remove C and PD
+
+
+Figure 5 
+- [] fix colors for position confusion
+- [] ionization process (only and B)
+
+Figrue 6
+recombination process 
+
+- n_e fit curve
+taur and delta n_e
+
+Figure 7
+ = [] why is oxygen not dominating Kp?
+
 # Immediate
 
 - [x] respond comments
