@@ -10,6 +10,7 @@ from skimage import transform
 from skimage.io import imread, imshow
 import cv2
 
+
 #TODO: incorporate into data pipeline
 fp_in = pjoin(REPO_DIR, 'experiment','data','manual', 'PI Max Calibration', 'Log_PI_TopCam_0 2023 May 18 11_13_47_process.tif')
 
@@ -35,7 +36,8 @@ img.shape
 # Measure the width of the ruler in pixels. then calculate the positions based on a flat ruler
 # Tweaked final value unti output image ruler had consistent inch spacing
 # This will scale the image but not correct for y distortion
-center_value = 512
+# Tweaked center value to get laser off image to line up. Shouldn't affect the scaling/projection
+center_value = 509
 dy_barrel = 71
 dy_horns = 66
 
@@ -116,20 +118,16 @@ fp_test_spe = pjoin(REPO_DIR, 'experiment', 'data', 'munged', '2023-05-24', 'spe
 
 ds = xr.load_dataset(fp_test_spe)
 
-ds['counts'].mean('gatedelay').mean('estime').plot()
+ds = ds.mean('estime') #Needed for large file size
 
+#%%
+
+ds['counts'].mean('gatedelay').plot()
 
 
 #%%
 
-ds_sel = ds.mean('estime')
-
-
-#%%
-
-#%%
-
-da_test = ds_sel.isel(gatedelay=0)['counts']
+da_test = ds.isel(gatedelay=0)['counts']
 
 xs = np.linspace(0, 1024, 1024)
 ys = np.linspace(0, 1024, 1024)
@@ -161,48 +159,96 @@ imshow(img_test_tf[460:550, 100:600])
 
 from experiment.analysis.topcam.calib_utils import pipe_transform_projective
 
-da_tf = pipe_transform_projective(ds_sel, tform)
+da_tf = pipe_transform_projective(ds, tform)
 
 
 #%%
 
-da_tf.plot(col='gatedelay')
-
+# da_tf.plot(col='gatedelay')
 
 
 
 # %%
 
-# plt.xlim(400, 600)
+
+# Calibraiton image
+
+# Munged calibration image. 
 
 
+fp_in = pjoin(REPO_DIR, 'experiment','data','munged', '2023-05-18', 'spe','calibration', 'Log_PI_TopCam_0 2023 May 18 11_13_47.cdf')
+
+ds_cal = xr.load_dataset(fp_in)
+ds_cal = ds_cal.isel(frame=0).isel(estime=0) #repetitive one exposure
+
+ds_cal = ds_cal/ds_cal.max('x').max('y') # Normalize 
+
+
+ds_cal['counts'].plot(robust=True)
+# %%
+
+from experiment.analysis.topcam.calib_utils import transform_projective, pipe_transform_projective
+
+# Assign a dummy gatedelay, as pipe_transform_projective expects it...TODO: fix this
+ds_cal = ds_cal.assign_coords(gatedelay=[0])
+
+da_cal_tf = pipe_transform_projective(ds_cal, tform)
+
+da_cal_tf = da_cal_tf.isel(gatedelay=0)
 
 # %%
+
+
+# fig, axes = plt
+
+# da_cal_tf.sel(y=slice(-15,15)).plot(robust=True, figsize=(20, 5), cmap='gray')
+
+# for i in range(8):
+#     offset = Quantity(i, 'in').to('mm').magnitude
+
+#     plt.axvline(offset, color='r', alpha=0.3, linestyle='--')
+
+
+# plt.xlabel('x (mm)')
+# plt.ylabel('y (mm)')
+
+
+# plt.savefig(pjoin(DIR_FIG_OUT, 'calibration_image_projective.png'))
+
+# %%
+fig, ax = plt.subplots()
+ax.imshow(img)
+
 #%%
 
-# Trying to apply the transformation to the xarray dataset
+import matplotlib.gridspec as gridspec
 
+fig = plt.figure(figsize=(10, 10))
 
-# ds_stack = ds_sel.stack(temp=['x','y'])
+gs = gridspec.GridSpec(2, 2, height_ratios=[4, 1], width_ratios=[1, 1])
+ax0 = plt.subplot(gs[0])
+ax1 = plt.subplot(gs[1])
+ax2 = plt.subplot(gs[2:])
 
-# ds_stack
+# Display img on the upper left subplot
+ax0.imshow(img, cmap='gray')
+ax0.set_title('Raw Image')
 
-# mat = tform.inverse.params
+# Display tf_img on the upper right subplot
+ax1.imshow(tf_img, cmap='gray')
+ax1.set_title('Projective Transformation')
 
-# def transform_projective(ds, mat):
-#     x = ds['x'].item()
-#     y = ds['y'].item()
-#     ds = ds.drop('temp')
+# Display da_cal_tf on the bottom subplot
+da_cal_tf.sel(y=slice(-15,0)).plot(ax=ax2, vmin=0.1, vmax=0.3, cmap='gray')
 
-#     x_new, y_new, z = np.dot(mat, [x, y, 1])
+for i in range(8):
+    offset = Quantity(i, 'in').to('mm').magnitude
+    ax2.axvline(offset, color='r', alpha=0.3, linestyle='--')
 
-#     ds['x'] = x_new
-#     ds['y'] = y_new
+ax2.set_xlabel('x (mm)')
+ax2.set_ylabel('y (mm)')
 
-#     ds = ds.expand_dims('x').expand_dims('y').stack(temp=['x','y'])
+ax2.set_title('Transformed and Scaled')
 
-#     return ds
-
-
-# ds_stack.groupby('temp').apply(lambda x: transform_projective(x, mat))
-#
+plt.tight_layout()
+plt.savefig(pjoin(DIR_FIG_OUT, 'calibration_image_projective.png'))

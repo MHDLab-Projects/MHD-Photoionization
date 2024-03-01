@@ -6,13 +6,14 @@
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 #have time axes show up in PST
 plt.rcParams['timezone'] = 'US/Pacific'
 
 # %%
 
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
@@ -246,6 +247,9 @@ s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0_copy
 
 s.plot(marker='o')
 
+
+
+
 # %%
 
 fp = r'/home/leeaspitarte/code/MHD-Photoionization/experiment/data/munged/2023-05-12/Lecroy/ds_savingtest_15hz.cdf'
@@ -315,29 +319,7 @@ da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
 
 da_sel.plot(hue='run_plot', x='motor', marker='o')
 
-#%%
-
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
-
-#%%[markdown]
-
-# Use calibration data from 2023-04-07 to normalize the data from 2023-05-12
-
-#%%
-
-fp_nothing = pjoin(REPO_DIR, 'experiment','analysis','mws','output','mws_T0_copy2023-05-12.csv')
-
-df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
-da_nothing = xr.DataArray(df_nothing)
-
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-
-da_sel.plot(hue='run_plot', x='motor', marker='o')
+plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_motor_2023-05-12.png'))
 
 #%%
 
@@ -348,3 +330,25 @@ da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
 
 
 # %%
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+# Display img on the upper left subplot
+
+da_nothing.to_series().plot(ax=axes[0], marker='o')
+
+axes[0].set_title('T No Torch')
+
+plt.ylabel("$U_{Nothing} (V)$")
+plt.xlabel("Date")
+
+da_sel = ds_lecroy['mag_pp'].mean('mnum')
+da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
+da_sel.plot(hue='run_plot', x='motor', marker='o', ax=axes[1])
+
+da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
+
+axes[1].set_title('$U/U_{Nothing}$')
+axes[1].set_xlabel("Motor Position (mm)")
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_T0.png'))

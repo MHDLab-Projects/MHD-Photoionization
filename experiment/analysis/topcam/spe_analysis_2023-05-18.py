@@ -63,21 +63,25 @@ plt.legend()
 
 #%%
 
-da = das['21'].copy()
+da = das['21']
+
+tw = slice(da.coords['estime'].min(), da.coords['estime'].max())
+
+da = da.mean('estime')
 
 da = calibrate_da_pimax_simple(da)
 
-da.mean('estime').mean('gatedelay').plot(robust=True)
+da.mean('gatedelay').plot(robust=True)
 
 #%%
 
-da.mean('estime').plot(col='gatedelay', col_wrap=4)
+da.plot(col='gatedelay', col_wrap=4)
 
 #%%
 
 plt.figure(figsize=(5,4))
 
-da_plot = da.mean('estime').sel(gatedelay=[750, 800, 850])
+da_plot = da.sel(gatedelay=[750, 800, 850])
 da_plot.coords['gatedelay'].attrs['units'] = 'ns'
 
 da_plot.plot(row='gatedelay')
@@ -92,7 +96,7 @@ gatedelays = [800, 850]
 
 # Plot each gatedelay on a different axis
 for ax, gatedelay in zip(axes, gatedelays):
-    da_plot = da.mean('estime').sel(gatedelay=gatedelay)
+    da_plot = da.sel(gatedelay=gatedelay)
     da_plot.coords['gatedelay'].attrs['units'] = 'ns'
     da_plot.plot(ax=ax)
 
@@ -121,10 +125,12 @@ dst_coords
 
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 
-dst_coords['motor'].sel(time=slice(da.coords['estime'].min(), da.coords['estime'].max())).plot()
+dst_coords['motor'].sel(time=tw).plot()
 
 # assign_signal(da, dst_coords['motor'])
 #%%
+
+da = das['21']
 
 tw_536_pos_1 = slice(Timestamp('2023-05-18 22:23:34.172281344'), Timestamp('2023-05-18 22:30:20.482833664'), None)
 tw_536_pos_2 = slice(Timestamp('2023-05-18 22:45:57.737082368'), Timestamp('2023-05-18 22:52:50.292869120'), None)
@@ -357,7 +363,7 @@ diff.plot()
 
 #%%
 
-ds_cfd['Yeq_KOH'].plot(x = 'pos_x')
+ds_cfd['Yeq_KOH'].plot(x = 'pos_x', cmap='winter')
 diff.plot(alpha=0.5)
 
 plt.xlabel('x (mm)')
@@ -368,24 +374,46 @@ plt.title('CFD vs. Topcam, 2023-05-18, 536_pos_1')
 plt.ylim(-30,30)
 plt.xlim(0,280)
 
-# %%
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_comparison_2023-05-18_KOH_overlap.png'), bbox_inches='tight', dpi=300)
+
 
 #%%
 
 
-ds['las_off'].plot()
+fig, axes = plt.subplots(2,2, figsize=(8,4), sharex=True, sharey=True)
 
+
+ds['las_off'].plot(ax=axes[0,0])
+ds_cfd['Yeq_K'].plot(x = 'pos_x', ax=axes[1,0])
+
+diff.plot(ax=axes[0,1])
+ds_cfd['Yeq_KOH'].plot(x = 'pos_x', ax=axes[1,1])
+
+for ax in axes.flatten():
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+
+axes[0,0].set_ylabel('y (mm)')
+axes[1,0].set_ylabel('y (mm)')
+
+axes[1,0].set_xlabel('x (mm)')
+axes[1,1].set_xlabel('x (mm)')
+
+axes[0,0].set_title('Top Cam Intensity no Laser')
+axes[0,1].set_title('Top Cam Intensity Laser On - Off')
+axes[1,0].set_title('CFD K')
+axes[1,1].set_title('CFD KOH')
+
+# Remove labels from colorbars
+
+for ax in axes.flatten():
+    ax.collections[0].colorbar.remove()
 
 plt.ylim(-30,30)
-
-plt.xlim(0,280)
-#%%
-
-ds_cfd['Yeq_K'].plot(x = 'pos_x')
-
-plt.ylim(-30,30)
 plt.xlim(0,280)
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_comparison_2023-05-18.png'), bbox_inches='tight', dpi=300)
 
 #%%
 
@@ -410,4 +438,6 @@ plt.xlabel('x (mm)')
 
 for ax in axes:
     ax.set_title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_comparison_2023-05-18_shockdiamonds.png'), bbox_inches='tight', dpi=300)
 # %%
