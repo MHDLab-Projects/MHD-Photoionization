@@ -6,7 +6,7 @@ In this section we derive a general nonequilibrium kinetic model used for fittin
 
 \begin{equation}
   \label{eq:start_deqn}
-\frac{dn_{e}}{dt} = G - R
+\frac{dn_{e}(t)}{dt} = G - R
 \end{equation}
 
 Where \(G\) is the generation rate of electrons and \(R\) is the recombination rate. We consider the generation rate to be comprised of a thermal generation rate and a nonequilibrium generation rate.
@@ -15,7 +15,7 @@ Where \(G\) is the generation rate of electrons and \(R\) is the recombination r
   G = G_{th} + G_{NE}
 \end{equation}
 
-Where \(k_{th}\) is the thermal generation rate constant and \(n_{K}\) is the equilibrium potassium density. For R, we assume that $n_{K_+}(t) = n_{e}(t)$, and all other electron-capturing species are in thermal equilibrium. This means that the recombination by potassium ions is bimolecular, whereas the recombination by other species is monomolecular.
+Where \(G_{th}\) is the thermal generation rate constant and \(G_{NE}\) is the Nonequilibrium generation rate. For R, we assume that $n_{K_+}(t) = n_{e}(t)$, and all other electron-capturing species are in thermal equilibrium. This means that the recombination by potassium ions is bimolecular, whereas the recombination by other species is monomolecular.
 
 \begin{equation}
 R = k_{r, b, K_{+}}n_{e}(t)^2 + \sum_{i \neq K+}^{}k_{r, b, i}n_{e}(t)n_{i}
@@ -128,7 +128,7 @@ We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in q
 
 We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
 
-TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid. 
+TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower proirity.
 
 This leads to a simple expression for $\Delta n_{e}$
 
@@ -144,7 +144,7 @@ We consider an arbitrary ionization mechanism that requires a power input per un
 \end{equation}
 
 
-This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} In this work, we consider $\eta =1$ or lower. 
+This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH, and a $\eta$ calculated from the quantum yield experimentally measured (~0.05) (TODO). 
 
 We can then write the electron density as a function of the power input
 
