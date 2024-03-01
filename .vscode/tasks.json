@@ -39,6 +39,11 @@
             "label": "Run Shell Script with latex",
             "type": "shell",
             "command": "./automation/gen_vis_latex.sh latex",
+        },
+        {
+            "label": "Render Exp. Analysis Notebooks",
+            "type": "shell",
+            "command": "./automation/render_all_expt.sh",
         }
     ]
 }
