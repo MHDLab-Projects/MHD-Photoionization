@@ -2,8 +2,8 @@
 script to call render_scripts.sh in all subdirectories
 '
 
-# source .env
-source ../.env
+source .env
+# source ../.env
 
 expt_analysis_dir=$REPO_DIR/experiment/analysis
 
@@ -16,7 +16,7 @@ if [ "$#" -gt 0 ]; then
 fi
 
 purge_dirs=false
-replace_existing=false
+replace_existing=true
 
 # pushd and popd are used to change directories and return to the original directory
 
@@ -36,6 +36,11 @@ do
         fi
     fi
 
-    source $REPO_DIR/automation/render_scripts.sh
+    if [ "$replace_existing" = true ] ; then
+        source $REPO_DIR/automation/render_scripts.sh -f
+    else
+        source $REPO_DIR/automation/render_scripts.sh
+    fi
+
     popd
 done
