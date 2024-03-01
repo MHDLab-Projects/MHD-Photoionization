@@ -111,6 +111,19 @@ da_sel_tf = pipe_transform_projective(da_sel_2, tform, downsel_range=downsel_ran
 da_sel_tf = da_sel_tf.sel(y=slice(-30,30))
 
 #%%
+
+# subtract off offset
+
+offset = da_sel_tf.sel(gatedelay=780).sel(y=slice(25,30)).mean('x').mean('y').item()
+
+offset
+
+da_sel_tf = da_sel_tf - offset
+
+da_sel_tf.attrs['long_name'] = 'Counts'
+da_sel_tf.coords['gatedelay'].attrs['units'] = 'ns'
+
+#%%
 da_sel_tf.mean('gatedelay').plot()
 
 
@@ -178,32 +191,93 @@ for ax in g.axes.flatten():
 
 plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
 
-#%%
-
-offset = da_sel_tf.sel(gatedelay=780).sel(y=slice(25,30)).mean('x').mean('y').item()
-
-offset
 
 
 #%%
-fig, axes = plt.subplots(ncols=2, figsize=(8,2), sharex=True, sharey=True)
+fp_cfd_2d = pjoin(REPO_DIR, 'modeling','cfd','analysis','output', 'mdot0130_phi080_K100.csv')
+
+df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])
+
+ds_cfd = df_cfd.to_xarray()
+
+ds_cfd['pos_x'] = (ds_cfd['pos_x'] * 1000) - 208
+ds_cfd['pos_y'] = ds_cfd['pos_y'] * 1000
+
+#%%
+
+da_sel_tf
+
+
+#%%
+
+from matplotlib_scalebar.scalebar import ScaleBar
+
+fig, axes = plt.subplots(ncols=2, nrows=3, figsize=(8,6))
+
 
 # Select the gatedelays
 
-gatedelays = [790, 810]
+gatedelays = [780, 790]
 
 # Plot each gatedelay on a different axis
 
-for ax, gatedelay in zip(axes, gatedelays):
-    da_plot = da_sel_tf.sel(gatedelay=gatedelay) - offset
-    da_plot.attrs['long_name'] = 'Counts'
-    da_plot.coords['gatedelay'].attrs['units'] = 'ns'
-    da_plot.plot(ax=ax, vmin=0)
-
-    ax.set_xlim(-10,220)
+ax = axes[0,1]
+da_plot = da_sel_tf.sel(gatedelay=gatedelays[0])
+da_plot.plot(ax=ax, vmin=0)
+axes[0,1].set_title('ICCD Before Laser')
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'spe_gatedelay_img_2023-05-24.png'), bbox_inches='tight', dpi=300)
+ax = axes[1,1]
+da_plot = da_sel_tf.sel(gatedelay=gatedelays[1]) 
+da_plot.plot(ax=ax, vmin=0)
+axes[1,1].set_title('ICCD During Laser')
+
+ax = axes[0,0]
+ds_cfd['Yeq_K'].plot(ax=ax, vmin=0, x='pos_x')
+axes[0,0].set_title('K [?]')
+
+ax = axes[1,0]
+ds_cfd['Yeq_KOH'].plot(ax=ax, vmin=0, x='pos_x')
+axes[1,0].set_title('KOH [?]')
+
+
+ax = axes[2,0]
+ds_cfd['T'].plot(ax=ax, x='pos_x')
+axes[2,0].set_title('T [K]')
+
+
+
+for ax in axes.flatten():
+    ax.set_ylabel('')
+    ax.set_xlabel('')
+    # ax.set_xticks([])
+    # ax.set_yticks([])
+
+    ax.set_xlim(0,250)
+    ax.set_ylim(-25,25)
+
+    # get the colorbar of each axis
+
+    if ax.collections:
+        cbar = ax.collections[0].colorbar
+        cbar.set_label('')
+
+axes[0,0].set_xticks([])
+axes[0,1].set_xticks([])
+axes[1,0].set_xticks([])
+
+axes[0,0].set_ylabel('y (mm)')
+axes[1,0].set_ylabel('y (mm)')
+axes[2,0].set_ylabel('y (mm)')
+axes[2,0].set_xlabel('x (mm)')
+
+# draw beam slice box on axes [1,1]
+
+axes[1,1].add_patch(plt.Rectangle((160,-21), 30, 42, fill=False, edgecolor='r', lw=1, linestyle='--', alpha=0.5))
+
+axes[2, 1].cla()
+axes[2, 1].axis('off')
+plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_compare_2ns_2023-05-24.png'), bbox_inches='tight', dpi=300)
 # set the 
 
 # %%
@@ -216,7 +290,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
 
 #%%
 
-da_sel2.mean(['x', 'y']).mean('estime').plot(marker='o')
+plt.figure(figsize=(3,1.5))
+
+da_sel2.mean(['x', 'y']).plot(marker='o')
 
 plt.ylabel('Counts')
 plt.xlabel('Gate Delay (ns)')

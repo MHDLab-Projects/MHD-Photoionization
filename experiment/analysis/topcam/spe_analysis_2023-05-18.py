@@ -203,18 +203,12 @@ gatedelay_off = slice(700,793)
 #%%
 fp_cfd_2d = pjoin(REPO_DIR, 'modeling','cfd','analysis','output', 'mdot0130_phi080_K100.csv')
 
-
 df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])
 
 ds_cfd = df_cfd.to_xarray()
 
 ds_cfd['pos_x'] = (ds_cfd['pos_x'] * 1000) - 208
 ds_cfd['pos_y'] = ds_cfd['pos_y'] * 1000
-
-# ds_cfd = ds_cfd.sel(pos_x=slice(200,))
-# ds_cfd = ds_cfd.sel(pos_y=slice())
-
-ds_cfd
 
 #%%
 

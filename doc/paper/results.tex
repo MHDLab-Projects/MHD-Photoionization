@@ -2,6 +2,15 @@
 
 \section{Results}
 
+\subsection{AES}
+
+Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. 
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig3_Position_AES.png} 
+    \caption{Position dependence of atomic potassium as measured by AES and predicted by CFD. The CFD data is sampled along a line on the torch axis, either directly on the torch axis or offset perpindicular to simulate misalignment in the AES beam. }
+    \label{fig:pos_dependence_aes}
+\end{figure}
 
 \subsection{Position dependence and pre-pulse noise}
 
@@ -15,18 +24,12 @@ In Figure \ref{fig:pos_dependence_mws}B the we quantify the signal to fluctuatio
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Position_MWS.png} 
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig4_Position_MWS.png} 
     \caption{Position dependence of the MWS signal. The data are taken for full laser power and 1\% nominal K mass fraction. A) AS profiles taken at various positions downstream of the barrel exit. The hue represents different repeats of the test case sequence, with each line being an average of all oscilloscope acquisitions in a given test case. B) The maximum of the AS signal within 1 $\mu s$ of the laser pulse (0 $\mu s$). The change in potassium photodiode with laser pulse is also shown. The photodiode data for the nominal test case was only obtained on 2024-05-24, but comparisons between the AS and PD signals for different equivalence ratios are presented in the SI.   C) The standard deviation of the magnitude data before the laser pulse. D) The ratio of the Max AS and pre-pulse magnitude statistics. For B, C, and D the confidence intervals represent the standard deviation across runs. } E) position dependence of potassium mass fraction measured through experiment and predicted by CFD. 
     \label{fig:pos_dependence_mws}
 \end{figure}
 
-Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. 
 
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Position_AES.png} 
-    \caption{Position dependence of atomic potassium as measured by AES and predicted by CFD. The CFD data is sampled along a line on the torch axis, either directly on the torch axis or offset perpindicular to simulate misalignment in the AES beam. }
-    \label{fig:pos_dependence_aes}
-\end{figure}
 
 
 
@@ -66,8 +69,15 @@ We note that the previously mentioned sources have much better agreement on the 
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Kwt_Dependence.png} 
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig5_Kwt_Ionization.png} 
     \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
-    \label{fig:kwt_dependence}
+    \label{fig:kwt_ionization}
+\end{figure}
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig6_Kwt_Recombination.png} 
+    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
+    \label{fig:kwt_recombination}
 \end{figure}
 
