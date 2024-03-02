@@ -1,6 +1,5 @@
 #%%
 from mhdpy.analysis.standard_import import *
-from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
 import pi_paper_utils as ppu
 
 

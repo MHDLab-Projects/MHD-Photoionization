@@ -60,7 +60,15 @@ dsst_tcs = {
 
 #%%
 
-coords_to_assign = gen_coords_to_assign_1(dsst_tcs)
+coords_to_assign = gen_coords_to_assign_1(
+        dsst_tcs,
+        kwt_bins =  [-0.01, 0.01, 0.08, 0.15, 0.25 , 0.4, 0.75, 1.5, 2.5, 5],
+        motor_bins = np.linspace(-12.5,237.5,11),
+        phi_bins = [0.5,0.7,0.9,1.1,1.3,1.5]
+    )
+
+from pi_paper_utils import MOTOR_OFFSET
+coords_to_assign['motor'] = coords_to_assign['motor'] + MOTOR_OFFSET.to('mm').magnitude
 
 dss = [da.to_dataset(name=name) for name, da in coords_to_assign.items()]
 ds_coords = xr.merge(dss)

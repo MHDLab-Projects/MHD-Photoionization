@@ -27,6 +27,9 @@ da_motor
 
 dst_coords = gen_coords_to_assign_1(dsst)
 
+from pi_paper_utils import MOTOR_OFFSET
+dst_coords['motor'] = dst_coords['motor'] + MOTOR_OFFSET.to('mm').magnitude
+
 da_motor_coords = dst_coords['motor'].rename(time='acq_time')
 da_motor_coords = da_motor_coords.rename('motor')
 

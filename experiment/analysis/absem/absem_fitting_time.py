@@ -60,7 +60,7 @@ plt.yscale('log')
 
 from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
-from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
+from mhdpy.coords import assign_coords_multi
 
 coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
 coords_to_assign
