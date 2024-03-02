@@ -48,3 +48,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'mws_processing_overview.png'), bbox_inches='tigh
 # %%
 
 ds_sel
+
+ds_sel['mag'].plot(marker='o')
+
+plt.xlim(-1,1)

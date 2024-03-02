@@ -163,7 +163,7 @@ ds['led_on'].mean('acq_time').plot(hue='kwt')
 
 from mhdpy.coords import assign_coords_multi
 
-ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=2)
+ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=10)
 
 ds
 
@@ -216,3 +216,4 @@ g.axes[0,0].set_ylabel('Counts')
 
 counts.plot.hist()
 plt.ylabel("Frequency of Counts")
+# %%

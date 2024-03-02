@@ -179,8 +179,8 @@ plt.ylabel('$\Delta n_e (cm^{-3})$')
 
 plt.title('')
 
-plt.xlim(-1,50)
-plt.ylim(1e11)
+plt.xlim(-10,50)
+plt.ylim(1e9)
 
 
 tau = 1/ds_p['krm'].pint.quantify('us**-1')
