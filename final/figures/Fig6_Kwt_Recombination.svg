@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="146.47525mm"
-   height="140.38557mm"
-   viewBox="0 0 146.47525 140.38557"
+   width="143.60846mm"
+   height="142.10565mm"
+   viewBox="0 0 143.60846 142.10565"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -27,9 +27,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.97890839"
-     inkscape:cx="178.25979"
-     inkscape:cy="339.66406"
+     inkscape:zoom="1.3843855"
+     inkscape:cx="149.52482"
+     inkscape:cy="173.72328"
      inkscape:window-width="2400"
      inkscape:window-height="1261"
      inkscape:window-x="2391"
@@ -66,12 +66,12 @@
        preserveAspectRatio="none"
        xlink:href="../figure_panels/output/figures/53x_params_recomb.png"
        id="image1"
-       x="41.316437"
-       y="114.62924" /><image
+       x="38.449642"
+       y="116.34932" /><image
        width="98.806"
        height="70.865997"
        preserveAspectRatio="none"
        xlink:href="../../experiment/analysis/mws/output/figures/fit_mws_dnedt_v2.png"
        id="image1-1"
-       x="50.040592"
-       y="43.141415" /></g></svg>
+       x="50.805073"
+       y="45.243732" /></g></svg>

@@ -47,27 +47,27 @@ Another limitation of the AES diagnostic is that it must be calibrated to the sp
 
 To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] (refs use IQ terminology). The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, (TODO: finish). The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. 
 
-The measurements and processing of the system are shown in the SI. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude ($U(t)$) of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation. 
-
-A more detailed schematic of the MWS setup is shown in figure S\ref*{fig:SI_MWS_Setup_Silicon}
+The measurements and processing of the system are shown in the SI. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse and The magnitude ($U(t)$) of the transmitted microwaves is calculated with the following equation. 
 
 \begin{equation}
     U(t) = \sqrt{I(t)^2 + Q(t)^2}
 \end{equation}
 
-We calculate the relative transmission, ($T(t)$), by normalizing by the average magnitude in a 1 $\mu s$ time window before the laser pulse, $U_{PP}$,   
+We calculate the transmission, ($T(t)$), by normalizing by the measured transmission in the absence of a free jet taken before or after the experiment, $U_0$. 
 
 \begin{equation}
-    T(t) = \frac{U(t)}{U_{PP}}
+    T(t) = \frac{U(t)}{U_{0}}
 \end{equation}
 
 Finally, we calculate the combined absorption and scattering, $AS$, by
 
 \begin{equation}
-    AS(t) = 1 - T(t)
+    AS(t) = T_{PP} - T(t)
 \end{equation}
 
-Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
+Where $T_{PP}$ is the average transmission in the 1 $\mu s$ time window before the laser pulse.
+
+% Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
 
 We fit the $AS (t)$ profile with a kinetic model of the electron recombination process. We first normalize $AS (t)$ by its maximum value at the laser pulse, defining $AS_{norm} = AS(t)/max(AS(t))$. We assume that $AS_{norm}(t) \propto \Delta n_e (t)$, where $\Delta n_e (t)$ is the time dependent change in the free electron density from the steady state concentration. 
 
@@ -82,7 +82,7 @@ where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coe
 
 In the fitting process, the differential equation is numerically solved and the solution is normalized to have the have the same form as $AS_{norm}$. This solution is performed iteratively in a least squares optimization with the free fit parameters being $k_{r,m,X}$ and $\Delta{n_e,0}$, where $\Delta{n_e,0}$ is the initial excited electron density. for $k_{r, bm, K+}$ we use the value obtained by Kelley and Padley 1973 (TODO).
 
-Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
+% Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
 
 Immediately after the laser pulse, there is a region of of changing slope in the logarithm of the $\Delta n_e (t)$ profile. This region arises for high $\Delta n_e$ when the second term in equation \ref{eq:fit_eq} dominates.  For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay. The time constant of the exponential decay for capture with species X, $\tau$, is given by
 

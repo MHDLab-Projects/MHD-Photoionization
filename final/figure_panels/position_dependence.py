@@ -22,34 +22,26 @@ ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 #%%
 
-motor_sel = [34.81, 104.8, 178, 226.7]
+da_sel = ds_lecroy['AS_abs'].mean('mnum').dropna('run',how='all')
 
-da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
 
-da_sel_mean = da_sel.mean('run')
-da_sel_std = da_sel.std('run')
+fig, axes = plt.subplots(1, 2, figsize=(6,3), sharex=True, sharey=False)
 
-fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
-for i, motor in enumerate(da_sel.coords['motor'].values):
-    ax = axes[i]
-    
-    # Calculate mean and standard deviation
-    mean = da_sel.sel(motor=motor).mean(dim='run')
-    std = da_sel.sel(motor=motor).std(dim='run')
-    
-    # Plot mean and shaded region for standard deviation
-    mean.plot(x='time', ax=ax)
-    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color='b', alpha=0.2)
-    
-    ax.set_title('Position: {} mm'.format(motor))
-    ax.set_xlabel('')
-    ax.set_ylabel('AS')
+da_sel.sel(motor = 104.8, method='nearest').plot(hue='run_plot', x='time', ax=axes[0])
 
-    if i == len(da_sel.coords['motor'].values) - 1:
-        ax.set_xlabel('Time [us]')
-    # else:
-    #     ax.get_legend().remove()
+axes[0].set_title('Position: 104.8 mm')
+axes[0].set_ylim(-0.03,0.35)
+
+
+da_sel_mean = da_sel.mean('run').sel(motor=178, method='nearest')
+da_sel_std = da_sel.std('run').sel(motor=178, method='nearest')
+
+da_sel_mean.plot(x='time', ax=axes[1])
+axes[1].fill_between(da_sel_mean['time'].values, (da_sel_mean-da_sel_std).values, (da_sel_mean+da_sel_std).values, color='b', alpha=0.2)
+axes[1].set_title('Position: 178 mm')
+axes[1].set_ylabel('')
+# axes[1].set_yscale('log')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
 
@@ -58,9 +50,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tigh
 
 ds_p_sel = ds_p.sel(phi=0.79, method='nearest') 
 
-fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
+fig, axes = plt.subplots(1,2, figsize=(5,3), sharex=True)
 
-for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
+for i, var in enumerate(['AS_max', 'AS_max_std_ratio']):
     ax = axes[i]
 
     ds_stat = ds_p_sel.wma.initialize_stat_dataset(var, 'run')
@@ -78,22 +70,27 @@ for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
     unit_str = '[' + ds_p_sel[var].attrs['units']+ ']' if 'units' in ds_p_sel[var].attrs else '' 
     ax.set_ylabel(ds_p_sel[var].attrs['long_name'] + unit_str)
     
-axes[2].set_xlabel('Position [mm]')
+# axes[2].set_xlabel('Position [mm]')
 
 ta = axes[0].twinx()
 
-delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
-delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-delta_pd1.plot(ax=ta, color='red', marker='o')
-ta.set_ylabel('Delta PD1 [mV]')
-ta.set_title('')
+## photodiode 
+# delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
+# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+# delta_pd1.plot(ax=ta, color='red', marker='o')
+# ta.set_ylabel('Delta PD1 [mV]')
+# ta.set_title('')
+
+motor_sel = [ 104.8, 178]
 
 for mp in motor_sel:
     if mp == 178:
-        axes[2].axvline(mp, color='gold', linestyle='--')
+        axes[1].axvline(mp, color='gold', linestyle='--')
     else:
-        axes[2].axvline(mp, color='gray', linestyle='--')
+        axes[1].axvline(mp, color='gray', linestyle='--')
 
+
+plt.tight_layout()
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
 

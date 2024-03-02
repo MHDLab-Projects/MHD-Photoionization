@@ -19,7 +19,7 @@ tc = '53x'
 ds_absem = ppu.fileio.load_absem(tc)
 
 # # Load MWS Data
-ds_lecroy = ppu.fileio.load_lecroy(tc)
+ds_lecroy = ppu.fileio.load_lecroy(tc, norm_mag=True)
 
 # Load cfd line profiles
 ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_lecroy.coords['kwt'].values)
@@ -104,12 +104,12 @@ ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem,
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 ds_fit = ds_lecroy.mean('mnum')
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS']
+da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
 ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
 
 #%%
 
-da_stats = ds_lecroy['AS'].sel(time=slice(-1,1))
+da_stats = ds_lecroy['AS_abs'].sel(time=slice(-1,1))
 mws_max = da_stats.mean('mnum').max('time')
 mws_std = da_stats.std('mnum').max('time')
 

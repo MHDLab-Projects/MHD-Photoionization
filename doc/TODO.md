@@ -10,7 +10,7 @@ Fig 1
 
 Fig 2
 
- - [] CFD camera compare  and lifetime measurement
+ - [x] CFD camera compare  and lifetime measurement
  - [] heat balance 
 
 Fig 3 - 
@@ -18,13 +18,13 @@ Fig 3 -
     - [] add absorption measurement and fit
 
 Figure 4
-- [] 2 positions 
-- [] remove C and PD
+- [x] 2 positions 
+- [x] remove C and PD
 
 
 Figure 5 
 - [] fix colors for position confusion
-- [] ionization process (only and B)
+- [x] ionization process (only and B)
 
 Figrue 6
 recombination process 
@@ -74,6 +74,4 @@ Figure 7
 
 - [] collect diagnostic information
 
-# Long
-
-- [] investigate why phi coordinate value is 0.65. 
+- [] investigate why phi coordinate value is 0.65 and understand motor coordinates

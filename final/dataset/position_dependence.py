@@ -61,9 +61,11 @@ ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 
+da_mws_nothing  = ppu.fileio.load_mws_T0()
+
 ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp').unstack('temp')
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_mws_nothing.pint.dequantify())
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
 
 
 #%%
@@ -110,7 +112,7 @@ ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 #%%
 
 
-mws_max = ds_lecroy['AS'].mean('mnum').max('time').rename('AS_max')
+mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
 nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop('mp')
 nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
 
