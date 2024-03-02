@@ -49,6 +49,11 @@
             "label": "Final Dataset",
             "type": "shell",
             "command": "./automation/final_dataset.sh",
+        },
+        {
+            "label": "collect test data",
+            "type": "shell",
+            "command": "cd tests && python collect_test_data.py",
         }
     ]
 }
