@@ -57,6 +57,8 @@ recombination process
 - [] lifetime comparison of 536 and 516. Need to compare across positions. Relevant location for 516 may be inward. 
 
 - [] collect diagnostic information
+ - [] oscilliscope settings time information
+  - [] try taking off coarsening
 
 - [] investigate why phi coordinate value is 0.65 and understand motor coordinates
 
