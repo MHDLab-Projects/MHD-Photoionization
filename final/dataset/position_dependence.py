@@ -4,6 +4,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -75,47 +76,24 @@ ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos
 ds_absem.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
 #%%
+ds_cfd_beam = ppu.fileio.load_cfd_beam()
 
+ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1)
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
-ds_cfd_beam_mobile = xr.load_dataset(fp_cfd_profiles)
-
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
-ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
-
-
-ds_cfd_beam = xr.concat([
-                    ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
-                    ds_cfd_beam_barrel.assign_coords(mp='barrel')
-                    ], dim='mp')
-
-
-
-ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
-ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
-
-ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
-ds_cfd_beam = ds_cfd_beam.sel(offset=0)
-
-da_cfd_beam = ds_cfd_beam['Yeq_K']
-
-da_cfd_beam = da_cfd_beam.assign_coords(phi=ds_absem.coords['phi'].values)
-da_cfd_beam = da_cfd_beam.sel(kwt=1)
+ds_cfd_beam = ds_cfd_beam.assign_coords(phi=ds_absem.coords['phi'].values)
 
 #TODO: motor coordinates not exactly the same, why? 
-da_cfd_beam = da_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
-da_cfd_beam = da_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values) 
+ds_cfd_beam = ds_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
+ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values) 
 
+da_cfd_beam = ds_cfd_beam['Yeq_K']
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
 da_cfd_beam
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 
 ds_fit = ds_absem.mean('mnum')

@@ -116,3 +116,29 @@ def load_cfd_centerline(kwt_interp = None):
     return ds_cfd
 
 
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdpy.pyvista_utils import CFDDatasetAccessor
+
+def load_cfd_beam():
+
+
+    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
+    ds_cfd_beam_mobile = xr.load_dataset(fp_cfd_profiles)
+
+    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
+    ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
+
+
+    ds_cfd_beam = xr.concat([
+                        ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
+                        ds_cfd_beam_barrel.assign_coords(mp='barrel')
+                        ], dim='mp')
+
+
+
+    ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
+    ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
+
+    ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+
+    return ds_cfd_beam
