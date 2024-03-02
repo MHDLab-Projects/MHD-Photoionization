@@ -26,11 +26,6 @@
 
         },
         {
-            "label": "Run Shell Script with data",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh data",
-        },
-        {
             "label": "Run Shell Script with panels",
             "type": "shell",
             "command": "./automation/gen_vis_latex.sh panels",
@@ -49,6 +44,11 @@
             "label": "Process Munged Data",
             "type": "shell",
             "command": "./automation/process_munged.sh",
+        },
+        {
+            "label": "Final Dataset",
+            "type": "shell",
+            "command": "./automation/final_dataset.sh",
         }
     ]
 }
