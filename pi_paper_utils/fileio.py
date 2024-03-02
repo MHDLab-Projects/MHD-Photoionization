@@ -44,7 +44,7 @@ def load_absem(
 
     return ds_absem
 
-def load_lecroy(tc, avg_mnum = False):
+def load_lecroy(tc, avg_mnum = False, norm_mag = False):
     """
     pipeline for loading lecroy data
 
@@ -57,9 +57,6 @@ def load_lecroy(tc, avg_mnum = False):
     """
     ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
-
-    ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
     if tc == '53x':
         ds_lecroy = ds_lecroy.drop(0,'kwt')
 
@@ -67,9 +64,28 @@ def load_lecroy(tc, avg_mnum = False):
         ds_lecroy = ds_lecroy.mean('mnum')
 
     ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-    ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
+
+    # calculate before or after mnum mean?
+    if norm_mag:
+        da_nothing = load_mws_T0().pint.dequantify() #TODO: add units in mws
+        ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
+    else:
+        ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 
+
+    ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
     return ds_lecroy
+
+def load_mws_T0():
+    """
+    pipeline for loading mws T0 data
+    """
+    fp_nothing = pjoin(REPO_DIR,'final', 'dataset', 'output', 'mws_T0.csv')
+
+    df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
+    da_nothing = xr.DataArray(df_nothing).pint.quantify('volt')
+
+    return da_nothing
 
 def load_cfd_centerline(kwt_interp = None):
     """

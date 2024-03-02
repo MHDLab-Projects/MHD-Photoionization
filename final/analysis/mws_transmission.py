@@ -6,7 +6,7 @@ import pi_paper_utils as ppu
 
 # %%
 
-fp = r'/home/leeaspitarte/code/MHD-Photoionization/experiment/data/munged/2023-05-12/Lecroy/ds_savingtest_15hz.cdf'
+fp = pjoin(REPO_DIR, 'experiment', 'data','munged', '2023-05-12', 'Lecroy', 'ds_savingtest_15hz.cdf')
 
 ds = xr.load_dataset(fp)
 
@@ -20,37 +20,8 @@ ds['mag'].mean('acq_time').plot()
 
 tc = '536_pos'
 
-DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
-
-
-#%%
-
-fp_nothing = pjoin(REPO_DIR,'final', 'dataset', 'output', 'mws_T0.csv')
-
-df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
-da_nothing = xr.DataArray(df_nothing).pint.quantify('volt')
-
-da_nothing
-
-#%%
-
-ds_lecroy = ds_lecroy.unstack('run').mws.calc_mag_phase_AS(mag_0=da_nothing)#[['mag', 'phase','AS']]
-
-ds_lecroy = ds_lecroy.xr_utils.stack_run()  
-
-#%%
-ds_lecroy
-
+ds_lecroy = ppu.fileio.load_lecroy(tc, norm_mag=True)
+da_nothing = ppu.fileio.load_mws_T0()
 
 # %%
 
