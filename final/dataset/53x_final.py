@@ -101,11 +101,44 @@ ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem,
 
 #%%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
 ds_fit = ds_lecroy.mean('mnum')
 da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+
+
+# ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us')))
+
+#%%
+
+#TODO: output a standard plot of fits for SI or save to file
+
+da_sel = ds_lecroy['AS_abs'].sel(kwt=0.05).dropna('run',how='all').isel(run=2)
+
+da_mean = da_sel.mean('mnum')
+da_std = da_sel.std('mnum')
+
+da_mean.plot()
+plt.fill_between(da_mean.time, da_mean-da_std, da_mean+da_std, alpha=0.5)
+
+plt.yscale('log')
+plt.ylim(1e-3, 1e-2)
+plt.xlim(-1,10)
+
+#%%
+
+ds_fit_mws.mean('run')[['AS_all','AS_fit']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-3, 1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit.png'))
+
+#%%
+
+ds_p_mws['krm']
 
 #%%
 
@@ -118,6 +151,7 @@ delta_pd1 = delta_pd1.dropna('run', how='all')
 delta_pd1 = delta_pd1.mean('mnum').max('time')
 delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 
+ds_p_mws['decay'] = 1/ds_p_mws['krm']
 
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
@@ -125,6 +159,7 @@ ds_params = xr.merge([
     mws_max.rename('AS_max'),
     mws_std.rename('AS_std'),
     ds_p_mws['decay'].rename('mws_fit_decay'),
+    ds_p_mws['dne'].rename('mws_fit_dne'),
     delta_pd1.rename('delta_pd1')
     ])
 

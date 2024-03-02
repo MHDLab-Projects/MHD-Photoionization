@@ -172,7 +172,7 @@ ds['AS_all'].plot(label='Data (all)')
 ds['AS_sel'].plot(label='Data (fitted)')
 ds['AS_fit'].plot(label='Fit', color='black', linestyle='--')
 
-plt.legend()
+plt.legend(bbox_to_anchor=(1, 0.6), loc='right')
 
 plt.yscale('log')
 plt.ylabel('$\Delta n_e (cm^{-3})$')
@@ -180,6 +180,7 @@ plt.ylabel('$\Delta n_e (cm^{-3})$')
 plt.title('')
 
 plt.xlim(-1,50)
+plt.ylim(1e11)
 
 
 tau = 1/ds_p['krm'].pint.quantify('us**-1')
