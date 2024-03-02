@@ -37,6 +37,9 @@ alpha = alpha*da_dsigma_tot
 #TODO: gamma used to be beta, search for other instances. 
 gamma = alpha -1 
 
+#%%
+
+
 # %%
 
 # %%
@@ -54,7 +57,7 @@ P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 P_zero
 # %%
 
-P_zero.plot(col='rxn', hue='phi', y='T')
+P_zero.plot(col='rxn', row='eta', hue='phi', y='T')
 
 plt.xscale('log')
 
@@ -76,7 +79,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'P_zero_rxn_phi.png'))
 
 
 # %%
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8)
+combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
@@ -119,5 +122,6 @@ colorbar = g.axes[0, -1].collections[0].colorbar
 
 colorbar.set_label('$1-\\beta$')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'alpha_curve_demo_rxn.png'))
+# plt.savefig(pjoin(DIR_FIG_OUT, 'alpha_curve_demo_rxn.png'))
 # %%
+

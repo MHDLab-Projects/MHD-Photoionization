@@ -86,26 +86,66 @@ constants = {
     'B': B_const
 }
 
+dss = []
 
 constants_temp = constants.copy()
 constants_temp['G_th'] = Gth.pint.dequantify()
 constants_temp['krb'] = krb_Kp.pint.dequantify()
-ds_NE_Kp = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None).run_combos(combos)
-ds_NE_Kp = ds_NE_Kp.assign_coords(rxn='Kp')
+ds = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None).run_combos(combos)
+dss.append(ds.assign_coords(rxn='Kp').assign_coords(eta='perf'))
 
 constants_temp = constants.copy()
 constants_temp['krm'] = krm_O2.pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
-ds_NE_O2 = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-ds_NE_O2 = ds_NE_O2.assign_coords(rxn='O2')
+ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+dss.append(ds.assign_coords(rxn='O2').assign_coords(eta='perf'))
 
 constants_temp = constants.copy()
 constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
-ds_NE_sum = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-ds_NE_sum = ds_NE_sum.assign_coords(rxn='mm_sum')
+ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='perf'))
 
-ds_NE = xr.concat([ds_NE_Kp, ds_NE_O2, ds_NE_sum], 'rxn')
+
+# #Photoionization
+ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squeeze()
+gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
+
+# FA = xr.DataArray([1], name='FA_1')
+FA = gas_lam['KOH'].where(False).fillna(1.0)
+FA.name = 'FA_1'
+
+eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA)
+
+constants_temp = constants.copy()
+constants_temp['eta'] = eta_PI
+constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['ne0'] = ne0.pint.dequantify()
+ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI'))
+
+
+constants_temp = constants.copy()
+constants_temp['eta'] = eta_PI*0.3
+constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['ne0'] = ne0.pint.dequantify()
+ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI_QY'))
+
+eta_PI
+
+#%%
+
+dss_new = []
+
+for ds in dss:
+    ds_new = ds.expand_dims('rxn').expand_dims('eta')
+    ds_new = ds_new.stack(temp=['eta', 'rxn'])
+    dss_new.append(ds_new)
+
+ds_NE = xr.concat(dss_new, 'temp').unstack('temp')
+
+# ds_NE = xr.concat([ds_NE_Kp, ds_NE_O2, ds_NE_sum,], 'rxn')
 
 # %%
 ds_NE.attrs = {}

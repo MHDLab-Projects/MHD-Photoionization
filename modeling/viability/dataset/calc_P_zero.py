@@ -79,6 +79,7 @@ combos = {
     'Kwt': [0.001, 0.01, 0.1],
     'P_in' : beta.coords['P_in'].values,
     # 'analysis': beta.coords['analysis'].values,
+    'eta': beta.coords['eta'].values,
     'l_bk': beta.coords['l_bk'].values,
     'rxn': beta.coords['rxn'].values
 }
