@@ -35,7 +35,7 @@ tc = '5x6_pos'
 
 ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
-ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=[0.79]) # Cannot add 0.65 phi, because it conflicts with 516_pos. Need to change run_num for this measurement?
+ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=[0.79], method='nearest') # Cannot add 0.65 phi, because it conflicts with 516_pos. Need to change run_num for this measurement?
 
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 

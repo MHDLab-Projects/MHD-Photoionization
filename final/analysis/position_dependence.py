@@ -57,7 +57,7 @@ ds_lecroy
 #%%
 motor_sel = [34.81, 104.8, 178, 226.7]
 
-ds_sel = ds_lecroy.sel(phi=0.79)
+ds_sel = ds_lecroy.sel(phi=0.8, method='nearest')
 
 da_sel = ds_sel['AS_abs'].mean('mnum').sel(motor=motor_sel, method='nearest')
 

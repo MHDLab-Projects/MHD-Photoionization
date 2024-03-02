@@ -9,7 +9,7 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 
-ds_lecroy = ds_lecroy.sel(phi=0.79)
+ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
 
 #%%
 
@@ -48,7 +48,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tigh
 
 #%%
 
-ds_p_sel = ds_p.sel(phi=0.79, method='nearest') 
+ds_p_sel = ds_p.sel(phi=0.8, method='nearest') 
 
 fig, axes = plt.subplots(1,2, figsize=(5,3), sharex=True)
 
@@ -102,8 +102,10 @@ fig, axes = plt.subplots(2, figsize=(6,6), sharex=True)
 # Phi =0.8
 ax1 = axes[0]
 
-ds_p_sel = ds_p.sel(phi=0.79, method='nearest')
-ds_cfd_sel = ds_cfd.sel(phi=0.79, method='nearest')
+ds_p_sel = ds_p.sel(phi=0.8, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.8, method='nearest')
+
+phi_val_expt = ds_p_sel.coords['phi'].item()
 
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
@@ -120,15 +122,17 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
 
 ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax1.set_title('phi = 0.79')
+ax1.set_title('phi = {}'.format(phi_val_expt))
 
 
 # Phi = 0.65
 
 ax2 = axes[1]
 
-ds_p_sel = ds_p.sel(phi=0.65, method='nearest')
-ds_cfd_sel = ds_cfd.sel(phi=0.65, method='nearest')
+ds_p_sel = ds_p.sel(phi=0.6, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.6, method='nearest')
+
+phi_val_expt = ds_p_sel.coords['phi'].item()
 
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
@@ -144,7 +148,7 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
 
 ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax2.set_title('phi = 0.65')
+ax2.set_title('phi = {}'.format(phi_val_expt))
 
 for ax in axes:
 
