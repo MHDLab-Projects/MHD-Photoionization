@@ -4,10 +4,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-
-from mhdpy.analysis import mws
-from mhdpy.analysis import absem
-from mhdpy.plot import dropna
+import pi_paper_utils as ppu
 
 # plt.rcParams.update({'font.size': 16})
 
@@ -15,27 +12,14 @@ from mhdpy.plot import dropna
 
 tc = '536_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
-
+ds_absem = ppu.fileio.load_absem(tc)
+ds_lecroy = ppu.fileio.load_lecroy(tc)
 
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
-
 tc = '5x6_pos'
 
-ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy_5x6 = ds_lecroy_5x6.xr_utils.stack_run()
-
+ds_lecroy_5x6 = ppu.fileio.load_lecroy('5x6_pos')
 ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')
-
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 
 ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
@@ -46,11 +30,6 @@ ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
 #%%
 
 ds_lecroy['pd1'].isnull().all()
-
-# %%
-
-
-
 
 #%%[markdown]
 
@@ -71,12 +50,8 @@ plt.xlim(760,780)
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
-spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
-
-ds_fit = ds_absem
-
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
+ds_fit = ds_absem.mean('mnum')
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit,method='iterative')
 
 #%%
 
@@ -361,8 +336,9 @@ da = ds['nK_m3'].dropna('run', how='all')
 da = da.sel(motor = slice(50,300))
 
 g = da.isel(run=0).plot(x='motor', marker='o', label='2023-05-12 Run 1')
+dropna(g)
 g = da.isel(run=1).plot(x='motor', marker='o', label='2023-05-12 Run 2')
-plot.dropna(g)
+dropna(g)
 
 ax1 = plt.gca()
 ax1.set_yscale('log')
@@ -404,6 +380,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 # %%
 
 g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
+
+dropna(g)
 
 leg = plt.gca().get_legend()
 leg.set_title('Experiment (date, #)')
