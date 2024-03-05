@@ -1,7 +1,7 @@
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils #Sets matplotlib style
+import pi_paper_utils as ppu
 
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
@@ -9,17 +9,11 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 
-ds_lecroy = ds_lecroy.sel(phi=0.79)
+ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
-
-ds_cfd = xr.load_dataset(fp_cfd)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(kwt=1)
 
@@ -28,45 +22,56 @@ ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 #%%
 
-motor_sel = [34.81, 104.8, 178, 226.7]
+da_counts = ds_lecroy['AS_abs'].isel(time=0).count('mnum')
+da_counts = da_counts.where(da_counts > 0).dropna('run', how='all')
 
-da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
 
-da_sel_mean = da_sel.mean('run')
-da_sel_std = da_sel.std('run')
+da_counts.plot(row='run', marker='o')
 
-fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
+#%%
 
-for i, motor in enumerate(da_sel.coords['motor'].values):
-    ax = axes[i]
-    
-    # Calculate mean and standard deviation
-    mean = da_sel.sel(motor=motor).mean(dim='run')
-    std = da_sel.sel(motor=motor).std(dim='run')
-    
-    # Plot mean and shaded region for standard deviation
-    mean.plot(x='time', ax=ax)
-    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color='b', alpha=0.2)
-    
-    ax.set_title('Position: {} mm'.format(motor))
-    ax.set_xlabel('')
-    ax.set_ylabel('AS')
+da_sel = ds_lecroy['AS_abs'].mean('mnum').dropna('run',how='all')
 
-    if i == len(da_sel.coords['motor'].values) - 1:
-        ax.set_xlabel('Time [us]')
-    # else:
-    #     ax.get_legend().remove()
+da_sel.dropna('motor', how='all')
+
+da_sel.plot(col='motor', col_wrap=3, hue='run_plot', x='time', figsize=(6,10))
+
+#%%
+
+
+fig, axes = plt.subplots(1, 2, figsize=(6,3), sharex=True, sharey=False)
+
+
+da_plot = da_sel.sel(motor = 105, method='nearest').dropna('run',how='all')
+da_plot.plot(hue='run_plot', x='time', ax=axes[0])
+
+motor_expt = da_plot.coords['motor'].item()
+
+axes[0].set_title('Position: {:.0f} mm'.format(motor_expt))
+axes[0].set_ylim(-0.03,0.35)
+
+
+da_sel_mean = da_sel.mean('run').sel(motor=180, method='nearest')
+da_sel_std = da_sel.std('run').sel(motor=180, method='nearest')
+
+motor_expt = da_sel_mean.coords['motor'].item()
+
+da_sel_mean.plot(x='time', ax=axes[1])
+axes[1].fill_between(da_sel_mean['time'].values, (da_sel_mean-da_sel_std).values, (da_sel_mean+da_sel_std).values, color='b', alpha=0.2)
+axes[1].set_title('Position: {:.0f} mm'.format(motor_expt))
+axes[1].set_ylabel('')
+# axes[1].set_yscale('log')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
 
 
 #%%
 
-ds_p_sel = ds_p.sel(phi=0.79, method='nearest') 
+ds_p_sel = ds_p.sel(phi=0.8, method='nearest') 
 
-fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
+fig, axes = plt.subplots(1,2, figsize=(5,3), sharex=True)
 
-for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
+for i, var in enumerate(['AS_max', 'AS_max_std_ratio']):
     ax = axes[i]
 
     ds_stat = ds_p_sel.wma.initialize_stat_dataset(var, 'run')
@@ -84,22 +89,27 @@ for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
     unit_str = '[' + ds_p_sel[var].attrs['units']+ ']' if 'units' in ds_p_sel[var].attrs else '' 
     ax.set_ylabel(ds_p_sel[var].attrs['long_name'] + unit_str)
     
-axes[2].set_xlabel('Position [mm]')
+# axes[2].set_xlabel('Position [mm]')
 
 ta = axes[0].twinx()
 
-delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
-delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-delta_pd1.plot(ax=ta, color='red', marker='o')
-ta.set_ylabel('Delta PD1 [mV]')
-ta.set_title('')
+## photodiode 
+# delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
+# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+# delta_pd1.plot(ax=ta, color='red', marker='o')
+# ta.set_ylabel('Delta PD1 [mV]')
+# ta.set_title('')
+
+motor_sel = [ 104.8, 178]
 
 for mp in motor_sel:
     if mp == 178:
-        axes[2].axvline(mp, color='gold', linestyle='--')
+        axes[1].axvline(mp, color='gold', linestyle='--')
     else:
-        axes[2].axvline(mp, color='gray', linestyle='--')
+        axes[1].axvline(mp, color='gray', linestyle='--')
 
+
+plt.tight_layout()
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
 
@@ -111,13 +121,15 @@ fig, axes = plt.subplots(2, figsize=(6,6), sharex=True)
 # Phi =0.8
 ax1 = axes[0]
 
-ds_p_sel = ds_p.sel(phi=0.79, method='nearest')
-ds_cfd_sel = ds_cfd.sel(phi=0.79, method='nearest')
+ds_p_sel = ds_p.sel(phi=0.8, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.8, method='nearest')
+
+phi_val_expt = ds_p_sel.coords['phi'].item()
 
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
-nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
 #TODO: removing last datapoint. Can this be fixed with calibraiton/processing?
 nK_mw_horns = nK_mw_horns.sel(motor = slice(50,220))
@@ -129,20 +141,22 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
 
 ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax1.set_title('phi = 0.79')
+ax1.set_title('phi = {}'.format(phi_val_expt))
 
 
 # Phi = 0.65
 
 ax2 = axes[1]
 
-ds_p_sel = ds_p.sel(phi=0.65, method='nearest')
-ds_cfd_sel = ds_cfd.sel(phi=0.65, method='nearest')
+ds_p_sel = ds_p.sel(phi=0.6, method='nearest')
+ds_cfd_sel = ds_cfd.sel(phi=0.6, method='nearest')
+
+phi_val_expt = ds_p_sel.coords['phi'].item()
 
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
-nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
 #TODO: final datapoint for 516 has no potassium peaks. However, calibration is off and fit gives a large absorption value. Removing is probably best as any absorption is not meaninful anyway. 
 nK_mw_horns = nK_mw_horns.sel(motor = slice(50,200)) 
@@ -153,11 +167,11 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
 
 ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax2.set_title('phi = 0.65')
+ax2.set_title('phi = {}'.format(phi_val_expt))
 
 for ax in axes:
 
-    ax.axvline(178, color='gold', linestyle='--')
+    ax.axvline(180, color='gold', linestyle='--')
     ax.set_ylim(1e16,3e22)
     ax.set_xlim(-10,250)
     ax.set_yscale('log')

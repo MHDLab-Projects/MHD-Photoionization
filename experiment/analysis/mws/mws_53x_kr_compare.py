@@ -7,7 +7,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.plot import dropna
@@ -25,16 +25,7 @@ df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 #%%
 
-tc = '53x'
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
-
-ds_lecroy = ds_lecroy.drop(0,'kwt')
+ds_lecroy = ppu.fileio.load_lecroy('53x')
 
 ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
@@ -57,17 +48,9 @@ ds_p['decay'].mean('run').plot(marker='o')
 # Load cfd K+
 
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+ds_cfd = ppu.fileio.load_cfd_centerline()
 
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
-
 
 goldi_pos = Quantity(178,'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')

@@ -14,7 +14,7 @@ ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
 
 #%%
 
-fig, axes = plt.subplots(3, 1, figsize=(5,10), sharex=True)
+fig, axes = plt.subplots(2, 1, figsize=(5,8), sharex=True)
 
 var = 'nK_m3_barrel'
 line_nK_barrel = axes[0].errorbar(
@@ -37,12 +37,13 @@ line_nK_mwhorns = axes[0].errorbar(
 
 lineKOH = ds_species_cfd['Yeq_KOH'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: KOH')
 linenK = ds_species_cfd['Yeq_K'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: K')
+line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
 
 
 axes[0].set_ylabel("Species Concentration [#/m^3]")
 axes[0].legend(
-    [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)'],
+    [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)' , 'CFD All K (Goldi)'],
     bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
     )
 
@@ -75,8 +76,22 @@ ta.set_ylabel("Delta PD1 [mV]")
 
 axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
 
+for ax in axes:
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+
+axes[-1].set_xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization.png'), dpi=300, bbox_inches='tight')
+# %%
+
+
+fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
+
+ax = axes[0]
+
 var = 'mws_fit_decay'
-axes[2].errorbar(
+ax.errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
@@ -85,19 +100,33 @@ axes[2].errorbar(
     )
 
 for species in ds_tau.data_vars:
-    ds_tau[species].plot(label="CFD: {}".format(species), ax=axes[2])
+    ds_tau[species].plot(label="CFD: {}".format(species), ax=ax)
 
-axes[2].legend(bbox_to_anchor=(0.85, 1), loc='upper left', framealpha=1) 
-axes[2].set_ylabel("Time Constant [us]")
-axes[2].set_title('')
+ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
+ax.set_ylabel("Time Constant [us]")
+ax.set_title('')
+
+ax.set_xscale('log')
+ax.set_yscale('log')
+
+ax.set_ylim(1e-2, 1e6)
 
 
-for ax in axes:
-    ax.set_xscale('log')
-    ax.set_yscale('log')
+ax = axes[1]
 
+var = 'mws_fit_dne'
+ax.errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_std'.format(var)], 
+    marker='o', capsize=5,
+    label='MWS Fit'
+    )
 
-axes[-1].set_xlabel("K wt % nominal")
+plt.yscale('log')
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params.png'), dpi=300, bbox_inches='tight')
-# %%
+plt.ylabel("$\Delta n_e$ [um$^{-3}$]")
+plt.xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb.png'), dpi=300, bbox_inches='tight')
+

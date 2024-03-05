@@ -6,25 +6,29 @@
 
 from mhdpy.analysis.standard_import import *
 from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 #have time axes show up in PST
 plt.rcParams['timezone'] = 'US/Pacific'
 
 # %%
 
-fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 da_motor = dsst['motor']['Motor C Relative'].rename(time='acq_time')
 da_motor    
 
-# fp_dst = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+# fp_dst = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 # dst = mhdpy.fileio.TFxr(fp_dst).as_dsst()['coords']
 
 # da_motor_coords = dst['motor'].rename(time='acq_time')
 
 dst_coords = gen_coords_to_assign_1(dsst)
+
+from pi_paper_utils import MOTOR_OFFSET
+dst_coords['motor'] = dst_coords['motor'] + MOTOR_OFFSET.to('mm').magnitude
 
 da_motor_coords = dst_coords['motor'].rename(time='acq_time')
 da_motor_coords = da_motor_coords.rename('motor')
@@ -234,117 +238,12 @@ s.loc['2023-05-12'] = val_178_05_12
 
 s = s.sort_index()
 
-s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0.csv'))
-
-# 2023-05-12 is missing, but the setup was the same as 2023-04-07. Diagnotsitcs were added and system realigned on 2023-05-18.
-
-
-s.to_csv(pjoin(REPO_DIR, 'experiment', 'analysis', 'mws', 'output', 'mws_T0_copy2023-05-12.csv'))
-
+s.to_csv(pjoin(DIR_DATA_OUT,'mws_T0.csv'))
 
 #%%
 
-s.plot(marker='o')
-
-# %%
-
-fp = r'/home/leeaspitarte/code/MHD-Photoionization/experiment/data/munged/2023-05-12/Lecroy/ds_savingtest_15hz.cdf'
-
-ds = xr.load_dataset(fp)
-
-ds.coords['time'].attrs['units'] = 'us'
-
-ds = ds.mws.calc_mag_phase_AS()
-
-ds['mag'].mean('acq_time').plot()
-
+s
 #%%
 
-tc = '536_pos'
+# s.plot(marker='o')
 
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
-
-
-# %%
-
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
-
-# da_sel.plot(hue='run_plot', x='motor', marker='o')
-
-norm = da_sel.sel(motor=slice(200,300)).mean('motor')
-
-#%%
-
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-
-da_sel = da_sel/norm
-
-da_sel = da_sel.dropna('run', how='all')
-
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
-
-#%%[markdown]
-
-# Ignore 2023-05-12. No explicity T0 calibration 
-
-
-#%%
-
-fp_nothing = pjoin(REPO_DIR, 'experiment','analysis','mws','output','mws_T0.csv')
-
-df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
-da_nothing = xr.DataArray(df_nothing)
-
-da_nothing
-
-#%%
-
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-
-da_sel.plot(hue='run_plot', x='motor', marker='o')
-
-#%%
-
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
-
-#%%[markdown]
-
-# Use calibration data from 2023-04-07 to normalize the data from 2023-05-12
-
-#%%
-
-fp_nothing = pjoin(REPO_DIR, 'experiment','analysis','mws','output','mws_T0_copy2023-05-12.csv')
-
-df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
-da_nothing = xr.DataArray(df_nothing)
-
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-
-da_sel.plot(hue='run_plot', x='motor', marker='o')
-
-#%%
-
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-
-da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
-
-
-# %%

@@ -5,21 +5,20 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 import re
 from collections import defaultdict
 
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.coords import gen_coords_to_assign_1
 
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst()
 
-coords_to_assign = tdms2ds(pjoin(DIR_PROC_DATA, 'dst_coords.tdms'))
+coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
 
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
 ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
 ds_absem = ds_absem.rename(time='acq_time')
 
@@ -163,7 +162,7 @@ ds['led_on'].mean('acq_time').plot(hue='kwt')
 
 from mhdpy.coords import assign_coords_multi
 
-ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=2)
+ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=10)
 
 ds
 
@@ -179,7 +178,7 @@ ds['led_on'].mean('mnum').plot(hue='kwt')
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 
 ds_absem
 
@@ -216,3 +215,4 @@ g.axes[0,0].set_ylabel('Counts')
 
 counts.plot.hist()
 plt.ylabel("Frequency of Counts")
+# %%

@@ -11,10 +11,10 @@ import pytest
 
 @pytest.fixture
 def ds_mws():
-    DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+    DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
     tc = '53x'
-    ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+    ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
     seldict = dict(date='2023-05-24', run_num=1)
     ds_lecroy = ds_lecroy.sel(seldict)
@@ -29,10 +29,10 @@ from mhdpy import xr_utils
 @pytest.fixture
 def ds_mws_all_mnum():
 
-    DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+    DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
     tc = '53x'
-    ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+    ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
     seldict = dict(date='2023-05-24', run_num=1)
     ds_lecroy = ds_lecroy.sel(seldict)

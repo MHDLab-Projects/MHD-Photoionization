@@ -5,7 +5,7 @@ Keeping separate from mws_1d.py to use medthods in absem_1d.py that avoid for lo
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mws_1d import tc_dict
 
@@ -39,7 +39,7 @@ figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_1d_noise', tc)
 shutil.rmtree(figure_out_dir)
 os.makedirs(figure_out_dir)
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected

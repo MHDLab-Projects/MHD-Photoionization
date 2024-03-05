@@ -1,8 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-import pi_paper_utils
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -10,38 +9,30 @@ from mhdpy.analysis import absem
 from mhdpy.plot import dropna
 
 #%%
-fp_dst_coords = pjoin(DIR_PROC_DATA, 'dst_coords.tdms')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+
+fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
-fp_dsst = pjoin(DIR_PROC_DATA, 'dsst.tdms')
+fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
-
+ds_cfd = ppu.fileio.load_cfd_centerline()
 ds_cfd = ds_cfd.sel(offset=0)
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
-
-
 
 # %%
 
 tc = '5x6_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
 ds_absem = ds_absem.absem.calc_alpha()
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
 
@@ -150,7 +141,7 @@ da.sel(motor=100, method='nearest', phi=1).dropna('mnum', how='all')
 ## Examine time data...
 # I believe this is redundant with other time analysis, probably can remove 
 
-ds_absem_time = xr.load_dataset(pjoin(DIR_PROC_DATA, 'ds_absem.cdf'))
+ds_absem_time = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
 
 ds_absem_time['diff'] = ds_absem_time['led_on'] - ds_absem_time['led_off']
 ds_absem_time['alpha'] = 1 - ds_absem_time['diff']/ds_absem_time['calib']
@@ -162,7 +153,7 @@ ds_absem_time = ds_absem_time['alpha']
 ds_absem_time
 
 #%%
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst()
 
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
 tw = slice(Timestamp('2023-05-24 20:12:07.301042944'), Timestamp('2023-05-24 20:12:46.490260736'), None)
@@ -219,7 +210,7 @@ dropna(g)
 
 tc = '5x3_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
 
@@ -227,7 +218,7 @@ ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].val
 
 ds_absem = ds_absem.absem.calc_alpha()
 
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
 
@@ -352,7 +343,7 @@ for phi in da_max['phi']:
     labels.append(phi.values)
 
 ax1.legend(lines, labels, title="Expt.", loc="upper right")
-ax1.set_ylim(-0.01j,0.05)
+ax1.set_ylim(-0.01,0.05)
 
 lines = []
 labels = []
@@ -471,3 +462,4 @@ plt.title('')
 plt.yscale('log')
 
 plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_nK_m3.png'), dpi=300)
+# %%

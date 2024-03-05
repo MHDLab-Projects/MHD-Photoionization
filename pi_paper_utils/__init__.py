@@ -1,3 +1,5 @@
+from . import fileio
+
 import matplotlib.pyplot as plt
 import scienceplots
 
@@ -22,3 +24,5 @@ LASER_POWER = Quantity(6.98836, 'mJ')
 
 # Determined in experiment/analysis/mws/laser_profile.py
 LASER_AREA = Quantity(40.77, 'mm^2')
+
+MOTOR_OFFSET = Quantity(1 + 3/16, 'inches')

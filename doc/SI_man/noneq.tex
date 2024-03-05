@@ -1,15 +1,181 @@
+\section{Nonequilibrium Modeling}
 
-\section{Photoionization Viability Assessment}
+\subsection{General Model}
 
+In this section we derive a general nonequilibrium kinetic model used for fitting the MWS data and viability modeling. We consider in the rate of change of the electron density, \(n_{e}(t)\) in time. 
+
+\begin{equation}
+  \label{eq:start_deqn}
+\frac{dn_{e}(t)}{dt} = G - R
+\end{equation}
+
+Where \(G\) is the generation rate of electrons and \(R\) is the recombination rate. We consider the generation rate to be comprised of a thermal generation rate and a nonequilibrium generation rate.
+
+\begin{equation}
+  G = G_{th} + G_{NE}
+\end{equation}
+
+Where \(G_{th}\) is the thermal generation rate constant and \(G_{NE}\) is the Nonequilibrium generation rate. For R, we assume that $n_{K_+}(t) = n_{e}(t)$, and all other electron-capturing species are in thermal equilibrium. This means that the recombination by potassium ions is bimolecular, whereas the recombination by other species is monomolecular.
+
+\begin{equation}
+R = k_{r, b, K_{+}}n_{e}(t)^2 + \sum_{i \neq K+}^{}k_{r, b, i}n_{e}(t)n_{i}
+\end{equation}
+
+Where $k_{r, b, i} [cm^3/s]$ is the bimolecular recombination rate constant for the \emph{i}\textsuperscript{th} species. 
+
+We write the $n_{e}(t)$ as being comprised of the equilibrium electron density, \(n_{e,0}\), and a perturbation, \(\Delta n_{e}(t)\).
+
+\begin{equation}
+  \label{eq:ne_pert}
+n_{e}(t) = n_{e,0} + \Delta n_{e}(t)
+\end{equation}
+
+This allows us to write the recombination rate as
+
+\begin{equation}
+R = k_{r, b, K_{+}}(n_{e,0} + \Delta n_{e}(t))^2 + \sum_{i \neq K+}^{}k_{r, b, i}(n_{e,0} + \Delta n_{e}(t))n_{i}
+\end{equation}
+
+expanding the square
+
+\begin{equation}
+R = k_{r, b, K_{+}}(n_{e,0}^2 + 2n_{e,0}\Delta n_{e}(t) + \Delta n_{e}(t)^2) + \sum_{i \neq K+}^{}k_{r, b, i}(n_{e,0} + \Delta n_{e}(t))n_{i}
+\end{equation}
+
+We can group the time independent and time dependent terms together
+
+% \begin{equation}
+% R = k_{r, b, K_{+}}n_{e,0}^2 + \sum_{i \neq K+}^{}k_{r, b, i}n_{e,0}n_{i} + 2k_{r, b, K_{+}}n_{e,0}\Delta n_{e}(t)   + \sum_{i \neq K+}^{}k_{r, b, i}\Delta n_{e}(t)n_{i} + k_{r, b, K_{+}}\Delta n_{e}(t)^2
+% \end{equation}
+
+\begin{align}
+R = & k_{r, b, K_{+}}n_{e,0}^2 + \sum_{i \neq K+}^{}k_{r, b, i}n_{e,0}n_{i} \nonumber \\
+    & + 2k_{r, b, K_{+}}n_{e,0}\Delta n_{e}(t) + \sum_{i \neq K+}^{}k_{r, b, i} n_{i}\Delta n_{e}(t) + k_{r, b, K_{+}}\Delta n_{e}(t)^2 
+\end{align}
+
+If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac{dn_{e}}{dt} = 0$ and $G_{NE} = 0$, we can see that the time independent terms are equal to $G_{th}$. Therefore the time independent terms will cancel out in Equation \ref{eq:start_deqn} and we can write
+
+\begin{equation}
+\frac{d\Delta n_{e}}{dt} = G_{NE}  -  2k_{r, b, K_{+}}n_{e,0}\Delta n_{e}(t) - \sum_{i \neq K+}^{}k_{r, b, i} n_{i} \Delta n_{e}(t)- k_{r, b, K_{+}}\Delta n_{e}(t)^2
+\end{equation}
+
+Where we have used the fact that $n_{e,0}$ is constant in time. 
+
+In each of the terms where the bimolecular recombination partner is constant in time, we can combine the partner species concentration and bimolecular recombination rate constant into a monomolecular recombination rate constant, $k_{r, m, i} = k_{r, b, i}n_{i}$. We also use the equation $n_{e,0} = n_{K_{+}}$ from our earlier assumption. 
+
+\begin{equation}
+\frac{d\Delta n_{e}}{dt} = G_{NE}   -   2k_{r, m, K_{+}}\Delta n_{e}(t) - \sum_{i \neq K+}^{}k_{r, m, i}\Delta n_{e}(t) - k_{r, b, K_{+}}\Delta n_{e}(t)^2
+\end{equation}
+
+The monomolecular recombination rates can be combined into an effective monomolecular recombination rate, $k_{r, m, eff}$. 
+
+\begin{equation}
+  k_{r, m, eff} = 2k_{r, m, K_{+}} + \sum_{i \neq K+}^{}k_{r, m, i}
+\end{equation}
+
+We then arrive at the final form of the differential equation for the time dependence of the electron density
+
+\begin{equation}
+  \label{eq:final_deqn}
+\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e}(t) - k_{r, b, K_{+}}\Delta n_{e}(t)^2
+\end{equation}
+
+
+
+\subsection{MWS Kinetic fitting}
+
+TODO: this probably can just be in the main text. 
+
+For fitting of MWS data, we are interested in the time dependence after the laser pulse has ended. In this situation, we can assume that $G_{NE}$ is zero. Then Equation \ref{eq:final_deqn} becomes: 
+
+\begin{equation}
+\frac{d\Delta n_{e}}{dt} =   -   k_{r, m, eff}\Delta n_{e}(t)  - k_{r, b, K_{+}}\Delta n_{e}(t)^2
+\end{equation}
+
+
+
+
+\subsection{Photoionization Viability Assessment}
+
+\subsubsection{Figure of Merit}
+
+In this subsection we develop a model to assess the fundamental viability of photoionization as a method of increasing the power output of an MHD power system. We seek regimes where the power output from the MHD system will be increased by more than the power input of the nonequilibrium generation process. We define a figure of merit, $\beta$ as the ratio of the increase in MHD power to the increase in power input.
+
+
+\begin{equation}
+  \label{eq:beta_def}
+\beta = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0} = \frac{dP_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\Big|_{P_{in}=0}
+\end{equation}
+
+Where we have indicated that we will evaluate $\beta$ at $P_{in} = 0$. We have chosen to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A $\beta > 1$ is possible as photoionization has the potential to significantly increase the efficiency of the MHD generator. 
+
+For the MHD Power density we use the equation
+
+\begin{equation}
+  \label{eq:mhd_power}
+P_{MHD} = \frac{1}{2} e \mu_e n_e u^2 B^2
+\end{equation}
+
+Where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength. We assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. The determination of $\mu_e$ is discussed later. The derivative $\frac{dP_{MHD}}{dn_{e}}$ can be easily determined. 
+
+For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
+
+We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$. Note that $\ref{eq:ne_pert}$ can still be written with $\Delta n_e(t) = \Delta n_{e}$. (TODO need to think about how to rewrite general section with this.) With this, \ref{eq:final_deqn} which becomes
+
+\begin{equation}
+0 = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
+\end{equation}
+
+We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
+
+TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower proirity.
+
+This leads to a simple expression for $\Delta n_{e}$
+
+\begin{equation}
+\Delta n_{e} = \frac{G_{NE}}{k_{r, m, eff}}
+\end{equation}
+
+
+We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
+
+\begin{equation}
+{G}_{NE} = \frac{\eta P_{In}}{eE_{IP}}
+\end{equation}
+
+
+This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH, and a $\eta$ calculated from the quantum yield experimentally measured (~0.05) (TODO). 
+
+We can then write the electron density as a function of the power input
+
+\begin{equation}
+n_{e}(P_{in}) = \frac{\eta P_{In}}{eE_{IP}k_{r, m, eff}}
+\end{equation}
+
+We can then take the derivative of $n_{e}(P_{in})$ with respect to $P_{in}$ to find $\frac{dn_{e}}{dP_{in}}$
+
+\begin{equation}
+\frac{dn_{e}}{dP_{in}} = \frac{\eta}{eE_{IP}k_{r, m, eff}}
+\end{equation}
+
+Finally, we can combine these results to find $\beta$
+
+\begin{equation}
+\beta = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{eE_{IP}k_{r, m, eff}}
+\end{equation}
+
+% This expression can be interpreted as the ratio of the increases in MHD power to recombination losses (\(P_{R} = E_{IP}R = \ E_{IP}k_{r}n_{e}\)) with an induced increase in \(n_{e}\). Equation 10 and equation 7 show that the efficiency decreases as a function of \(P_{in}\) and recombination losses increase. We chose to examine the best-case scenario where \(P_{in}\)= 0, represents the absolute best infinitesimal energy return on energy investment possible for a given set of parameters. The regimes where \(\beta \left( P_{in} = 0 \right)\ \)is high do not necessarily correspond to regimes in which NEI will result in a large \(P_{MHD}\) and can be large when the conductivity (and recombination) is low and correspondingly actual MHD power density (\(P_{MHD}\)) is near low.
 
 \hypertarget{species-concentration-and-conductivity-calculations}{%
-\subsection{Species concentration and Conductivity calculations}\label{species-concentration-and-conductivity-calculations}}
+\subsubsection{Species concentration and Conductivity calculations}\label{species-concentration-and-conductivity-calculations}}
+
+TODO: this should just focus on mobility, don't need conductivity anymore for $beta$ calculation
 
 We begin by modeling the combustion of seeded oxy-kerosene mixture with the Cantera python package. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction. This mixture is initialized at a inlet temperature (300 K) then allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (1e6 Pa).
 
 We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
-We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross sections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross sections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
+We calculate the conductivity of our working fluids following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross subsections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross subsections of constituent gasses. Then the electrical conductivity is calculated with the free electron density, \(n_{e}\):
 
 \begin{equation}
 \sigma = e\mu_{e}n_{e}
@@ -19,111 +185,13 @@ We calculate the conductivity of our working fluids following the method outline
 
 Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.
 
-\hypertarget{nonequilibrium-conductivity}{%
-\subsection{Nonequilibrium conductivity}\label{nonequilibrium-conductivity}}
+To study the fundamental potential of NEI, we develop a 0D model of an infinitesimal control volume of gas described by the thermal equilibrium properties computed above. NEI is modeled as a perturbation on the seeded gas mixture in chemical equilibrium. 
 
-To study the fundamental potential of NEI, we develop a 0D model of an infinitesimal control volume of gas described by the thermal equilibrium properties computed above. NEI is modeled as a perturbation on the seeded gas mixture in chemical equilibrium. We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
-
-\begin{equation}
-{G}_{NE} = \frac{\eta P_{In}}{eE_{IP}}
-\end{equation}
-
-
-This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} In this work, we consider $\eta =1$ or lower. 
-
-We consider the control volume of this gas subjected to a steady $G_{NE}$ and calculate the power dependent electron concentration, \(n_{e}(P_{in}),\), assuming the system is in quasi-equilibrium. The total generation rate of electrons (G) equals the recombination rate (R).
-\begin{equation}
-G = R
-\end{equation}
-
-G will be given both by $G_{NE}$ as well as a thermal generation rate from potassium ionization, \(G_{th} = k_{th}n_{K}\), where $k_{th}$ is the thermal generation rate constant.
-
-\begin{equation}
-G = G_{th} + G_{NE} = k_{th}n_{K} + \ \frac{\eta P_{In}}{eE_{IP}}
-\end{equation}
-
-$k_{th}$ is determined from the Saha equation and the bimolecular recombination coefficient for potassium, $k_{r,b,K+}$. 
-
-\begin{equation}
-    k_{th} = 2.42e^{15}*T^{3/2}*e^{-E_{ion}/k_bT}*k_{r,b,K+}
-\end{equation}
-
-
-The recombination rate is given by
-
-\begin{equation}
-R = k_{r, b, K+}*n_{e}^2  + k_{r, b, O2}*n_e*n_{O2}
-\end{equation}
-
-Where we have assumed \(n_{K^{+}}\)= \(n_{e}.\ \)
-
-
-
-Combining these expressions
-
-\begin{equation}
-0 = k_{r, b, K+}*n_{e}^2  + k_{r, b, O2}*n_e*n_{O2} - G
-\end{equation}
-
-solving for $n_{e}$
-
-\begin{equation}
-n_e = \frac{-k_{r, b, O2}*n_{O2} + \sqrt{k_{r, b, O2}^2*n_{O2}^2 + 4*k_{r, b, K+}*G}}{2*k_{r, b, K+}}
-\end{equation}
-
-
-\begin{equation}
-n_e = \frac{-k_{r, b, O2}*n_{O2}}{2*k_{r,b,K+}} + \sqrt{\frac{k_{r, b, O2}^2*n_{O2}^2 + 4*k_{r, b, K+}*G}{4*k_{r,b,K+}^2}}
-\end{equation}
-
-
-\begin{equation}
-n_e = \frac{-k_{r, b, O2}*n_{O2}}{2*k_{r,b,K+}} + 
-\sqrt{(\frac{k_{r, b, O2}*n_{O2}}{4*k_{r,b,K+}})^2 + \frac{G}{k_{r,b,K+}}}
-\end{equation}
-
-
-In the regime that K+ recombination dominates
-
-\begin{equation}
-n_{e}(P_{in}) = \sqrt{\frac{{G_{th} + \ G}_{NE}(P_{in})}{k_{r}} = \ }\sqrt{\frac{k_{th}n_{K} + \frac{\eta P_{In}}{eE_{IP}}}{k_{r}}\ }
-\end{equation}
-
-conversely when the O2 recombination dominates
-
-\begin{equation}
-  n_e = \frac{G}{k_{r,b,O2}*n_{O2}}
-\end{equation}
-
-\hypertarget{figure-of-merit}{%
-\subsection{Figure of merit}\label{figure-of-merit}}
-
-We are interested in finding the regimes in which a power input \(dP_{in}\) will generate a correspondingly larger amount of MHD power output \(dP_{MHD}\). We therefore define the figure of merit,
-
-\begin{equation}
-\alpha = \frac{{dP}_{MHD}}{dP_{in}} = \frac{{dP}_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\ 
-\end{equation}
-
-
-and want to find the regimes in which \(\alpha > 1,\ \)We assume that \(\mu_{e}\) independent of \(n_{e}\) to arrive at
-
-\begin{equation}
-\alpha = K(1 - K)u^{2}B^{2}e\mu_{e}\frac{dn_{e}}{dP_{in}}
-\end{equation}
-
-
-Calculating \(\frac{dn_{e}}{dP_{in}}\) with equation 7 gives
-
-\begin{equation}
-\alpha\ (P_{in}) = \eta\frac{K(1 - K)u^{2}B^{2}e\mu_{e}}{2E_{IP}k_{r}n_{e}(P_{in})}
-\end{equation}
-
-TODO: Extra e on top here? should cancel?
-
-This expression can be interpreted as the ratio of the increases in MHD power to recombination losses (\(P_{R} = E_{IP}R = \ E_{IP}k_{r}n_{e}\)) with an induced increase in \(n_{e}\). Equation 10 and equation 7 show that the efficiency decreases as a function of \(P_{in}\) and recombination losses increase. We chose to examine the best-case scenario where \(P_{in}\)= 0, represents the absolute best infinitesimal energy return on energy investment possible for a given set of parameters. The regimes where \(\alpha\ \left( P_{in} = 0 \right)\ \)is high do not necessarily correspond to regimes in which NEI will result in a large \(P_{MHD}\) and can be large when the conductivity (and recombination) is low and correspondingly actual MHD power density (\(P_{MHD}\)) is near low.
 
 \hypertarget{photoionization}{%
-\subsection{Photoionization}\label{photoionization}}
+\subsubsection{UV Absorption}\label{photoionization}}
+
+TODO: replace K with KOH. Also add case with KOH to e- quantum yield measured from experiment. 
 
 We apply our model to the specific case of UV photoionization. Photoionization, where potassium atoms are ionized by UV photons with energy above the potassium ionization potential, is a potential method of increasing the electrical conductivity of seeded combustion products. Photoionization is particularly attractive for contact targeting, due to the ability to direct and spatially confine light. Photoionization was considered as a method of increasing \(\sigma\) in MHD power systems early in MHD power research.{[}4{]} In that work, the potential of photoionization as an effective method of achieving sufficiently high electrical conductivity for MHD power was estimated. Those estimates were lacking in multiple ways:
 
@@ -152,9 +220,9 @@ Where \(FA_{K}\) has been expressed in terms of the optical attenuation length o
 \delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}}
 \end{equation}
 
-Where \(Q_{i}\) is the optical absorption cross section of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{K} = n_{K}Q_{K}\)where the \(K\) stands for potassium.
+Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{K} = n_{K}Q_{K}\)where the \(K\) stands for potassium.
 
-To calculate \(\frac{\delta}{\delta_{K}\ }\) we utilize the compiled UV absorption cross section data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross sections for the major species in the calculated gas mixtures.
+To calculate \(\frac{\delta}{\delta_{K}\ }\) we utilize the compiled UV absorption cross subsection data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross subsections for the major species in the calculated gas mixtures.
 
 Figure 6 shows\(\ \delta\), \(\delta_{K}\), and \(\frac{\delta}{\delta_{K}\ }\)for various UV wavelengths and temperatures.
 
@@ -164,10 +232,16 @@ In the following work we analyze these gasses excited by 248 nm light. This is p
 
 \clearpage
 
-\subsection{Supplemental PI Viability Results}
+\subsubsection{Supplemental PI Viability Results}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/beta_boundary_layer.png}
+\caption{Supplemental results}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{\repodir/final/figures/SI/output/Viability_rxn_compare.png}
 \caption{Supplemental results}
 \end{figure}

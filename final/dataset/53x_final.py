@@ -6,53 +6,25 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords.ct import downselect_acq_time
 
+
+#%%
+
 tc = '53x'
-
-#%%
-
 # Load Absem Data 
-
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
-
-ds_absem = ds_absem.drop(0, 'kwt')
-
-#%%
+ds_absem = ppu.fileio.load_absem(tc)
 
 # # Load MWS Data
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
-
-ds_lecroy = ds_lecroy.drop(0,'kwt')
-
-#%%
+ds_lecroy = ppu.fileio.load_lecroy(tc, norm_mag=True)
 
 # Load cfd line profiles
-
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
-
-ds_cfd = xr.load_dataset(fp)
+ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_lecroy.coords['kwt'].values)
 
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-ds_cfd = ds_cfd.interp(kwt=ds_lecroy.coords['kwt']).dropna('kwt', how='all')
-ds_cfd = ds_cfd.cfd.quantify_default()
-ds_cfd = ds_cfd.cfd.convert_all_rho_number()
-
-ds_cfd
 
 #%%
 
@@ -77,7 +49,7 @@ ds_krb
 
 # Calculate expected tau for recombination with those species
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
+ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K', 'all_K_Yeq']]
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
 from pi_paper_utils.kinetics import calc_krm
@@ -104,33 +76,12 @@ ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
-from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
-ds_cfd_beam_mobile = xr.load_dataset(fp_cfd_profiles)
-
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
-ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
-
-
-ds_cfd_beam = xr.concat([
-                    ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
-                    ds_cfd_beam_barrel.assign_coords(mp='barrel')
-                    ], dim='mp')
-
-
-
-ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
-ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
-
-ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+ds_cfd_beam = ppu.fileio.load_cfd_beam()
 
 #TODO: extrapolate based on log, downselect to kwt. should have simulations for other kwt. 
 ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'].values, kwargs={'fill_value': 'extrapolate'})
 
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=goldi_pos,method='nearest')
-
 
 da_cfd_beam = ds_cfd_beam['Yeq_K']
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
@@ -138,6 +89,8 @@ da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 da_cfd_beam
 
 #%%%
+
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 ds_fit_absem = ds_absem.mean('mnum')
 ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, da_nK_profile=da_cfd_beam)
@@ -148,15 +101,48 @@ ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem,
 
 #%%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
 ds_fit = ds_lecroy.mean('mnum')
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS']
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
+
+
+# ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us')))
 
 #%%
 
-da_stats = ds_lecroy['AS'].sel(time=slice(-1,1))
+#TODO: output a standard plot of fits for SI or save to file
+
+da_sel = ds_lecroy['AS_abs'].sel(kwt=0.05).dropna('run',how='all').isel(run=2)
+
+da_mean = da_sel.mean('mnum')
+da_std = da_sel.std('mnum')
+
+da_mean.plot()
+plt.fill_between(da_mean.time, da_mean-da_std, da_mean+da_std, alpha=0.5)
+
+plt.yscale('log')
+plt.ylim(1e-3, 1e-2)
+plt.xlim(-1,10)
+
+#%%
+
+ds_fit_mws.mean('run')[['AS_all','AS_fit']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-3, 1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit.png'))
+
+#%%
+
+ds_p_mws['krm']
+
+#%%
+
+da_stats = ds_lecroy['AS_abs'].sel(time=slice(-1,1))
 mws_max = da_stats.mean('mnum').max('time')
 mws_std = da_stats.std('mnum').max('time')
 
@@ -165,6 +151,7 @@ delta_pd1 = delta_pd1.dropna('run', how='all')
 delta_pd1 = delta_pd1.mean('mnum').max('time')
 delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 
+ds_p_mws['decay'] = 1/ds_p_mws['krm']
 
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
@@ -172,6 +159,7 @@ ds_params = xr.merge([
     mws_max.rename('AS_max'),
     mws_std.rename('AS_std'),
     ds_p_mws['decay'].rename('mws_fit_decay'),
+    ds_p_mws['dne'].rename('mws_fit_dne'),
     delta_pd1.rename('delta_pd1')
     ])
 

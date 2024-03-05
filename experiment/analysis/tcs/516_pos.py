@@ -3,8 +3,8 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -16,16 +16,9 @@ from mhdpy.plot import dropna
 
 tc = '516_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
+ds_absem = ppu.fileio.load_absem(tc)
 
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
+ds_lecroy = ppu.fileio.load_lecroy('516_pos')
 
 ds_lecroy = ds_lecroy.isel(run=0) # There is only one 516
 
@@ -58,14 +51,13 @@ plt.ylim(-0.1,0.1)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
 
-spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
-spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
 ds_fit = ds_absem.mean('mnum')
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit, method='iterative')
+ds_alpha_fit['alpha'] = ds_fit['alpha']
 
 #%%
 
@@ -116,22 +108,33 @@ plt.yscale('log')
 
 # %%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
 da_fit = ds_lecroy['AS'].mean('mnum')
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(
                                 da_fit, 
                                 method='iterative', 
-                                fit_timewindow = slice(Quantity(5, 'us'), Quantity(15, 'us'))
+                                fit_timewindow = slice(Quantity(0, 'us'), Quantity(25, 'us'))
                                 )
 
+ds_p['decay'] = 1/ds_p['krm']
 
 # %%
+
+
+ds_mws_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
+
+#%%
+
+ds_p
+
+#%%
 
 ds_p['decay'].plot(marker='o')
 
 plt.ylabel('Decay Time (us)')
+plt.ylim(0, 10)
 
 plt.savefig(pjoin(DIR_FIG_OUT, '516_mws_decaytime.png'))
 

@@ -5,7 +5,7 @@
 
 To study the photoionization process we performed experiments with a modified Praxair JP-8200 high-velocity oxy fuel (HVOF) system as shown in Figure \ref{fig:expt_setup}. We have previously reported experiments with this system and a MHD generator attachment [AIAA 2020]. In the experiment presented here, the HVOF torch is used without the generator attachment so that the free jet can be studied.  The HVOF is powered with K1 kerosene combusted with >99\% pure oxygen and the volumetric flows of the HVOF process inputs are monitored independently with NIST traceable devices as described in Zeuthen et al.[1] Potassium is introduced to the flame with a custom-built liquid seeding system. The liquid-seeding system utilizes a Harvard Apparatus PHD Ultra(tm) Syringe pump to inject a potassium emulsion into the fuel line before the combustor. The potassium emulsion is a mixture of (by weight) 19.4\% K1 Kerosene, 15\% K2CO3,  ~1\% surfactant, and remainder water (TODO: check/finish). The flow of the emulsion is set to achieve a nominal weight percentage of potassium atoms (K wt\%) in the flame. The JP-8200 fuel flow and oxygen flows are set to maintain a target total mass flow of 13 g/s, which is used throughout the experiments presented in this report.
 \begin{figure}[h]
-    \includegraphics[width=\linewidth]{\repodir/final/figures/output/Fig_expt_setup.png} 
+    \includegraphics[width=\linewidth]{\repodir/final/figures/output/Fig1_expt_setup.png} 
     \caption{Experimental setup of the Photoionization experiment. D) Time-resolved photoluminescence images from the ICCD camera. TODO: the images are currently averaged over the entire run (streaks are different positions) }
     \label{fig:expt_setup}
 \end{figure}
@@ -13,6 +13,13 @@ To study the photoionization process we performed experiments with a modified Pr
 The resulting free jet is then observed with a variety of custom-built diagnostics. These diagnostics are described in more detail below (or SI), but briefly outlined here.The diagnostics include a microwave scattering (MWS) diagnostic and an absorption-emission spectroscopy (AES) diagnostic. The MWS diagnostic measures the change in microwave transmission through the free jet in response to a laser pulse, which is related to relative changes in the free electron density. The AES diagnostic measures the absorption of a 780 nm LED through the free jet, which is related to the potassium number density. There is an AES system at the exit of the HVOF barrel (AES1), which probes the potassium density at the start of the free jet where the dimensions of the flow are well characterized. The MWS diagnostic, a second AES diagnostic (AES2), and a photodiode (PD) are located on motorized stage and probe the free jet at various locations downstream from the barrel exit. The PD isolates the potassium D line (~770 nm) to a Thorlabs photodiode to measure the fluctuation of the optical emission with time resolution. Finally, a PI-MAX4 ICCD Camera (check) is positioned above the entire system at a fixed position to capture time-resolved images of the free jet. The ICCD camera has a 775 +- 25 nm bandpass filter to isolate the potassium D line.
 
 Additionally, the position of the mobile MWS and AES diagnostics are controlled, as well as the excimer laser power. 
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{\repodir/final/figures/output/Fig2_ICCD_CFD.png} 
+    \caption{CFD ICCD Comparison}
+    \label{fig:ICCD_CFD}
+\end{figure}
+
 
 Experiments consist of a variety of 'test cases', where the the system is brought to a specific combination of the independent variables and measurements are performed. In particular, 'sequences' of test cases are performed where one of these independent variables is changed. For the HVOF process, the equivalence ratio and potassium mass fraction are the primary independent variables. The position of the motorized stage and power of the excimer laser are also varied. Notably, when not being varied, the position of the motorized is held fixed such that the diagnostics probe a location of the free jet 178 mm downstream of the exit of the HVOF barrel. We refer to this location as the 'nominal position' (TODO: improve naming) and the motivation for this position is discussed in the results section.  
 
@@ -36,40 +43,31 @@ The time limitation on seeding duration limits the AES diagnostic more than the 
 
 Another limitation of the AES diagnostic is that it must be calibrated to the spectral LED intensity without any absorbing medium. It is not possible to stop and start the HVOF system on a given experiment without risking the system not being able to restart. Therefore, measurements of the AES calibration can only be performed at the beginning and end of a given experiment. We interpolate this calibration throughout the time of the experiment to help reduce the influence of calibration drift, but it is not always possible to eliminate this effect which shows as an offset in the off-peak absorption coefficient.
 
-Diagnostic processing is shown in Figure \ref{fig:diagnostic_processing}.
-
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{\repodir/final/figures/output/diagnostic_processing.png} 
-    \caption{Processing of Microwave Scattering and Absorption-Emission spectroscopy data}
-    \label{fig:diagnostic_processing}
-\end{figure}
-
-
 \subsubsection{Microwave scattering}
 
 To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] (refs use IQ terminology). The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, (TODO: finish). The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. 
 
-The measurements and processing of the system are shown in Figure \ref{fig:diagnostic_processing}. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse as shown in Figure \ref{fig:diagnostic_processing}A. The magnitude ($U(t)$) of the transmitted microwaves is shown in \ref{fig:diagnostic_processing}B and is calculated with the following equation. 
-
-A more detailed schematic of the MWS setup is shown in figure S\ref*{fig:SI_MWS_Setup_Silicon}
+The measurements and processing of the system are shown in the SI. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse and The magnitude ($U(t)$) of the transmitted microwaves is calculated with the following equation. 
 
 \begin{equation}
     U(t) = \sqrt{I(t)^2 + Q(t)^2}
 \end{equation}
 
-We calculate the relative transmission, ($T(t)$), by normalizing by the average magnitude in a 1 $\mu s$ time window before the laser pulse, $U_{PP}$,   
+We calculate the transmission, ($T(t)$), by normalizing by the measured transmission in the absence of a free jet taken before or after the experiment, $U_0$. 
 
 \begin{equation}
-    T(t) = \frac{U(t)}{U_{PP}}
+    T(t) = \frac{U(t)}{U_{0}}
 \end{equation}
 
 Finally, we calculate the combined absorption and scattering, $AS$, by
 
 \begin{equation}
-    AS(t) = 1 - T(t)
+    AS(t) = T_{PP} - T(t)
 \end{equation}
 
-Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
+Where $T_{PP}$ is the average transmission in the 1 $\mu s$ time window before the laser pulse.
+
+% Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
 
 We fit the $AS (t)$ profile with a kinetic model of the electron recombination process. We first normalize $AS (t)$ by its maximum value at the laser pulse, defining $AS_{norm} = AS(t)/max(AS(t))$. We assume that $AS_{norm}(t) \propto \Delta n_e (t)$, where $\Delta n_e (t)$ is the time dependent change in the free electron density from the steady state concentration. 
 
@@ -80,11 +78,11 @@ We fit $AS_{norm}$ by solving the following differential equation:
     \frac{d\Delta n_e (t)}{dt} = - k_{r, m, eff} \Delta n_e (t) - k_{r, bm, K+}\Delta{n_e (t)}^2
 \end{equation}
 
-where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The motivation for the form of this equation is elaborated further in the discussion section.
+where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The derivation of this equation is shown in the SI.
 
 In the fitting process, the differential equation is numerically solved and the solution is normalized to have the have the same form as $AS_{norm}$. This solution is performed iteratively in a least squares optimization with the free fit parameters being $k_{r,m,X}$ and $\Delta{n_e,0}$, where $\Delta{n_e,0}$ is the initial excited electron density. for $k_{r, bm, K+}$ we use the value obtained by Kelley and Padley 1973 (TODO).
 
-Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
+% Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
 
 Immediately after the laser pulse, there is a region of of changing slope in the logarithm of the $\Delta n_e (t)$ profile. This region arises for high $\Delta n_e$ when the second term in equation \ref{eq:fit_eq} dominates.  For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay. The time constant of the exponential decay for capture with species X, $\tau$, is given by
 
@@ -117,14 +115,11 @@ Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,max}$ is t
 
 \subsection{Viability modeling (Cantera)}
 
-We assess the viability of the photoionization process to produce a net return in energy with 0D chemical equilibrium simulations. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\alpha_{PI}$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an intestinal amount of photoionization power input, $dP_{in}$. 
-
-
-TODO: replace alpha with another symbol to not be confused with absorption coefficient.
+We assess the viability of the photoionization process to produce a net return in energy with 0D chemical equilibrium simulations. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\beta{PI}$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an intestinal amount of photoionization power input, $dP_{in}$. 
 
 
 \begin{equation}
-\alpha_{PI} = \left. \frac{{dP}_{MHD}}{{dP}_{in}} \right|_{P_{in}=0}
+\beta = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0}
 \end{equation}
 
 \subsection{CFD}

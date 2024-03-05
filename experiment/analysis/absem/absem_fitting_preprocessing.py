@@ -13,7 +13,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
 from mhdpy.analysis import absem
@@ -25,20 +25,9 @@ dss_p_stderr = []
 
 # %%
 
-tc = '53x'
+ds_absem = ppu.fileio.load_absem('53x')
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-
-#TODO: having to do this on office comp?
-ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
-ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
-
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
 ds_absem = ds_absem.drop('acq_time')
-
-ds_absem = ds_absem.absem.calc_alpha()
-
 ds_absem
 
 seldict = dict(date='2023-05-18', run_num=1, mp='barrel')
@@ -88,9 +77,12 @@ ds_fit = ds_fit.absem.reduce_cut_alpha(**spect_red_dict)
 
 model, params = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_fit.absem.perform_fit(model, params)
+ds_alpha_fit, ds_p, ds_p_stderr = ds_fit['alpha_red'].absem.perform_fit(model, params)
 dss_p.append(ds_p.assign_coords(method='alpha_cut_no_neg'))
 dss_p_stderr.append(ds_p_stderr.assign_coords(method='alpha_cut_no_neg'))
+
+#%%
+ds_fit
 
 
 #%%[markdown]
@@ -143,7 +135,7 @@ ds_cut['alpha_red'].plot(row='kwt')
 
 model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_cut.absem.perform_fit(model, params)
+ds_alpha_fit, ds_p, ds_p_stderr = ds_cut['alpha_red'].absem.perform_fit(model, params)
 dss_p.append(ds_p.assign_coords(method='wings'))
 dss_p_stderr.append(ds_p_stderr.assign_coords(method='wings'))
 #%%
@@ -206,3 +198,4 @@ plt.yscale('log')
 
 ds_p_stderr['nK_m3'].plot(marker='o', hue='method')
 plt.ylabel('nK_m3_stderr')
+# %%

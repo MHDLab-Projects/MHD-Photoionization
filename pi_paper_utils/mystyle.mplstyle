@@ -19,7 +19,7 @@ legend.frameon       : True   # whether or not to draw a frame around legend
 ### FIGURE
 figure.figsize   : 4, 3    # figure size in inches
 savefig.transparent :  False     # transparent figures
-figure.dpi          : 300
+figure.dpi          : 100  # Note 300 causes noteobok figures to be huge. TODO: probably set to 300 for final figures. 
 
 
 ## COLOR

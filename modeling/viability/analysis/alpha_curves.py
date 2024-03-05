@@ -28,9 +28,8 @@ ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'
 ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
-ds_P_zero = ds_P_zero.sel(rxn='Kp')
 
-ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE_Kp.cdf')).squeeze()
+ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
 alpha = ds_NE['alpha']
 
 # Add enhancement factor
@@ -42,26 +41,7 @@ beta = alpha -1
 # %%
 
 
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, analysis='perf_Bconst')
 
-cmap = plt.get_cmap('RdBu')
-beta_sel = beta.sel(combo_sel)
-g = beta_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', cmap=cmap)
-
-# Set the colorbar label
-g.colorbar.set_label('$\\alpha - 1$')
-
-
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=4, linestyle='--')
-
-plt.gca().set_title('')
-
-plt.ylabel('Temperature (K)')
-plt.xlabel('Pressure (Pa)')
-
-
-
-plt.savefig('output/alpha_curve_demo.png')
 
 # %%
 
@@ -71,11 +51,12 @@ combo_downsel = {
     'l_bk': 0,
     'Kwt': [0.001, 0.01, 0.1],
     'phi': [0.8,1,1.2],
+    'rxn': 'mm_sum'
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-P_zero.plot(col='phi', row='Kwt',hue='analysis', y='T', xscale='log')
+P_zero.plot(col='phi', row='Kwt',hue='eta', y='T', xscale='log')
 
 # %%
 
@@ -84,7 +65,8 @@ combo_downsel = {
     'l_bk': [0],
     'phi': [0.8],
     'Kwt': [0.01],
-    'analysis': ['perf_Bconst'],
+    'eta': ['perf'],
+    'rxn': 'mm_sum',
     'P_in': [0,1e-6,1e-2,1e2,1e6]
 }
 
@@ -98,12 +80,13 @@ P_zero.plot(hue='P_in', y='T', xscale='log')
 combo_downsel = {
     'P_in' : 0,
     'phi': [0.8],
-    'Kwt': [0.001,0.01,0.1]
+    'Kwt': [0.001,0.01,0.1],
+    'rxn': 'mm_sum'
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-P_zero.plot(col='l_bk', row='Kwt', hue='analysis', y='T', xscale='log')
+P_zero.plot(col='l_bk', row='Kwt', hue='eta', y='T', xscale='log')
 
 # %%
 
@@ -111,12 +94,13 @@ combo_downsel = {
     'P_in' : 0,
     'l_bk': 0,
     'phi': [0.8],
-    'Kwt': [0.01]
+    'Kwt': [0.01],
+    'rxn': 'mm_sum'
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-P_zero.plot(hue='analysis', y='T', xscale='log')
+P_zero.plot(hue='eta', y='T', xscale='log')
 
 #%%
 
@@ -124,12 +108,13 @@ combo_downsel = {
     'P_in' : 0,
     'phi': [0.8],
     'Kwt': [0.01],
+    'rxn': 'mm_sum'
     # 'analysis': ['perf_Bconst']
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-g = P_zero.plot(hue='l_bk', col='analysis', y='T', xscale='log', col_wrap=2)
+g = P_zero.plot(hue='l_bk', col='eta', y='T', xscale='log', col_wrap=2)
 
 for ax in g.axes.flatten():
     ax.plot([1e5], [3000], marker='*', markersize=10)

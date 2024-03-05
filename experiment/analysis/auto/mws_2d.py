@@ -7,11 +7,9 @@ Analysis of 2D parameter sweeps
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 
-
-
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
+DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_2d', datestr)
 
@@ -43,7 +41,7 @@ dss = {}
 
 for tc in tcs:
 
-    fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
+    fp_in = pjoin(DIR_LECROY_PROC_DATA, '{}.cdf'.format(tc))
 
     ds_in = xr.load_dataset(fp_in)
     ds_in = ds_in.sel(date=datestr).sel(run_num=1)

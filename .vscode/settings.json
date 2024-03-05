@@ -12,7 +12,6 @@
             "./mhdpy",
             "./pi_paper_utils"
     ],
-    "audioCues.volume": 0,
     
 "latex-workshop.latex.tools": [
     //https://tex.stackexchange.com/questions/525604/save-auxiliary-latex-files-in-another-folder-in-vsc
@@ -132,6 +131,7 @@
         ]
     }        
 ],
+"accessibility.signals.sounds.volume": 0,
 
 
 }

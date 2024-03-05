@@ -26,7 +26,7 @@ fps = {
 }
 
 soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
+soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']
 all_fields = [*soi, *soi_Yeq, *additional]
 
@@ -34,9 +34,9 @@ all_fields = [*soi, *soi_Yeq, *additional]
 
 #%%
 tc = '536_pos'
-DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-ds_absem = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
 ds_absem = ds_absem.xr_utils.stack_run()
 
 beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
@@ -184,8 +184,7 @@ for key, fp in fps.items():
 
             line_out = extract_line_axi(mesh, a, b)
 
-            #TODO: extract all soi
-            df_lines = convert_line_df(line_out, ['T','p','rho', 'Yeq_K','Yeq_KOH'])
+            df_lines = convert_line_df(line_out, all_fields)
 
             df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 
@@ -212,10 +211,6 @@ ds_lines = ds_lines.set_index(temp=['motor', 'kwt', 'phi', 'offset']).unstack('t
 ds_lines['motor'] = ds_lines['motor'].pint.quantify('m').pint.to('mm')
 ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('mm')
 ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
-
-#%%
-
-ds_lines
 
 #%%
 

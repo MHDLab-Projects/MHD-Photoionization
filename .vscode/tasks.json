@@ -2,49 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Shell Script with fig",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh fig",
-            "group": "build",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Shell Script with data",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh data",
-            "group": "build",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Shell Script with panels",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh panels",
-            "group": "build",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Shell Script with latex",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh latex",
-            "group": "build",
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
-        },
-        {
             "label": "Run Shell Script with all",
             "type": "shell",
-            "command": "./automation/gen_vis_latex.sh data panels fig latex",
+            "command": "./automation/gen_vis_latex.sh panels fig latex",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -53,6 +13,47 @@
                 "reveal": "always"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Run Shell Script with fig",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh fig",
+        },
+        {
+            "label": "Run Shell Script with collect",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh collect",
+
+        },
+        {
+            "label": "Run Shell Script with panels",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh panels",
+        },
+        {
+            "label": "Run Shell Script with latex",
+            "type": "shell",
+            "command": "./automation/gen_vis_latex.sh latex",
+        },
+        {
+            "label": "Render Exp. Analysis Notebooks",
+            "type": "shell",
+            "command": "./automation/render_all_expt.sh",
+        },
+        {
+            "label": "Process Munged Data",
+            "type": "shell",
+            "command": "./automation/process_munged.sh",
+        },
+        {
+            "label": "Final Dataset",
+            "type": "shell",
+            "command": "./automation/final_dataset.sh",
+        },
+        {
+            "label": "collect test data",
+            "type": "shell",
+            "command": "cd tests && python collect_test_data.py",
         }
     ]
 }

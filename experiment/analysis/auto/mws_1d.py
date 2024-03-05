@@ -10,7 +10,7 @@ def main(datestr):
     tcs = tc_dict[datestr]
 
     data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
-    DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
+    DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
     dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 
@@ -21,7 +21,7 @@ def main(datestr):
 
     for tc in tcs:
 
-        fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
+        fp_in = pjoin(DIR_LECROY_PROC_DATA, '{}.cdf'.format(tc))
 
         ds_in = xr.load_dataset(fp_in)
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
