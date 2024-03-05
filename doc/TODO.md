@@ -29,15 +29,15 @@ Figure 5
 Figrue 6
 recombination process 
 
-- [] add delta ne0
+- [x] add delta ne0
 
 
 # Immediate
 
 - [] noneq_modeling
     - [] implement unit handling noneq
-    - [] light absorption KOH case
-    - [] add eta based on experiment
+    - [x] light absorption KOH case
+    - [x] add eta based on experiment
 
     - [] double check new O2 kinetics
         - [] implement other species
@@ -54,7 +54,7 @@ recombination process
 - [x] try fitting mws to a profile with O2 tau and K+ bimolecular combo
     - [] try refactoring dnedt models
 
-- [] lifetime comparison of 536 and 516. Need to compare across positions. Relevant location for 516 may be inward. 
+- [x] lifetime comparison of 536 and 516. Need to compare across positions. Relevant location for 516 may be inward. 
 
 - [] collect diagnostic information
  - [] oscilliscope settings time information

@@ -115,28 +115,19 @@ ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 
 #%%
 
-
-mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
 nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop('mp')
 nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
 
+mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
 mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
 mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
-
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
-
 
 delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
 delta_pd1 = delta_pd1.dropna('run', how='all')
 delta_pd1 = delta_pd1.mean('mnum').max('time')
 # delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-
-#%%
-
-ds_lecroy['pd1'].dropna('run', how='all')
-
-#%%
 
 ds = xr.merge([
     mws_max, 
