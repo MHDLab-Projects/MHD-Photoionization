@@ -60,7 +60,7 @@ recombination process
  - [] oscilliscope settings time information
   - [] try taking off coarsening
 
-- [] investigate why phi coordinate value is 0.65 and understand motor coordinates
+- [x] investigate why phi coordinate value is 0.65 and understand motor coordinates
 
 
 - [] add standard plots for all three sequences to SI

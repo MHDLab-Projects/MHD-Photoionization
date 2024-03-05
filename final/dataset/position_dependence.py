@@ -29,6 +29,10 @@ ds_lecroy_536_pos = ds_lecroy_536_pos.expand_dims('phi').stack(temp = stack_dims
 
 #%%
 
+ds_lecroy_536_pos
+
+#%%
+
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
 
 tc = '5x6_pos'

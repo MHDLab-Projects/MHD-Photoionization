@@ -31,7 +31,7 @@ ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
 
 tc = '5x6_pos'
 
-ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy_5x6 = ds_lecroy_5x6.xr_utils.stack_run()
 
 ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')

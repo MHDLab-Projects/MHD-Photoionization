@@ -60,10 +60,19 @@ dsst_tcs = {
 
 #%%
 
+nominal_motor = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225]
+nominal_motor.extend([30, 60, 90, 120, 180, 210, 240]) # These were performed on 2023-05-12....
+nominal_motor = sorted(nominal_motor)
+motor_bin_width = 1
+motor_bins = [[m - motor_bin_width/2, m + motor_bin_width/2] for m in nominal_motor]
+motor_bins = [item for sublist in motor_bins for item in sublist]
+
+#TODO: implement bins for phi and kwt?  Run into some errors...
+
 coords_to_assign = gen_coords_to_assign_1(
         dsst_tcs,
         kwt_bins =  [-0.01, 0.01, 0.08, 0.15, 0.25 , 0.4, 0.75, 1.5, 2.5, 5],
-        motor_bins = np.linspace(-12.5,237.5,11),
+        motor_bins = motor_bins,
         phi_bins = [0.5,0.7,0.9,1.1,1.3,1.5]
     )
 
@@ -92,6 +101,12 @@ process_tcs = [
     '536_pos_power',
     '516_pos'
     ]
+
+# Minimum number of measurements that must be present in each timewindow
+# 2024-03-04, min mnum of lecroy to 50 to remove some transient motor positions on 2023-04-07
+dict_min_mnum_absem = {tc: 3 for tc in process_tcs}
+dict_min_mnum_lecroy = {tc: 50 for tc in process_tcs}
+
 
 # Only keep columns with tc in process_tcs
 df_ct_sequence = df_ct_sequence[df_ct_sequence['tc'].isin(process_tcs)]
@@ -152,14 +167,14 @@ for tc_base, df_cuttimes_tc in df_ct_sequence.groupby('tc'):
 
     #TODO: believe these ohter coordinates are showing up because of low min_mnum
     if tc_base == '53x':
-        downselect_dict = {'phi': 0.8, 'motor': 178}
+        downselect_dict = {'phi': 0.8, 'motor': 180}
     else:
         downselect_dict = None
 
 
     #TODO: can we add 'mnum_counts' as a variable in a general way and downselect later?
-    ds_absem_sel = assign_coords_timewindows(ds_absem, coords_to_assign, df_cuttimes_tc, min_mnum=2, downselect_dict=downselect_dict)
-    ds_lecroy_sel = assign_coords_timewindows(ds_lecroy, coords_to_assign, df_cuttimes_tc, min_mnum=10 , downselect_dict=downselect_dict)
+    ds_absem_sel = assign_coords_timewindows(ds_absem, coords_to_assign, df_cuttimes_tc, min_mnum=dict_min_mnum_absem[tc_base], downselect_dict=downselect_dict)
+    ds_lecroy_sel = assign_coords_timewindows(ds_lecroy, coords_to_assign, df_cuttimes_tc, min_mnum=dict_min_mnum_lecroy[tc_base] , downselect_dict=downselect_dict)
 
 
     dss_absem[tc_base].append(ds_absem_sel)

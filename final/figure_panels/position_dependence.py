@@ -22,24 +22,43 @@ ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 #%%
 
+da_counts = ds_lecroy['AS_abs'].isel(time=0).count('mnum')
+da_counts = da_counts.where(da_counts > 0).dropna('run', how='all')
+
+
+da_counts.plot(row='run', marker='o')
+
+#%%
+
 da_sel = ds_lecroy['AS_abs'].mean('mnum').dropna('run',how='all')
+
+da_sel.dropna('motor', how='all')
+
+da_sel.plot(col='motor', col_wrap=3, hue='run_plot', x='time', figsize=(6,10))
+
+#%%
 
 
 fig, axes = plt.subplots(1, 2, figsize=(6,3), sharex=True, sharey=False)
 
 
-da_sel.sel(motor = 104.8, method='nearest').plot(hue='run_plot', x='time', ax=axes[0])
+da_plot = da_sel.sel(motor = 105, method='nearest').dropna('run',how='all')
+da_plot.plot(hue='run_plot', x='time', ax=axes[0])
 
-axes[0].set_title('Position: 104.8 mm')
+motor_expt = da_plot.coords['motor'].item()
+
+axes[0].set_title('Position: {:.0f} mm'.format(motor_expt))
 axes[0].set_ylim(-0.03,0.35)
 
 
-da_sel_mean = da_sel.mean('run').sel(motor=178, method='nearest')
-da_sel_std = da_sel.std('run').sel(motor=178, method='nearest')
+da_sel_mean = da_sel.mean('run').sel(motor=180, method='nearest')
+da_sel_std = da_sel.std('run').sel(motor=180, method='nearest')
+
+motor_expt = da_sel_mean.coords['motor'].item()
 
 da_sel_mean.plot(x='time', ax=axes[1])
 axes[1].fill_between(da_sel_mean['time'].values, (da_sel_mean-da_sel_std).values, (da_sel_mean+da_sel_std).values, color='b', alpha=0.2)
-axes[1].set_title('Position: 178 mm')
+axes[1].set_title('Position: {:.0f} mm'.format(motor_expt))
 axes[1].set_ylabel('')
 # axes[1].set_yscale('log')
 
@@ -110,7 +129,7 @@ phi_val_expt = ds_p_sel.coords['phi'].item()
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
-nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
 #TODO: removing last datapoint. Can this be fixed with calibraiton/processing?
 nK_mw_horns = nK_mw_horns.sel(motor = slice(50,220))
@@ -137,7 +156,7 @@ phi_val_expt = ds_p_sel.coords['phi'].item()
 nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
 nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
-nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all')
+nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
 #TODO: final datapoint for 516 has no potassium peaks. However, calibration is off and fit gives a large absorption value. Removing is probably best as any absorption is not meaninful anyway. 
 nK_mw_horns = nK_mw_horns.sel(motor = slice(50,200)) 
@@ -152,7 +171,7 @@ ax2.set_title('phi = {}'.format(phi_val_expt))
 
 for ax in axes:
 
-    ax.axvline(178, color='gold', linestyle='--')
+    ax.axvline(180, color='gold', linestyle='--')
     ax.set_ylim(1e16,3e22)
     ax.set_xlim(-10,250)
     ax.set_yscale('log')
