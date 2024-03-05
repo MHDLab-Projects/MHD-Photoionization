@@ -47,15 +47,15 @@ We calculate expected decay constants for electron capture by various species in
     \frac{d[e-]}{dt} = - k_r [X][e-]
 \end{equation}
 
-where $X$ is a species that captures the electron (and does not depend on [e-]). For a bimolecular reaction, the reaction takes the form [X] + [e-] -> [X-], and $k_r$ is given directly in the literature in units of $cm^3/s$. Some reactions are termolecular and further depend on a collisional partner, M, and are of the form [X] +[e-] + M -> [X-] + M. in this case $k_r = k_{r,tm} [M]$, where $k_{r,tm}$ is the termolecular recombination rate given in units of $cm^6/s$.  The densities of [M] and [X] are taken from the CFD results at the goldilocks position.
+where $X$ is a species that captures the electron (and does not depend on [e-]). For a bimolecular reaction, the reaction takes the form [X] + [e-] \rightarrow [X-], and $k_r$ is given directly in the literature in units of $cm^3/s$. Some reactions are termolecular and further depend on a collisional partner, M, and are of the form [X] +[e-] + M \rightarrow [X-] + M. in this case $k_r = k_{r,tm} [M]$, where $k_{r,tm}$ is the termolecular recombination rate given in units of $cm^6/s$.  The densities of [M] and [X] are taken from the CFD results at the goldilocks position.
 
 We find the following reactions with kinetic data available in the literature(T in K):
 
 \begin{itemize}
-    \item K+ + e- + M -> K + M : $4e-24 T^{-1} cm^3/s$ T(Jensen 1978) 
-    \item O2 + e- + M -> O2- + M : Variable (Axford 1997 and Goodings 1979)
-    \item OH + e- + M -> OH- +M  $3e-31 cm^6/s$ (Axford 1997)
-    \item H2O + e- -> H2O- $1.6e-5 exp(36060/T) cm^3/s$ (Axford 1997)
+    \item K+ + e- + M \rightarrow K + M : $4e-24 T^{-1} cm^3/s$ T(Jensen 1978) 
+    \item O2 + e- + M \rightarrow O2- + M : Variable (Axford 1997 and Goodings 1979)
+    \item OH + e- + M \rightarrow OH- +M  $3e-31 cm^6/s$ (Axford 1997)
+    \item H2O + e- \rightarrow H2O- $1.6e-5 exp(36060/T) cm^3/s$ (Axford 1997)
 \end{itemize}
 
 For the OH and K capture reactions, we use the number density of the entire flame as the collisional partner. 
