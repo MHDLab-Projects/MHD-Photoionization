@@ -56,6 +56,8 @@ then
 
     cp ../SI_man/SI_man.pdf output/Supporting\ Information.pdf
 
+    source pandoc_convert.sh
+
 fi
 
 cd $REPO_DIR/automation
