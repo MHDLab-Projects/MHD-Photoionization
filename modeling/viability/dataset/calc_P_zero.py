@@ -16,7 +16,7 @@ ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.s
 
 ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
-ds_NE = xr.open_dataset('output/ds_NE_rxn_comp.cdf').squeeze()
+ds_NE = xr.open_dataset('output/ds_NE.cdf').squeeze()
 alpha = ds_NE['alpha']
 
 # Add enhancement factor

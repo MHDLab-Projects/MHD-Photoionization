@@ -150,7 +150,7 @@ ds_NE = xr.concat(dss_new, 'temp').unstack('temp')
 # %%
 ds_NE.attrs = {}
 
-ds_NE.to_netcdf('output/ds_NE_rxn_comp.cdf')
+ds_NE.to_netcdf('output/ds_NE.cdf')
 # %%
 
 sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
