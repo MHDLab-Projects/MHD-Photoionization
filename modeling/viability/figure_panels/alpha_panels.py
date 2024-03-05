@@ -40,17 +40,24 @@ beta = alpha -1
 
 # %%
 
+from matplotlib.colors import LogNorm
 
 plt.figure(figsize=(5,3))
 
 combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
-beta_sel = beta.sel(combo_sel)
-g = beta_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', cmap=cmap)
+alpha_sel = alpha.sel(combo_sel)
+
+norm = LogNorm(vmin=0.01, vmax=100)
+
+g = (alpha_sel).plot(xscale='log', cmap=cmap, norm=norm)
+
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
+
 
 # Set the colorbar label
-g.colorbar.set_label('$\\alpha - 1$')
+g.colorbar.set_label('$\\alpha$')
 
 ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
 
