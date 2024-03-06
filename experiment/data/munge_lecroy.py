@@ -18,7 +18,16 @@ def get_chunks(lst, n):
 
 
 
-def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000):
+def main(
+        lecroy_wfm_dir, 
+        channel_dict, 
+        time_offset, 
+        output_dir, 
+        chunk_size=1000,
+        coarsen_amount=1000,
+        skip_existing=False,
+        subfolder_downselect=None
+        ):
 
     channel_list = list(channel_dict.keys())
 
@@ -38,9 +47,15 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
             out_fn = subfolder.replace('\\','_')
             fp_out = os.path.join(output_dir, 'ds_{}.cdf'.format(out_fn))
 
-            # if os.path.exists(fp_out):
-            #     print("{} exists, skipping".format(fp_out))
-            #     continue
+            if skip_existing:
+                if os.path.exists(fp_out):
+                    print("{} exists, skipping".format(fp_out))
+                    continue
+
+            if subfolder_downselect:
+                if subfolder != subfolder_downselect:
+                    continue
+            
 
             try:
                 fname_middle, mnums = get_matching_filepath_mnums(filenames, full_regex)
@@ -64,7 +79,8 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
                 except FileNotFoundError as e:
                     print(e)
                 else: 
-                    ds = ds.coarsen(time=1000, boundary='trim').mean()
+                    if coarsen_amount:
+                        ds = ds.coarsen(time=coarsen_amount, boundary='trim').mean()
 
                     #TODO: This happens for one folder on 2023-05-12...why? move this into load_trc_mnum_simple?
                     if not all([name in ds.data_vars for name in channel_dict]):
@@ -86,10 +102,10 @@ def main(lecroy_wfm_dir, channel_dict, time_offset, output_dir, chunk_size=1000)
 #TODO: Figure out better multi-date handling. 
 
 dates = [ 
-    '2023-04-07',
-    '2023-05-12',
+    # '2023-04-07',
+    # '2023-05-12',
     '2023-05-18', 
-    '2023-05-24'
+    # '2023-05-24'
     ]
 
 time_offset_files = [
@@ -106,6 +122,8 @@ channel_dicts = [
     {'1':'i','2':'q','3':'pd1','4':'pd2'},
 ]
 
+output_base_dir = 'munged'
+
 
 for i, datestr in enumerate(dates):
 
@@ -114,7 +132,7 @@ for i, datestr in enumerate(dates):
     lecroy_setup_dir = r'Z:\HVOF Booth\F\Lecroy Oscope\Setups'
     lecroy_wfm_dir = os.path.join(r'Z:\HVOF Booth\F\Lecroy Oscope\Waveforms', datestr)
 
-    output_dir = os.path.join('munged',datestr, 'Lecroy')
+    output_dir = os.path.join(output_base_dir, datestr, 'Lecroy')
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
     channel_dict = channel_dicts[i]
@@ -123,7 +141,17 @@ for i, datestr in enumerate(dates):
     extra_time_offset =  - np.timedelta64(7,'h')
     time_offset = timeoffset_1 + extra_time_offset
 
+    print("Time offset for date {} is {}".format(datestr, time_offset))
 
-    main(lecroy_wfm_dir, channel_dict, time_offset, output_dir)
+
+    main(
+        lecroy_wfm_dir, 
+        channel_dict, 
+        time_offset, 
+        output_dir,
+        skip_existing=True,
+        coarsen_amount=1000,
+        subfolder_downselect=None
+        )
 
 
