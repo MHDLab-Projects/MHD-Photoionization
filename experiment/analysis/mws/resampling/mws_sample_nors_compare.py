@@ -29,7 +29,7 @@ plt.yscale('log')
 
 dss = []
 
-for tc in ['raw','10','100','1000']:
+for tc in ['raw', 'pw_10_1000']:
     fp_in = pjoin('output', 'ds_{}.cdf'.format(tc))
 
     ds = xr.load_dataset(fp_in)
