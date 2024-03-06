@@ -79,8 +79,23 @@ def main(
                 except FileNotFoundError as e:
                     print(e)
                 else: 
+
+                    #TODO: make kwarg once method is dialed in
+                    #TODO: move down where first time array is assigned?
                     if coarsen_amount:
-                        ds = ds.coarsen(time=coarsen_amount, boundary='trim').mean()
+                        # ds = ds.coarsen(time=coarsen_amount, boundary='trim').mean()
+
+                        t1 = 0.7e-6
+                        t2 = 1.5e-6
+
+                        ds_1 = ds.sel(time=slice(-1, t1))
+                        ds_1 = ds_1.coarsen(time=1000, boundary='trim').mean() 
+                        ds_2 = ds.sel(time=slice(t1,t2))
+                        ds_2 = ds_2.coarsen(time=10, boundary='trim').mean() 
+                        ds_3 = ds.sel(time=slice(t2, 1))
+                        ds_3 = ds_3.coarsen(time=1000, boundary='trim').mean() 
+
+                        ds = xr.concat([ds_1, ds_2, ds_3], 'time')
 
                     #TODO: This happens for one folder on 2023-05-12...why? move this into load_trc_mnum_simple?
                     if not all([name in ds.data_vars for name in channel_dict]):
@@ -118,7 +133,17 @@ process_date_dict = {
     },
 }
 
+# No resample settings, huge filesize
+# output_base_dir = 'munged_100'
+# skip_existing=False
+# coarsen_amount=100
+# subfolder_downselect='pos_1'
+
+# # Resampel settings 
 output_base_dir = 'munged'
+skip_existing=False
+coarsen_amount=100 #TODO: coarsen amount not being used. 
+subfolder_downselect=None
 
 
 # for i, datestr in enumerate(dates):
@@ -147,9 +172,9 @@ for datestr, date_dict in process_date_dict.items():
         channel_dict, 
         time_offset, 
         output_dir,
-        skip_existing=True,
-        coarsen_amount=1000,
-        subfolder_downselect=None
+        skip_existing=skip_existing,
+        coarsen_amount=coarsen_amount,
+        subfolder_downselect=subfolder_downselect
         )
 
 
