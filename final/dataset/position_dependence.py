@@ -76,10 +76,6 @@ ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_lecroy.cdf'))
 
-#%%
-
-
-ds_absem.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
 #%%
 ds_cfd_beam = ppu.fileio.load_cfd_beam()
@@ -148,3 +144,7 @@ ds
 
 ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_pos.cdf'))
 # %%
+
+#%%
+ds_alpha_fit['alpha'] = ds_fit['alpha']
+ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))

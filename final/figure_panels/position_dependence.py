@@ -8,6 +8,7 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
+ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
 
@@ -115,7 +116,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight
 
 #%%
 
-fig, axes = plt.subplots(2, figsize=(6,6), sharex=True)
+fig, axes = plt.subplots(2, figsize=(4.5,5), sharex=True)
 
 
 # Phi =0.8
@@ -138,7 +139,7 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-18 Run 1'
 g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2', ax=ax1)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
-ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax1)
+ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
 
 ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax1.set_title('phi = {}'.format(phi_val_expt))
@@ -164,7 +165,7 @@ nK_mw_horns = nK_mw_horns.sel(motor = slice(50,200))
 g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1', ax=ax2)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
-ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm off centerline', linestyle='--', ax=ax2)
+ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
 ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax2.set_title('phi = {}'.format(phi_val_expt))
@@ -185,3 +186,37 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 # Phi =0.65
 # ax2 = axes[1]
 # %%
+ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8)
+
+# da_plot.plot(col='phi', hue='var', row='motor')
+motor_sel = [80, 130, 180]
+
+ds_plot = ds_plot.sel(motor=motor_sel, method='nearest')
+
+fig, axes = plt.subplots(1,len(motor_sel), figsize=(5,2), sharey=True)
+
+for i, motor in enumerate(ds_plot.coords['motor']):
+    ax = axes[i]
+    ds_plot.sel(motor=motor).to_array('var').plot(hue='var', ax=ax)
+    ax.set_title('{:.0f} mm'.format(motor))
+
+    ax.set_xlabel("Wavelength [nm]")
+
+    ax.set_ylim(-0.1,1.1)
+    ax.set_xlim(760,775)
+
+    if i != 2:
+        ax.get_legend().remove()
+
+    else:
+        ax.legend(['Fit', 'Fitted Data', 'Raw Data'])
+
+axes[0].set_ylabel('$\\alpha$')
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_alpha_fit.png'), dpi=300, bbox_inches='tight')
+
+# %%
+
+
+ds_plot

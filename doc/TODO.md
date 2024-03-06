@@ -15,7 +15,7 @@ Fig 2
 
 Fig 3 - 
     Comparison to CFD nK
-    - [] add absorption measurement and fit
+    - [x] add absorption measurement and fit
 
 Figure 4
 - [x] 2 positions 
@@ -38,7 +38,7 @@ recombination process
     - [] implement unit handling noneq
 
     - [] double check new O2 kinetics
-        - [] implement other species
+        - [x] implement other species
 
 
 - [] get tau and ne_0 for nominal case. Calcaulate eta_experiment. Add to discussion

@@ -26,6 +26,9 @@ ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.s
 
 ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
+for species in ds_TP_species_rho.data_vars:
+    ds_TP_species_rho[species] = ds_TP_species_rho[species].pint.quantify('particle/ml')
+
 
 #%%
 
@@ -44,17 +47,19 @@ Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
 krb_all = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
 
 krb_O2 = krb_all['O2_A']
-krm_O2 = krb_O2*ds_TP_species_rho['O2'].pint.quantify("particle/ml")
-krm_O2 = krm_O2.pint.to('1/s')
+krm_O2 = krb_O2*ds_TP_species_rho['O2']
+krm_Kp = krb_all['K+']*ds_TP_species_rho['K+']
 
-krm_Kp = krb_all['K+']*ds_TP_species_rho['K+'].pint.quantify("particle/ml")
-krm_Kp = krm_Kp.pint.to('1/s')
+krm_H20 = krb_all['H2O']*ds_TP_species_rho['H2O']
+krm_OH = krb_all['OH']*ds_TP_species_rho['OH']
 
-krb_Kp = krb_all['K+']
+krm_sum = krm_O2 + 2*krm_Kp + krm_H20 + krm_OH
+krm_sum = krm_sum.pint.to('1/s')
 
-ne0 = ds_TP_species['e-']
 
 #%%
+ne0 = ds_TP_species['e-']
+krb_Kp = krb_all['K+']
 
 # Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
 # Manually adding temperature to units to match overall units of molecule/ml specified in paper
@@ -66,7 +71,7 @@ kth = Keq*krb_Kp
 kth.name =  '$k_{th}$'
 kth = kth.pint.to('1/s')
 
-Gth = kth*ds_TP_species_rho['K'].pint.quantify("molecule/cm**3")
+Gth = kth*ds_TP_species_rho['K']
 Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 
 #Perfect Ionization
@@ -101,7 +106,7 @@ ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_na
 dss.append(ds.assign_coords(rxn='O2').assign_coords(eta='perf'))
 
 constants_temp = constants.copy()
-constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['krm'] = krm_sum.pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
 ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
 dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='perf'))
@@ -112,14 +117,14 @@ ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squee
 gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
 
 # FA = xr.DataArray([1], name='FA_1')
-FA = gas_lam['KOH'].where(False).fillna(1.0)
+FA = gas_lam['KOH'].pint.dequantify().where(False).fillna(1.0)
 FA.name = 'FA_1'
 
 eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA)
 
 constants_temp = constants.copy()
 constants_temp['eta'] = eta_PI
-constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['krm'] = krm_sum.pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
 ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
 dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI'))
@@ -127,7 +132,7 @@ dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI'))
 
 constants_temp = constants.copy()
 constants_temp['eta'] = eta_PI*0.3
-constants_temp['krm'] = krm_O2.pint.dequantify() + 2*krm_Kp.pint.dequantify()
+constants_temp['krm'] = krm_sum.pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
 ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
 dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI_QY'))
