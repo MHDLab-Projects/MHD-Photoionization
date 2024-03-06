@@ -84,7 +84,7 @@ def test_pipe_fit_mws_1_nolog(ds_mws):
     # TODO: values are different from take_log=True. Need to investigate why.
 
 def test_pipe_fit_mws_2(ds_mws_all_mnum):
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False)
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False, method='global')
 
 from mhdpy.analysis.mws.fitting import gen_model_dnedt
 from mhdpy.xr_utils import fit_da_lmfit_global
