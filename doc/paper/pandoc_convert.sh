@@ -1,1 +1,1 @@
-pandoc -f latex -t docx main.tex -o output/Photoionization.docx --reference-doc input/document_template.docx
+pandoc -f latex -t docx main.tex -o output/Photoionization.docx --reference-doc input/custom-reference.docx
