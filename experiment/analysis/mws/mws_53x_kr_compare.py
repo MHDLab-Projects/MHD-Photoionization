@@ -48,7 +48,7 @@ ds_p['decay'].mean('run').plot(marker='o')
 # Load cfd K+
 
 
-ds_cfd = ppu.fileio.load_cfd_centerline()
+ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_p.coords['kwt'].values)
 
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
@@ -91,18 +91,27 @@ plt.yscale('log')
 
 #%%
 
+ds_p
+
+#%%
 # Factor of 2 only occurs for K+
 
 ds_species_decay = 1/(ds_p['decay'].pint.quantify('us')*ds_krb)
 
 ds_species_decay = ds_species_decay.pint.to('particle/ml')
 
+ds_species_decay
+
 #%%
 
 fig, axes = plt.subplots(1, 2, figsize=(10,5), sharex=True, sharey=True)
 
 
-ds_species_decay.to_array('species').mean('run').plot(hue='species', marker='o', ax=axes[0])
+da_plot = ds_species_decay.to_array('species').mean('run')
+
+da_plot
+
+da_plot.plot(hue='species', marker='o', ax=axes[0])
 
 axes[0].set_title('Predicted density $k_{r,species}$ and $\\tau_{mws}$')
 

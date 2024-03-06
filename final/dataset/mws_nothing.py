@@ -55,8 +55,7 @@ fn = dates['2023-05-18'][1]
 fp = pjoin(dir, '2023-05-18', 'Lecroy', fn)
 
 ds = xr.load_dataset(fp)
-
-ds.coords['time'].attrs['units'] = 'us'
+ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
 
 ds = ds.mws.calc_mag_phase_AS()
 
