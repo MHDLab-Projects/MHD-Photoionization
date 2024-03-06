@@ -99,33 +99,30 @@ def main(
 
                 ds.to_netcdf(fp_out)
 
-#TODO: Figure out better multi-date handling. 
-
-dates = [ 
-    # '2023-04-07',
-    # '2023-05-12',
-    '2023-05-18', 
-    # '2023-05-24'
-    ]
-
-time_offset_files = [
-'Setup_2023_04_07_13_48_34_810411--00000.lss',
-'Setup_2023_05_12_13_22_06_740182--00000.lss',
-'Setup_2023_05_18_15_22_31_204405--00000.lss',
-'Setup_2023_05_24_14_22_00_592076--00000.lss',
-]
-
-channel_dicts = [
-    {'1':'i','2':'q'},
-    {'1':'i','2':'q'},
-    {'1':'i','2':'q'},
-    {'1':'i','2':'q','3':'pd1','4':'pd2'},
-]
+process_date_dict = {
+    '2023-04-07': {
+        'time_offset_file': 'Setup_2023_04_07_13_48_34_810411--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
+    '2023-05-12': {
+        'time_offset_file': 'Setup_2023_05_12_13_22_06_740182--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
+    '2023-05-18': {
+        'time_offset_file': 'Setup_2023_05_18_15_22_31_204405--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
+    '2023-05-24': {
+        'time_offset_file': 'Setup_2023_05_24_14_22_00_592076--00000.lss',
+        'channel_dict': {'1':'i','2':'q','3':'pd1','4':'pd2'},
+    },
+}
 
 output_base_dir = 'munged'
 
 
-for i, datestr in enumerate(dates):
+# for i, datestr in enumerate(dates):
+for datestr, date_dict in process_date_dict.items():
 
     print("Processing Lecroy Data {}".format(datestr))
 
@@ -135,9 +132,10 @@ for i, datestr in enumerate(dates):
     output_dir = os.path.join(output_base_dir, datestr, 'Lecroy')
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
-    channel_dict = channel_dicts[i]
+    channel_dict = date_dict['channel_dict']
+    time_offset = date_dict['time_offset_file']
 
-    timeoffset_1 = setupfile_timeoffset(pjoin(lecroy_setup_dir, time_offset_files[i] ))
+    timeoffset_1 = setupfile_timeoffset(pjoin(lecroy_setup_dir, time_offset))
     extra_time_offset =  - np.timedelta64(7,'h')
     time_offset = timeoffset_1 + extra_time_offset
 
