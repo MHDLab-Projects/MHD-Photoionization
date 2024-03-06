@@ -183,11 +183,26 @@ ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
+from mhdpy.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+
+ds_fit_beta_off = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
+
+# da_fit_prep =  pipe_fit_prep_alpha_2(ds_fit, led_off_norm_cutoff=0.8)
+#%%
+
+
+#%%
+
+#%%
+
 ds_absem['alpha_fit'] = ds_absem_fit['alpha_fit']
+ds_absem['alpha_beta_off'] = ds_fit_beta_off['alpha']
+ds_absem['alpha_red'] = ds_absem_fit['alpha_red']
+
 
 # %%
 
-ds_sel = ds_absem.sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest')
+ds_sel = ds_absem.sel(run=('2023-05-24',1)).sel(kwt=1, method='nearest')
 ds_sel = ds_sel.mean('mnum')
 ds_sel
 
@@ -197,17 +212,23 @@ ds_sel
 
 ds_sel2 = ds_sel.sel(mp='barrel')
 
-nK_sel = ds_p['nK_m3'].sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest').sel(mp='barrel')
+nK_sel = ds_p['nK_m3'].sel(run=('2023-05-24',1)).sel(kwt=1, method='nearest').sel(mp='barrel')
 
 
-fig, axes = plt.subplots(3, sharex=True, figsize=(4,9))
+fig, axes = plt.subplots(4, sharex=True, figsize=(4,9))
 
 ds_sel2[['led_on','led_off']].to_array('var').plot(ax=axes[0], hue='var')
 
 ds_sel2[['diff','calib']].to_array('var').plot(ax=axes[1], hue='var')
 
-ds_sel2['alpha'].plot(ax=axes[2], label='Data')
-ds_sel2['alpha_fit'].plot(ax=axes[2], label='Fit')
+ds_sel2['alpha'].plot(ax=axes[2], label='Raw')
+ds_sel2['alpha_beta_off'].plot(ax=axes[2], label='Offset corr.')
+axes[2].legend(loc='upper right')
+
+dropna(axes[2])
+
+ds_sel2['alpha_red'].plot(ax=axes[3], label='Data')
+ds_sel2['alpha_fit'].plot(ax=axes[3], label='Fit')
 
 plt.text
 
@@ -223,10 +244,14 @@ axes[1].set_xlabel('')
 axes[1].legend(['On - Off','Calib.'])
 
 axes[2].set_ylabel('Absorption')
-axes[2].set_xlabel('Wavelength (nm)')
-axes[2].legend()
+axes[2].set_xlabel('')
 
-axes[2].text(750,0.5, '$n_K$ = {:.2e}'.format(nK_sel.values), fontsize=10)
+axes[3].set_ylabel('Absorption')
+axes[3].legend()
+axes[3].text(750,0.5, '$n_K$ = {:.2e}'.format(nK_sel.values), fontsize=10)
+
+axes[-1].set_xlabel('Wavelength (nm)')
+
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'absem_proc_overview.png'), bbox_inches='tight')
 
