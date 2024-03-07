@@ -21,33 +21,51 @@ ds_lecroy = ppu.fileio.load_lecroy('53x')
 counts = ds_lecroy['AS'].isel(time=0).count('mnum')
 ds_lecroy = ds_lecroy.where(counts > 100)
 
+
 # %%
 
 da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
-
-#%%[markdown]
-
-# # new fitting method combination Kp and O2
-
-# Todo: where to put this?
-
-#%%
-
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
-
-da_fit = da_sel.mean('mnum').sel(kwt=1, method='nearest')
-
-da_fit.plot(hue='run_plot', x='time')
+da_fit = da_sel.mean('mnum')
+da_fit.plot(hue='run_plot', x='time', row='kwt')
 
 plt.yscale('log')
 
 #%%
+#%%[markdown]
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False)
+# # pipe3
+#%%
+
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False, interpolate_time=Quantity(0.01, 'us'), coarsen_amount=10)
+
+ds_p['decay'] = 1/ds_p['krm']
+
+
+ds_p2 = xr.merge([
+    ds_p['decay'].rename('mean'),
+    # ds_p_stderr['decay'].rename('std')
+    ])
+
+dss_p.append(ds_p2.assign_coords(method='pipe_3'))
 
 #%%
 
-ds_mws_fit.to_array('var').plot(hue='var', row='run')
+ds_p['decay'].mean('run').plot()
+
+plt.yscale('log')
+plt.ylim(1, 1e2)
+
+#%%
+
+ds_mws_fit['AS_all'].mean('run').plot(hue='kwt', marker='o')
+
+plt.xlim(-1,1)
+
+
+#%%
+
+ds_mws_fit.mean('run').to_array('var').plot(hue='var', row='kwt')
 
 plt.yscale('log')
 
@@ -63,63 +81,13 @@ dne.mean('run').pint.magnitude
 
 #%%[markdown]
 
-# ## fitting after averaging mnum
-
-# %%
-
-da_fit = da_sel.mean('mnum')
-
-da_fit.plot(hue='run_plot', row='kwt', x='time')
-plt.yscale('log')
-
-plt.xlim(-1,40)
-plt.ylim(1e-4,)
-
-#%%
-
-# pre_norm_cutoff=5e-4
-# da_fit = da_fit.where(da_fit.mws._pulse_max() > pre_norm_cutoff) # Targeting low power...
-da_fit = da_fit.mws.fit_prep(pre_norm_cutoff=5e-4, remove_negative=False, min_mnum=None)
-
-mod, params = gen_model_dnedt(take_log=False)
-
-params['ne0'].value = Quantity(2e12, 'cm**-3').to('um**-3').magnitude #TODO: value from cfd
-params['ne0'].vary = False
-params['kr'].vary = True
-
-ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params)
-
-#%%
-
-
-ds_mws_fit.to_array('var').plot(row='kwt',hue='var', col='run')
-
-plt.yscale('log')
-
-
-
-#%%
-
-ds_p2 = xr.merge([
-    ds_p['kr'].rename('mean'),
-    ds_p_stderr['kr'].rename('std')
-    ])
-
-
-dss_p.append(ds_p2.assign_coords(method='avgmnum_1'))
-
-#%%
-ds_p
-
 #%%[markdown]
 
-# ## Pipe 2: Global fit
+# ## Pipe 2: 
 
 #%%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
-
-da_fit = da_sel.copy()
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
@@ -127,62 +95,18 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
 
 #%%
 
-ds_mws_fit.mean('mnum').to_array('var').plot(col='run', row='kwt', hue='var')
+ds_mws_fit.mean('run').to_array('var').plot(row='kwt', hue='var')
 
 plt.yscale('log')
 
 #%%
 ds_p2 = xr.merge([
-    ds_p['kr'].rename('mean'),
-    ds_p_stderr['kr'].rename('std')
+    ds_p['tau'].rename('mean'),
+    # ds_p_stderr['tau'].rename('std')
     ])
 
 dss_p.append(ds_p2.assign_coords(method='pipe_2'))
 
-
-#%%[markdown]
-
-# ## pipe2 but fix dne
-# pipe 2 previously was fixing dne, now adding for comparison here.
-
-#%%
-
-da_fit = da_sel.copy()
-
-da_fit = da_fit.unstack('run')
-
-da_fit = da_fit.mws.fit_prep(pre_norm_cutoff=5e-4, remove_negative=False)
-
-mod, params = gen_model_dnedt(take_log=False)
-
-params['ne0'].value = Quantity(2e12, 'cm**-3').to('um**-3').magnitude #TODO: value from cfd
-params['ne0'].vary = False
-params['dne'].vary = False
-params['kr'].vary = True
-
-fits, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
-
-ds_mws_fit = xr.merge([fits, da_fit])
-
-ds_mws_fit = ds_mws_fit.xr_utils.stack_run()
-ds_p = ds_p.xr_utils.stack_run()
-ds_p_stderr = ds_p_stderr.xr_utils.stack_run()
-
-
-#%%
-
-ds_mws_fit.mean('mnum').to_array('var').plot(row='kwt',hue='var', col='run')
-
-plt.yscale('log')
-
-#%%
-
-ds_p2 = xr.merge([
-    ds_p['kr'].rename('mean'),
-    ds_p_stderr['kr'].rename('std')
-    ])
-
-dss_p.append(ds_p2.assign_coords(method='pipe_2_fixdne'))
 
 #%%[markdown]
 
@@ -193,16 +117,31 @@ dss_p.append(ds_p2.assign_coords(method='pipe_2_fixdne'))
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 
-# da_fit = da_sel.mean('mnum')
-da_fit = da_sel.copy()
+da_fit = da_sel.mean('mnum')
+# da_fit = da_sel.copy()
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+
+
+
+#%%
+
+ds_mws_fit.mean('run').to_array('var').plot(row='kwt', hue='var')
+
+plt.yscale('log')
+
+plt.ylim(1e-4, )
+plt.xlim(-1,40)
+
+#%%
+
+ds_p
 
 #%%
 
 ds_p2 = xr.merge([
-    ds_p['kr'].rename('mean'),
-    ds_p['kr'].where(False).fillna(0).rename('std') # kr std not defined yet for exponential fit...
+    ds_p['decay'].rename('mean'),
+    ds_p['decay'].where(False).fillna(0).rename('std') # kr std not defined yet for exponential fit...
     ])
 
 dss_p.append(ds_p2.assign_coords(method='exp'))
@@ -246,7 +185,35 @@ from mhdpy.plot.common import xr_errorbar
 
 ds_plot = ds_p.mean('run')
 
-xr_errorbar(ds_plot['mean'], ds_plot['std'], huedim='method')
+# xr_errorbar(ds_plot['mean'], ds_plot['std'], huedim='method')
+ds_plot['mean'].plot(hue='method', marker='o')
+
+plt.ylim(1,20)
 
 plt.yscale('log')
 plt.xscale('log')
+
+# %%
+
+
+
+da_plot = ds_p.mean('run').drop('pipe_2', 'method')['mean']
+
+
+da_plot.plot(hue='method', marker='o')
+
+plt.ylim(3,35)
+
+plt.yscale('log')
+plt.xscale('log')
+
+plt.legend(['Diff. Eq.', 'Exponential'], title='Method')
+
+plt.ylabel('Decay constant (us)')
+plt.xlabel("Kwt [%]")
+
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'mws_fitting_compare.png'))
+
+# %%

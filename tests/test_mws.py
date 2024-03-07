@@ -43,6 +43,25 @@ def ds_mws_all_mnum():
 
     return ds_lecroy
 
+
+import pi_paper_utils as ppu
+from pint import Unit
+def test_calc_mag_phase_AS(ds_mws):
+    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+
+    assert 'AS' in ds_mws
+    
+    assert ds_mws['AS'].pint.quantify().pint.units == Unit('dimensionless')
+
+def test_calc_mag_phase_AS_abs(ds_mws):
+    ds_nothing = ppu.fileio.load_mws_T0()
+    ds_mws = ds_mws.mws.calc_mag_phase_AS(mag_0=ds_nothing)
+
+    assert 'AS_abs' in ds_mws
+
+    assert ds_mws['AS_abs'].pint.quantify().pint.units == Unit('dimensionless')
+
+
 def test_pipe_fit_mws_1_avgbef(ds_mws):
 
     ds_mws = ds_mws.mean('mnum') 
@@ -84,7 +103,7 @@ def test_pipe_fit_mws_1_nolog(ds_mws):
     # TODO: values are different from take_log=True. Need to investigate why.
 
 def test_pipe_fit_mws_2(ds_mws_all_mnum):
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False)
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False, method='global')
 
 from mhdpy.analysis.mws.fitting import gen_model_dnedt
 from mhdpy.xr_utils import fit_da_lmfit_global

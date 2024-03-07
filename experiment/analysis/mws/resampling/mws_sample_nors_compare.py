@@ -56,23 +56,23 @@ plt.xlim(-1,20)
 #%%
 
 
-for ds in dss:
-    tc = ds.coords['tc'].item()
-    ds['AS'].mean('acq_time').plot(label=tc)
-
-
-plt.xlim(0,2)
-plt.legend()
-
-#%%
-
-
+fig, axes = plt.subplots(1,2, figsize=(10,5))
 
 for ds in dss:
     tc = ds.coords['tc'].item()
-    ds['AS'].mean('acq_time').plot(label=tc)
+    ds['AS'].mean('acq_time').plot(label=tc, ax=axes[0])
 
-plt.xlim(0.8,2.1)
-plt.ylim(0.03,0.1)
-plt.legend()
+
+axes[0].set_xlim(0,20)
+axes[0].legend(['No Resample', '10 peak/1000 off peak'])
+
+
+for ds in dss:
+    tc = ds.coords['tc'].item()
+    ds['AS'].mean('acq_time').plot(label=tc, ax=axes[1])
+
+axes[1].set_xlim(0.8,2.1)
+axes[1].set_ylim(0.03,0.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'mws_sample_nors_compare.png'))
 # %%

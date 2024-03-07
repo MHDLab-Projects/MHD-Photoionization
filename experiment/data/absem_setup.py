@@ -41,12 +41,16 @@ ds_absem = load_absem(fp)
 ds_absem = prep_absem_mp(ds_absem, dsst, has_multiplexer)
 
 #TODO: interp_dataset_to_var is having to be done out here to access other stats. Can interpolation be done for all variables at once?
-ds_absem = ds_absem['counts_mean']
-ds_absem = interp_ds_to_var(ds_absem.to_dataset('led'), 'led_on')
+ds_counts_mean = ds_absem['counts_mean'].to_dataset('led', promote_attrs=True)
+
+# Cannot get attrs to stay on dataarrays here...
+ds_counts_mean['led_off'].attrs = ds_counts_mean.attrs
+ds_counts_mean['led_on'].attrs = ds_counts_mean.attrs
+
+ds_absem = interp_ds_to_var(ds_counts_mean, 'led_on')
 
 # Remove any data where led_on is nan but led_off is not or vice versa
 ds_absem = ds_absem.where(ds_absem['led_on'].isnull() == ds_absem['led_off'].isnull())
-
 #%%
 
 # Add clalibration based on interpolation of before and after (and mid-experiment shutdown) calibration timewindows
@@ -75,17 +79,19 @@ for idx, row in df_cuttimes.iterrows():
         raise ValueError("Got all null for calibration dataset, check calibration timewindow")
 
 
-    ds_calib = ds_calib.assign_coords(avg_time = ds_calib.coords['time'].mean())
+    ds_calib = ds_calib.assign_coords(avg_time = ds_calib.coords['time'].mean(keep_attrs=True))
 
-    ds_calib = ds_calib.mean('time')
+    ds_calib = ds_calib.mean('time', keep_attrs=True)
     ds_calib = ds_calib.rename(avg_time='time')
 
     dss.append(ds_calib)
 
 
-ds_calib = xr.concat(dss, 'time')
+ds_calib = xr.concat(dss, 'time').pint.quantify()
 
 ds_calib['diff'] = ds_calib['led_on'] - ds_calib['led_off']
+
+ds_calib = ds_calib.pint.dequantify()
 
 ds_calib.to_netcdf(pjoin(data_folder, 'Munged','Spectral', 'ds_calib.cdf'))
 # ds_calib['diff'].plot(hue='time')
@@ -115,6 +121,9 @@ if 'mw_horns' in ds_absem.coords['mp'].values:
 else:
     ds_calib = ds_calib.interp_like(ds_absem, kwargs={'fill_value':'extrapolate'})
 
+
+#%%
+    
 #%%
 
 # Add calibration data

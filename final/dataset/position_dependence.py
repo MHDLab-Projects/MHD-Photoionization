@@ -24,12 +24,11 @@ ds_absem_536_pos = ds_absem_536_pos.expand_dims('phi').stack(temp = stack_dims)
 
 ds_lecroy_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy_536_pos = ds_lecroy_536_pos.sortby('time') # Needed otherwise pre pulse time cannot be selected
-
 ds_lecroy_536_pos = ds_lecroy_536_pos.expand_dims('phi').stack(temp = stack_dims)
+# ds_lecroy_536_pos = ds_lecroy_536_pos.mean('mnum')
 
 #%%
 
-ds_lecroy_536_pos
 
 #%%
 
@@ -42,8 +41,8 @@ ds_lecroy_5x6 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.form
 ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=[0.79], method='nearest') # Cannot add 0.65 phi, because it conflicts with 516_pos. Need to change run_num for this measurement?
 
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
-
 ds_lecroy_5x6 = ds_lecroy_5x6.stack(temp = stack_dims)
+# ds_lecroy_5x6 = ds_lecroy_5x6.mean('mnum')
 
 #%%
 
@@ -58,6 +57,7 @@ ds_lecroy_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.form
 ds_lecroy_516 = ds_lecroy_516.sortby('time') # Needed otherwise pre pulse time cannot be selected
 ds_lecroy_516 = ds_lecroy_516.expand_dims('phi') # allows merging with 5x6_pos
 ds_lecroy_516 = ds_lecroy_516.stack(temp = stack_dims)  
+# ds_lecroy_516 = ds_lecroy_516.mean('mnum')
 
 #%%
 
@@ -65,21 +65,64 @@ ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 
+#%%
+
 da_mws_nothing  = ppu.fileio.load_mws_T0()
 
-ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp').unstack('temp')
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_mws_nothing.pint.dequantify())
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
+ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp')#.unstack('temp')
+
+# How to normalize without having to unstack...avoids memory error
+mag_0_stack = [da_mws_nothing.loc[date].item().magnitude for date in ds_lecroy.coords['date'].values]
+mag_0_stack = xr.DataArray(mag_0_stack, coords={'temp':ds_lecroy.coords['temp']}, dims='temp')
+
+ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=mag_0_stack)
+
 
 
 #%%
+
+mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
+mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
+mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
+mws_max_std_ratio = mws_max/mws_pp_std
+mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
+
+delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-2,-1)).mean('time')
+delta_pd1 = delta_pd1.dropna('temp', how='all')
+delta_pd1 = delta_pd1.mean('mnum').max('time')
+
+ds_p_mws = xr.merge([mws_max, mws_pp, mws_pp_std, mws_max_std_ratio, delta_pd1])
+
+ds_p_mws['AS_max'].attrs = dict(long_name='AS Max')
+ds_p_mws['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
+ds_p_mws['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
+ds_p_mws['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V')
+
+ds_p_mws = ds_p_mws.unstack('temp').xr_utils.stack_run()
+
+#%%
+
+# Now that statistics are calculated we average over mnum and unstack. 
+
+ds_lecroy = ds_lecroy.mean('mnum').unstack('temp')
+
+ds_lecroy = ds_lecroy.xr_utils.stack_run()
+
+# ds_lecroy = ds_lecroy.drop_sel(run=('2023-05-12'))
+
+#%%
+
+#%%
+# da_counts = ds_lecroy['AS_abs'].isel(time=0).count('mnum')
+# da_counts = da_counts.where(da_counts > 0).dropna('run', how='all')
+
+# da_counts.plot(row='run', marker='o')
+
+
+#%%k
 
 ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_lecroy.cdf'))
 
-#%%
-
-
-ds_absem.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
 #%%
 ds_cfd_beam = ppu.fileio.load_cfd_beam()
@@ -118,33 +161,19 @@ ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop('mp')
 nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
 
-mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
-mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
-mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
-mws_max_std_ratio = mws_max/mws_pp_std
-mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
-
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
-delta_pd1 = delta_pd1.dropna('run', how='all')
-delta_pd1 = delta_pd1.mean('mnum').max('time')
-# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-
 ds = xr.merge([
-    mws_max, 
-    mws_pp,
-    mws_pp_std,
-    mws_max_std_ratio,
     nK_mw_horns,
     nK_barrel,
-    delta_pd1.rename('delta_pd1') 
+    ds_p_mws,
     ]).sortby('motor').dropna('run', how='all')
 
-ds['AS_max'].attrs = dict(long_name='AS Max')
-ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
-ds['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
-ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V')
 
 ds
 
 ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_pos.cdf'))
+# %%
+
+#%%
+ds_alpha_fit['alpha'] = ds_fit['alpha']
+ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))
 # %%

@@ -44,7 +44,7 @@ def load_absem(
 
     return ds_absem
 
-def load_lecroy(tc, avg_mnum = False, norm_mag = False):
+def load_lecroy(tc, avg_mnum = False, AS_calc = None):
     """
     pipeline for loading lecroy data
 
@@ -66,11 +66,13 @@ def load_lecroy(tc, avg_mnum = False, norm_mag = False):
     ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 
     # calculate before or after mnum mean?
-    if norm_mag:
-        da_nothing = load_mws_T0().pint.dequantify() #TODO: add units in mws
-        ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
-    else:
-        ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 
+    if AS_calc is not None:
+        assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
+        if AS_calc == 'absolute':
+            da_nothing = load_mws_T0().pint.dequantify() #TODO: add units in mws
+            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
+        else:
+            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 
 
     ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
@@ -119,7 +121,7 @@ def load_cfd_centerline(kwt_interp = None):
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-def load_cfd_beam():
+def load_cfd_beam(kwt_interp = None):
 
 
     fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
@@ -134,6 +136,8 @@ def load_cfd_beam():
                         ds_cfd_beam_barrel.assign_coords(mp='barrel')
                         ], dim='mp')
 
+    if kwt_interp is not None:
+        ds_cfd_beam = ds_cfd_beam.interp(kwt=kwt_interp).dropna('kwt', how='all')
 
 
     ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
