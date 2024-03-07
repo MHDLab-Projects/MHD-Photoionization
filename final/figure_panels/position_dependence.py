@@ -23,15 +23,9 @@ ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 #%%
 
-da_counts = ds_lecroy['AS_abs'].isel(time=0).count('mnum')
-da_counts = da_counts.where(da_counts > 0).dropna('run', how='all')
-
-
-da_counts.plot(row='run', marker='o')
-
 #%%
 
-da_sel = ds_lecroy['AS_abs'].mean('mnum').dropna('run',how='all')
+da_sel = ds_lecroy['AS_abs'].dropna('run',how='all')
 
 da_sel.dropna('motor', how='all')
 

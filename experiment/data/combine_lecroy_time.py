@@ -39,7 +39,7 @@ ds = ds.sortby('acq_time')
 # for now just trimming a few us off the start and end of each pulse
 ds = ds.sel(time=slice(-48e-6, 48e-6))
 
-time_offset = 0.93
+time_offset = 0.88
 ds = ds.assign_coords(time=ds.coords['time']*1e6 - time_offset)
 ds.coords['time'].attrs['units'] = 'us'
 ds.coords['time'].attrs['long_name'] = 'Time'

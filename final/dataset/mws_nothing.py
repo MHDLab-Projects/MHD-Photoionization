@@ -50,6 +50,8 @@ dates = {
 # Examine time trace of a test case
 # time coords are different between files as data was taken near silicon ( which requires a larger timebase). TODO: align time axes below and join
 
+fig, axes = plt.subplots(2)
+
 fn = dates['2023-05-18'][1]
 
 fp = pjoin(dir, '2023-05-18', 'Lecroy', fn)
@@ -59,7 +61,10 @@ ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
 
 ds = ds.mws.calc_mag_phase_AS()
 
-ds['mag'].mean('acq_time').plot()
+ds['mag'].mean('acq_time').plot(ax=axes[0])
+
+ds['mag'].mean('acq_time').plot(ax=axes[1])
+axes[1].set_xlim(0,2)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_time_trace_2023-05-18.png'))
 
@@ -233,7 +238,7 @@ val_178_05_12
 #%%
 
 s = m.to_pandas()
-s.loc['2023-05-12'] = val_178_05_12
+s.loc['2023-05-12'] = val_178_05_12.magnitude
 
 s = s.sort_index()
 
@@ -246,3 +251,5 @@ s
 
 # s.plot(marker='o')
 
+
+# %%

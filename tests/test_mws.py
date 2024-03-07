@@ -43,6 +43,25 @@ def ds_mws_all_mnum():
 
     return ds_lecroy
 
+
+import pi_paper_utils as ppu
+from pint import Unit
+def test_calc_mag_phase_AS(ds_mws):
+    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+
+    assert 'AS' in ds_mws
+    
+    assert ds_mws['AS'].pint.quantify().pint.units == Unit('dimensionless')
+
+def test_calc_mag_phase_AS_abs(ds_mws):
+    ds_nothing = ppu.fileio.load_mws_T0()
+    ds_mws = ds_mws.mws.calc_mag_phase_AS(mag_0=ds_nothing)
+
+    assert 'AS_abs' in ds_mws
+
+    assert ds_mws['AS_abs'].pint.quantify().pint.units == Unit('dimensionless')
+
+
 def test_pipe_fit_mws_1_avgbef(ds_mws):
 
     ds_mws = ds_mws.mean('mnum') 

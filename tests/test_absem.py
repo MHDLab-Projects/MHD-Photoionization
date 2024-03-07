@@ -27,6 +27,11 @@ def ds_absem_all_mnum():
     ds_absem = ds_absem.absem.calc_alpha()
     return ds_absem
 
+def test_calc_alpha(ds_absem):
+    ds_absem = ds_absem.absem.calc_alpha()
+
+    pass
+
 def test_absem_fit_interpolated(ds_absem):
     """Tests a fit of a single absorption emssision spectrum and compares the fitted nK value to a previously obtained value"""
 
@@ -67,22 +72,14 @@ def test_pipe_fit_alpha_1(ds_absem):
     assert ds_p['nK_m3'].item() == pytest.approx(1.17677e+22, rel=1e-4)
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+import pi_paper_utils as ppu
 def test_pipe_fit_alpha_num_1(ds_absem):
-
-    from mhdpy.pyvista_utils import CFDDatasetAccessor
-
-    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
-    ds_cfd_beam = xr.load_dataset(fp_cfd_profiles)
-
-    ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
-    ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
-
-    ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+    ds_cfd_beam = ppu.fileio.load_cfd_beam()
 
     #TODO: extrapolate based on log, downselect to kwt. should have simulations for other kwt. 
     ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'].values, kwargs={'fill_value': 'extrapolate'})
 
-    ds_cfd_beam = ds_cfd_beam.sel(phi=0.8)
+    ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=180,method='nearest').sel(mp='barrel')
 
     da_cfd_beam = ds_cfd_beam['Yeq_K']
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')

@@ -26,20 +26,18 @@ ds_lecroy = ds_lecroy.where(counts > 100)
 
 da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
 da_fit = da_sel.mean('mnum')
-
-
 da_fit.plot(hue='run_plot', x='time', row='kwt')
 
 plt.yscale('log')
 
+#%%
 #%%[markdown]
 
 # # pipe3
-
 #%%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False, interpolate_time=Quantity(0.01, 'us'), coarsen_amount=10)
 
 ds_p['decay'] = 1/ds_p['krm']
 
@@ -50,6 +48,19 @@ ds_p2 = xr.merge([
     ])
 
 dss_p.append(ds_p2.assign_coords(method='pipe_3'))
+
+#%%
+
+ds_p['decay'].mean('run').plot()
+
+plt.yscale('log')
+plt.ylim(1, 1e2)
+
+#%%
+
+ds_mws_fit['AS_all'].mean('run').plot(hue='kwt', marker='o')
+
+plt.xlim(-1,1)
 
 
 #%%
@@ -118,6 +129,9 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_tim
 ds_mws_fit.mean('run').to_array('var').plot(row='kwt', hue='var')
 
 plt.yscale('log')
+
+plt.ylim(1e-4, )
+plt.xlim(-1,40)
 
 #%%
 
@@ -188,7 +202,7 @@ da_plot = ds_p.mean('run').drop('pipe_2', 'method')['mean']
 
 da_plot.plot(hue='method', marker='o')
 
-plt.ylim(3,15)
+plt.ylim(3,35)
 
 plt.yscale('log')
 plt.xscale('log')
@@ -201,3 +215,5 @@ plt.xlabel("Kwt [%]")
 plt.title('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_fitting_compare.png'))
+
+# %%
