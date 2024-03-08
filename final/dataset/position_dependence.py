@@ -74,8 +74,12 @@ ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='te
 # How to normalize without having to unstack...avoids memory error
 mag_0_stack = [da_mws_nothing.loc[date].item().magnitude for date in ds_lecroy.coords['date'].values]
 mag_0_stack = xr.DataArray(mag_0_stack, coords={'temp':ds_lecroy.coords['temp']}, dims='temp')
+mag_0_stack = mag_0_stack.pint.quantify('V')
 
 ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=mag_0_stack)
+
+
+#%%
 
 
 

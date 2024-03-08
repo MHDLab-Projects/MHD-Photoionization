@@ -84,6 +84,7 @@ lineAS = axes[1].errorbar(
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
     label='AS Maximum',
+    color='darkgreen'
     )
 
 axes[1].set_ylabel("AS Maximum")
@@ -97,7 +98,7 @@ linePD = ta.plot(
     ds_p_stats['{}_mean'.format(var)], 
     marker='x',
     label='Delta PD1',
-    color='red'
+    color='darkblue'
     )
 
 ta.set_ylabel("Delta PD1 [mV]")

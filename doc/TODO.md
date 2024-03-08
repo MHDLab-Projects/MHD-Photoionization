@@ -3,10 +3,10 @@
 # Figures 
 
 Fig 1 
-    - [] torch cross section with CD nozzle 
-    - [] make jet flare
-    - [] dimensions on schematic (jet size and goldilocks)
-    - [] flip C, crop the top a bit. 
+    - [x] torch cross section with CD nozzle 
+    - [x] make jet flare
+    - [x] dimensions on schematic (jet size and goldilocks)
+    - [x] flip C, crop the top a bit. 
 
 Fig 2
 
@@ -23,7 +23,7 @@ Figure 4
 
 
 Figure 5 
-- [] fix colors for position confusion
+- [x] fix colors for position confusion
 - [x] ionization process (only and B)
 
 Figrue 6
