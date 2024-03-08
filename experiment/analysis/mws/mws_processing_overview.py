@@ -9,7 +9,7 @@ from mhdpy.analysis import mws
 
 # %%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x', norm_mag=True)
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
 
 ds_sel = ds_lecroy.sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest')
 

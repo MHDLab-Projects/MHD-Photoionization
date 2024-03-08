@@ -10,6 +10,34 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()
 ds_species_cfd = xr.open_dataset(pjoin(data_directory, '53x_ds_species_cfd.cdf')).pint.quantify()
 ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
+ds_mws_fit = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws.cdf')).pint.quantify()
+
+#%%
+
+plt.figure(figsize=(4,2))
+
+ds_plot = ds_mws_fit.sel(date='2023-05-12').sel(run_num=1)
+
+# da_plot = ds_plot[['AS_fit','AS_all']].to_array('var')
+
+
+ds_plot['AS_all'].plot(hue='kwt')
+
+
+plt.gca().get_legend().set_title('K wt %')
+
+for kwt in ds_plot.coords['kwt']:
+    ds_plot['AS_fit'].sel(kwt=kwt).plot(color='black', linestyle='-', alpha=0.5)
+
+
+plt.xlim(-1,40)
+
+plt.yscale('log')
+plt.ylim(1e-5, 0.1)
+
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
 
 
 #%%

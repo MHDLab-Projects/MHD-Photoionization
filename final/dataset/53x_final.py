@@ -91,6 +91,8 @@ ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
 #%%
 
+#%%
+
 ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem.coords['kwt'].values)
 
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=goldi_pos,method='nearest')
@@ -184,6 +186,14 @@ plt.ylim(1e-3, 1.1)
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 
 #%%
+
+
+ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws.cdf'))
+ds_lecroy.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
+ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
+
+
+
 
 #%%
 
