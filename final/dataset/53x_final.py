@@ -128,6 +128,26 @@ ds_p_dnedt = ds_p_mws.copy()
 
 #%%
 
+da_fit_lecroy.sel(kwt=[0.05, 0.99]).plot(hue='run_plot', row='kwt', x='time')
+
+plt.xlim(-1,1)
+
+# plt.gca().get_legend().set_bbox_to_anchor((1,0.5))
+
+
+
+#%%
+
+ds_fit_mws.mean('run')[['AS_sel','AS_fit']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-3, 1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_dnedtv2.png'))
+
+#%%
+
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 ds_fit = ds_lecroy
@@ -161,7 +181,7 @@ plt.yscale('log')
 plt.xlim(-1,40)
 plt.ylim(1e-3, 1.1)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 
 #%%
 
@@ -171,11 +191,27 @@ da_stats = ds_lecroy['AS_abs'].sel(time=slice(-1,1))
 mws_max = da_stats.max('time')
 mws_std = da_stats.max('time')
 
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
+#%%
+
+delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-2,-1)).mean('time')
 delta_pd1 = delta_pd1.dropna('run', how='all')
-delta_pd1 = delta_pd1.max('time')
+
+delta_pd1.isel(run=0).plot(hue='kwt')
+plt.xlim(-1,3)
+#%%
+
+# Excimer interference messes up maximum at 0, so we take the maximum between 0.8 and 1.5
+delta_pd1 = delta_pd1.sel(time=slice(0.8,1.5)).max('time')
 delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 
+#%%
+
+delta_pd1.plot.line(x='kwt')
+plt.xscale('log')
+plt.yscale('log')
+
+
+#%%
 
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),

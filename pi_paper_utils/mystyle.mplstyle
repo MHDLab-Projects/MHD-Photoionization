@@ -28,7 +28,7 @@ figure.dpi          : 100  # Note 300 causes noteobok figures to be huge. TODO: 
                    # E24A33 : red, # 348ABD : blue, # 988ED5 : purple, # 777777 : gray, # FBC15E : yellow, # 8EBA42 : green, # FFB5B8 : pink
 
 # Custom from https://colorbrewer2.org/#type=qualitative&scheme=Set1&n=7
-axes.prop_cycle: (cycler('color', ['377eb8', 'e41a1c', '4daf4a', 'ff7f00', '984ea3', 'a65628']) + cycler('ls', ['-', '--', ':', '-.','--', '-']))
+axes.prop_cycle: (cycler('color', ['377eb8', 'e41a1c', '4daf4a', 'ff7f00', '984ea3', 'a65628', 'e41a1c', '4daf4a', 'ff7f00', '984ea3', '377eb8']) + cycler('ls', ['-', '--', ':', '-.','--', '-', '-', '--', ':', '-.','--']))
 
 image.cmap: RdPu
 
