@@ -54,3 +54,5 @@ recombination process
 - [] add standard plots for all three sequences to SI
     - [] fit parameters (nK, tau, ne_0)
     - [] raw 
+
+- [] Input properties table. 
