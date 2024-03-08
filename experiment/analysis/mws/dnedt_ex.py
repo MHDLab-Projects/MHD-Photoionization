@@ -7,49 +7,64 @@
 from mhdpy.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdpy.analysis.mws.fitting import calc_dnedt
+from mhdpy.analysis.mws.fitting import calc_dnedt_v2
 from scipy.integrate import solve_ivp
 
-#%%
-
 ds_lecroy = ppu.fileio.load_lecroy('53x')
-da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
-
-# %%
-
+da_sel = ds_lecroy.mws.calc_mag_phase_AS()['AS'].sel(kwt=1, method='nearest')
 da_fit = da_sel.mean('mnum')
 da_fit = da_fit/da_fit.mws._pulse_max()
 
-t_eval = da_fit.sel(time=slice(0,30)).time.values
-dne=10
-ne0 = 2
-kr = .05
+# %%
 
-sol = solve_ivp(lambda t, y: calc_dnedt(t, y, ne0, kr), t_span=(min(t_eval),max(t_eval)), y0 = [dne], t_eval=t_eval)
+t_eval = np.linspace(0, 100, 1000)
 
-sol
+dne = Quantity(1e14, 'cm**-3').to('um**-3').magnitude
+krm = (1/Quantity(7, 'us')).magnitude
+krb = Quantity(1e-8, 'cm**3/s').to('um**3/us').magnitude
 
-#%%
-
+sol = solve_ivp(lambda t, y: calc_dnedt_v2(t, y, krm, krb), t_span=(min(t_eval),max(t_eval)), y0 = [dne], t_eval=t_eval)
 y = sol.y[0]
 y = y/max(y)
 
+# plt.plot(t_eval, y, color='black', linestyle='--')
+# plt.yscale('log')
+
+# plt.figure(figsize=(5,5))
+
+fig, axes = plt.subplots(2,1, figsize=(5,5), sharex=False)
+
+plt.sca(axes[0])
+da_fit.plot(hue='run_plot', x='time')
+plt.plot(t_eval, y, color='black', linewidth=2)
+
+plt.gca().get_legend().remove()
+
+plt.yscale('log')
+plt.xlim(-1,5)
+plt.ylim(1e-1, 1.1)
+
+plt.title('krm: {:.1e} us^-1, krb: {:.1e} um^3/us, dne: {:.1e}'.format(krm, krb, dne))
+
+plt.sca(axes[1])
+da_fit.plot(hue='run_plot', x='time')
+plt.plot(t_eval, y, color='black', linewidth=2)
 
 plt.yscale('log')
 
-da_fit.plot(hue='run_plot', x='time')
-# da_fit.plot(hue='run_plot')
-plt.plot(t_eval, y, color='black', linestyle='--')
-
 plt.xlim(-1,30)
+plt.ylim(1e-3, 1.1)
+plt.gca().get_legend().remove()
+plt.title('')
+
 
 #%%
 
-da_fit = da_sel.copy()
+da_fit = da_sel.copy().mean('mnum')
 
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
 
 da_fit_norm = da_fit/da_fit.mws._pulse_max()
 
@@ -57,7 +72,10 @@ da_fit_norm = da_fit/da_fit.mws._pulse_max()
 
 #%%
 
-ds_mws_fit.mean('mnum').to_array('var').plot(x='time', row='run', hue='var')
+ds_p
+#%%
+
+ds_mws_fit.to_array('var').plot(x='time', row='run', hue='var')
 
 plt.yscale('log')
 
