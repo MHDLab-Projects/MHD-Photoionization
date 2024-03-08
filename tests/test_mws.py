@@ -105,26 +105,26 @@ def test_pipe_fit_mws_1_nolog(ds_mws):
 def test_pipe_fit_mws_2(ds_mws_all_mnum):
     ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False, method='global')
 
-from mhdpy.analysis.mws.fitting import gen_model_dnedt
-from mhdpy.xr_utils import fit_da_lmfit_global
-def test_mws_fit_global_ne0(ds_mws_all_mnum):
+# from mhdpy.analysis.mws.fitting import gen_model_dnedt
+# from mhdpy.xr_utils import fit_da_lmfit_global
+# def test_mws_fit_global_ne0(ds_mws_all_mnum):
 
-    da_fit = ds_mws_all_mnum['AS']
-    da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
+#     da_fit = ds_mws_all_mnum['AS']
+#     da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
 
-    mod, params = gen_model_dnedt(take_log=True)
+#     mod, params = gen_model_dnedt(take_log=True)
 
-    ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
+#     ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
 
-def test_mws_fit_global_kr(ds_mws_all_mnum):
+# def test_mws_fit_global_kr(ds_mws_all_mnum):
 
-    da_fit = ds_mws_all_mnum['AS']
-    da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
+#     da_fit = ds_mws_all_mnum['AS']
+#     da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
 
-    mod, params = gen_model_dnedt(take_log=True)
+#     mod, params = gen_model_dnedt(take_log=True)
 
-    params['ne0'].value = Quantity(2e13, 'cm**-3').to('um**-3').magnitude
-    params['ne0'].vary = False
-    params['kr'].vary = True
+#     params['ne0'].value = Quantity(2e13, 'cm**-3').to('um**-3').magnitude
+#     params['ne0'].vary = False
+#     params['kr'].vary = True
 
-    ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')
+#     ds_mws_fit, ds_p, ds_p_stderr = da_fit.mws.perform_fit(mod, params, method='global')

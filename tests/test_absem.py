@@ -74,17 +74,15 @@ def test_pipe_fit_alpha_1(ds_absem):
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 import pi_paper_utils as ppu
 def test_pipe_fit_alpha_num_1(ds_absem):
-    ds_cfd_beam = ppu.fileio.load_cfd_beam()
-
-    #TODO: extrapolate based on log, downselect to kwt. should have simulations for other kwt. 
-    ds_cfd_beam = ds_cfd_beam.interp(kwt=ds_absem.coords['kwt'].values, kwargs={'fill_value': 'extrapolate'})
+    ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem.coords['kwt'].values)
 
     ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=180,method='nearest').sel(mp='barrel')
 
     da_cfd_beam = ds_cfd_beam['Yeq_K']
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
-    ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_absem, da_nK_profile=da_cfd_beam)
+    ds_fit_absem = ds_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
+    ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, da_nK_profile=da_cfd_beam)
 
 
 
@@ -105,7 +103,8 @@ def test_absem_fit_global(ds_absem_all_mnum):
 
     final_model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
+    da_fit = da_alpha.pint.dequantify()
     wls = da_alpha.coords['wavelength'].values
-    fits, ds_p, ds_p_stderr = fit_da_lmfit_global(da_alpha, final_model, pars, 'wavelength', wls)
+    fits, ds_p, ds_p_stderr = fit_da_lmfit_global(da_fit, final_model, pars, 'wavelength', wls)
 
     # assert ds_p['nK_m3'].item() == pytest.approx(1.2287e+22, rel=1e-4
