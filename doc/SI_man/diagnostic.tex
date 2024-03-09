@@ -1,34 +1,10 @@
 \section{Diagnostic Methods Supplemental Information}
 
 \subsection{Microwave Scattering}
-Erevant, formerly Sage MM
 
-SOM-90305213-10-S1
-90 GHz, ±0.25 GHz Tuning Bandwidth, +13 dBm Output Power, WR-10 Waveguide, W-Band Mechanically Tuned Gunn Oscillator
+The microwave scattering setup is shown in \ref{fig:SI_MWS_Setup_Silicon}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a horn (TODO) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
-SBP-7531141015-1010-E1
-75 to 110 GHz, 10 dB Gain, +15 dBm P1dB, In-line WR-10 Waveguide, W-Band Power Amplifier
-
-SWP-90310404-10-E1
-90 to 105 GHz, 20 dB Port Isolation, WR-10 Waveguide, W-Band, 4-Way In-line Power Divider
-
-STP-18-10-M2
-W-Band Phase Shifter
-75 to 110 GHz, 0 to 180° Range, WR-10 Waveguide
-
-SFQ-75311415-1010SF-N1-M
-Quadrature Mixer or Phase Detector W Band
-LO and RF Frequency: 75 to 108 GHz
-IF Frequency: DC to 20 GHz (Typ) 
-LO Pumping Level: +15 dBm (Typ) 
-Conversion Loss: 15 dB (Typ) 
-I/Q Phase Error: +/-15 Degrees (Typ) 
-RF & LO Connectors: WR-10 Waveguide with Anti-Cocking 
-UG-387/U-M
-IF Connectors: SMA(F) 
-Outline:FQ-W1M-A
-ECCN:EAR99
-Schedule B/HTS Code:8542390000
+The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy oscilloscope (TODO). The oscilloscope utilized 1 MOhm impedance. (TODO) The oscilloscope is triggered from the excimer laser. 
 
 \begin{figure}[]
 \centering
