@@ -21,6 +21,9 @@ ds_lecroy = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_lecroy.cdf'))
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXP_PROC_DATA, 'dsst.tdms')).as_dsst()
 # Generate binned coordinates to assign along time dimension
 
+from pi_paper_utils import convert_fw_pos_relpower
+dsst['filterwheel']['Power_Relative'] = convert_fw_pos_relpower(dsst['filterwheel']['Filter Position'])
+
 # Downselect to only sequence timewindows, see experiment/analysis/various/dst_coords_ex.py
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
 df_ct_sequence = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)

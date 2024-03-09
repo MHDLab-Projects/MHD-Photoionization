@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="301.10049mm"
-   height="289.27991mm"
-   viewBox="0 0 301.10049 289.27992"
+   width="300.29971mm"
+   height="161.17455mm"
+   viewBox="0 0 300.29971 161.17455"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -27,15 +27,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="7.8312671"
-     inkscape:cx="971.4903"
-     inkscape:cy="124.82016"
+     inkscape:zoom="0.97890839"
+     inkscape:cx="550.10255"
+     inkscape:cy="482.68051"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g24" /><defs
+     inkscape:current-layer="layer1" /><defs
      id="defs1"><marker
        style="overflow:visible"
        id="marker36"
@@ -173,7 +173,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(2.4395988,-57.974503)"><image
+     transform="translate(2.4271462,-57.783382)"><image
        width="118.37939"
        height="161.17455"
        preserveAspectRatio="none"
@@ -391,7 +391,7 @@
          id="text21"
          x="627.46887"
          y="310.60645"
-         style="-inkscape-font-specification:'Times New Roman, Normal';font-family:'Times New Roman';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:24px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">I</text><text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24px;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">I</text><text
          font-family="Calibri, Calibri_MSFontService, sans-serif"
          font-weight="400"
          font-size="24px"
@@ -444,7 +444,7 @@
          id="path22"
          sodipodi:nodetypes="cccc" /><path
          style="fill:none;stroke:#000000;stroke-width:2.26482;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker28)"
-         d="m 1013.2582,326.05523 0,19.03757 -334.96127,2.16703"
+         d="m 1013.2582,326.05523 v 19.03757 l -334.96127,2.16703"
          id="path27"
          sodipodi:nodetypes="ccc" /><path
          style="fill:none;stroke:#000000;stroke-width:2.26394;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker31)"
@@ -460,18 +460,4 @@
          id="path35" /><path
          style="fill:none;stroke:#000000;stroke-width:1.86273;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker32)"
          d="m 1063.8248,253.01469 v 10.71083"
-         id="path37" /></g><image
-       width="166.79333"
-       height="121.92"
-       preserveAspectRatio="none"
-       xlink:href="../../../experiment/notebook/2023-05-18/mws/output/figures/silicon_power_fit.png"
-       id="image1-0"
-       x="131.86757"
-       y="224.13791" /><image
-       width="129.32317"
-       height="127"
-       preserveAspectRatio="none"
-       xlink:href="../../../experiment/notebook/2023-05-18/mws/output/figures/silicon_power_raw.png"
-       id="image1-1"
-       x="-2.4395988"
-       y="220.25443" /></g></svg>
+         id="path37" /></g></g></svg>

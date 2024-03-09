@@ -50,8 +50,20 @@ ds['i'].mean('time').plot(marker='o')
 
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 
+from pi_paper_utils import convert_fw_pos_relpower
 
 da_fw = dsst['filterwheel']['Filter Position'].sel(time=tw_power_sweep)
+
+da_fw = convert_fw_pos_relpower(da_fw)
+
+da_fw = da_fw.round(3)
+
+da_fw
+#%%
+
+ds
+
+#%%
 
 ds = assign_signal(ds, da_fw, timeindex='acq_time')
 
@@ -82,6 +94,8 @@ for i, ax in enumerate(axes):
         ax.get_legend().remove()
     ax.set_xlabel('')
 
+axes[0].get_legend().set_title('Laser Power (relative)')
+
 axes[2].set_xlabel('Time (us)')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'silicon_power_raw.png'), bbox_inches='tight')
@@ -102,9 +116,11 @@ from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 
 # da_fit = da_sel.mean('mnum')
-da_fit = ds.copy()['AS'].drop(6, 'fw')
+da_fit = ds.copy()['AS'].drop(0, 'fw')
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(60, 'us'),Quantity(130, 'us')))
+
+pipe_fit_exp.perform_fit_kwargs.update({'fit_timewindow': slice(Quantity(60, 'us'),Quantity(130, 'us'))})
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%
 # %%
@@ -123,8 +139,7 @@ ds_p['decay'].plot(marker='o')
 da_fit_sel = da_fit.sel(fw=1)
 
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
-    da_fit_sel, method='iterative', 
-    fit_timewindow=slice(Quantity(80, 'us'),Quantity(130, 'us'))
+    da_fit_sel
     )
 
 #%%

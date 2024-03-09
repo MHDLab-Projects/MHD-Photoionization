@@ -26,3 +26,27 @@ LASER_POWER = Quantity(6.98836, 'mJ')
 LASER_AREA = Quantity(40.77, 'mm^2')
 
 MOTOR_OFFSET = Quantity(1 + 3/16, 'inches')
+
+import numpy as np
+import xarray as xr
+
+ndf_dict = {
+1: 0,
+2: 0.4,
+3: 0.7,
+4: 1, 
+5: 1.5,
+6: np.inf
+}
+
+ndf_dict = {key: 10**(-ndf_dict[key]) for key in ndf_dict}
+
+def convert_fw_pos_relpower(da_fw_pos):
+    """
+    Converts dsst['filterwheel']['Filter Position'] to relative power
+    Can later be converted to absolute power using the laser calibration
+    """
+    filter_coord = xr.DataArray(da_fw_pos.to_series().map(ndf_dict))
+    filter_coord.attrs = dict(long_name='Rel. Power')
+
+    return filter_coord 

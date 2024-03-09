@@ -19,6 +19,8 @@
 \externaldocument{../SI_man/diagnostic}
 \externaldocument{../SI_man/results}
 
+\let\oldsection\section
+\renewcommand\section{\clearpage\oldsection}
 
 \usepackage[backend=biber]{biblatex}
 \addbibresource{resources/MHD.bib}
