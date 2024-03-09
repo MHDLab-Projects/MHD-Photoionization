@@ -95,4 +95,13 @@ for key in keep_keys:
 # %%
 from mhdpy.fileio.tdms import dsst_to_tdms
 
+dsst['motor']['Motor C Relative'].attrs = dict(long_name='Stage Position', units='mm')
+dsst['hvof']['CC_K_massFrac_in'].attrs = dict(long_name='Nominal K Mass Fraction', units='') 
+
+from pi_paper_utils import convert_fw_pos_relpower
+dsst['filterwheel']['Power_Relative'] = convert_fw_pos_relpower(dsst['filterwheel']['Filter Position'])
+dsst['filterwheel']['Power_Relative'].attrs = dict(long_name='Relative Power', units='dimensionless')
+
+
+
 dsst_to_tdms(dsst, pjoin(DIR_PROC_DATA, 'dsst.tdms'), 'w')

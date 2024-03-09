@@ -2,33 +2,27 @@
 
 \subsection{Experiment Overviews}
 
-Below are overviews of the experiments performed. The colored regions are test case sequences. Times are PST. 
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-04-07.png} 
-    \caption{Experiment Overview for 2023-04-07 }
-    \label{fig:SI_expt_overview_2023-04-07}
-\end{figure}
+Below are overviews of the experiments performed. The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences have been analyzed in this work.  
 
 
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-12.png} 
-    \caption{Experiment Overview for 2023-05-12 }
-    \label{fig:SI_expt_overview_2023-05-12}
-\end{figure}
+\foreach \date in {2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24}{
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_\date.png} 
+        \caption{Experiment Overview for \date. The colored regions are test case sequences.}
+        \label{fig:SI_expt_overview_\date}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/other_signals/tc_plot_\date.png} 
+        \caption{Additional signals for \date. The colored regions are test case sequences with the same scheme as as in \ref{fig:SI_expt_overview_\date}.}
+        \label{fig:SI_expt_overview_other_\date}
+    \end{figure}
+
+}
 
 
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-18.png} 
-    \caption{Experiment Overview for 2023-05-18}
-    \label{fig:SI_expt_overview_2023-05-18}
-\end{figure}
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_2023-05-24.png} 
-    \caption{Experiment Overview for 2023-05-24}
-    \label{fig:SI_expt_overview_2023-05-24}
-\end{figure}
 
 \clearpage
 

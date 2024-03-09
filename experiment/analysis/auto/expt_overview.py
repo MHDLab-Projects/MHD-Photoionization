@@ -6,6 +6,7 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 #have time axes show up in PST
 plt.rcParams['timezone'] = 'US/Pacific'
+import matplotlib.dates as mdates
 
 # %%
 
@@ -31,7 +32,7 @@ df_exptw = df_exptw.set_index('date')
 
 coord_keys = [
     ('hvof', 'CC_K_massFrac_in'),
-    ('filterwheel', 'Filter Position'),
+    ('filterwheel', 'Power_Relative'),
     ('motor', 'Motor C Relative'),
     ('hvof','CC_equivalenceRatio')
 ]
@@ -51,6 +52,7 @@ da = ds_orig['CC_equivalenceRatio']
 ds_orig['CC_equivalenceRatio'] = da.where((da >= 0.2) & (da <= 1.5)).dropna('time', how='all')
 
 
+
 ds_orig
 
 # %%
@@ -61,8 +63,9 @@ simple_ds_plot(ds_orig)
 
 
 #%%
+import textwrap
 
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({'font.size': 14})
 
 for date, df in df_ct.groupby('date'):
 
@@ -79,16 +82,31 @@ for date, df in df_ct.groupby('date'):
     da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
 
     # TODO: something in here is messing with the order of the values
-    fig = tc_plot(ds_plot, da_ct, legend_axes=1)
+    fig = tc_plot(ds_plot, da_ct, legend_axes=1, figsize=(8,10))
+
+    # fig.axes[1].get_legend().set_bbox_to_anchor((1, 1))
+    # fig.axes[1].get_legend.set(bbox_to_anchor=(0.5, 1.5), loc="lower center", bbox_transform=fig.transFigure)   
+    fig.axes[1].get_legend().set_bbox_to_anchor([0.95,1], transform=fig.transFigure)
+    fig.subplots_adjust(top=0.8, left=0.2)  # Adjust the top spacing
 
     fig.axes[0].set_yscale('log')
+    fig.axes[1].set_yscale('log')
     fig.axes[3].set_ylim(0.5,1.5)
 
     fig.suptitle(date, fontdict={'size': 16})
 
-    plt.tight_layout()
+    for ax in fig.axes:
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 20))
+        ax.set_xlabel('')
+
+    fig.axes[-1].set_xlabel('Time (PST)')
+
+    # plt.tight_layout()
 
     plt.savefig(pjoin(DIR_FIG_OUT, 'tc_plot_{}.png'.format(date)))
+
+    # break
 
 # %%
 
@@ -118,7 +136,8 @@ ds_orig = xr.merge(das)
 
 #%%
 
-plt.rcParams.update({'font.size': 16})
+
+plt.rcParams.update({'font.size': 12})
 
 for date, df in df_ct.groupby('date'):
 
@@ -135,7 +154,7 @@ for date, df in df_ct.groupby('date'):
     da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
 
     # TODO: something in here is messing with the order of the values
-    fig = tc_plot(ds_plot, da_ct, legend_axes=None)
+    fig = tc_plot(ds_plot, da_ct, legend_axes=None, figsize=(8,12))
 
     # fig.axes[0].set_yscale('log')
     # fig.axes[3].set_ylim(0.5,1.5)
@@ -144,7 +163,17 @@ for date, df in df_ct.groupby('date'):
 
     fig.suptitle(date, fontdict={'size': 16})
 
+    for ax in fig.axes:
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 20))
+
+        ax.set_xlabel('')
+
+
+    fig.axes[-1].set_xlabel('Time (PST)')
     plt.tight_layout()
 
     plt.savefig(pjoin(output_dir, 'tc_plot_{}.png'.format(date)))
 
+
+# %%
