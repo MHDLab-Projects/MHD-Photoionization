@@ -15,20 +15,18 @@ dss_p = []
 
 #%%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
+ds_lecroy = ppu.fileio.load_lecroy('53x', avg_mnum=True, AS_calc='relative')
 
-#Make a general mws method? 
-counts = ds_lecroy['AS'].isel(time=0).count('mnum')
-ds_lecroy = ds_lecroy.where(counts > 100)
+
 
 
 # %%
 
 da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
-da_fit = da_sel.mean('mnum')
+da_fit = da_sel
 da_fit.plot(hue='run_plot', x='time', row='kwt')
 
-plt.yscale('log')
+# plt.yscale('log')
 
 #%%
 #%%[markdown]
@@ -37,7 +35,10 @@ plt.yscale('log')
 #%%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit, take_log=False, interpolate_time=Quantity(0.01, 'us'), coarsen_amount=10)
+
+pipe_fit_mws_3.fit_prep_kwargs.update({'interpolate_time':Quantity(0.01, 'us'), 'coarsen_amount':10})
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
 
 ds_p['decay'] = 1/ds_p['krm']
 
@@ -89,9 +90,16 @@ dne.mean('run').pint.magnitude
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit, take_log=False)
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit)
 
 # ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
+#%%
+ne0=Quantity(2e12, 'cm**-3').magnitude
+ds_p['decay'] = 1/(2*ne0*ds_p['krb'])
+
+#%%
+
+ds_p
 
 #%%
 
@@ -101,7 +109,7 @@ plt.yscale('log')
 
 #%%
 ds_p2 = xr.merge([
-    ds_p['tau'].rename('mean'),
+    ds_p['decay'].rename('mean'),
     # ds_p_stderr['tau'].rename('std')
     ])
 
@@ -117,10 +125,10 @@ dss_p.append(ds_p2.assign_coords(method='pipe_2'))
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 
-da_fit = da_sel.mean('mnum')
+da_fit = da_sel
 # da_fit = da_sel.copy()
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 
 

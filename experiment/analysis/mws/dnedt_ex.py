@@ -64,6 +64,8 @@ da_fit = da_sel.copy().mean('mnum')
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
+pipe_fit_mws_3.params['A'].vary = True
+
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
 
 da_fit_norm = da_fit/da_fit.mws._pulse_max()
@@ -72,12 +74,13 @@ da_fit_norm = da_fit/da_fit.mws._pulse_max()
 
 #%%
 
-ds_p
-#%%
-
 ds_mws_fit.to_array('var').plot(x='time', row='run', hue='var')
 
 plt.yscale('log')
+
+#%%
+
+ds_p['A']
 
 
 #%%
