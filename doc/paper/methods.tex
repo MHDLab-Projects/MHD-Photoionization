@@ -45,52 +45,26 @@ Another limitation of the AES diagnostic is that it must be calibrated to the sp
 
 \subsubsection{Microwave scattering}
 
-To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[] (refs use IQ terminology). The instrument uses a 90 Ghz Gunn microwave source, IQ mixer, (TODO: finish). The propagation of the radiation through space is not well characterized, so the system measures relative changes instead of absolute transmission. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. 
-
-The measurements and processing of the system are shown in the SI. The IQ mixer is connected to a Lecroy oscilloscope and the in phase (I) and quadrature (Q) signals are recorded with each laser pulse and The magnitude ($U(t)$) of the transmitted microwaves is calculated with the following equation. 
+To probe the free electron density, we developed a MWS diagnostic to probe the free electron density and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[]  We describe the system in detail in the supporting information. Briefly, 90 GHz microwaves are transmitted through the seeded HVOF torch and the transmitted power is measured with a IQ mixer. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns. The UV pulse is created with a GAM Excimer laser with 10ns pulse. The laser power is varied with a Thorlabs filter wheel and UV enhanced reflective neutral density filters. The IQ mixer measures the in phase (I) and quadrature (Q) components of the transmitted microwave power. The IQ mixer combines the collected signal with the original microwave signal to measure the in phase (I) and quadrature (Q), or 90 degrees out of phase, components of the transmitted microwave power. Utilizing an IQ mixer allows us to enhance the sensitivity of the measurement by isolating the frequency of the microwave source, and to isolate changes in transmitted power from phase shifts. The magnitude, $U [V]$ of the transmitted microwaves is calculated through.
 
 \begin{equation}
     U(t) = \sqrt{I(t)^2 + Q(t)^2}
 \end{equation}
 
-We calculate the transmission, ($T(t)$), by normalizing by the measured transmission in the absence of a free jet taken before or after the experiment, $U_0$. 
+We calculate the transmission, ($T(t)$), by normalizing by the measured transmission in the absence of a free jet taken before or after the experiment, $U_{nothing}$. 
 
 \begin{equation}
-    T(t) = \frac{U(t)}{U_{0}}
+    T(t) = \frac{U(t)}{U_{nothing}}
 \end{equation}
 
-Finally, we calculate the combined absorption and scattering, $AS$, by
+We do not attempt to distinguish between absorbed and scattered microwaves and define a quantity, $AS(t) = 1- T(t)$, which is the combined absorption and scattering. We are interested in the change in $AS(t)$ in response to the laser pulse, $\Delta AS(t)$. In terms of the transmission, $\Delta AS(t)$ is given by
 
 \begin{equation}
-    AS(t) = T_{PP} - T(t)
+    \Delta AS(t) = T_{PP} - T(t)
 \end{equation}
 
-Where $T_{PP}$ is the average transmission in the 1 $\mu s$ time window before the laser pulse.
+Where $T_{PP}$ is the average transmission in a 1-2 $\mu s$ time window before the laser pulse. This processing of the MWS signal with an example date, measurements of $U_{nothing}$, and measurements with a Silicon test sample, are shown in the SI. The fitting of the MWS signal is described in the results section. 
 
-% Figure \ref{fig:diagnostic_processing}B shows the time profile of the AS signal at the main condition (536 goldi) on a logarithmic scale. In general, we observe a region of changing slope within the first few $\mu s$ after the laser pulse, followed by an exponential decay. After approximately 20-30 $\mu s$, the AS signal becomes dominated by background fluctuations (discussed in results section), therefore data is only fitted before this time (time is variable based on condition). 
-
-We fit the $AS (t)$ profile with a kinetic model of the electron recombination process. We first normalize $AS (t)$ by its maximum value at the laser pulse, defining $AS_{norm} = AS(t)/max(AS(t))$. We assume that $AS_{norm}(t) \propto \Delta n_e (t)$, where $\Delta n_e (t)$ is the time dependent change in the free electron density from the steady state concentration. 
-
-We fit $AS_{norm}$ by solving the following differential equation: 
-
-\begin{equation}
-    \label{eq:fit_eq}
-    \frac{d\Delta n_e (t)}{dt} = - k_{r, m, eff} \Delta n_e (t) - k_{r, bm, K+}\Delta{n_e (t)}^2
-\end{equation}
-
-where $k_{r, m, eff} [1/s]$ is an effective monomolecular recombination rate coefficient, and $k_{r, bm, K+} [cm^3/particle/s]$ is the bimolecular recombination rate coefficient for capture by K+. $k_{r, m, eff}$ arises from electron capture from a variety of species. The derivation of this equation is shown in the SI.
-
-In the fitting process, the differential equation is numerically solved and the solution is normalized to have the have the same form as $AS_{norm}$. This solution is performed iteratively in a least squares optimization with the free fit parameters being $k_{r,m,X}$ and $\Delta{n_e,0}$, where $\Delta{n_e,0}$ is the initial excited electron density. for $k_{r, bm, K+}$ we use the value obtained by Kelley and Padley 1973 (TODO).
-
-% Figure \ref{fig:diagnostic_processing}B shows a fit of the AS signal at the main condition (536 goldi). In this plot, $AS_{norm}$ and fit have been converted to $\Delta n_e (t)$ by multiplying by $\Delta{n_e,0}$. 
-
-Immediately after the laser pulse, there is a region of of changing slope in the logarithm of the $\Delta n_e (t)$ profile. This region arises for high $\Delta n_e$ when the second term in equation \ref{eq:fit_eq} dominates.  For small $\Delta n_e$, the second term can be neglected and the solution is an exponential decay. The time constant of the exponential decay for capture with species X, $\tau$, is given by
-
-\begin{equation}
-    k_{r, m, X} = \frac{1}{\tau} = k_{r, b, X}n_{X,0}
-\end{equation}
-
-Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium species concentration of X. The use of the equilibrium value arises from the assumption that X does not change with the perturbation of the laser.
 
 \subsubsection{Absorption spectroscopy}
 

@@ -2,16 +2,65 @@
 
 \subsection{Microwave Scattering}
 
-The microwave scattering setup is shown in \ref{fig:SI_MWS_Setup_Silicon}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a horn (TODO) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
-
-The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy oscilloscope (TODO). The oscilloscope utilized 1 MOhm impedance. (TODO) The oscilloscope is triggered from the excimer laser. 
-
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_Setup.png}
 \caption{Microwave scattering setup.}
 \label{fig:SI_MWS_Setup}
 \end{figure}
+
+The microwave scattering setup is shown in \ref{fig:SI_MWS_Setup_Silicon}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a horn (TODO) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
+
+The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy oscilloscope (TODO). The oscilloscope utilized 1 MOhm impedance. (TODO) The oscilloscope is triggered from the excimer laser. 
+
+On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
+
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_time_trace_2023-05-18.png}
+\caption{Time trace from 2023-05-18 of the transmission measurement without any free jet.}
+\label{fig:SI_MWS_nothing_time_trace}
+\end{figure}
+
+On 2023-05-24 the transmission was measured as a function of position as shown in \ref{fig:SI_MWS_nothing_motor}. There is a slight increase in transmission when the stage is moved as close as possible to the barrel exit, possibly due to reflections from the barrel.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_motor_2023-05-24.png}
+\caption{Motorized stage for position dependent transmission measurements.}
+\label{fig:SI_MWS_nothing_motor}
+\end{figure}
+
+
+The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWS_nothing_T0}A. Note that for 2023-05-12, the measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from figure \ref{fig:SI_MWS_nothing_motor}.
+
+\ref{fig:SI_MWS_nothing_T0}B shows the absolute transmission of the magnitude before the laser pulse for the case 536\_pos, for different dates. The transmission is then measured with the sample in place. The transmission is then calculated as the ratio of the sample transmission to the transmission with nothing in place. An example of this is shown in \ref{fig:SI_MWS_nothing_T0}.  
+
+
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/mws_nothing_T0.png}
+\caption{A) Measurement of transmission without any torch, B) position dependent transmission measurement.}
+\label{fig:SI_MWS_nothing_T0}
+\end{figure}
+
+
+\ref{fig:SI_mws_processing_overview} shows the processing steps for the MWS data. 
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
+\caption{Microwave processing overview}
+\label{fig:SI_mws_processing_overview}
+\end{figure}
+
+
+Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. 
 
 \begin{figure}[]
 \centering
@@ -20,31 +69,8 @@ The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy
 \label{fig:SI_MWS_Silicon}
 \end{figure}
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_T0.png}
-\caption{A) Measurement of transmission without any torch, B) position dependent transmission measurement.}
-\label{fig:SI_MWS}
-\end{figure}
 
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_time_trace_2023-05-18.png}
-\caption{Time trace from 2023-05-18 of the transmission measurement without any free jet.}
-\label{fig:SI_MWS}
-\end{figure}
-
-\ref{fig:SI_mws_processing_overview} shows the processing steps for the MWS data. 
-
-
-
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
-\caption{Microwave processing overview}
-\label{fig:SI_mws_processing_overview}
-\end{figure}
 
 \begin{figure}
 \centering

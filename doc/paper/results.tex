@@ -2,7 +2,7 @@
 
 \section{Results}
 
-\subsection{AES}
+\subsection{Position dependence}
 
 Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. 
 
@@ -12,9 +12,7 @@ Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES sig
     \label{fig:pos_dependence_aes}
 \end{figure}
 
-\subsection{Position dependence and pre-pulse noise}
-
-We begin by motivating choices for nominal conditions for the position of the laser beam and the laser power. Figure \ref{fig:pos_dependence_mws} shows the MWS signal as a function of the position of the laser beam. 
+We now examine the position dependence of the MWS signal in figure \ref{fig:pos_dependence_mws}.  These measurements are used to motivate the choice of position for the Kwt dependence measurements presented in the next section. 
 
 We observe that near the exit of the torch there is a significant fluctuation in the MWS signal in the absence of a laser pulse. The temperature at the exit of the torch is sufficiently high for thermally induced conductivity. Variations in the flow or potassium distribution could cause these time dependent fluctuations. We provide some analysis of these background fluctuations in the SI (TODO).
 
@@ -39,15 +37,44 @@ Together the position (Figure \ref{fig:pos_dependence_mws}) and the power depend
 
 \subsection{K dependence}
 
-Figure \ref{fig:kwt_dependence} shows results with the mobile setup positioned at 178 mm and full laser power. 
+Figure \ref{fig:kwt_ionization} shows results with the mobile setup positioned at 178 mm and full laser power. 
 
-We calculate expected decay constants for electron capture by various species in \ref{fig:kwt_dependence}C to compare to the experimental decay constant is calculated by fitting the AS signal to an exponential decay. We have searched for data on reaction kinetics that are compatible with first-order recombination of electrons, e.g.
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig5_Kwt_Ionization.png} 
+    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
+    \label{fig:kwt_ionization}
+\end{figure}
+
+
+
+Figure \ref{fig:kwt_recombination} shows analysis of the $\Delta AS$ decay measurmeents.  Figure \ref{fig:kwt_recombination}A shows the $\Delta AS$ time profile for a range of K mass fraction. Immediately after the laser pulse, there is a region of of changing slope in the logarithm of the $\Delta AS (t)$ profile. After a few microseconds, the profile becomes an exponential decay. Assuming, $\Delta AS (t) \propto \Delta n_e (t)$, where $\Delta n_e (t)$ is the time dependent change in the free electron density from the steady state concentration, we derive in the SI a differential equation for the decay of $\Delta n_e (t)$. In the regime where $\Delta n_e (t)$ is small, the equation has the exponential form.  
 
 \begin{equation}
-    \frac{d[e-]}{dt} = - k_r [X][e-]
+    \label{eq:fit_eq}
+    \frac{d\Delta n_e (t)}{dt} = - k_{r, m, eff} \Delta n_e (t) 
 \end{equation}
 
-where $X$ is a species that captures the electron (and does not depend on [e-]). For a bimolecular reaction, the reaction takes the form [X] + [e-] \rightarrow [X-], and $k_r$ is given directly in the literature in units of $cm^3/s$. Some reactions are termolecular and further depend on a collisional partner, M, and are of the form [X] +[e-] + M \rightarrow [X-] + M. in this case $k_r = k_{r,tm} [M]$, where $k_{r,tm}$ is the termolecular recombination rate given in units of $cm^6/s$.  The densities of [M] and [X] are taken from the CFD results at the goldilocks position.
+The time constant of the exponential decay for capture with species X, $\tau$, is given by
+
+\begin{equation}
+    \label{eq:tau_krm}
+    k_{r, m, X} = \frac{1}{\tau} = k_{r, b, X}n_{X,0}
+\end{equation}
+
+Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium species concentration of X, and $k_{r, b, X}$ is the bimolecular recombination rate coefficient for capture by X. The fitted time constants are shown in Figure \ref{fig:kwt_recombination}B.
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig6_Kwt_Recombination.png} 
+    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
+    \label{fig:kwt_recombination}
+\end{figure}
+
+
+
+We calculate expected decay constants for electron capture by various species in \ref{fig:kwt_dependence}C to compare to the experimental decay constant. The expected decay constants are calculated through equation \ref{eq:tau_krm} with $n_{X,0}$ given by the CFD results at the goldilocks position. 
+
+We have searched for data on reaction kinetics that are compatible with first-order recombination of electrons (eq. \ref{eq:fit_eq}). For some reactions and $k_{r,b,X}$ is given directly in the literature in units of $cm^3/s$. Some reactions are termolecular and further depend on a collisional partner, M, and are of the form [X] +[e-] + M \rightarrow [X-] + M. in this case $k_{r,b} = k_{r,tm} [M]$, where $k_{r,tm}$ is the termolecular recombination rate given in units of $cm^6/s$ and [M] is the number density of the collision partner.  The densities of [M] and [X] are taken from the CFD results at the goldilocks position.
 
 We find the following reactions with kinetic data available in the literature(T in K):
 
@@ -67,17 +94,4 @@ In summary there is a large uncertainty in the $k_{r,th}$ for the oxygen capture
 We note that the previously mentioned sources have much better agreement on the OH, H2O, and K capture reactions than the O2 capture reactions. 
 
 
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig5_Kwt_Ionization.png} 
-    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
-    \label{fig:kwt_ionization}
-\end{figure}
-
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig6_Kwt_Recombination.png} 
-    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
-    \label{fig:kwt_recombination}
-\end{figure}
 
