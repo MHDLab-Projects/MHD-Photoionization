@@ -1,0 +1,40 @@
+#%%
+from mhdpy.analysis.standard_import import *
+from mhdpy.fileio.spe import spe2ds_img, _get_gatedelays, spe2ds_spect
+from tqdm import tqdm
+from collections import defaultdict
+
+create_standard_folders()
+# %%
+
+
+folder = r'Z:\HVOF Booth\H\2018-11-20\PIMAX_2'
+
+fns = os.listdir(folder)
+
+dss = []
+
+for fn in fns:
+
+    fp = pjoin(folder, fn)
+
+    ds = spe2ds_img(fp)
+
+    dss.append(ds)
+
+ds = xr.concat(dss, 'estime')
+ds = ds.sortby('estime')
+
+#%%
+
+# A couple times in here from 2018-12-04? Just dropping. 
+tw = slice(Timestamp('2018-11-19'),Timestamp('2018-11-22'))
+ds = ds.sel(estime=tw)
+
+
+#%%
+
+ds.to_netcdf(pjoin('output', 'ds_beam_timing.cdf'))
+
+
+# %%
