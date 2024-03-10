@@ -13,6 +13,7 @@ da.mean('estime').mean('gatedelay').plot()
 # %%
 
 da_time = da.mean('x').mean('y')
+# da_time = da.max('x').max('y')
 
 da_time
 

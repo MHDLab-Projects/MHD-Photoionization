@@ -290,14 +290,44 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
 
 #%%
 
+fp_laser_profile = pjoin(REPO_DIR, 'experiment', 'notebook', '2018-11-20', 'output', 'laser_profile_1.csv')
+
+
+df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
+
+df_laser_profile.plot()
+
+#%%
+
 plt.figure(figsize=(3,1.5))
 
-da_sel2.mean(['x', 'y']).plot(marker='o')
+ln_cam = da_sel2.mean(['x', 'y']).plot(marker='o')
 
-plt.ylabel('Counts')
+laser_timeshift = 30
+ax = plt.gca()
+ta = plt.twinx()
+
+
+df_laser_profile_shift = df_laser_profile.copy()
+df_laser_profile_shift.index = df_laser_profile_shift.index + laser_timeshift
+df_laser_profile_shift.plot(ax=ta, color='r')
+ln_laser = ta.get_lines()
+
+ta.get_legend().remove()
+
+lns = ln_cam + ln_laser
+labs = ['Top Cam', 'Laser Profile']
+ax.legend(lns, labs, loc=0)
+
 plt.xlabel('Gate Delay (ns)')
+ax.set_ylabel('Counts (ICCD)')
+ta.set_ylabel('Counts \n(Laser Profile)')
+
+plt.xlim(780,830)
 
 plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_timedecay.png'))
 
+# ax.set_yscale('log')
+# ta.set_yscale('log')
 
 # %%

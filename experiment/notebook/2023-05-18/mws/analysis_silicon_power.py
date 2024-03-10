@@ -144,6 +144,8 @@ ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
 
 #%%
 
+plt.figure(figsize=(4,2))
+
 ds_mws_fit[['AS_all','AS_fit']].to_array('var').plot(hue='var')
 
 plt.yscale('log')
@@ -156,11 +158,11 @@ decay_str = f'$\\tau = {ds_p.decay.values:.2f} \\mu s$'
 # plt.text(100, 1, decay_str, fontsize=12)
 # text centered at top of plot
 
-plt.text(100, 0.5, decay_str, fontsize=14, ha='center', va='bottom')
+plt.text(130, 0.2, decay_str, fontsize=14, ha='center', va='bottom')
 
 plt.title('')
 
-plt.legend(['Data','Fit'])
+plt.legend(['Data','Fit'], loc='lower left')
 
 plt.ylabel('AS')
 
