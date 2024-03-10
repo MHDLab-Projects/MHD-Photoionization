@@ -49,8 +49,10 @@ recombination process
 
 - [] collect diagnostic information
  - [] oscilliscope settings time information
-  - [] try taking off coarsening
+  - [x] try taking off coarsening
 
 - [] add standard plots for all three sequences to SI
     - [] fit parameters (nK, tau, ne_0)
     - [] raw 
+
+- [] Input properties table. 

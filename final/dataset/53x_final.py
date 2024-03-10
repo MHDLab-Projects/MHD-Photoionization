@@ -123,7 +123,7 @@ da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
 
 
 # ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us')))
+ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy)
 ds_p_mws['decay'] = 1/ds_p_mws['krm']
 
 ds_p_dnedt = ds_p_mws.copy()
@@ -155,7 +155,7 @@ from mhdpy.analysis.mws.fitting import pipe_fit_exp
 ds_fit = ds_lecroy
 da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
 
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
 
 ds_p_exp = ds_p_mws.copy()
 

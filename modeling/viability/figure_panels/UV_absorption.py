@@ -75,7 +75,7 @@ f_species = xr.merge(das)
 
 # %%
 
-fig, axes = plt.subplots(3,1, figsize = (5,8), sharex = True)
+fig, axes = plt.subplots(3,1, figsize = (4,6), sharex = True)
 
 ds_sel = gas_lam.sel(P = 1e5,  Kwt = 0.01, method = 'nearest')
 
@@ -83,14 +83,18 @@ lns = ds_sel['tot'].plot(hue = 'wl', yscale = 'log', ax  = axes[0])
 # axes[0].get_legend().set_bbox_to_anchor((1.1, 1.05))
 axes[0].get_legend().remove()
 # axes[0].set_prop_cycle(None)
-lns = ds_sel['K'].plot(hue = 'wl', yscale = 'log', ax  = axes[1])
+lns = ds_sel['KOH'].plot(hue = 'wl', yscale = 'log', ax  = axes[1])
 # axes[1].get_legend().remove()
 
-lns = f_species['F_K'].sel(P = 1e5,  Kwt = 0.01, method = 'nearest').plot(hue = 'wl', yscale = 'log', ax=axes[2])
+axes[1].get_legend().set_bbox_to_anchor((1.1, 1.05))
+
+lns = f_species['F_KOH'].sel(P = 1e5,  Kwt = 0.01, method = 'nearest').plot(hue = 'wl', yscale = 'log', ax=axes[2])
 axes[2].get_legend().remove()
+axes[2].set_ylabel('$f_{KOH}$')
 # lns[0].axes.get_legend().set_bbox_to_anchor((1.1, 1.05))
 # fig.tight_layout()
 
 for ax in axes:
     ax.set_title('')
 plt.savefig('output/atten_length.png')
+# %%

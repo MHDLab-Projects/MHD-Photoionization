@@ -92,18 +92,15 @@ def test_pipe_fit_mws_1_avgafter(ds_mws):
     assert 'AS_fit' in ds_mws_fit
 
 
+def test_pipe_fit_mws_2(ds_mws_all_mnum):
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'].mean('mnum'))
 
-def test_pipe_fit_mws_1_nolog(ds_mws):
 
+def test_pipe_fit_mws_3(ds_mws):
     ds_mws = ds_mws.mean('mnum') 
     ds_mws = ds_mws.mws.calc_mag_phase_AS()
 
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'], take_log=False)
-
-    # TODO: values are different from take_log=True. Need to investigate why.
-
-def test_pipe_fit_mws_2(ds_mws_all_mnum):
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'], take_log=False, method='global')
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_3(ds_mws['AS'])
 
 # from mhdpy.analysis.mws.fitting import gen_model_dnedt
 # from mhdpy.xr_utils import fit_da_lmfit_global

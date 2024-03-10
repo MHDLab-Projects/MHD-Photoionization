@@ -19,12 +19,12 @@ ds['mag'].mean('acq_time').plot()
 
 tc = '536_pos'
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, norm_mag=True)
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_nothing = ppu.fileio.load_mws_T0()
 
 # %%
 
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
+da_sel = ds_lecroy['mag_pp']
 
 # da_sel.plot(hue='run_plot', x='motor', marker='o')
 
@@ -32,7 +32,7 @@ norm = da_sel.sel(motor=slice(200,300)).mean('motor')
 
 #%%
 
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+da_sel = ds_lecroy['mag'].sel(motor=[50,100,150,180,225], method='nearest')
 
 da_sel = da_sel/norm
 
@@ -42,7 +42,7 @@ da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
 
 #%%
 
-mag_pp = ds_lecroy['mag_pp'].mean('mnum').dropna('run','all')
+mag_pp = ds_lecroy['mag_pp'].dropna('run','all')
 
 mag_pp.plot(hue='run_plot', x='motor')
 
@@ -62,17 +62,20 @@ da_nothing.to_series().plot(ax=axes[0], marker='o')
 
 axes[0].set_title('T No Torch')
 
-plt.ylabel("$U_{Nothing} (V)$")
+axes[0].set_ylabel("$U_{Nothing} (V)$")
 plt.xlabel("Date")
 
-da_sel = ds_lecroy['mag_pp'].mean('mnum')
+da_sel = ds_lecroy['mag_pp']
 da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
-da_sel.plot(hue='run_plot', x='motor', marker='o', ax=axes[1])
+g = da_sel.plot(hue='run_plot', x='motor', marker='o', ax=axes[1])
 
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+dropna(g)
+
+da_sel = ds_lecroy['mag'].sel(motor=[50,100,150,180,225], method='nearest')
 da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
 
-axes[1].set_title('$U/U_{Nothing}$')
+axes[1].set_title('$T_{abs} = U/U_{Nothing}$')
+axes[1].set_ylabel('$T_{abs}$')
 axes[1].set_xlabel("Motor Position (mm)")
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_T0.png'))

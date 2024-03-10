@@ -26,8 +26,8 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general, get_region
 
-
-df_cuttimes = load_df_cuttimes('cuttimes_phi_full.csv')
+fp_cuttimes_phi = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
+df_cuttimes = load_df_cuttimes(fp_cuttimes_phi)
 
 cuttimes = extract_cuttime_list(df_cuttimes)
 
@@ -44,7 +44,7 @@ cuttimes = cuttimes_new
 
 #%%
 
-#TODO: simplify this in mhdpy
+#%%
 
 da_ct = gen_da_ct_data(cuttimes, dim_dict={
     'phi': {'data': dsst['hvof']['CC_equivalenceRatio']},
@@ -90,7 +90,9 @@ da_ht = assign_tc_general(ds['CC_heatTransfer'].dropna('time'), da_ct)
 da_ht_mean = da_ht.mean('time').pint.dequantify()
 da_ht_std = da_ht.std('time').pint.dequantify()
 
-da_ht_mean.plot(hue='kwt', marker='o')
+g = da_ht_mean.plot(hue='kwt', marker='o')
+
+#%%
 
 #%%
 

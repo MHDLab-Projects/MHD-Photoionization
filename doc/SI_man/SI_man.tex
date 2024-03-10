@@ -19,6 +19,17 @@
 \usepackage{csvsimple} 
 \usepackage{markdown}
 \usepackage{hyperref}
+\usepackage{xcolor} 
+\usepackage{outlines}
+\usepackage{xr}
+\usepackage{float} 
+\usepackage{pgffor}
+
+\usepackage[a4paper, margin=1in]{geometry}
+
+% Night mode 
+% \pagecolor[rgb]{0,0,0} %black 
+% \color{white}
 
 \title{Supplementary Information for MHD Photoionization}
 
@@ -26,6 +37,7 @@
 
 \usepackage[backend=biber]{biblatex}
 \addbibresource{\repodir/doc/paper/resources/MHD.bib}
+
 
 \setlength{\parskip}{1em}
 
@@ -35,10 +47,10 @@
 
 \tableofcontents
 
-\include{results}
+\include{methods}
 
 \clearpage
-\include{diagnostic}
+\include{results}
 
 \clearpage
 

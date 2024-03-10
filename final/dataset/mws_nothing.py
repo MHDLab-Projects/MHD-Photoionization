@@ -66,6 +66,9 @@ ds['mag'].mean('acq_time').plot(ax=axes[0])
 ds['mag'].mean('acq_time').plot(ax=axes[1])
 axes[1].set_xlim(0,2)
 
+for ax in axes:
+    ax.set_ylabel("$U_{nothing} (V)$")
+
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_time_trace_2023-05-18.png'))
 
 
@@ -148,9 +151,9 @@ ds_sel = ds_2.unstack('temp').sel(date='2023-05-24').dropna('tc', how='all')
 
 ds_sel
 
-ds_sel.mean('mnum')['mag'].plot(hue='tc', marker='o')
+ds_sel.mean('mnum').mean('tc')['mag'].plot(marker='o')
 
-plt.ylabel("U (V)")
+plt.ylabel("$U_{nothing} (V)$")
 plt.xlabel("Stage Postion (mm)")
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_nothing_motor_2023-05-24.png'))

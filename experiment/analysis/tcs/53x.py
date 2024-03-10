@@ -14,6 +14,11 @@ from mhdpy.xr_utils import WeightedMeanAccessor
 from mhdpy.analysis import absem
 from mhdpy.coords.ct import downselect_acq_time
 
+from mhdpy.fileio.ct import load_df_cuttimes
+
+fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
+df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
+
 #%%[markdown]
 
 # # Absem
@@ -24,10 +29,7 @@ ds_absem = ppu.fileio.load_absem('53x')
 
 #%%
 
-from mhdpy.fileio.ct import load_df_cuttimes
 
-fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
-df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
@@ -105,6 +107,10 @@ da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
 #%%
 
+ds_lecroy
+
+#%%
+
 g = da_fit.plot(hue='run_plot', row='kwt', x='time')
 
 plt.yscale('log')
@@ -119,7 +125,7 @@ dropna(g)
 
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%
 
@@ -150,7 +156,7 @@ ds_cfd['Yeq_K+'].plot()
 
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')
 ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf')).sel({'phi': 0.7})
-kr = ds_TP_params['kr']
+kr = ds_TP_params['krb']
 kr = kr.pint.quantify('ml/particle/s').pint.to('um^3/us')
 kr_sel = kr.sel(P=1e5, method='nearest').sel(T=[1525, 1750, 1975])
 

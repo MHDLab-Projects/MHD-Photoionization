@@ -12,7 +12,27 @@ fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 dst_coords
+
+#%%
+
+
+df = pd.read_csv(pjoin('output', 'heatFlux_last.csv'))
+
+s = df.set_index(['phi', 'Y_K'])['inner_total']
+
+da_cfd = xr.DataArray(s).unstack('dim_0')
+da_cfd = da_cfd*(-1)
+da_cfd = da_cfd.rename(Y_K='kwt')
+da_cfd.coords['kwt'] = da_cfd.coords['kwt']*100
+
+da_cfd.plot(hue='kwt')
+
 # %%
+# %%[markdown]
+
+# # Seed Ramp
+
+#%%
 
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
@@ -38,7 +58,11 @@ ht = unstack_multindexed_acq_dim(ht)
 
 #%%
 
-ht['CC_heatTransfer'].mean('mnum').plot(marker='o')
+ht['CC_heatTransfer'].mean('mnum').plot(marker='o', label='expt')
+
+da_cfd.sel(phi=0.8).plot(label='cfd', marker='o')
+
+plt.legend()
 
 #%%
 
@@ -48,3 +72,56 @@ mean = ht['CC_heatTransfer'].mean('mnum')
 std = ht['CC_heatTransfer'].std('mnum')
 
 xr_errorbar(mean, std)
+# %%[markdown]
+
+# # Equivalence Ratio
+
+
+#%%
+fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
+df_cuttimes = load_df_cuttimes(fp_cuttimes).sort_values('Start Time').reset_index(drop=True)
+df_cuttimes = df_cuttimes.set_index('Event')
+
+df_cuttimes['date'] = df_cuttimes['Start Time'].dt.date
+# %%
+hts = []
+
+for idx, row in df_cuttimes.iterrows():
+    timeslice = slice(row['Start Time'], row['Stop Time'])
+
+    ht = dsst['calorimetry']['CC_heatTransfer'].sel(time=timeslice)
+    ht = assign_signal(ht, dst_coords['phi'].round(2), timeindex='time')
+    ht = assign_signal(ht, dst_coords['kwt'].round(1), timeindex='time')
+
+    hts.append(ht)
+
+ht = xr.concat(hts, dim='time')
+
+ht = unstack_multindexed_acq_dim(ht)
+
+ht = ht['CC_heatTransfer']
+#%%
+
+ht.mean('mnum').plot(hue='kwt', marker='o')
+
+#%%
+
+mean = ht.mean('mnum')
+std = ht.std('mnum')
+
+xr_errorbar(mean, std, huedim='kwt')
+
+
+
+#%%
+
+fig, axes = plt.subplots(1, 2, figsize=(10,5), sharey=True)
+
+ht.mean('mnum').plot(hue='kwt', marker='o', ax=axes[0])
+axes[0].set_title('Experiment')
+da_cfd.plot(hue='kwt', ax=axes[1])
+axes[1].set_title('CFD')
+
+
+
+# %%
