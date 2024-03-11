@@ -33,11 +33,11 @@ import numpy as np
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
 ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
-alpha = ds_NE['alpha']
+gamma = ds_NE['gamma']
 
 # Add enhancement factor
 da_dsigma_tot = xr.load_dataset(os.path.join(PI_modeling_dataset_dir,'da_dsigma_tot.cdf'))['enhancement factor']
-alpha = alpha*da_dsigma_tot
+gamma = gamma*da_dsigma_tot
 
 # %%
 
@@ -48,15 +48,15 @@ plt.figure(figsize=(5,3))
 combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
-alpha_sel = alpha.sel(combo_sel)
-g = alpha_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', cmap=cmap)
+gamma_sel = gamma.sel(combo_sel)
+g = gamma_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', cmap=cmap)
 
 
 #%%
 
 norm = colors.LogNorm(vmin=0.001, vmax=1000)
 
-g = (alpha_sel).plot(xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm)
 
 ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
 
@@ -71,7 +71,7 @@ norm=colors.SymLogNorm(linthresh=0.03, linscale=0.03,
 
 # Set the colorbar label
 
-g = (alpha_sel - 1).plot(xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel - 1).plot(xscale='log', cmap=cmap, norm=norm)
 
 #%%
 
@@ -102,7 +102,7 @@ class CustomNorm(colors.Normalize):
 
 norm = CustomNorm(vmin=0.01, midpoint=1, vmax=1000)
 
-g = (alpha_sel).plot(xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm)
 
 
 g.colorbar.ax.yaxis.set_minor_locator(NullLocator())
@@ -139,7 +139,7 @@ class CustomNorm(colors.Normalize):
 
 norm = CustomNorm(vmin=0.1, midpoint=1, vmax=100)
 
-g = (alpha_sel).plot(xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm)
 
 #%%
 
@@ -168,10 +168,10 @@ cmap = colors.ListedColormap(plt.cm.RdBu(np.linspace(0, 1, 256)))
 norm = CustomNorm(vmin=0, midpoint=1, vmax=100)
 
 # Plot the data with the custom colormap and normalizer
-g = (alpha_sel).plot(vmin=0, vmax=100, xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel).plot(vmin=0, vmax=100, xscale='log', cmap=cmap, norm=norm)
 
 # Set the colorbar label
-g.colorbar.set_label('$\\alpha - 1$')
+g.colorbar.set_label('$\\gamma - 1$')
 
 # Plot the green line
 ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
@@ -186,7 +186,7 @@ plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
 
 # Save the figure
-plt.savefig('output/alpha_curve_demo.png')
+plt.savefig('output/gamma_curve_demo.png')
 
 
 #%%

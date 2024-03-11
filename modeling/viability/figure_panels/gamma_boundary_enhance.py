@@ -35,10 +35,10 @@ ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 # %%
 
 ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
-alpha = ds_NE['alpha']
+gamma = ds_NE['gamma']
 
 da_dsigma_tot = xr.load_dataset(os.path.join(PI_modeling_dataset_dir, 'da_dsigma_tot.cdf'))['enhancement factor']
-alpha = alpha*da_dsigma_tot
+gamma = gamma*da_dsigma_tot
 
 
 

@@ -1,7 +1,7 @@
 # %% [markdown]
-# # Alpha = 1 Curve Methods
+# # gamma = 1 Curve Methods
 # 
-# Exploring methods of finding smooth curves where alpha = 1
+# Exploring methods of finding smooth curves where gamma = 1
 # 
 
 # %%
@@ -53,10 +53,10 @@ mue_cant = ds_TP_params['mobility']*10000
 u=1e5
 B=5e-4
 
-alpha = noneq.calc_alpha(ne, mue_cant, krb, u, B, eta) #Why does eta need to be specified here as well...o
+gamma = noneq.calc_gamma(ne, mue_cant, krb, u, B, eta) #Why does eta need to be specified here as well...o
 
-beta = alpha -1 
-beta = beta.sel(P_in=alpha.coords['P_in'][::4])
+beta = gamma -1 
+beta = beta.sel(P_in=gamma.coords['P_in'][::4])
 
 # %%
 
@@ -97,7 +97,7 @@ beta_sel.plot(vmin=-1,vmax=1,xscale='log', cmap=cmap)
 # %% [markdown]
 # # Linear interpolation
 # 
-# For each temperature, we linearly interpolate the pressure at which alpha is zero. This gives a smooth curve.
+# For each temperature, we linearly interpolate the pressure at which gamma is zero. This gives a smooth curve.
 
 # %%
 

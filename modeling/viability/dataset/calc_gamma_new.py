@@ -1,5 +1,5 @@
 
-"""Calculate curves for alpha =1 with linear interpolation of each pressure vs temperature curve"""
+"""Calculate curves for gamma =1 with linear interpolation of each pressure vs temperature curve"""
 # %%
 import os
 import numpy as np
@@ -170,10 +170,10 @@ da_dsigma_tot.attrs = {}
 
 da_dsigma_tot.to_netcdf('output/da_dsigma_tot.cdf')
 
-# alpha_bl = ds_NE['alpha']*da_dsigma_tot
+# gamma_bl = ds_NE['gamma']*da_dsigma_tot
 
-# alpha_bl.name = 'alpha_bl'
-# alpha_bl.to_netcdf('output/alpha_bl.cdf')
+# gamma_bl.name = 'gamma_bl'
+# gamma_bl.to_netcdf('output/gamma_bl.cdf')
 
 
 

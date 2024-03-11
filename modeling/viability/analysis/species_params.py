@@ -30,7 +30,7 @@ ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'
 
 ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
-# alpha = xr.open_dataset(os.path.join(PI_modeling_dataset_dir,'alpha_bl.cdf')).squeeze()['alpha_bl']
+# gamma = xr.open_dataset(os.path.join(PI_modeling_dataset_dir,'gamma_bl.cdf')).squeeze()['gamma_bl']
 ds_NE_Kp = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE_Kp.cdf')).squeeze()
 ds_NE_O2 = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE_O2.cdf')).squeeze()
 

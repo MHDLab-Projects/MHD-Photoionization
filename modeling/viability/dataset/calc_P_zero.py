@@ -1,4 +1,4 @@
-"""Calculate curves for alpha =1 with linear interpolation of each pressure vs temperature curve"""
+"""Calculate curves for gamma =1 with linear interpolation of each pressure vs temperature curve"""
 # %%
 import os
 import numpy as np
@@ -17,16 +17,16 @@ ds_TP_params = xr.open_dataset(os.path.join(canterapath, 'ds_TP_params.cdf'))#.s
 ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho.cdf'))#.sel({'phi': 0.7, 'Kwt': 0.001})
 
 ds_NE = xr.open_dataset('output/ds_NE.cdf').squeeze()
-alpha = ds_NE['alpha']
+gamma = ds_NE['gamma']
 
 # Add enhancement factor
 da_dsigma_tot = xr.load_dataset('output/da_dsigma_tot.cdf')['enhancement factor']
-alpha = alpha*da_dsigma_tot
+gamma = gamma*da_dsigma_tot
 
-# alpha.sel(Kwt=0.1, phi=1, analysis='PI_Bhall', P_in=0, T=1.6e3).plot()
+# gamma.sel(Kwt=0.1, phi=1, analysis='PI_Bhall', P_in=0, T=1.6e3).plot()
 
-beta = alpha -1 
-# beta = beta.sel(P_in=alpha.coords['P_in'][::4])
+beta = gamma -1 
+# beta = beta.sel(P_in=gamma.coords['P_in'][::4])
 
 # # beta = beta.sel(Kwt=0.01, phi=0.8, analysis='perf_Bconst')
 # beta = beta.sel(Kwt=0.01, phi=0.8)
