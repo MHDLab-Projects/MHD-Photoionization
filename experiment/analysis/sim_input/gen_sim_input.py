@@ -48,7 +48,7 @@ df_sequence_tw = load_df_cuttimes(fp_sequence_tw)
 df_sequence_tw['tc'] = df_sequence_tw['Event'].str.extract(r'(.*)_\d$')
 df_sequence_tw['run_num'] = df_sequence_tw['Event'].str.extract(r'.*_(\d)$').astype(int)
 
-df_sequence_tw = df_sequence_tw.where(df_sequence_tw['tc'] == '53x').dropna()
+df_sequence_tw = df_sequence_tw.where(df_sequence_tw['tc'].isin(['53x', '516_pos'])).dropna()
 
 # Experiment timewindows
 
@@ -66,9 +66,24 @@ df_cuttimes
 
 #%%
 
+# Manually add 516 pos 1 from df_sequence_tw to df_cuttimes. Add as the final row in df_cuttimes
+
+df_516_pos1 = df_sequence_tw[df_sequence_tw['tc'] == '516_pos'].iloc[0]
+df_516_pos1
+
+df_516_pos1 = df_516_pos1.to_frame().T
+df_516_pos1['Event'] = '516_pos1'
+
+df_cuttimes.loc[len(df_cuttimes)] = df_516_pos1.iloc[0]
+
+# df_cuttimes = df_cuttimes
+
+#%%
+
 "Form the test case names"
 
 kwts = []
+phis = []
 
 for idx, row in df_cuttimes.iterrows():
     timeslice = slice(row['Start Time'], row['Stop Time'])
@@ -81,13 +96,26 @@ for idx, row in df_cuttimes.iterrows():
 
     kwts.append(val)
 
+    da = dst_coords.sel(time=timeslice)['phi'].dropna('time')
+    val_list = list(set(da.values))
+
+    assert len(val_list) == 1, f'Not all values are the same for {idx}'
+
+    val = round(val_list[0]*1, 2)
+
+    phis.append(val)
+
+
+
+
 df_cuttimes['kwt'] = kwts
+df_cuttimes['phi'] = phis
 
 # groupby kwt and date columns and add a measurement number column
 
-df_cuttimes['mnum'] = df_cuttimes.groupby(['kwt', 'date']).cumcount()+1
+df_cuttimes['mnum'] = df_cuttimes.groupby(['kwt', 'phi', 'date']).cumcount()+1
 df_cuttimes['repeat'] = df_cuttimes['date'].astype(str) + '_' + df_cuttimes['mnum'].astype(str)
-df_cuttimes['tc'] = df_cuttimes['kwt'].astype(str) + '_' + df_cuttimes['repeat'].astype(str)
+df_cuttimes['tc'] = df_cuttimes['kwt'].astype(str) + '_' + df_cuttimes['phi'].astype(str) + '_' + df_cuttimes['repeat'].astype(str)
 
 
 #TODO: can we have kwt as it's own multindex level? Mainly for display in output
@@ -285,7 +313,18 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_all.xlsx'), engine='xlsxwrite
     params_table = extract_params(dsst['hvof'])
     params_table.to_excel(writer, sheet_name='Parameters')
 
-    df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
+    # Convert the start and stop time columns to PST 
+
+    df_cuttimes_out = df_cuttimes.copy(deep=True)
+
+    df_cuttimes_out['Start Time'] = df_cuttimes_out['Start Time'].dt.tz_localize('UTC').dt.tz_convert('America/Los_Angeles').dt.tz_localize(None)
+    df_cuttimes_out['Stop Time'] = df_cuttimes_out['Stop Time'].dt.tz_localize('UTC').dt.tz_convert('America/Los_Angeles').dt.tz_localize(None)
+
+    df_cuttimes_out.to_excel(writer, sheet_name='Experiment Time Windows')
+
+#%%
+    
+df_out
     
 # %%
 
@@ -308,6 +347,7 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
 
             ds_sel = ds.sel(time=timeslice)
             ds_sel = assign_signal(ds_sel, dst_coords['kwt'].round(2), timeindex='time')
+            ds_sel = assign_signal(ds_sel, dst_coords['phi'].round(2), timeindex='time')
 
             dss.append(ds_sel)
 
@@ -324,7 +364,7 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
 
 
         df_out.columns = [df_out.columns, units, long_names]
-        df_out.index.names = ['Statistic', 'Test Case']
+        df_out.index.names = ['Statistic', 'K wt', 'Phi']
         df_out.columns.names = ['Name','Unit','Long Name']
 
         df_out.to_excel(writer, sheet_name=sheet_names[key])
@@ -332,9 +372,3 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
     params_table = extract_params(dsst['hvof'])
     params_table.to_excel(writer, sheet_name='Parameters')
 
-    df_cuttimes.to_excel(writer, sheet_name='Experiment Time Windows')
-
-
-
-
-# %%
