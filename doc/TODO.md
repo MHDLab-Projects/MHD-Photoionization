@@ -1,37 +1,5 @@
 # TODO list 
 
-# Figures 
-
-Fig 1 
-    - [x] torch cross section with CD nozzle 
-    - [x] make jet flare
-    - [x] dimensions on schematic (jet size and goldilocks)
-    - [x] flip C, crop the top a bit. 
-
-Fig 2
-
- - [x] CFD camera compare  and lifetime measurement
- - [] heat balance 
-
-Fig 3 - 
-    Comparison to CFD nK
-    - [x] add absorption measurement and fit
-
-Figure 4
-- [x] 2 positions 
-- [x] remove C and PD
-
-
-Figure 5 
-- [x] fix colors for position confusion
-- [x] ionization process (only and B)
-
-Figrue 6
-recombination process 
-
-- [x] add delta ne0
-
-
 # Immediate
 
 - [] noneq_modeling
@@ -45,9 +13,7 @@ recombination process
 
 - [] fix CFD barrel. Think it has to do with spike. Check beam position. 
 
-- [] move diagnostics to SI?
-
-- [] collect diagnostic information
+- [x] collect diagnostic information
  - [] oscilliscope settings time information
   - [x] try taking off coarsening
 
@@ -55,4 +21,6 @@ recombination process
     - [] fit parameters (nK, tau, ne_0)
     - [] raw 
 
-- [] Input properties table. 
+- [x] Input properties table. 
+
+- [] add phi = 0.6 to simulation input report. 
