@@ -30,13 +30,13 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_specie
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
 ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
-alpha = ds_NE['alpha']
+gamma = ds_NE['gamma']
 
 # Add enhancement factor
 da_dsigma_tot = xr.load_dataset(os.path.join(PI_modeling_dataset_dir,'da_dsigma_tot.cdf'))['enhancement factor']
-alpha = alpha*da_dsigma_tot
+gamma = gamma*da_dsigma_tot
 
-beta = alpha -1 
+beta = gamma -1 
 
 # %%
 
@@ -119,4 +119,4 @@ g = P_zero.plot(hue='l_bk', col='eta', y='T', xscale='log', col_wrap=2)
 for ax in g.axes.flatten():
     ax.plot([1e5], [3000], marker='*', markersize=10)
 
-plt.savefig('output/alpha_curve_analysis_lbk.png')
+plt.savefig('output/gamma_curve_analysis_lbk.png')

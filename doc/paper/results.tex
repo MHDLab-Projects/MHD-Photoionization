@@ -4,11 +4,11 @@
 
 \subsection{Position dependence}
 
-Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. 
+Figure \ref{fig:pos_dependence_aes} shows the position dependence of the AES signal. Figure \ref{fig:pos_dependence_aes}A shows the AES absorption spectra for a range of positions along the free jet, along with fits. 
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig3_Position_AES.png} 
-    \caption{Position dependence of atomic potassium as measured by AES and predicted by CFD. The CFD data is sampled along a line on the torch axis, either directly on the torch axis or offset perpindicular to simulate misalignment in the AES beam. }
+    \caption{AES Measurements: A) AES absorption spectra and fits for a few positions along the free jet. B) Position dependence of atomic potassium as measured by AES and predicted by CFD for 1 \% seed and an equivalence ratio of 0.8. The CFD data is sampled along a line on the torch axis, either directly on the torch axis or offset perpendicular to simulate misalignment in the AES beam. C) The same as B, but for an equivalence ratio of 0.59. }
     \label{fig:pos_dependence_aes}
 \end{figure}
 
@@ -23,7 +23,8 @@ In Figure \ref{fig:pos_dependence_mws}B the we quantify the signal to fluctuatio
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig4_Position_MWS.png} 
-    \caption{Position dependence of the MWS signal. The data are taken for full laser power and 1\% nominal K mass fraction. All error bars are standard deviation across Runs. A) AS profiles taken at 104.8 mm downstream of the barrel exit The hue represents different repeats of the test case sequence, with each line being an average of all oscilloscope acquisitions in a given test case.  B) The AS signal further downstream at the nominal position of 178 mm. C)  The maximum of the AS signal within 1 $\mu s$ of the laser pulse (0 $\mu s$). The change in potassium photodiode with laser pulse is also shown. The photodiode data for the nominal test case was only obtained on 2024-05-24, but comparisons between the AS and PD signals for different equivalence ratios are presented in the SI. D) The ratio of the Max AS and pre-pulse magnitude statistics. For B, C, and D the confidence intervals represent the standard deviation across runs. } 
+    \centering
+    \caption{Position dependence of the MWS signal. The data are taken for full laser power and 1\% nominal K mass fraction. All error bars are standard deviation across Runs. A) AS profiles taken at 105 mm downstream of the barrel exit The hue represents different repeats of the test case sequence, with each line being an average of all oscilloscope acquisitions in a given test case.  B) The AS signal further downstream at the nominal position of 180 mm. The confidence interval represents the standard deviation across runs C)  The maximum of the $\Delta AS$ signal within 1 $\mu s$ of the laser pulse (0 $\mu s$). The change in potassium photodiode with laser pulse is also shown. The photodiode data for the nominal test case was only obtained on 2024-05-24, but comparisons between the AS and PD signals for different equivalence ratios are presented in the SI. D) The ratio of the Max AS and pre-pulse magnitude statistics. For C, and D the error bars represent the standard deviation across runs. } 
     \label{fig:pos_dependence_mws}
 \end{figure}
 
@@ -35,13 +36,13 @@ Together the position (Figure \ref{fig:pos_dependence_mws}) and the power depend
 
 \clearpage
 
-\subsection{K dependence}
+\subsection{Potassium dependence}
 
 Figure \ref{fig:kwt_ionization} shows results with the mobile setup positioned at 178 mm and full laser power. 
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig5_Kwt_Ionization.png} 
-    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
+    \caption{Kwt dependence of Ionization related parameters. Measurements and predictions are for the free jet at the nominal position of 180 mm or exit of the HVOF barrel. measurements are for full laser power as a function of nominal potassium weight percent at 0.8 equivalence ratio. A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the on-peak (K filtered) photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse.  }
     \label{fig:kwt_ionization}
 \end{figure}
 
@@ -66,13 +67,14 @@ Where, $\tau$ is the exponential time constant and $n_{X,0}$ is the equilibrium 
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/output/Fig6_Kwt_Recombination.png} 
-    \caption{Kwt dependence: Measurements and predictions at the goldilocks zone (Goldi) and full laser power as a function of nominal potassium weight percent A) species number density results and CFD predictions. Goldi = Goldilocks. B) MWS AS maximum (within 1 us of laser pulse) and photodiode signal. The photodiode signal is from the K filtered photodiode and is the difference between the maximum of the signal in time and the signal 1 us before the laser pulse. C) Decay time constant. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on collision assisted termolecular recombination rates as discussed in the text. }
+    \centering
+    \caption{Kwt dependence of the MWS decay. A) MWS $\Delta AS$ time profiles for different potassium mass fractions. The black lines are exponential fits. B) Decay time constants associated with equation \ref{eq:tau_krm}. The time constant is measured experimentally through and exponential fit of the AS signal. The CFD predictions are based on the literature rate cosntants and CFD species number densities at the goldilocks position as discussed in the text.  }
     \label{fig:kwt_recombination}
 \end{figure}
 
 
 
-We calculate expected decay constants for electron capture by various species in \ref{fig:kwt_dependence}C to compare to the experimental decay constant. The expected decay constants are calculated through equation \ref{eq:tau_krm} with $n_{X,0}$ given by the CFD results at the goldilocks position. 
+We calculate expected decay constants for electron capture by various species in \ref{fig:kwt_recombination}B to compare to the experimental decay constant. The expected decay constants are calculated through equation \ref{eq:tau_krm} with $n_{X,0}$ given by the CFD results at the goldilocks position. 
 
 We have searched for data on reaction kinetics that are compatible with first-order recombination of electrons (eq. \ref{eq:fit_eq}). For some reactions and $k_{r,b,X}$ is given directly in the literature in units of $cm^3/s$. Some reactions are termolecular and further depend on a collisional partner, M, and are of the form [X] +[e-] + M \rightarrow [X-] + M. in this case $k_{r,b} = k_{r,tm} [M]$, where $k_{r,tm}$ is the termolecular recombination rate given in units of $cm^6/s$ and [M] is the number density of the collision partner.  The densities of [M] and [X] are taken from the CFD results at the goldilocks position.
 
@@ -87,9 +89,9 @@ We find the following reactions with kinetic data available in the literature(T 
 
 For the OH and K capture reactions, we use the number density of the entire flame as the collisional partner. 
 
-For recombination with molecular oxygen, there is significant uncertainty in the rate constant and we consider a few possibilities indicated in the legend of \ref{fig:kwt_dependence}C. Axford 1997 discussed this uncertainty and presented a range of rate constants ultimately deciding on a value of $5e-31 cm^6/s$ for their H2 + O2 + N2 flame, which we consider as '$O2_A$' using the number density of all species as the collisional partner density. In the same discussion they specify the dominant collisional partners of the various literature values of the rate constant, so for '$O2_B$' we preform a sum of species dependent $k_{r,tm}$ with the CFD number densities for each collisional partner to determine an overall $k_r$. The constants presented by Axford 1997 include low temperature measurements, but mention that $k_{r,th}$ is expected to decrease at flame temperatures. Goodings 1979 found a much lower rate constant for similar flames and speculated a large negative temperature coefficient for the oxygen capture reaction. We consider this as '$O2_C$' and use the number density of all species as the collisional partner density. It is not clear why Axford 1997 did not mention the Goodings 1979 result (Hayhurst was on both papers). 
+For recombination with molecular oxygen, there is significant uncertainty in the rate constant and we consider a few possibilities indicated in the legend of \ref{fig:kwt_recombination}C. Axford 1997 discussed this uncertainty and presented a range of rate constants ultimately deciding on a value of $5e-31 cm^6/s$ for their H2 + O2 + N2 flame, which we consider as '$O2_A$' using the number density of all species as the collisional partner density. In the same discussion they specify the dominant collisional partners of the various literature values of the rate constant, so for '$O2_B$' we preform a sum of species dependent $k_{r,tm}$ with the CFD number densities for each collisional partner to determine an overall $k_r$. The constants presented by Axford 1997 include low temperature measurements, but mention that $k_{r,th}$ is expected to decrease at flame temperatures. Goodings 1979 found a much lower rate constant for similar flames and speculated a large negative temperature coefficient for the oxygen capture reaction. We consider this as '$O2_C$' and use the number density of all species as the collisional partner density. It is not clear why Axford 1997 did not mention the Goodings 1979 result (Hayhurst was on both papers). 
 
-In summary there is a large uncertainty in the $k_{r,th}$ for the oxygen capture reaction. We present a range of predictions in \ref{fig:kwt_dependence}C. Our results fall within this large deviation. All other reactions predict decays much longer than the observed expermental decay. 
+In summary there is a large uncertainty in the $k_{r,th}$ for the oxygen capture reaction. We present a range of predictions in \ref{fig:kwt_recombination}C. Our results fall within this large deviation. All other reactions predict decays much longer than the observed experimental decay. 
 
 We note that the previously mentioned sources have much better agreement on the OH, H2O, and K capture reactions than the O2 capture reactions. 
 

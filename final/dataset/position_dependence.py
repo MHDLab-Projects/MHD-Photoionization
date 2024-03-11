@@ -97,10 +97,10 @@ delta_pd1 = delta_pd1.mean('mnum').max('time')
 
 ds_p_mws = xr.merge([mws_max, mws_pp, mws_pp_std, mws_max_std_ratio, delta_pd1])
 
-ds_p_mws['AS_max'].attrs = dict(long_name='AS Max')
+ds_p_mws['AS_max'].attrs = dict(long_name='$\Delta AS$ Max')
 ds_p_mws['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
 ds_p_mws['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
-ds_p_mws['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V')
+ds_p_mws['AS_max_std_ratio'].attrs = dict(long_name='$\Delta AS$ Max / PP Std Dev.', units='1/V')
 
 ds_p_mws = ds_p_mws.unstack('temp').xr_utils.stack_run()
 

@@ -116,15 +116,15 @@ For fitting of MWS data, we are interested in the time dependence after the lase
 
 \subsubsection{Figure of Merit}
 
-In this subsection we develop a model to assess the fundamental viability of photoionization as a method of increasing the power output of an MHD power system. We seek regimes where the power output from the MHD system will be increased by more than the power input of the nonequilibrium generation process. We define a figure of merit, $\beta$ as the ratio of the increase in MHD power to the increase in power input.
+In this subsection we develop a model to assess the fundamental viability of photoionization as a method of increasing the power output of an MHD power system. We seek regimes where the power output from the MHD system will be increased by more than the power input of the nonequilibrium generation process. We define a figure of merit, $\gamma$ as the ratio of the increase in MHD power to the increase in power input.
 
 
 \begin{equation}
   \label{eq:beta_def}
-\beta = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0} = \frac{dP_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\Big|_{P_{in}=0}
+\gamma = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0} = \frac{dP_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\Big|_{P_{in}=0}
 \end{equation}
 
-Where we have indicated that we will evaluate $\beta$ at $P_{in} = 0$. We have chosen to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A $\beta > 1$ is possible as photoionization has the potential to significantly increase the efficiency of the MHD generator. 
+Where we have indicated that we will evaluate $\gamma$ at $P_{in} = 0$. We have chosen to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A $\gamma > 1$ is possible as photoionization has the potential to significantly increase the efficiency of the MHD generator. 
 
 For the MHD Power density we use the equation
 
@@ -175,10 +175,10 @@ We can then take the derivative of $n_{e}(P_{in})$ with respect to $P_{in}$ to f
 \frac{dn_{e}}{dP_{in}} = \frac{\eta}{E_{IP}k_{r, m, eff}}
 \end{equation}
 
-Finally, we can combine these results to find $\beta$
+Finally, we can combine these results to find $\gamma$
 
 \begin{equation}
-\beta = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}
+\gamma = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}
 \end{equation}
 
 In the results presented in the main text we assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. $E_{IP}$ is the ionization potential of potassium, 4.34 eV. In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH (described later). For $k_{r, m, eff}$ we utilize equation \ref{eq:monomolecular_recombination}. The equilibrium species concentrations, $n_i$, and $\mu_e$ we use values calculated from from the chemical equilibrium model discussed in the next section. 
@@ -255,20 +255,20 @@ For potassium we use compiled photoionization cross sections (Verner) for solar 
 \end{figure}
 
 
-\clearpage
+% \clearpage
 
-\subsubsection{Supplemental PI Viability Results}
+% \subsubsection{Supplemental PI Viability Results}
 
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/beta_boundary_layer.png}
-\caption{Supplemental results}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=\textwidth]{\repodir/modeling/viability/figure_panels/output/beta_boundary_layer.png}
+% \caption{Supplemental results}
+% \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{\repodir/final/figures/SI/output/Viability_rxn_compare.png}
-\caption{Supplemental results}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=\textwidth]{\repodir/final/figures/SI/output/Viability_rxn_compare.png}
+% \caption{Supplemental results}
+% \end{figure}
 
 

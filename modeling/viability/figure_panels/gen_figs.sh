@@ -5,6 +5,7 @@
 #     python $i
 # done
 
-python alpha_boundary_enhance.py
+python gamma_boundary_enhance.py
+python gamma_panels.py
 python gas_species.py
 python UV_absorption.py

@@ -21,21 +21,21 @@ ds_NE = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'out
 
 #%%
 
-alpha = ds_NE['alpha']
+gamma = ds_NE['gamma']
 
 #%%
 
-# alpha = ds_alpha.to_array('rxn').rename('alpha')
-# alpha = ds_NE['alpha']
+# gamma = ds_gamma.to_array('rxn').rename('gamma')
+# gamma = ds_NE['gamma']
 
 # Add enhancement factor
 da_dsigma_tot = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'da_dsigma_tot.cdf'))['enhancement factor']
-alpha = alpha*da_dsigma_tot
+gamma = gamma*da_dsigma_tot
 
-# alpha.sel(Kwt=0.1, phi=1, analysis='PI_Bhall', P_in=0, T=1.6e3).plot()
+# gamma.sel(Kwt=0.1, phi=1, analysis='PI_Bhall', P_in=0, T=1.6e3).plot()
 
 #TODO: gamma used to be beta, search for other instances. 
-gamma = alpha -1 
+gamma = gamma -1 
 
 #%%
 
@@ -88,7 +88,7 @@ gamma_sel = gamma.sel(combo_sel)
 g = gamma_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', col='rxn', cmap=cmap, figsize=(5,2.6))
 
 # Set the colorbar label
-# g.fig.colorbar().set_label('$\\alpha - 1$')
+# g.fig.colorbar().set_label('$\\gamma - 1$')
 
 
 ax_O2 = g.axes[0][1]
@@ -122,6 +122,6 @@ colorbar = g.axes[0, -1].collections[0].colorbar
 
 colorbar.set_label('$1-\\beta$')
 
-# plt.savefig(pjoin(DIR_FIG_OUT, 'alpha_curve_demo_rxn.png'))
+# plt.savefig(pjoin(DIR_FIG_OUT, 'gamma_curve_demo_rxn.png'))
 # %%
 
