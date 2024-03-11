@@ -89,11 +89,11 @@ def main(
                         t2 = 1.5e-6
 
                         ds_1 = ds.sel(time=slice(-1, t1))
-                        ds_1 = ds_1.coarsen(time=1000, boundary='trim').mean() 
+                        ds_1 = ds_1.coarsen(time=1000, boundary='trim').mean(keep_attrs=True) 
                         ds_2 = ds.sel(time=slice(t1,t2))
-                        ds_2 = ds_2.coarsen(time=10, boundary='trim').mean() 
+                        ds_2 = ds_2.coarsen(time=10, boundary='trim').mean(keep_attrs=True) 
                         ds_3 = ds.sel(time=slice(t2, 1))
-                        ds_3 = ds_3.coarsen(time=1000, boundary='trim').mean() 
+                        ds_3 = ds_3.coarsen(time=1000, boundary='trim').mean(keep_attrs=True) 
 
                         ds = xr.concat([ds_1, ds_2, ds_3], 'time')
 
