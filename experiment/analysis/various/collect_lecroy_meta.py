@@ -17,7 +17,7 @@ for datestr in datestrs:
 
     # Start processing
 
-    data_folder = os.path.join('munged',datestr)
+    data_folder = os.path.join(REPO_DIR, 'experiment','data','munged',datestr)
 
     lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 
@@ -25,27 +25,36 @@ for datestr in datestrs:
     input_fps = [pjoin(lecroy_munged_folder, fn) for fn in process_fns] 
 
 
-    input_fps = ['output/ds_516.cdf']
+    # input_fps = ['output/ds_516.cdf']
     # fp = input_fps[0]
 
-    ss = []
-    for fp in input_fps:
-        ds = xr.load_dataset(fp)
+    if datestr == '2023-05-24':
+        vars = ['i','q','pd1','pd2']
+    else:
+        vars = ['i','q']
 
-        fn = os.path.basename(fp)
-        fn = fn.split('.')[0]
+    for var in vars:
+        ss = []
+        for fp in input_fps:
+            if not os.path.exists(fp):
+                print("Couldn't find: {}".format(fp))
+                continue
+            ds = xr.load_dataset(fp)
 
-        s = pd.Series(ds.attrs)
-        s.name = fn
-        ss.append(s)
+            fn = os.path.basename(fp)
+            fn = fn.split('.')[0]
 
-    df_out = pd.concat(ss, axis=1)
-    df_out
+            s = pd.Series(ds[var].attrs)
+            s.name = fn
+            ss.append(s)
 
-    output_dir = pjoin(DIR_DATA_OUT, 'lecroy_meta')
+        df_out = pd.concat(ss, axis=1)
+        df_out
 
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+        output_dir = pjoin(DIR_DATA_OUT, 'lecroy_meta')
+
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
 
 
-    df_out.to_csv(pjoin(output_dir, 'lecroy_meta_{datestr}.csv'))
+        df_out.to_csv(pjoin(output_dir, 'lecroy_meta_{}_{}.csv'.format(datestr,var)))
