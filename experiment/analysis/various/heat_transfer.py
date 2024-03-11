@@ -125,3 +125,41 @@ axes[1].set_title('CFD')
 
 
 # %%
+
+ds = xr.merge([
+    ht.mean('mnum').rename('expt'),
+    da_cfd.rename('cfd')
+])
+
+
+fig, ax = plt.subplots(1, 1, figsize=(5,5))
+
+
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+
+lns_expt = []
+lns_cfd = []
+
+for kwt in ds['kwt']:
+    color = colors.pop(0)
+    ln_expt = ds['expt'].dropna('phi', 'all').sel(kwt=kwt).plot(x='phi', ax=ax, marker='o', label=f'kwt={kwt}', color=color, linestyle='-')
+    ln_cfd = ds['cfd'].dropna('phi','all').sel(kwt=kwt).plot(x='phi', ax=ax, marker='o', label=f'kwt={kwt}', linestyle='--', color=color)
+
+    lns_expt.append(ln_expt[0])
+    lns_cfd.append(ln_cfd[0])
+
+lns = lns_expt + lns_cfd
+
+labs = ['expt kwt=0%', 'expt kwt=0.1%', 'expt kwt=1%', 'cfd kwt=0%', 'cfd kwt=0.1', 'cfd kwt=1%']
+ax.legend(lns, labs)
+
+plt.ylabel('Heat Transfer (kW)')
+plt.xlabel('Equivalence Ratio')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'heat_transfer_phi_cfd_expt.png'))
+
+
+#%%
+
+lns
+    

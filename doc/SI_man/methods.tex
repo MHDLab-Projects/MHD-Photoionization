@@ -1,6 +1,6 @@
 \section{Methods Supplemental Information}
 
-\subsection{Microwave Scattering}
+\subsection{Microwave Scattering (MWS) Setup}
 
 \begin{figure}[]
 \centering
@@ -11,7 +11,13 @@
 
 The microwave scattering setup is shown in \ref{fig:SI_MWS_Setup_Silicon}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a horn (TODO) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
-The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy oscilloscope (TODO). The oscilloscope utilized 1 MOhm impedance. (TODO) The oscilloscope is triggered from the excimer laser. 
+The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy WavePro 404HD-MS Oscilloscope. The oscilloscope utilized 1 MOhm impedance. (TODO) The oscilloscope is triggered from the excimer laser. 
+
+% https://netldoe.sharepoint.com/sites/MHDLab/_layouts/OneNote.aspx?id=%2Fsites%2FMHDLab%2FSiteAssets%2FMHD%20Lab%20Notebook&wd=target%28HVOF%20Booth.one%7C926BAC12-30AE-4CC1-87A1-28B752C7F9AD%2FMeasurements%7C427606CE-8CD2-43D7-A8DB-6C8D894FFC45%2F%29onenote:https://netldoe.sharepoint.com/sites/MHDLab/SiteAssets/MHD%20Lab%20Notebook/HVOF%20Booth.one#Measurements&section-id={926BAC12-30AE-4CC1-87A1-28B752C7F9AD}&page-id={427606CE-8CD2-43D7-A8DB-6C8D894FFC45}&end
+
+The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C), however the power data was not used in this analysis. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, TODO) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
+
+The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
 
 On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
 
@@ -99,13 +105,56 @@ Before each experiment we performed measurements with a silicon sample in the lo
 \end{figure}
 
 \clearpage
-\subsection{AES}
+\subsection{Absorption Emission Spectroscopy (AES) Setup}
+
+
+
+
+Ocean Optics HR4000 Spectrometer. 
+
+Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The LED output and spectrometer input are both connected to the multiplexer for both AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. 
+
+
+The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. The LED is triggered by the spectrometer. The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
+
+
+
+
+Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.
+
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
     \caption{AES processing overview}
     \label{fig:SI_AES_proc_overview}
 \end{figure}
+
+
+\subsection{Photodiode (PD) Setup}
+
+Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected and then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 beam splitter into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. (TODO: fixed size iris? ). AThe photodiodes are powered with a PBM42 bias module powered by ? V (TODO). The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.
+
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/final/figures/schematics/output/PD_setup.png}
+    \caption{Photodiode (PD) setup schematic.}
+    \label{fig:SI_PD_setup_schematic}
+\end{figure}
+
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/final/figures/setup_images/Photodiode_Setup.png}
+    \caption{Image of the photodiode setup}
+    \label{fig:SI_PD_setup_image}
+\end{figure}
+
+
+
+
 
 
 \clearpage
@@ -152,6 +201,35 @@ Makes 500 mL
 \end{itemize}
 
 
+The following emulsion recipe was used. The mass density (rho) was measured by withdrawing ? ml of emulsion and weighing it. 
+
+The mass of the fuel was incorrectly used as 109 g to calculate setpoints on on each day except 2023-05-24, instead of 106.5 g. TODO: Was this actually used in the emulsion?
+
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Parameter} & \textbf{2023-04-07 to 2023-05-18} & \textbf{2023-05-24} \\
+\hline
+M\_K2CO3 & 84.7 gram & 84.7 gram \\
+M\_fuel & 109.0 gram & 106.5 gram \\
+M\_water & 350.0 gram & 350.0 gram \\
+M\_span80 & 3.84 gram & 3.84 gram \\
+M\_tween80 & 1.17 gram & 1.17 gram \\
+rho & 1.056 gram / milliliter & 1.056 gram / milliliter \\
+M\_surf & 5.01 gram & 5.01 gram \\
+M\_brine & 434.7 gram & 434.7 gram \\
+M\_total & 548.71 gram & 546.21 gram \\
+f\_fuel & 0.19864773742049532 dimensionless & 0.19497995276541988 dimensionless \\
+f\_K2CO3 & 0.15436204916987115 dimensionless & 0.15506856337306163 dimensionless \\
+\hline
+\end{tabular}
+\caption{Emulsion Parameters}
+\label{tab:emulsion_parameters}
+\end{table}
+
 \subsection{Additional Experiment Pictures}
 
 \begin{figure}[]
@@ -183,3 +261,5 @@ Makes 500 mL
 \caption{Top view of experiment setup. Taken on 2023-05-18.}
 \label{fig:SI_Top_View}
 \end{figure}
+
+
