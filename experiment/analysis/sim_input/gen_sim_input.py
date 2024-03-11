@@ -281,6 +281,8 @@ def extract_params(ds_hvof):
     recipe_em = recipe_em.loc[col_select]
 
     recipe_em['calorific value'] = ds_hvof['CC_heatInput'].attrs['calorific value']
+    recipe_em['CH_weight_ratio'] = ds_hvof['CC_equivalenceRatio'].attrs['CHweightratio']
+    recipe_em['N_Carbon'] = ds_hvof['CC_equivalenceRatio'].attrs['N_Carbon']
 
     #TODO: hacky way to separate out value and units. 
     recipe_split = recipe_em.str.replace(' / ', '/').str.replace(' * ', '*', regex=False).str.split(' ', expand=True)

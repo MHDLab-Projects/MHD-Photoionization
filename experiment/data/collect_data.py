@@ -90,17 +90,17 @@ for key in keep_keys:
         data_folder = pjoin('munged',date) 
         dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
         dss.append(dsst_date[key])
-    dsst[key] = xr.concat(dss, 'time')
+    dsst[key] = xr.concat(dss, 'time', combine_attrs='drop_conflicts')
 
 # %%
 from mhdpy.fileio.tdms import dsst_to_tdms
 
-dsst['motor']['Motor C Relative'].attrs = dict(long_name='Stage Position', units='mm')
-dsst['hvof']['CC_K_massFrac_in'].attrs = dict(long_name='Nominal K Mass Fraction', units='') 
+dsst['motor']['Motor C Relative'].attrs.update(dict(long_name='Stage Position', units='mm'))
+dsst['hvof']['CC_K_massFrac_in'].attrs.update(dict(long_name='Nominal K Mass Fraction', units='') )
 
 from pi_paper_utils import convert_fw_pos_relpower
 dsst['filterwheel']['Power_Relative'] = convert_fw_pos_relpower(dsst['filterwheel']['Filter Position'])
-dsst['filterwheel']['Power_Relative'].attrs = dict(long_name='Relative Power', units='dimensionless')
+dsst['filterwheel']['Power_Relative'].attrs.update(dict(long_name='Relative Power', units='dimensionless'))
 
 
 
