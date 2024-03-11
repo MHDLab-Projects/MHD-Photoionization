@@ -83,11 +83,11 @@ lineAS = axes[1].errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label='AS Maximum',
+    label='$\Delta AS$ Maximum',
     color='darkgreen'
     )
 
-axes[1].set_ylabel("AS Maximum")
+axes[1].set_ylabel("$\Delta AS$ Maximum")
 
 
 ta = axes[1].twinx()

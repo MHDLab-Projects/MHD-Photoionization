@@ -44,6 +44,7 @@ motor_expt = da_plot.coords['motor'].item()
 
 axes[0].set_title('Position: {:.0f} mm'.format(motor_expt))
 axes[0].set_ylim(-0.03,0.35)
+axes[0].set_ylabel('$\Delta AS$')
 
 
 da_sel_mean = da_sel.mean('run').sel(motor=180, method='nearest')

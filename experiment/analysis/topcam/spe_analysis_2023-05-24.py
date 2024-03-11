@@ -194,6 +194,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
 
 
 #%%
+from mhdpy.pyvista_utils import CFDDatasetAccessor
 fp_cfd_2d = pjoin(REPO_DIR, 'modeling','cfd','analysis','output', 'mdot0130_phi080_K100.csv')
 
 df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])
@@ -203,9 +204,14 @@ ds_cfd = df_cfd.to_xarray()
 ds_cfd['pos_x'] = (ds_cfd['pos_x'] * 1000) - 208
 ds_cfd['pos_y'] = ds_cfd['pos_y'] * 1000
 
+
+ds_cfd = ds_cfd.cfd.quantify_default()
+ds_cfd = ds_cfd.cfd.convert_all_rho_number()
+
+ds_cfd
 #%%
 
-da_sel_tf
+ds_cfd['Yeq_K']
 
 
 #%%
@@ -224,21 +230,21 @@ gatedelays = [780, 790]
 ax = axes[0,1]
 da_plot = da_sel_tf.sel(gatedelay=gatedelays[0])
 da_plot.plot(ax=ax, vmin=0)
-axes[0,1].set_title('ICCD Before Laser')
+axes[0,1].set_title('ICCD Before Laser [counts]')
 
 
 ax = axes[1,1]
 da_plot = da_sel_tf.sel(gatedelay=gatedelays[1]) 
 da_plot.plot(ax=ax, vmin=0)
-axes[1,1].set_title('ICCD During Laser')
+axes[1,1].set_title('ICCD During Laser [counts]')
 
 ax = axes[0,0]
 ds_cfd['Yeq_K'].plot(ax=ax, vmin=0, x='pos_x')
-axes[0,0].set_title('K [?]')
+axes[0,0].set_title('K [$particle/cm^3$]')
 
 ax = axes[1,0]
 ds_cfd['Yeq_KOH'].plot(ax=ax, vmin=0, x='pos_x')
-axes[1,0].set_title('KOH [?]')
+axes[1,0].set_title('KOH [$particle/cm^3$]')
 
 
 ax = axes[2,0]

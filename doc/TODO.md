@@ -23,4 +23,4 @@
 
 - [x] Input properties table. 
 
-- [] add phi = 0.6 to simulation input report. 
+- [x] add phi = 0.6 to simulation input report. 
