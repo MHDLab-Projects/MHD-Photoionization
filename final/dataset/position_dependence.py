@@ -148,9 +148,8 @@ da_cfd_beam
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
-
 ds_fit = ds_absem.mean('mnum')
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, da_nK_profile=da_cfd_beam)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
 
 ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]

@@ -24,3 +24,6 @@
 - [x] Input properties table. 
 
 - [x] add phi = 0.6 to simulation input report. 
+
+- [] add calorific value and CH ratio to sim report
+ - [] reprocess 

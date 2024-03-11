@@ -274,7 +274,7 @@ x = np.linspace(0, 2, 100)
 nK_profile = tophat_profile(L.magnitude, 1, x)
 nK_profile = pd.Series(nK_profile, index=x)
 
-alpha = alpha_deq_solve(wls, nK_profile, nK_max=nK)
+alpha = alpha_deq_solve(wls, nK_profile=nK_profile, nK_max=nK)
 ds_test['alpha'].plot(marker='o')
 plt.plot(wls, alpha)
 
@@ -379,7 +379,7 @@ da_cfd_nK_norm
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
-ds_absem_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, da_cfd_nK_norm)
+ds_absem_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, perform_fit_kwargs={'nK_profile': da_cfd_nK_norm})
 
 ds_p_cfd = ds_p.copy()
 

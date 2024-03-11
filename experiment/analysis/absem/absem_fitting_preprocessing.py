@@ -46,7 +46,7 @@ ds_fit = ds_sel.mean('mnum').absem.calc_alpha()
 spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
-ds_alpha_fit, ds_p, ds_p_stderr= absem.fitting.pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr= absem.fitting.pipe_fit_alpha_1(ds_fit, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
 dss_p.append(ds_p.assign_coords(method='alpha_cut'))
 dss_p_stderr.append(ds_p_stderr.assign_coords(method='alpha_cut'))
 # %%

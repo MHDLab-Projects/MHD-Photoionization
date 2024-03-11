@@ -108,7 +108,7 @@ from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 ds_fit_absem = ds_absem.mean('mnum')
 ds_fit_absem = ds_fit_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
-ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, da_nK_profile=da_cfd_beam)
+ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
 #%%
 

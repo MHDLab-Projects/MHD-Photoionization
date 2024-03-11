@@ -140,7 +140,7 @@ spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze(
 
 ds_fit = ds.rename(mean='alpha')
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, spect_red_dict)
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
 
 #%%
 

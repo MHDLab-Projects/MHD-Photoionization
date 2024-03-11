@@ -67,7 +67,7 @@ def test_pipe_fit_alpha_1(ds_absem):
     spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
     ds_absem = ds_absem.sel(kwt=1,method='nearest')
-    ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_1(ds_absem, spect_red_dict)
+    ds_alpha_fit, ds_p, ds_p_stderr = absem.fitting.pipe_fit_alpha_1(ds_absem, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
 
     assert ds_p['nK_m3'].item() == pytest.approx(1.17677e+22, rel=1e-4)
 
@@ -82,7 +82,7 @@ def test_pipe_fit_alpha_num_1(ds_absem):
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
     ds_fit_absem = ds_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
-    ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, da_nK_profile=da_cfd_beam)
+    ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
 
 

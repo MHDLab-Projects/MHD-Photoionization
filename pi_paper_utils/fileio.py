@@ -118,7 +118,6 @@ def load_cfd_centerline(kwt_interp = None):
     return ds_cfd
 
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
 def load_cfd_beam(kwt_interp = None):
