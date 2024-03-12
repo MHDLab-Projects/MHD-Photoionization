@@ -81,25 +81,22 @@ ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=mag_0_stack)
 
 #%%
 
-
+ds_lecroy
 
 #%%
 
 mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
 mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
-mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
+mws_pp_std = ds_lecroy['mag_pp_std'].mean('mnum').rename('mag_pp_std')
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
 
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-2,-1)).mean('time')
-delta_pd1 = delta_pd1.dropna('temp', how='all')
-delta_pd1 = delta_pd1.mean('mnum').max('time')
+delta_pd1 = ds_lecroy['delta_pd1'].mean('mnum').rename('delta_pd1')
 
 ds_p_mws = xr.merge([mws_max, mws_pp, mws_pp_std, mws_max_std_ratio, delta_pd1])
 
 ds_p_mws['AS_max'].attrs = dict(long_name='$\Delta AS$ Max')
 ds_p_mws['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
-ds_p_mws['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
 ds_p_mws['AS_max_std_ratio'].attrs = dict(long_name='$\Delta AS$ Max / PP Std Dev.', units='1/V')
 
 ds_p_mws = ds_p_mws.unstack('temp').xr_utils.stack_run()

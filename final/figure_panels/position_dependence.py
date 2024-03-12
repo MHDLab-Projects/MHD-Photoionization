@@ -181,7 +181,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 # Phi =0.65
 # ax2 = axes[1]
 # %%
-ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8)
+ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8, method='nearest')
 
 # da_plot.plot(col='phi', hue='var', row='motor')
 motor_sel = [80, 130, 180]

@@ -49,7 +49,7 @@ from mhdpy.coords.ct import downselect_acq_time
 def load_lecroy(tc, 
                 avg_mnum = False, 
                 AS_calc = None,
-                df_ct_downselect = None
+                df_ct_downselect = None,
                 ):
     """
     pipeline for loading lecroy data
@@ -71,9 +71,10 @@ def load_lecroy(tc,
         ds_lecroy = ds_lecroy.drop(0,'kwt')
 
     if df_ct_downselect is not None:
-
         ds_lecroy = downselect_acq_time(ds_lecroy, df_ct_downselect)
 
+    # Calculate mnum dependent stats, which requires calculating mag.  
+    ds_lecroy = ds_lecroy.mws.calc_mag_phase()
 
     if avg_mnum:
         ds_lecroy = ds_lecroy.mean('mnum')

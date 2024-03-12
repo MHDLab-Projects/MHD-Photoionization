@@ -150,7 +150,7 @@ mws_max = ds_lecroy['AS'].max('time').rename('AS_max')
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
 mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
-mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').rename('mag_pp_std')
+mws_pp_std = ds_lecroy['mag_pp_std']
 
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
