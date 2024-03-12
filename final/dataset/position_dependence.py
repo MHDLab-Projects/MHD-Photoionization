@@ -65,6 +65,8 @@ ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
 
+ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
+
 #%%
 
 da_mws_nothing  = ppu.fileio.load_mws_T0()
