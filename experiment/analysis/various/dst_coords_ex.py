@@ -138,7 +138,7 @@ tw = slice(row['Start Time'], row['Stop Time'])
 
 dst_coord_plot(dst_tcs, dst_coords_tcs, tw)
 
-#%%o
+#%%
 
 set(dst_coords_tcs['phi'].dropna('time').values)
 # %%[markdown]

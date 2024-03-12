@@ -8,14 +8,15 @@ source .env
 expt_analysis_dir=$REPO_DIR/experiment/analysis
 
 # Default directories to process
-render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
+# render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
+render_dirs=("mws")
 
 # If an argument is provided, use it as the directories to process
 if [ "$#" -gt 0 ]; then
     render_dirs=( "$@" )
 fi
 
-purge_dirs=false
+purge_dirs=true
 replace_existing=true
 
 # pushd and popd are used to change directories and return to the original directory

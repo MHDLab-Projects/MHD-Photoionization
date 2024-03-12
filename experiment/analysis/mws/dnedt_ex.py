@@ -102,8 +102,8 @@ plt.ylabel('AS')
 plt.xlim(-1,50)
 plt.ylim(0.5e-3,2)
 
-kr = ds_p_sel['kr'].item()
-kr_stderr = ds_p_stderr_sel['kr'].item()
+kr = ds_p_sel['krm'].item()
+kr_stderr = ds_p_stderr_sel['krm'].item()
 dne = ds_p_sel['dne'].item()
 dne_stderr = ds_p_stderr_sel['dne'].item()
 
@@ -129,21 +129,17 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt.png'), bbox_inches='tight')
 
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
-da_fit = da_sel.copy()
+da_fit = da_sel.copy().mean('mnum')
 
-da_fit = da_fit.mws.fit_prep()
+pipe_fit_exp.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(5,'us'),Quantity(30,'us'))
 
-
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(
-    da_fit,
-    fit_timewindow=slice(Quantity(5,'us'),Quantity(30,'us')),
-    )
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%
 
 plt.figure()
 
-ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
+ds = ds_mws_fit.sel(run=('2023-05-24', 1))
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
 ds_p_stderr_sel = ds_p_stderr.sel(run=('2023-05-24', 1))
 
@@ -173,10 +169,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_exp.png'))
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(
-    da_fit.mean('mnum'),
-    fit_timewindow=slice(Quantity(0,'us'),Quantity(30,'us')),
-    )
+pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0,'us'),Quantity(30,'us'))
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
 
 #%%
 
@@ -233,3 +228,5 @@ n_e_profile.plot()
 plt.yscale('log')
 
 
+
+# %%

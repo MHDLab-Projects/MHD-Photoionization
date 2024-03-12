@@ -8,21 +8,13 @@
 
 from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-
-from mhdpy.analysis import mws
-from mhdpy.plot import dropna
-from mhdpy.xr_utils import WeightedMeanAccessor
-from mhdpy.analysis import absem
+import pi_paper_utils as ppu
 
 # %%
 
 tc = '536_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-ds_absem = ds_absem.sel(wavelength=slice(750,790))
+ds_absem = ppu.fileio.load_absem(tc)
 
 ds_absem
 
@@ -311,8 +303,9 @@ plt.ylim(-0.1,1.1)
 #%%
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
-ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix, method='iterative')
+ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix)
 
 ds_p_beer = ds_p.copy()
 
@@ -336,7 +329,7 @@ from mhdpy.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
 
 da_fit = pipe_fit_prep_alpha_2(ds_fix)
 
-ds_absem_fit, ds_p, ds_p_fit = da_fit.absem.perform_fit(mod, params, method='iterative')
+ds_absem_fit, ds_p, ds_p_fit = da_fit.absem.perform_fit(mod, params)
 
 ds_p_tophat = ds_p.copy()
 
@@ -377,7 +370,6 @@ da_cfd_nK_norm
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 ds_absem_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, perform_fit_kwargs={'nK_profile': da_cfd_nK_norm})
 

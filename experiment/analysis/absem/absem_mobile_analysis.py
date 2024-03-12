@@ -5,6 +5,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
+import pi_paper_utils as ppu
 
 from mhdpy.analysis import mws
 from mhdpy.analysis import absem
@@ -16,25 +17,13 @@ from mhdpy.plot import dropna
 
 tc = '536_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()#[['mag', 'phase','AS']]
-
-# ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
+ds_absem = ppu.fileio.load_absem(tc)
 
 
 # %%
 
 ds = ds_absem.sel(mp='mw_horns').mean('mnum').dropna('run', how='all')
 
-ds = ds.drop(34.81, 'motor')
 
 ds
 # %%

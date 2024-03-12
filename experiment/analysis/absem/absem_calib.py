@@ -249,8 +249,9 @@ ds_fit['alpha_red'] = ds_fit['alpha']
 
 model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_fit.absem.perform_fit(model, params)
+ds_alpha_fit, ds_p, ds_p_stderr = ds_fit['alpha_red'].absem.perform_fit(model, params)
 # %%
 
 
 ds_p['nK'].plot(row='run', hue='method', x='kwt', marker='o')
+# %%

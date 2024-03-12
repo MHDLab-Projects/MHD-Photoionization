@@ -177,7 +177,7 @@ ds_absem = ppu.fileio.load_absem('53x')
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
 
-ds_fit = ds_absem
+ds_fit = ds_absem.mean('mnum')
 
 ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 

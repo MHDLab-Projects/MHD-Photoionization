@@ -58,7 +58,7 @@ ds_p_all['krm'] = ds_p_all['krb']*ds_p_all['ne0']
 
 da_plot= ds_p_all[['krm','dne']].to_array('fit_var').dropna('run',how='all')
 
-da_plot.plot(row='run', col='fit_var', hue='dne_init', marker='o', sharey=False)
+g = da_plot.plot(row='run', col='fit_var', hue='dne_init', marker='o', sharey=False)
 
 dropna(g)
 # %%

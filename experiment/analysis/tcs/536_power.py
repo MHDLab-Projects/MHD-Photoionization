@@ -140,7 +140,7 @@ from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit)
 
 #TODO: sterr is nan where ds_p is not?
-ds_p['krb'] = ds_p['krb'].where(~ds_p_stderr['kr'].isnull())
+ds_p['krb'] = ds_p['krb'].where(~ds_p_stderr['krb'].isnull())
 
 
 #%%

@@ -13,6 +13,8 @@ ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute', avg_mnum=True)
 
 ds_sel = ds_lecroy.sel(run=('2023-05-18',1)).sel(kwt=1, method='nearest')
 
+ds_sel = ds_sel.pint.dequantify()
+
 # ds_sel = ds_sel.mean('mnum')
 
 ds_sel
