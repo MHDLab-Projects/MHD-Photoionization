@@ -20,6 +20,9 @@ fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
 dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
 
 dst_coords
+#%%
+
+dsst.keys()
 
 #%%
 
@@ -158,9 +161,15 @@ dsst['hvof'] = dsst['hvof'][[*first_vars, *[var for var in dsst['hvof'].data_var
 # dsst['syringe'] = dsst['syringe'][['syringe_em_flow_out', 'syringe_fuel_flow_out', 'syringe_water_flow_out', 'syringe_K2CO3_flow_out', 'syringe_K_flow_out']]
 
 #%%
+dsst['other_temperature'] = xr.merge([
+    dsst['o2']['JP_o2_T_out'].pint.to('K'),
+    dsst['tc1']['ambient_T'].pint.to('K')
+])
 
-key_sel = ['hvof', 'calorimetry']
-sheet_names = {'hvof': "HVOF Process Inputs", 'calorimetry': "Calorimetry"}
+#%%
+
+key_sel = ['hvof', 'calorimetry', 'other_temperature']
+sheet_names = {'hvof': "HVOF Process Inputs", 'calorimetry': "Calorimetry", 'other_temperature': "Other Temperatures"}
 
 dsst_stats = {key: dsst[key] for key in key_sel}
 
@@ -218,7 +227,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'sim_input_timewindows.png'), dpi=300, bbox_inche
 # Make a plot of each individual datarray in dsst with the timewindows. 
 downselect_keys = {
     'hvof': ['CC_total_flow_in', 'CC_fuel_flow_in', 'CC_o2_flow_in', 'CC_em_flow_in', 'CC_P'],
-    'calorimetry': ['CC_water_flow_in', 'CC_water_T_in', 'CC_water_T_out', 'CC_heatTransfer']
+    'calorimetry': ['CC_water_flow_in', 'CC_water_T_in', 'CC_water_T_out', 'CC_heatTransfer'],
+    'other_temperature': ['JP_o2_T_out', 'ambient_T']
 }
 
 output_dir = pjoin(DIR_FIG_OUT, 'individual_signals')
