@@ -44,15 +44,38 @@ Finally, in step 3 the excited free electron is captured by an oxygen molecule. 
 
 \subsection{Viability Analysis}
 
-with this model, we examine the viability of photoionization for MHD power enhancement. 
+With the developed understanding of the photoionization and recombination process, we performed an assessment of the viability of the photoionization process to produce a net return in energy in seeded oxy-fuel combustion products. The methods are described in detail in the SI. Briefly, the modeling is performed with 0D chemical equilibrium calculations to determine the composition and thermophysical properties of a seeded oxy-kerosene combustion products at various temperatures and pressures, approximating various locations in a MHD generator. We then apply a nonequilibrium ionization model to determine the change in electrical conductivity due to photoionization. We then calculate the MHD power output for various photoionization power inputs and determine the regimes in which photoionization is a net energy return. We calculate a figure of merit for the photoionization process, $\gamma$, which is the ratio of the change in MHD power output, $dP_{MHD}$ for an intestinal amount of photoionization power input, $dP_{in}$. 
+
+
+\begin{equation}
+\gamma = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0}
+\end{equation}
+
+Therefore, a $\gamma > 1$ indicates a net energy return. For the MHD power output, we use the ideal power density in a MHD generator, given by \ref{eq:mhd_ideal_power}. (how much of SI to reproduce here?)
+
+Figure \ref{fig:viability_gamma}A shows $\gamma$ for various temperatures and pressures.  For $\gamma > 1$ at low temperatures and pressures (blue region), the photoionization process exhibits a net energy return and is viable. For $\gamma < 1$, at high temperatures and pressures (red region) the photoionization process is not viable. The line $\gamma = 1$ is the boundary between these two regions and is defined as the 'viability line'. To determine the viability line (green dashed  line), we interpolate $\gamma$ each temperature to determine the pressure at which $\gamma = 1$. 
+
+In Figure \ref{fig:viability_gamma}B, we show the viability lines for some different analysis conditions. TODO: finish when final plot parameters are decided. 
+
+\begin{itemize}
+    \item $\eta$ - the photoionization efficiency is the fraction of the photoionization power input that is converted to ionized electrons (ionization potential per electron). Perfect efficiency ($eta_{perf} = 1$), and an efficiency determined by the fraction of UV light absorbed by the KOH ($eta_{PI}$) are shown.
+    \item The fraction of targeted volume compared to the bulk flow ($l_{bk}$). This parameter is relevant for analyzing boundary layer enhancement. for low $l_{bk}$, the photoionization power input is applied to a small volume of the flow, and for high $l_{bk}$ the photoionization power input is applied to the entire flow. see SI (TODO)
+    \item Equivalence ratio. The equivalence ratio changes the oxygen molecule concentration compared to other capturing species
+\end{itemize}
+
+
+TODO:  analysis of dominant capturing species in different regimes. Believe it is 
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{\repodir/final/figures/output/Fig7_Viability.png} 
-    \caption{Figure of merit for photoionization for various temperatures and pressures. The lines represent where $\gamma = 1$ for various temperatures and pressures as described in the text.}   
+    \caption{Figure of merit for photoionization for various temperatures and pressures. The plot is for 1\% K mass fraction, 0.8 equivalence ratio. For all analysis we assume a velocity of  The lines represent where $\gamma = 1$ for various temperatures and pressures as described in the text.}   
     \label{fig:viability_gamma}
 \end{figure}
 
-Figure \ref{fig:viability_gamma} shows $\gamma$ for various temperatures and pressures.  For $\gamma > 1$ at low temperatures and pressures (blue region), the photoionization process exhibits a net energy return and is viable. For $\gamma < 1$, at high temperatures and pressures (red region) the photoionization process is not viable. The line $\gamma = 1$ is the boundary between these two regions. To determine the boundary line (green dashed  line), we interpolate $\gamma$ each temperature to determine the pressure at which $\gamma = 1$. These boundary lines are then shown for various conditions in the results section in Figure \ref{fig:viability_gamma}B.
 
+
+\section{Conclusion}
+
+In conclusion, we have presented experimental evidence of UV photoionization in a potassium seeded high-velocity oxy-fuel flame. The experimental results suggest and ionization mechanism of excimer-induced KOH dissociation, followed by thermal ionization of the excited K atom. For the recombination process, we have observe a first-order recombination process that is consistent with the capture of free electrons by oxygen molecules. Using these results, we have developed a model for the photoionization and recombination process and determined the viability of the photoionization process to produce a net return in energy in seeded oxy-fuel combustion products. 

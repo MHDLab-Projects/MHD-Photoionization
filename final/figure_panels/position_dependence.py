@@ -80,7 +80,7 @@ for i, var in enumerate(['AS_max', 'AS_max_std_ratio']):
     ax.errorbar(ds_stat.coords['motor'], ds_stat['mean'], yerr=ds_stat['std'], marker='o', capsize=5)
 
     ax.set_title('')
-    ax.set_xlabel('')
+    ax.set_xlabel('Stage Position [mm]')
 
     unit_str = '[' + ds_p_sel[var].attrs['units']+ ']' if 'units' in ds_p_sel[var].attrs else '' 
     ax.set_ylabel(ds_p_sel[var].attrs['long_name'] + unit_str)

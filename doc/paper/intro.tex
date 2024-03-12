@@ -2,17 +2,38 @@
 
 \section{Introduction}
 
-Copy from PI modeling paper
+Motivation for oxy-fuel based MHD power generation.
+
+In a 0D model, the ideal power density in a MHD generator is given by. 
+
+\begin{equation}
+P_{MHD} = K(1-K) u^2 B^2 \sigma
+\label{eq:mhd_ideal_power}
+\end{equation}
+
+
+Where K is the MHD loading factor, u the fluid velocity, B the magnetic field, and σ is the fluid electrical conductivity. The dependence of $P_MHD$ on σ is a fundamental problem for combustion driven MHD power as combustion products are not intrinsically electrically conductive. This problem has historically been overcome by ‘seeding’ the flame with an alkali metal which will readily thermally ionize and increase the free electron density in the gas, forming an electrically conductive plasma. Thermal ionization of the alkali metal still requires a high temperature, typically 2000K and above, and the high temperature is a significant barrier to the practicality of MHD power generation. The dependence of conductivity on temperature is a particular problem for the electrode boundary layers, where there is a significant temperature drop due to heat transfer to the electrode walls. The temperature decrease near the electrode walls introduces high-resistivity boundary layers and concomitant voltage drops.[1], [2] In addition to the high resistance, charge transfer across these boundary layers can occur through arcing and lead to electrode damage.[3] 
+
+
+In this paper we study the potential of UV photoionization as a method to enhance the conductivity of potassium seeded combustion products and improve the efficiency of MHD generators. In UV photoionization, the seeded combustion products are excited with a UV laser with photon energy above the potassium ionization energy to induce ionization and increase the free electron density. In principle, the increased conductivity could increase the efficiency of a MHD generator sufficiently to make the overall process have a net energy gain. UV Photoionization could be used to excite the bulk flow and extend MHD operation to lower temperatures, or to target the boundary layer and reduce the voltage drop across the boundary layer.
+
+
 
 \subsection{Literature review}
 
-Copy from PI modeling paper
+Photoionization is a specific form of non-equilibrium ionization (NEI) which is a general term a method of using an external energy source to increase the electron population of a plasma above thermal equilibrium levels to enhance the conductivity. In NEI, seed atoms are ionized with some non-thermal energy input resulting in a non-equilibrium electron population and enhanced electrical conductivity .
+
+Since the beginning of MHD power generation research there has been interest in inducing nonequilibrium conductivity to enhance power output of MHD generators.[4] However, the MHD research community was generally pessimistic toward the prospect of NEI in combustion products, and instead research on NEI focused primarily on seeded noble gasses for use in closed cycle MHD generators.[5], [6] The avoidance of NEI in combustion based generators arose from the fact that combustion products are molecular in nature (H20, CO2). The vibrational and rotational excitations of molecular gasses enable energy transfers during inelastic collisions with electrons that are 2-3 orders of magnitude higher than the elastic collisions of monatomic gasses. In a two-temperature electron model, successfully employed to model non-equilibrium electrons in monatomic gasses, the two-body recombination confident, $k_{r,b}$, is proportional to this collisional energy loss.[7], [8] It was therefore assumed that $k_{r,b}$ would be far to large in combustion gasses to allow for the long-lived non equilibrium electron populations.
+This theoretical analysis was seemingly supported experimental evidence from the beginning of MHD research. Kerrebrock referenced the initial study of MHD generators by Karlowitz and Halasz in the period of 1938-1947 which utilized NEI in combustion products.[6] That study induced NEI with applied electric fields and determined the recombination rate was too large to create useful non-equilibirum conductivity. However, as pointed out by Freck and Coney, Karlowitz and Halasz used unseeded combustion products in their experiments and achieved NEI through the production of molecular ions.[9], [10] Molecular ions and electrons can recombine through the mechanism of molecular dissociation  which leads to higher recombination rates than recombination with atomic ions in seeded combustion products.[8] 
+Beginning around this time, the ionization and recombination behavior of alkali metals in flames was studied in detail. The work of this period was summarized in a book by Alkemade, a leading scientist in this field of research.[11] Alkemade claimed that the two temperature model was not valid for ionized electrons seeded combustion products and instead are described by a ‘ladder model’. In this model, the higher collisional energy transfer serves to mainly bring free electrons into equilibrium with the gas molecules, instead of proportionally increasing $k_{r,b}$. Some details of the model remained controversial, but the measured $k_{r,b}$ over a range of flame compositions were not significantly larger than those measured in seeded noble gasses under similar conditions. In fact, $k_{r,b}$  of seeded argon was more recently measured by Su et al. with shock tube studies and found to be generally be within an order of magnitude of the coefficients measured in the combustion work.[12] Coney, mentioned above, measured the spatially-dependent conductivities of seeded combustion products in an MHD generator and inferred a recombination coefficient in agreement with work describing metal vapors in flames, though it does not appear these works received much attention in the literature.[10]
+
 
 \subsection{Overview}
+Therefore, the theoretical and experimental evidence suggests that NEI in combustion products is in principle feasible. However, the practicality of NEI in combustion products is still an open question. A key importance is the recombination kinetics which will determine the lifetime of the non-equilibrium electron population and the potential for a net energy gain. The previously mentioned studies have provided kinetic data and modes for air-fired seeded combustion products that we utilize in this study. However, the ability of these kinetic models to extend to the oxy-fuel combustion products is not known. Additionally, specific technique of UV photoionization has not been well-studied (see SI).
 
-In this study, we preform an assessment of the viability of photoionization as a method of enhancing the performance of MHD generators. We use a combination of experimental and modeling techniques to determine the feasibility of the concept. 
+In this paper we present the experimental evidence of UV photoionization in a potassium seeded oxy-fuel flame. We then present a 0D model of the MHD generator to determine the viability of the photoionization process to produce a net return in energy.
 
-In the assessment of viability we consider excitation of the bulk flow and targeting cold boundary layers. Excitation of the bulk flow could extend MHD operation to lower temperatures, while targeting the boundary layer could reduce the voltage drop across the boundary layer which is a significant loss mechanism in MHD generators.
+We use a combination of experimental and modeling techniques to determine the feasibility of the concept, for both bulk flow and boundary layer enhancement. 
 
 
 
