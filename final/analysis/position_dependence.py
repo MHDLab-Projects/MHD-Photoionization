@@ -7,10 +7,10 @@ import pi_paper_utils as ppu
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
-ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
+# ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
 
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
-ds_p = ds_p.drop(34.81, 'motor')
+# ds_p = ds_p.drop(34.81, 'motor')
 
 #%%
 
@@ -59,7 +59,7 @@ motor_sel = [34.81, 104.8, 178, 226.7]
 
 ds_sel = ds_lecroy.sel(phi=0.8, method='nearest')
 
-da_sel = ds_sel['AS_abs'].mean('mnum').sel(motor=motor_sel, method='nearest')
+da_sel = ds_sel['AS_abs'].sel(motor=motor_sel, method='nearest')
 
 fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
@@ -84,7 +84,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tigh
 # %%
 motor_sel = [34.81, 104.8, 178, 226.7]
 
-da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
+
+da_sel = da_sel.sel(phi=0.8, method='nearest')
 
 da_sel_mean = da_sel.mean('run')
 da_sel_std = da_sel.std('run')

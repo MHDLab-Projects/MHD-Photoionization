@@ -5,8 +5,8 @@ import pi_paper_utils as ppu
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
-ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
+# ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
+# ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 
 
 ds_cfd = ppu.fileio.load_cfd_centerline()
