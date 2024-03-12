@@ -18,7 +18,7 @@ tc = '516_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy('516_pos')
+ds_lecroy = ppu.fileio.load_lecroy('516_pos', AS_calc='relative')
 
 ds_lecroy = ds_lecroy.isel(run=0) # There is only one 516
 
@@ -56,7 +56,7 @@ from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
 
 ds_fit = ds_absem.mean('mnum')
 
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit, method='iterative')
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 ds_alpha_fit['alpha'] = ds_fit['alpha']
 
 #%%
@@ -112,11 +112,10 @@ from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
 da_fit = ds_lecroy['AS'].mean('mnum')
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(
-                                da_fit, 
-                                method='iterative', 
-                                fit_timewindow = slice(Quantity(0, 'us'), Quantity(25, 'us'))
-                                )
+
+pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
+
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
 
 ds_p['decay'] = 1/ds_p['krm']
 

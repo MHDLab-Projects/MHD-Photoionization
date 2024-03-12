@@ -87,7 +87,7 @@ ds_p['A']
 
 plt.figure(figsize=(4,3))
 
-ds = ds_mws_fit.sel(run=('2023-05-24', 1)).mean('mnum')
+ds = ds_mws_fit.sel(run=('2023-05-24', 1))
 ds_p_sel = ds_p.sel(run=('2023-05-24', 1))
 ds_p_stderr_sel = ds_p_stderr.sel(run=('2023-05-24', 1))
 

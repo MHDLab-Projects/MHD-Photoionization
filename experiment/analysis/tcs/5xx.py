@@ -26,24 +26,14 @@ ds_cfd = ds_cfd.sel(offset=0)
 
 tc = '5x6_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
+ds_absem = ppu.fileio.load_absem(tc)
 
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
-
-da_lecroy = da_lecroy.drop('run') # Only one run for this tc
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
+da_lecroy = ds_lecroy['AS']
 
 #%%
 
-da_max = da_lecroy.mean('mnum').sel(time=slice(-1,1)).max('time')
+da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
 
 da_max.plot()
 #%%
@@ -101,7 +91,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_KOH.png'), dpi=300)
 #%%
 
 
-da_lecroy_mean = da_lecroy.mean('mnum')
+da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
@@ -109,7 +99,7 @@ plt.xlim(-1,)
 
 #%%
 
-da_lecroy_mean = da_lecroy.mean('mnum')
+da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(col='motor',hue='phi', col_wrap=3)
 
@@ -188,6 +178,7 @@ ds_fit = ds_absem.mean('mnum')
 
 
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_1(ds_fit, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
+ds_alpha_fit['alpha'] = ds_fit['alpha']
 
 
 #%%
@@ -210,29 +201,15 @@ dropna(g)
 
 tc = '5x3_pos'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.assign_coords(run_plot = ('run', ds_absem.indexes['run'].values))
+ds_absem = ppu.fileio.load_absem(tc)
 
-# ds_absem = ds_absem.drop(34.81, 'motor')
-
-ds_absem = ds_absem.absem.calc_alpha()
-
-ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-ds_lecroy = ds_lecroy.assign_coords(run_plot = ('run', ds_lecroy.indexes['run'].values))
-
-
-ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-da_lecroy = ds_lecroy.mws.calc_mag_phase_AS()['AS']
-
-
-da_lecroy = da_lecroy.drop('run') # Only one run for this tc
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
+da_lecroy = ds_lecroy['AS']
 
 #%%
 
 
-da_lecroy_mean = da_lecroy.mean('mnum')
+da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
@@ -240,7 +217,7 @@ plt.xlim(-1,)
 
 #%%
 
-da_lecroy_mean = da_lecroy.mean('mnum')
+da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(row='motor',hue='phi')
 
@@ -307,7 +284,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_alpha.png'), dpi=300)
 
 # %%
 
-da_lecroy_mean = da_lecroy.mean('mnum')
+da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
@@ -343,7 +320,7 @@ for phi in da_max['phi']:
     labels.append(phi.values)
 
 ax1.legend(lines, labels, title="Expt.", loc="upper right")
-ax1.set_ylim(-0.01,0.05)
+ax1.set_ylim(-0.01,0.1)
 
 lines = []
 labels = []
@@ -354,6 +331,7 @@ for phi in da_cfd_sel['phi']:
     labels.append(phi.values)
 
 ax2.legend(lines, labels, title="CFD", loc="lower right")
+ax2.set_ylabel("CFD KOH [#/cm^3]")
 
 ax1.set_xlim(0,260)
 ax2.set_ylim(0.4e15)
@@ -361,27 +339,19 @@ ax2.set_ylim(0.4e15)
 plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_mws_KOH.png'), dpi=300)
 
 
-#%%
-
 
 #%%
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
 
 ds_fit = ds_absem.isel(run=0) #only one run
-ds_fit = ds_fit.sel(wavelength=slice(750,790))
+ds_fit = ds_fit.sel(wavelength=slice(750,790)).mean('mnum')
 
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
 ds_alpha_fit['alpha_red'].sel(mp='mw_horns').plot(hue='phi', row='motor')
-
-# plt.ylim
-
-# plt.ylim()
-
-
 
 
 # %%

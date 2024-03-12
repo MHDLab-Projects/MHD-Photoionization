@@ -7,7 +7,7 @@ from mhdpy.analysis import mws
 
 # %%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='relative')
 
 da_sel = ds_lecroy['AS']
 

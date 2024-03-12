@@ -13,12 +13,12 @@ import pi_paper_utils as ppu
 tc = '536_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
-ds_lecroy = ppu.fileio.load_lecroy(tc)
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
 
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
 tc = '5x6_pos'
 
-ds_lecroy_5x6 = ppu.fileio.load_lecroy('5x6_pos')
+ds_lecroy_5x6 = ppu.fileio.load_lecroy('5x6_pos', avg_mnum=True, AS_calc='relative')
 ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 
@@ -51,7 +51,7 @@ plt.xlim(760,780)
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
 ds_fit = ds_absem.mean('mnum')
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit,method='iterative')
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
@@ -88,7 +88,7 @@ plt.yscale('log')
 
 # %%
 
-g = ds_lecroy['AS'].mean('mnum').plot(hue='run_plot', row='motor', x='time')
+g = ds_lecroy['AS'].plot(hue='run_plot', row='motor', x='time')
 
 dropna(g)
 
@@ -96,7 +96,7 @@ dropna(g)
 
 motor_sel = [34.81, 104.8, 178, 226.7]
 
-da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
 
 fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
@@ -118,7 +118,7 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
 #%%
 
-da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
 
 da_sel = da_sel.mean('run')
 
@@ -134,7 +134,7 @@ plt.xlim(-1, 20)
 # plt.figure(figsize=(4,6))
 
 # da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
-da_sel = ds_lecroy['mag'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+da_sel = ds_lecroy['mag'].sel(motor=[50,100,150,180,225], method='nearest')
 
 da_sel = da_sel.dropna('run', how='all')
 
@@ -142,20 +142,23 @@ da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
 
 # plt.yscale('log')
 #%%
+ds_lecroy
 
-mws_max = ds_lecroy['AS'].mean('mnum').max('time').rename('AS_max')
+#%%
+
+mws_max = ds_lecroy['AS'].max('time').rename('AS_max')
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
-mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
-mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').mean('mnum').rename('mag_pp_std')
+mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
+mws_pp_std = ds_lecroy['mag'].sel(time=slice(-50,-1)).std('time').rename('mag_pp_std')
 
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
 
 
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0)).mean('time')
+delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0))
 delta_pd1 = delta_pd1.dropna('run', how='all')
-delta_pd1 = delta_pd1.mean('mnum').max('time')
+delta_pd1 = delta_pd1.max('time')
 # delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 
 #%%
@@ -181,7 +184,7 @@ ds['AS_max_std_ratio'].attrs = dict(long_name='AS Max / PP Std Dev.', units='1/V
 ds
 #%%
 
-g = ds.to_array('var').plot(hue='run_plot', row='var', x='motor', sharey=False)
+g = ds.pint.dequantify().to_array('var').plot(hue='run_plot', row='var', x='motor', sharey=False)
 
 dropna(g)
 

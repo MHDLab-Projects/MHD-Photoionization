@@ -44,7 +44,13 @@ def load_absem(
 
     return ds_absem
 
-def load_lecroy(tc, avg_mnum = False, AS_calc = None):
+from mhdpy.coords.ct import downselect_acq_time
+
+def load_lecroy(tc, 
+                avg_mnum = False, 
+                AS_calc = None,
+                df_ct_downselect = None
+                ):
     """
     pipeline for loading lecroy data
 
@@ -54,11 +60,20 @@ def load_lecroy(tc, avg_mnum = False, AS_calc = None):
         test case. determines which file to load
     avg_mnum : bool, optional
         if True, average over mnum before calculation of mag_phase_AS
+    AS_calc : str, optional
+        if not None, calculate the AS using this method. Options are 'relative' or 'absolute'
+    df_ct_downselect : pd.DataFrame, optional
+        if not None, downselect the acquisition times to the times in this dataframe, before averaging over mnum which removes 'acq_time' dimension
     """
     ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 
     if tc == '53x':
         ds_lecroy = ds_lecroy.drop(0,'kwt')
+
+    if df_ct_downselect is not None:
+
+        ds_lecroy = downselect_acq_time(ds_lecroy, df_ct_downselect)
+
 
     if avg_mnum:
         ds_lecroy = ds_lecroy.mean('mnum')
@@ -69,7 +84,7 @@ def load_lecroy(tc, avg_mnum = False, AS_calc = None):
     if AS_calc is not None:
         assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
         if AS_calc == 'absolute':
-            da_nothing = load_mws_T0().pint.dequantify() #TODO: add units in mws
+            da_nothing = load_mws_T0()
             ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
         else:
             ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 

@@ -8,35 +8,25 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
+from mhdpy.fileio.ct import load_df_cuttimes
 
-from mhdpy.analysis import mws
-from mhdpy.plot import dropna
-from mhdpy.xr_utils import WeightedMeanAccessor
-from mhdpy.analysis import absem
-from mhdpy.coords.ct import downselect_acq_time
 
 #%%
-
-
-from mhdpy.fileio.ct import load_df_cuttimes
 
 fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
+ds_lecroy = ppu.fileio.load_lecroy('53x', avg_mnum=True, df_ct_downselect=df_cuttimes_seedtcs)
 
-#%%
+# ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
-
-ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
-
-ds_fit = ds_lecroy.mean('mnum')
+ds_fit = ds_lecroy
 da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
 #%%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 #%%
 
 ds_p['decay'].mean('run').plot(marker='o')

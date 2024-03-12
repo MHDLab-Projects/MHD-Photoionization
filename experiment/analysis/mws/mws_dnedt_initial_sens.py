@@ -33,17 +33,7 @@ da_fit
 #%%
 
 
-from mhdpy.analysis.mws.fitting import gen_model_dnedt_v2
-
-pre_norm_cutoff=5e-4
-fit_timewindow=slice(Quantity(0, 'us'),Quantity(25, 'us'))
-method='iterative'
-take_log=False
-
-
-
-params
-#%%k
+from mhdpy.analysis.mws.fitting import pipe_fit_mws_2
 
 dnes = [1, 100, 10000, 1000000]
 
@@ -52,23 +42,17 @@ dss_p = []
 for dne in dnes:
     print(dne)
 
-    mod, params = gen_model_dnedt_v2(take_log=take_log)
-    params['dne'].value = dne
+    pipe_fit_mws_2.params['dne'].value = dne
 
-    da_fit2 = da_fit.mws.fit_prep(pre_norm_cutoff=pre_norm_cutoff, remove_negative=False, min_mnum=None)
-
-    ds_mws_fit, ds_p, ds_p_stderr = da_fit2.mws.perform_fit(mod, params, fit_timewindow=fit_timewindow, method=method)
+    ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit)
 
     dss_p.append(ds_p.assign_coords(dne_init=[dne]))
 
 
 # %%
 
-dne
-
-# %%
-
 ds_p_all = xr.concat(dss_p, 'dne_init')
+ds_p_all['krm'] = ds_p_all['krb']*ds_p_all['ne0']
 
 #%%
 

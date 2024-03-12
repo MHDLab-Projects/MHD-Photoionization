@@ -98,16 +98,15 @@ ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])
 
 #%%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
+ds_lecroy = ppu.fileio.load_lecroy('53x', df_ct_downselect=df_cuttimes_seedtcs, AS_calc='relative', avg_mnum=True)
 
-ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
+# ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
-ds_fit = ds_lecroy.mean('mnum')
-da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
+# ds_fit = ds_lecroy.mean('mnum')
+# da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
 
-#%%
+da_fit = ds_lecroy['AS']
 
-ds_lecroy
 
 #%%
 
