@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="Data Processing.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.97890839"
+     inkscape:cx="248.74646"
+     inkscape:cy="576.66275"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="1491"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g45" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0.26458333,0,0,0.26458333,-2.1569304,53.749397)"
+       id="g45">
+      <text
+         font-family="Calibri, Calibri_MSFontService, sans-serif"
+         font-weight="400"
+         font-size="21px"
+         id="text4"
+         x="65.572647"
+         y="206.49673">Raw Data</text>
+      <text
+         font-family="Calibri, Calibri_MSFontService, sans-serif"
+         font-weight="400"
+         font-size="21px"
+         id="text4-3"
+         x="447.73523"
+         y="202.55943">Munged Data</text>
+      <text
+         font-family="Calibri, Calibri_MSFontService, sans-serif"
+         font-weight="400"
+         font-size="21px"
+         id="text4-1"
+         x="213.68559"
+         y="204.89781"
+         style="white-space:pre;inline-size:236.511"
+         transform="translate(6.5010793,-47.674582)"
+         xml:space="preserve"><tspan
+           x="213.68559"
+           y="204.89781"
+           id="tspan9">Post Processing: 
+</tspan><tspan
+           x="213.68559"
+           y="231.14781"
+           id="tspan10">● Size Reduction
+</tspan><tspan
+           x="213.68559"
+           y="257.39781"
+           id="tspan11">● Renaming
+</tspan><tspan
+           x="213.68559"
+           y="283.64783"
+           id="tspan12">● Standard Calculations</tspan></text>
+      <rect
+         x="40.787827"
+         y="248.86426"
+         width="129.73666"
+         height="73.606331"
+         stroke="#2f528f"
+         stroke-width="1.04386"
+         stroke-miterlimit="8"
+         fill="#ffc000"
+         id="rect11" />
+      <rect
+         x="41.220791"
+         y="344.33115"
+         width="129.73666"
+         height="73.606331"
+         stroke="#2f528f"
+         stroke-width="1.04386"
+         stroke-miterlimit="8"
+         fill="#ffc000"
+         id="rect11-3" />
+      <rect
+         x="28.346844"
+         y="440.90405"
+         width="154.76221"
+         height="95.742516"
+         stroke="#2f528f"
+         stroke-width="1.30029"
+         stroke-miterlimit="8"
+         fill="#ffc000"
+         id="rect11-3-4" />
+      <text
+         xml:space="preserve"
+         style="font-size:18.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;text-anchor:middle;white-space:pre;inline-size:144.61;fill:#000000;stroke-width:0.944882"
+         x="66.891075"
+         y="271.87158"
+         id="text1"
+         transform="translate(36.264885,-5.107731)"><tspan
+           x="66.891075"
+           y="271.87158"
+           id="tspan13">Time-series<tspan
+   y="271.87158"
+   id="tspan14"> </tspan></tspan><tspan
+           x="66.891075"
+           y="295.20495"
+           id="tspan15">Sensor Data<tspan
+   y="295.20495"
+   id="tspan16"> </tspan></tspan><tspan
+           x="66.891075"
+           y="318.53832"
+           id="tspan17">TDMS format</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:18.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;text-anchor:middle;white-space:pre;inline-size:122.94;fill:#000000;stroke-width:0.944882"
+         x="66.891075"
+         y="271.87158"
+         id="text1-1"
+         transform="translate(39.410986,90.920592)"><tspan
+           x="66.891075"
+           y="271.87158"
+           id="tspan18">Time-series<tspan
+   y="271.87158"
+   id="tspan19"> </tspan></tspan><tspan
+           x="66.891075"
+           y="295.20495"
+           id="tspan20">AES Data<tspan
+   y="295.20495"
+   id="tspan21"> </tspan></tspan><tspan
+           x="66.891075"
+           y="318.53832"
+           id="tspan22">TDMS format</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:18.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;text-anchor:middle;white-space:pre;inline-size:144.61;fill:#000000;stroke-width:0.944882"
+         x="66.891075"
+         y="271.87158"
+         id="text1-7"
+         transform="translate(37.546217,186.04513)"><tspan
+           x="66.891075"
+           y="271.87158"
+           id="tspan23">Lecroy<tspan
+   y="271.87158"
+   id="tspan24"> </tspan></tspan><tspan
+           x="66.891075"
+           y="295.20495"
+           id="tspan25">Oscilloscope<tspan
+   y="295.20495"
+   id="tspan26"> </tspan></tspan><tspan
+           x="66.891075"
+           y="318.53832"
+           id="tspan27">data, individual<tspan
+   y="318.53832"
+   id="tspan28"> </tspan></tspan><tspan
+           x="66.891075"
+           y="341.8717"
+           id="tspan29">acqusitions</tspan></text>
+    </g>
+  </g>
+</svg>
