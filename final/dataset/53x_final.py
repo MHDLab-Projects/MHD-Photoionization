@@ -126,6 +126,7 @@ da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
 ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy)
 ds_p_mws['decay'] = 1/ds_p_mws['krm']
 
+ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws_dnedt.cdf'))
 ds_p_dnedt = ds_p_mws.copy()
 
 #%%
@@ -159,6 +160,8 @@ ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
 
 ds_p_exp = ds_p_mws.copy()
 
+ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws_exp.cdf'))
+
 #%%
 
 #TODO: output a standard plot of fits for SI or save to file
@@ -188,7 +191,6 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 #%%
 
 
-ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws.cdf'))
 ds_lecroy.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
 ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
 

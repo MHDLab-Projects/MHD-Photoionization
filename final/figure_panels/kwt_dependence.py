@@ -10,13 +10,34 @@ data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()
 ds_species_cfd = xr.open_dataset(pjoin(data_directory, '53x_ds_species_cfd.cdf')).pint.quantify()
 ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
-ds_mws_fit = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws.cdf')).pint.quantify()
+
+ds_mws_fit_exp = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_exp.cdf')).pint.quantify()
+ds_mws_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_dnedt.cdf')).pint.quantify()
+
+
+
+#TODO: the time grids are not the same for the two fitting methods. Why?
+ds_mws_fit_exp = ds_mws_fit_exp.interp(time=ds_mws_fit_dnedt.time, method='linear')
+#TODO: realized 'method' cannot be used as a coordinate as it is a reserved word in xarray(i.e. method='nearest'). Need to change this in the fitting code.
+ds_mws_fit = xr.concat([
+    ds_mws_fit_exp.assign_coords(fit_method=['exp']),
+    ds_mws_fit_dnedt.assign_coords(fit_method=['dnedt'])
+    ], 'fit_method')
+
+# ds_mws_fit = ds_mws_fit.assign_coords(method=[str(s) for s in ds_mws_fit.coords['method'].values])
+
+#%%
+
+# ds_mws_fit_dnedt.coords['time']
+ds_mws_fit_exp.coords['time']
+
+
 
 #%%
 
 plt.figure(figsize=(4,2))
 
-ds_plot = ds_mws_fit.sel(date='2023-05-12').sel(run_num=1)
+ds_plot = ds_mws_fit.sel(date='2023-05-12').sel(run_num=1).sel(fit_method='exp')
 
 # da_plot = ds_plot[['AS_fit','AS_all']].to_array('var')
 
@@ -30,14 +51,40 @@ for kwt in ds_plot.coords['kwt']:
     ds_plot['AS_fit'].sel(kwt=kwt).plot(color='black', linestyle='-', alpha=0.5)
 
 
-plt.xlim(-1,40)
-
 plt.yscale('log')
+plt.xlim(-1,40)
 plt.ylim(1e-5, 0.1)
 
 plt.title('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
+
+
+#%%
+
+ds_plot = ds_mws_fit.sel(kwt=1, method='nearest').sel(date='2023-05-12').sel(run_num=1)
+
+g = ds_plot[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='fit_method', sharey=False)
+
+g.axes[0][1].set_ylabel('$\Delta AS$ Normalized [dimensionless]')
+
+for ax in g.axes.flatten():
+    ax.set_yscale('log')
+
+plt.xlim(-1,40)
+g.axes[0][0].set_ylim(1e-5, 2e-1)
+g.axes[0][1].set_ylim(1e-4, 2)
+
+g.axes[0][0].set_title('Method: Exponential')
+g.axes[0][1].set_title('Method: Diff. Eq')
+
+
+plt.tight_layout()
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp_dnedt_individual_compare.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
 
 
 #%%
@@ -125,7 +172,7 @@ ax.errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label='MWS Fit'
+    label='MWS Fit Diff. Eq.'
     )
 
 
@@ -160,7 +207,7 @@ ax.errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label='MWS Fit'
+    label='MWS Fit Diff. Eq.'
     )
 
 plt.yscale('log')
