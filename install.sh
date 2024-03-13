@@ -10,4 +10,5 @@ pip install -e .
 
 
 cd mhdpy/fileio
+git submodule init
 git submodule update
