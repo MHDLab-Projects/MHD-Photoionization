@@ -25,6 +25,19 @@ create a python virtual environment, using a python 3.10 installation
 
 Then activate this envrionment and run `install.sh`
 
+### Installation Process WSL
+
+Documenting process of setting up repository. Vscode running WSL on same laptop codes were developed on. 
+palette: Ctrl + Shift + P
+TODO: update/merge with above
+
+1. clone MHD-Photoionization repo (checkout dev branch)
+2. palette: create python environment (venv). Python 3.11.2.  use reqs/requirements.wsl
+3. setup .env file (rename .env_example to .env)
+4. initialize mhdpy and readTrc submodules as above. 
+5. cd mhdpy and pip install -e .
+6. in main repo dir python setup.py develop (had to install setuptools?)
+3. open terminal in `automation` and run `source munge.sh`
 
 ### Data Pipeline 
 
@@ -38,3 +51,5 @@ Data is on external hard drive D:/
     mkdir /mnt/d
     sudo mount -t drvfs D: /mnt/d
     ```
+
+
