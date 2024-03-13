@@ -1,0 +1,6 @@
+Emulsion Recipe,,,,Fuel Properties,,,Water Properties,Densities,,,
+em_rho,em_massfrac_K2CO3,em_massfrac_fuel,em_percent_K_to_K2CO3,calorific value,CHweightratio,N_Carbon,specificheatwater,density_water,density_o2,density_fuel,density_ar
+g/ml,dimensionless,dimensionless,dimensionless,kW*s/g,dimensionless,dimensionless,J/g/delta_degree_Celsius,g/L,g/L,g/L,g/L
+1.056,"0.1543
+","0.19864
+",0.566,46.885182,5.32,12,4.186,1.00E+03,1.428,752,1.781
