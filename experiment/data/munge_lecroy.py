@@ -145,14 +145,19 @@ skip_existing=False
 coarsen_amount=100 #TODO: coarsen amount not being used. 
 subfolder_downselect=None
 
+import dotenv; dotenv.load_dotenv()
+LECROY_DIR = os.getenv('LECROY_RAW_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
+
+lecroy_setup_dir = pjoin(LECROY_DIR, 'Setups')
+lecroy_wfm_dir = pjoin(LECROY_DIR, 'Waveforms')
+
 
 # for i, datestr in enumerate(dates):
 for datestr, date_dict in process_date_dict.items():
 
     print("Processing Lecroy Data {}".format(datestr))
 
-    lecroy_setup_dir = r'Z:\HVOF Booth\F\Lecroy Oscope\Setups'
-    lecroy_wfm_dir = os.path.join(r'Z:\HVOF Booth\F\Lecroy Oscope\Waveforms', datestr)
+    lecroy_wfm_date_dir = pjoin(lecroy_wfm_dir, datestr)
 
     output_dir = os.path.join(output_base_dir, datestr, 'Lecroy')
     if not os.path.exists(output_dir): os.makedirs(output_dir)
@@ -168,7 +173,7 @@ for datestr, date_dict in process_date_dict.items():
 
 
     main(
-        lecroy_wfm_dir, 
+        lecroy_wfm_date_dir, 
         channel_dict, 
         time_offset, 
         output_dir,

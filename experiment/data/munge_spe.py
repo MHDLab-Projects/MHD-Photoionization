@@ -15,9 +15,13 @@ from collections import defaultdict
 
 #%%
 
+import dotenv; dotenv.load_dotenv()
+RAW_DATA_DIR = os.getenv('RAW_DATA_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
+
 
 def main(datestr):
-    folder = r'Z:\HVOF Booth\H\{}\PI_TopCam'.format(datestr)
+    # folder = r'Z:\HVOF Booth\H\{}\PI_TopCam'.format(datestr)
+    folder = pjoin(RAW_DATA_DIR, datestr, 'PI_TopCam' )
 
 
     output_dir = os.path.join('munged',datestr, 'spe')
