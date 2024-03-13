@@ -34,10 +34,10 @@ TODO: update/merge with above
 1. clone MHD-Photoionization repo (checkout dev branch)
 2. palette: create python environment (venv). Python 3.11.2.  use reqs/requirements.wsl
 3. setup .env file (rename .env_example to .env)
-4. initialize mhdpy and readTrc submodules as above. 
-5. cd mhdpy and pip install -e .
-6. in main repo dir python setup.py develop (had to install setuptools?)
-3. open terminal in `automation` and run `source munge.sh`
+4. run source install.sh
+5. open terminal in `automation` and run `source munge.sh` (TODO: vscode task)
+    TODO: Full munging untested. Copying from sharepoint for now. 
+6. run processed munged data task in vscode
 
 ### Data Pipeline 
 

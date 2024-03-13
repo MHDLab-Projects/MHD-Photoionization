@@ -1,9 +1,13 @@
-pip install -r reqs/requirements.txt
+pip install setuptools # TODO: add to requirements?
+
+python setup.py develop # For pi_paper_utils package
+
+git submodule init
+git submodule update
 
 cd mhdpy
 pip install -e .
 
-cd ..
-cd modeling
 
-python setup.py develop
+cd mhdpy/fileio
+git submodule update
