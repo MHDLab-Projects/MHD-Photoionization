@@ -5,23 +5,22 @@ script to call render_scripts.sh in all subdirectories
 source .env
 # source ../.env
 
-# expt_analysis_dir=$REPO_DIR/experiment/analysis
-
+expt_analysis_dir=$REPO_DIR/experiment/analysis
 # Default directories to process
-# render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
+render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
 # render_dirs=("mws")
 
 #TODO: add option to process final analysis
-expt_analysis_dir=$REPO_DIR/final
-render_dirs=( "analysis" )
+# expt_analysis_dir=$REPO_DIR/final
+# render_dirs=( "analysis" )
 
 # If an argument is provided, use it as the directories to process
 if [ "$#" -gt 0 ]; then
     render_dirs=( "$@" )
 fi
 
-purge_dirs=true
-replace_existing=true
+purge_dirs=false
+replace_existing=false
 
 # pushd and popd are used to change directories and return to the original directory
 

@@ -8,6 +8,7 @@ files currently needing to copy. create some sort of automation sync for this
 
 experiment/data/manual
 final/figures/setup_images
+modeling/cfd/simulation_data
 
 ### Installation Process WSL
 
@@ -81,6 +82,16 @@ modeling/viability/dataset/calc_P_zero.py
 modeling/viability/dataset/calc_gamma_new.py
 
 modeling/viability/figure_panels/gen_figs.sh
+
+
+--For SI--
+
+
+experiment/analysis/auto/expt_overview.py
+
+experiment/analysis/mws/resampling
+
+experiment/analysis/topcam/spe_analysis_2023-05-18.py
 
 ### Data Pipeline 
 

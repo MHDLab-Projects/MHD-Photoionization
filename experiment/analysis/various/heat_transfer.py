@@ -16,7 +16,7 @@ dst_coords
 #%%
 
 
-df = pd.read_csv(pjoin('output', 'heatFlux_last.csv'))
+df = pd.read_csv(pjoin(REPO_DIR, 'modeling','cfd','simulation_data', 'heatFlux_last.csv'))
 
 s = df.set_index(['phi', 'Y_K'])['inner_total']
 

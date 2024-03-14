@@ -8,7 +8,7 @@ https://imagej.net/imaging/spatial-calibration
 #%%
 
 from mhdpy.analysis.standard_import import *
-
+create_standard_folders()
 from tifffile import TiffFile
 
 fp_in = pjoin(REPO_DIR, 'experiment','data','manual', 'Thorcam', 'image_18_crop.tif')

@@ -146,6 +146,8 @@ da_sel.mean(['x', 'y']).plot(marker='o')
 # %%
 
 #%%
+plt.figure()
+
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
@@ -287,6 +289,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_compare_2ns_2023-05-24.png'), bbox_inche
 # set the 
 
 # %%
+
+plt.figure()
 
 da_sel2 = da_sel.sel(x=beam_xslice, y=beam_yslice)
 

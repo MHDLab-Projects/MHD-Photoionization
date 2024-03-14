@@ -26,3 +26,18 @@ for i in *.svg; do
 done
 
 cd ..
+
+cd schematics
+
+mkdir -p output
+
+echo "Converting SVG to PNG for schematics folder"
+
+
+for i in *.svg; do
+  echo $i
+  BN=$(basename $i .svg)
+  inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
+done
+
+cd ..
