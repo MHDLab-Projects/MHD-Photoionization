@@ -2,6 +2,12 @@
 
 Various notes getting the repo and data pipeline working on various computers. 
 
+### Files to copy
+
+files currently needing to copy. create some sort of automation sync for this
+
+experiment/data/manual
+final/figures/setup_images
 
 ### Installation Process WSL
 
@@ -67,9 +73,6 @@ Series of scripts that need to run:
 experiment/notebook/2018-11-20/munge_spe.py
 experiment/notebook/2018-11-20/analysis_beam_timing.py
 
-modeling/cfd/analysis/extract_2D.py
-
-top-cam: needs 
 experiment/analysis/topcam/spe_perspective.py
 experiment/analysis/topcam/spe_analysis_2023-05-24.py
 
