@@ -27,3 +27,6 @@
 
 - [] add calorific value and CH ratio to sim report
  - [] reprocess 
+
+
+ change particle to molecule
