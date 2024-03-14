@@ -33,8 +33,8 @@ TODO: update/merge with above
 
 1. clone MHD-Photoionization repo (checkout dev branch)
 2. palette: create python environment (venv). Python 3.11.2.  use reqs/requirements.wsl
-3. setup .env file (rename .env_example to .env)
-4. run source install.sh
+3. run source install.sh
+4. setup .env file (rename .env_example to .env)
 5. open terminal in `automation` and run `source munge.sh` (TODO: vscode task)
     TODO: Full munging untested. Copying from sharepoint for now. 
 6. run processed munged data task in vscode
@@ -43,6 +43,8 @@ TODO: update/merge with above
 Now installing on 7400
 
 #### WSL setup process
+
+TODO: redo this on fresh install. Should be able to upgrade to bookworm. then install `git python inkscape`
 
 1. Install wsl debian. install wsl, python, jupyter extensions in vscode and connect to wsl. open terminal
 2. sudo apt update, sudo apt upgrade
@@ -66,9 +68,42 @@ Switch from bullseye to bookworm
 #### repostiory setup
 
 clone repository. 
+follow install sequence above
+Mount the hard drive below before running munging 
 
+cant do everything because of memory errors- just manually copying proc_data and final dataset
+
+had to install inkscape : sudo apt install inkscape
+
+Installing latex: 
+
+latex workshop extension 
+sudo apt-get install texlive-full 
+
+
+#### Missing figures
+
+list of missing figues with data scattered around. Move to final data. For now going to copy files in their file strucutre. 
+Series of scripts that need to run: 
+
+experiment/notebook/2018-11-20/munge_spe.py
+experiment/notebook/2018-11-20/analysis_beam_timing.py
+
+modeling/cfd/analysis/extract_2D.py
+
+top-cam: needs 
+experiment/analysis/topcam/spe_perspective.py
+experiment/analysis/topcam/spe_analysis_2023-05-24.py
+
+modeling/viability/dataset/cantera_gen.py
+modeling/viability/dataset/calc_P_zero.py
+modeling/viability/dataset/calc_gamma_new.py
+
+modeling/viability/figure_panels/gen_figs.sh
 
 ### Data Pipeline 
+
+#TODO: Had to remount when reloading vscode window. Automate/fix. 
 
 Notes on data pipeline. Processing from raw data on WSL. 
 

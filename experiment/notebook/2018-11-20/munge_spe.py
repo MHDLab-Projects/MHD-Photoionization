@@ -7,8 +7,9 @@ from collections import defaultdict
 create_standard_folders()
 # %%
 
-
-folder = r'Z:\HVOF Booth\H\2018-11-20\PIMAX_2'
+import dotenv; load_dotenv()
+RAW_DATA_DIR = os.getenv('RAW_DATA_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
+folder = pjoin(RAW_DATA_DIR, '2018-11-20', 'PIMAX_2')
 
 fns = os.listdir(folder)
 
