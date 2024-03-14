@@ -44,7 +44,9 @@ def main(
 
             subfolder = os.path.relpath(dirpath, lecroy_wfm_dir)
 
-            out_fn = subfolder.replace('\\','_')
+
+            # out_fn = subfolder.replace('\\','_') # Old windows method, remove when tested on windows
+            out_fn = subfolder.replace(os.path.sep, '_')
             fp_out = os.path.join(output_dir, 'ds_{}.cdf'.format(out_fn))
 
             if skip_existing:
@@ -141,9 +143,10 @@ process_date_dict = {
 
 # # Resampel settings 
 output_base_dir = 'munged'
-skip_existing=False
+skip_existing=True
 coarsen_amount=100 #TODO: coarsen amount not being used. 
 subfolder_downselect=None
+chunk_size = 200 
 
 import dotenv; dotenv.load_dotenv()
 LECROY_DIR = os.getenv('LECROY_RAW_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
@@ -152,9 +155,9 @@ lecroy_setup_dir = pjoin(LECROY_DIR, 'Setups')
 lecroy_wfm_dir = pjoin(LECROY_DIR, 'Waveforms')
 
 
-# for i, datestr in enumerate(dates):
-for datestr, date_dict in process_date_dict.items():
+from multiprocessing import Pool
 
+def process_date(datestr, date_dict):
     print("Processing Lecroy Data {}".format(datestr))
 
     lecroy_wfm_date_dir = pjoin(lecroy_wfm_dir, datestr)
@@ -171,7 +174,6 @@ for datestr, date_dict in process_date_dict.items():
 
     print("Time offset for date {} is {}".format(datestr, time_offset))
 
-
     main(
         lecroy_wfm_date_dir, 
         channel_dict, 
@@ -179,7 +181,17 @@ for datestr, date_dict in process_date_dict.items():
         output_dir,
         skip_existing=skip_existing,
         coarsen_amount=coarsen_amount,
-        subfolder_downselect=subfolder_downselect
-        )
+        subfolder_downselect=subfolder_downselect,
+        chunk_size=chunk_size
+    )
 
+for datestr, date_dict in process_date_dict.items():
+    process_date(datestr, date_dict)
 
+# #TODO: multiprocess hangs, memory error?
+# #TODO: multiprocess all folders in a date (>4) vs all dates (4)? Believe can set max threads. 
+# #TODO: tried to ask copilot to use tqdm.contrib.concurrent.process_map,  to stop the output progress bars from being overwritten, but it didn't work.``
+# # Create a pool of workers
+# with Pool() as p:
+#     # Map the function to the data
+#     p.starmap(process_date, process_date_dict.items())
