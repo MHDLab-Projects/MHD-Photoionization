@@ -8,6 +8,7 @@ TODO: replace old extract_line_profiles.py with this script. Waiting on K=1% dat
 from mhdpy.fileio import gen_path
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import pint_pandas
 
 import pyvista as pv
