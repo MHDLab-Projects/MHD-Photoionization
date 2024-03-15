@@ -100,7 +100,7 @@ for datestr in datestrs:
 
 # Convert calibration images to cdf 
 
-folder_calibration_image = r'Z:\HVOF Booth\H\2023-05-18\PI_TopCam\Manual_Image'
+folder_calibration_image = pjoin(RAW_DATA_DIR, '2023-05-18', 'PI_TopCam', 'Manual_Image')
 output_dir = pjoin('munged','2023-05-18', 'spe', 'calibration')
 
 if not os.path.exists(output_dir):
