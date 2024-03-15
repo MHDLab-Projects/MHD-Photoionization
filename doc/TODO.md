@@ -30,3 +30,12 @@
 
 
  change particle to molecule
+
+
+- [] btw, the case window for 0.99_1 case on 5/12 could be shortened. The fuel is still changing at the start of the window. If you start window at  11:29:55(10 seconds later)  it will be better. though I'm just looking at DAQmx data right now. The fuel pump and combustion pressure change behavior half way through this case, so I wonder if something with syringe pump changes.Change 
+
+- [] syringe zero removal duplicated in post processing? 
+
+- [] 3% case on 05-12
+
+- [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines

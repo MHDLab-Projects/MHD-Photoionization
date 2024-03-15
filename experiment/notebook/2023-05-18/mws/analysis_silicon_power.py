@@ -1,6 +1,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 
 datestr = '2023-05-18'
 
@@ -116,10 +117,20 @@ from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 
 # da_fit = da_sel.mean('mnum')
+
 da_fit = ds.copy()['AS'].drop(0, 'fw')
+
+da_fit
+
+#%%
+
+da_fit
+
+#%%
 
 
 pipe_fit_exp.perform_fit_kwargs.update({'fit_timewindow': slice(Quantity(60, 'us'),Quantity(130, 'us'))})
+pipe_fit_exp.fit_prep_kwargs['pre_norm_cutoff'] = None
 ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%

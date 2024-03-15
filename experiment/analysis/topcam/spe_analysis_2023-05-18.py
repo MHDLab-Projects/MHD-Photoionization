@@ -201,7 +201,7 @@ gatedelay_on = slice(797,801)
 gatedelay_off = slice(700,793)
 
 #%%
-fp_cfd_2d = pjoin(REPO_DIR, 'modeling','cfd','analysis','output', 'mdot0130_phi080_K100.csv')
+fp_cfd_2d = pjoin(REPO_DIR, 'final','dataset','output', 'mdot0130_phi080_K100.csv')
 
 df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])
 

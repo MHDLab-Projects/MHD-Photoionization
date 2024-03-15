@@ -18,12 +18,14 @@ ds_lecroy = ppu.fileio.load_lecroy('536_pos')
 
 ds_final = ds_lecroy.sel(run=('2023-05-18',1)).sel(motor=180, method='nearest')
 
+
+
 # %%
 
 
-ds_final['AS'].mean('mnum').plot()
+# ds_final['AS'].mean('mnum').plot()
 
-plt.yscale('log')
+# plt.yscale('log')
 
 # %%
 

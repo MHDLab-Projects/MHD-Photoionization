@@ -32,7 +32,7 @@ df = df[['CC_em_flow_in', 'CC_fuel_flow_in', 'CC_o2_flow_in', 'CC_P', 'CC_water_
 #%%
 
 
-df.columns
+df
 
 #%%
 
@@ -41,17 +41,21 @@ df = df.reset_index()
 
  # Reset the index level you want to split
 
+
 # Split the reset index
-df[['kwt', 'date', 'num']] = df['Test Case'].str.split('_', expand=True)
+df[['kwt', 'phi', 'date', 'num']] = df['Test Case'].str.split('_', expand=True)
 
 df['repeat'] = df['date'] + '_' + df['num']
 
 df = df.sort_values(['repeat'])
 
 # Set the new MultiIndex
-df.set_index(['kwt', 'repeat', 'Statistic'], inplace=True)
+df.set_index(['kwt', 'phi', 'repeat', 'Statistic'], inplace=True)
 
 df = df.drop(['Test Case', 'date', 'num'], axis=1)
+
+#%%
+df
 
 #%%
 from pylatex import Document, Section, Figure, NoEscape
@@ -64,16 +68,16 @@ for col in df.columns:
     df_col = df[col]
 
 
-    kwt_gb = df_col.groupby('kwt')
+    kwt_gb = df_col.groupby(['kwt', 'phi'])
 
-    for kwt, df_kwt in kwt_gb:
+    for (kwt, phi), df_kwt in kwt_gb:
         fig, ax = plt.subplots()
 
         repeat_values = df_col.index.get_level_values('repeat').unique()
         plt.xticks(ticks=range(len(repeat_values)), labels=repeat_values, rotation=90)
         plt.xlabel('Repeat')
 
-        df_kwt = df_kwt.droplevel('kwt')
+        df_kwt = df_kwt.droplevel('kwt').droplevel('phi')
 
         s = df_kwt
 
@@ -92,10 +96,14 @@ for col in df.columns:
         # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', title='kwt')
         plt.tight_layout()
 
+        kwt_str = kwt.replace('.', 'p')
+        phi_str = phi.replace('.', 'p')
 
-        plt.savefig(pjoin(output_dir, '{}_{}.png'.format(kwt.replace('.', 'p'), col)))
+        plt.savefig(pjoin(output_dir, '{}_{}_{}.png'.format(kwt, phi, col)))
         plt.close()
 
 # doc.generate_pdf(clean_tex=False)
 
 # %%
+
+df_kwt
