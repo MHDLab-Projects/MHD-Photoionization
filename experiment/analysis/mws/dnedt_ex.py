@@ -5,6 +5,7 @@
 #%%
 
 from mhdpy.analysis.standard_import import *
+create_standard_folders()
 import pi_paper_utils as ppu
 
 from mhdpy.analysis.mws.fitting import calc_dnedt_v2

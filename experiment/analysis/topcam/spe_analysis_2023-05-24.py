@@ -146,6 +146,8 @@ da_sel.mean(['x', 'y']).plot(marker='o')
 # %%
 
 #%%
+plt.figure()
+
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
@@ -195,7 +197,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
 
 #%%
 from mhdpy.pyvista_utils import CFDDatasetAccessor
-fp_cfd_2d = pjoin(REPO_DIR, 'modeling','cfd','analysis','output', 'mdot0130_phi080_K100.csv')
+fp_cfd_2d = pjoin(REPO_DIR, 'final','dataset','output', 'mdot0130_phi080_K100.csv')
 
 df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])
 
@@ -287,6 +289,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_compare_2ns_2023-05-24.png'), bbox_inche
 # set the 
 
 # %%
+
+plt.figure()
 
 da_sel2 = da_sel.sel(x=beam_xslice, y=beam_yslice)
 

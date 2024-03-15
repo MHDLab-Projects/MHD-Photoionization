@@ -69,4 +69,4 @@ ds_rs_sel.pint.dequantify().to_netcdf('output/ds_1000.cdf')
 
 #%%
 
-ds_rs_sel.mean('acq_time')['AS'].plot()
+# ds_rs_sel.mean('acq_time')['AS'].plot()
