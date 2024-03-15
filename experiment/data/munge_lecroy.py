@@ -125,18 +125,18 @@ def main(
                 ds.to_netcdf(fp_out)
 
 process_date_dict = {
-    # '2023-04-07': {
-    #     'time_offset_file': 'Setup_2023_04_07_13_48_34_810411--00000.lss',
-    #     'channel_dict': {'1':'i','2':'q'},
-    # },
-    # '2023-05-12': {
-    #     'time_offset_file': 'Setup_2023_05_12_13_22_06_740182--00000.lss',
-    #     'channel_dict': {'1':'i','2':'q'},
-    # },
-    # '2023-05-18': {
-    #     'time_offset_file': 'Setup_2023_05_18_15_22_31_204405--00000.lss',
-    #     'channel_dict': {'1':'i','2':'q'},
-    # },
+    '2023-04-07': {
+        'time_offset_file': 'Setup_2023_04_07_13_48_34_810411--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
+    '2023-05-12': {
+        'time_offset_file': 'Setup_2023_05_12_13_22_06_740182--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
+    '2023-05-18': {
+        'time_offset_file': 'Setup_2023_05_18_15_22_31_204405--00000.lss',
+        'channel_dict': {'1':'i','2':'q'},
+    },
     '2023-05-24': {
         'time_offset_file': 'Setup_2023_05_24_14_22_00_592076--00000.lss',
         'channel_dict': {'1':'i','2':'q','3':'pd1','4':'pd2'},
@@ -196,18 +196,18 @@ def process_date(datestr, date_dict):
 
 ## Single process
 
-# for datestr, date_dict in process_date_dict.items():
-#     process_date(datestr, date_dict)
+for datestr, date_dict in process_date_dict.items():
+    process_date(datestr, date_dict)
 
 ## Multiprocess
-from multiprocessing import Pool
+# from multiprocessing import Pool
 
-def mutliprocess_main():
-    with Pool() as p:
-        p.starmap(process_date, process_date_dict.items())
+# def mutliprocess_main():
+#     with Pool() as p:
+#         p.starmap(process_date, process_date_dict.items())
 
-if __name__ == '__main__':
-    mutliprocess_main()    
+# if __name__ == '__main__':
+#     mutliprocess_main()    
 
 # #TODO: multiprocess all folders in a date (>4) vs all dates (4)? Believe can set max threads. 
 # #TODO: tried to ask copilot to use tqdm.contrib.concurrent.process_map,  to stop the output progress bars from being overwritten, but it didn't work.``
