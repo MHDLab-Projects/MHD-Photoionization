@@ -26,7 +26,8 @@ def main(
         chunk_size=1000,
         coarsen_amount=1000,
         skip_existing=False,
-        subfolder_downselect=None
+        subfolder_downselect=None,
+        ts_option='trigger'
         ):
 
     channel_list = list(channel_dict.keys())
@@ -71,7 +72,14 @@ def main(
             for mnum_list in get_chunks(mnums, chunk_size):
                 # mnum_list = mnum_list[::500]    
                 try:
-                    ds = load_trc_mnum_simple(dirpath, fname_middle, mnum_list, channels=channel_list, time_offset=time_offset)
+                    ds = load_trc_mnum_simple(
+                        dirpath, 
+                        fname_middle, 
+                        mnum_list, 
+                        channels=channel_list, 
+                        time_offset=time_offset, 
+                        ts_option=ts_option
+                        )
                 except NoMatchingFilesError as e:
                     print("No Matching files")
                 except AttributeError as e:
@@ -115,18 +123,18 @@ def main(
                 ds.to_netcdf(fp_out)
 
 process_date_dict = {
-    '2023-04-07': {
-        'time_offset_file': 'Setup_2023_04_07_13_48_34_810411--00000.lss',
-        'channel_dict': {'1':'i','2':'q'},
-    },
-    '2023-05-12': {
-        'time_offset_file': 'Setup_2023_05_12_13_22_06_740182--00000.lss',
-        'channel_dict': {'1':'i','2':'q'},
-    },
-    '2023-05-18': {
-        'time_offset_file': 'Setup_2023_05_18_15_22_31_204405--00000.lss',
-        'channel_dict': {'1':'i','2':'q'},
-    },
+    # '2023-04-07': {
+    #     'time_offset_file': 'Setup_2023_04_07_13_48_34_810411--00000.lss',
+    #     'channel_dict': {'1':'i','2':'q'},
+    # },
+    # '2023-05-12': {
+    #     'time_offset_file': 'Setup_2023_05_12_13_22_06_740182--00000.lss',
+    #     'channel_dict': {'1':'i','2':'q'},
+    # },
+    # '2023-05-18': {
+    #     'time_offset_file': 'Setup_2023_05_18_15_22_31_204405--00000.lss',
+    #     'channel_dict': {'1':'i','2':'q'},
+    # },
     '2023-05-24': {
         'time_offset_file': 'Setup_2023_05_24_14_22_00_592076--00000.lss',
         'channel_dict': {'1':'i','2':'q','3':'pd1','4':'pd2'},
@@ -141,9 +149,10 @@ process_date_dict = {
 
 # # Resampel settings 
 output_base_dir = 'munged'
-skip_existing=False
+skip_existing=True
 coarsen_amount=100 #TODO: coarsen amount not being used. 
 subfolder_downselect=None
+ts_option='mtime'
 
 import dotenv; dotenv.load_dotenv()
 LECROY_DIR = os.getenv('LECROY_RAW_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
@@ -179,7 +188,8 @@ for datestr, date_dict in process_date_dict.items():
         output_dir,
         skip_existing=skip_existing,
         coarsen_amount=coarsen_amount,
-        subfolder_downselect=subfolder_downselect
+        subfolder_downselect=subfolder_downselect,
+        ts_option=ts_option
         )
 
 

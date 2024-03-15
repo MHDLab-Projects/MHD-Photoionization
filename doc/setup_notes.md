@@ -109,3 +109,12 @@ Data is on external hard drive D:/
     ```
 
 
+# Lecroy timestamp 
+
+The lecroy timestamps originally came from the mtime property of the trc file. 
+
+I cannot remember why this was chosen exactly, but it seemed to work when processing data on office comp from the z drive. However, when moving to processing on backup of raw data on external drive with a laptop, this failed and the timestamps were unreliable. C time also appeared to be unreliable. 
+
+I recently pulled the lecroy file attributes to be attributes of the output xr.dataset. There is a trigger time in there which seems to agree with the mtime from the office comp within ~100 ms when spot checking for the 516 case. 
+
+I'm not sure why I didn't use trigger time before. Going to test how things are working with trigger time. First making a commit with the ts_option flag set to mtime to produce the old results on the office comp. 
