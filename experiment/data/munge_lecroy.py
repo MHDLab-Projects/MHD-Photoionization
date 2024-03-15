@@ -52,7 +52,7 @@ def main(
 
             if skip_existing:
                 if os.path.exists(fp_out):
-                    print("{} exists, skipping".format(fp_out))
+                    # print("{} exists, skipping".format(fp_out))
                     continue
 
             if subfolder_downselect:
@@ -196,18 +196,18 @@ def process_date(datestr, date_dict):
 
 ## Single process
 
-for datestr, date_dict in process_date_dict.items():
-    process_date(datestr, date_dict)
+# for datestr, date_dict in process_date_dict.items():
+#     process_date(datestr, date_dict)
 
 ## Multiprocess
-# from multiprocessing import Pool
+from multiprocessing import Pool
 
-# def mutliprocess_main():
-#     with Pool() as p:
-#         p.starmap(process_date, process_date_dict.items())
+def mutliprocess_main():
+    with Pool() as p:
+        p.starmap(process_date, process_date_dict.items())
 
-# if __name__ == '__main__':
-#     mutliprocess_main()    
+if __name__ == '__main__':
+    mutliprocess_main()    
 
 # #TODO: multiprocess all folders in a date (>4) vs all dates (4)? Believe can set max threads. 
 # #TODO: tried to ask copilot to use tqdm.contrib.concurrent.process_map,  to stop the output progress bars from being overwritten, but it didn't work.``
