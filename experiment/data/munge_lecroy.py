@@ -155,7 +155,7 @@ skip_existing=True
 coarsen_amount=100 #TODO: coarsen amount not being used. 
 subfolder_downselect=None
 chunk_size = 200 
-ts_option='mtime'
+ts_option='trigger'
 
 import dotenv; dotenv.load_dotenv()
 LECROY_DIR = os.getenv('LECROY_RAW_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
