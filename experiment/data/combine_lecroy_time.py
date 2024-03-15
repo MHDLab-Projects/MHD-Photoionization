@@ -47,3 +47,19 @@ ds.coords['time'].attrs['long_name'] = 'Time'
 ds.to_netcdf(pjoin(data_folder, 'ds_lecroy_time.cdf'))
 
 
+
+# %%
+
+ds_out = ds.mws.calc_mag_phase_AS()[['mag_pp', 'mag_pp_std', 'AS']].mws._pulse_max()
+
+ds_out = ds_out.rename({'acq_time':'time'})
+
+from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
+
+with TdmsWriter(pjoin(data_folder, 'Processed_Data.tdms'), 'a') as tdms:
+    ds_to_tdms(ds_out, group_name='mws_time', tdms_writer=tdms)
+
+
+#%%
+    
+data_folder
