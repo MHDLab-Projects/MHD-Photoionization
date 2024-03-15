@@ -155,7 +155,6 @@ lecroy_setup_dir = pjoin(LECROY_DIR, 'Setups')
 lecroy_wfm_dir = pjoin(LECROY_DIR, 'Waveforms')
 
 
-from multiprocessing import Pool
 
 def process_date(datestr, date_dict):
     print("Processing Lecroy Data {}".format(datestr))
@@ -185,13 +184,21 @@ def process_date(datestr, date_dict):
         chunk_size=chunk_size
     )
 
-for datestr, date_dict in process_date_dict.items():
-    process_date(datestr, date_dict)
+## Single process
 
-# #TODO: multiprocess hangs, memory error?
+# for datestr, date_dict in process_date_dict.items():
+#     process_date(datestr, date_dict)
+
+
+## Multiprocess
+from multiprocessing import Pool
+
+def mutliprocess_main():
+    with Pool() as p:
+        p.starmap(process_date, process_date_dict.items())
+
+if __name__ == '__main__':
+    mutliprocess_main()    
+
 # #TODO: multiprocess all folders in a date (>4) vs all dates (4)? Believe can set max threads. 
 # #TODO: tried to ask copilot to use tqdm.contrib.concurrent.process_map,  to stop the output progress bars from being overwritten, but it didn't work.``
-# # Create a pool of workers
-# with Pool() as p:
-#     # Map the function to the data
-#     p.starmap(process_date, process_date_dict.items())
