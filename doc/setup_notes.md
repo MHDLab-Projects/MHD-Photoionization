@@ -86,34 +86,6 @@ Switch from bullseye to bookworm
 10. reboot/ reload
 
 
-#### Missing figures
-
-list of missing figues with data scattered around. Move to final data. For now going to copy files in their file strucutre. 
-Series of scripts that need to run: 
-
-experiment/notebook/2018-11-20/munge_spe.py
-experiment/notebook/2018-11-20/analysis_beam_timing.py
-
-experiment/analysis/topcam/spe_perspective.py
-experiment/analysis/topcam/spe_analysis_2023-05-24.py
-
-modeling/viability/dataset/cantera_gen.py
-modeling/viability/dataset/calc_P_zero.py
-modeling/viability/dataset/calc_gamma_new.py
-
-modeling/viability/figure_panels/gen_figs.sh
-
-
---For SI--
-
-
-experiment/analysis/auto/expt_overview.py
-
-experiment/analysis/mws/resampling
-
-experiment/analysis/topcam/spe_analysis_2023-05-18.py
-
-
 # Lecroy timestamp 
 
 The lecroy timestamps originally came from the mtime property of the trc file. 

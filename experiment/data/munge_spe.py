@@ -80,6 +80,7 @@ def main(datestr):
         # Gate delays can be different if the start time was changed through run
         #TODO: outer should be ok, but maybe interpolate gatedelays before exact join to be more explicit. 
         ds_out = xr.concat(dss, 'estime', join='outer')
+        ds_out = ds_out.sortby('estime')
 
 
         # #Coarsen to reduce file size. TODO: Remove for final analysis
