@@ -131,7 +131,7 @@ ds_p_dnedt = ds_p_mws.copy()
 
 #%%
 
-da_fit_lecroy.sel(kwt=[0.05, 0.99]).plot(hue='run_plot', row='kwt', x='time')
+da_fit_lecroy.sel(kwt=[0.05, 0.99], method='nearest').plot(hue='run_plot', row='kwt', x='time')
 
 plt.xlim(-1,1)
 
@@ -166,7 +166,7 @@ ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_d
 
 #TODO: output a standard plot of fits for SI or save to file
 
-da_sel = ds_lecroy['AS_abs'].sel(kwt=0.05).dropna('run',how='all').isel(run=2)
+da_sel = ds_lecroy['AS_abs'].sel(kwt=0.05,method='nearest').dropna('run',how='all').isel(run=2)
 
 da_mean = da_sel
 da_std = da_sel
