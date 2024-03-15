@@ -93,23 +93,26 @@ We calculate expected decay constants for electron capture by various species in
 \centering
 \caption{Collected Reaction Kinetics for Electron Recombination.}
 \label{tab:reactions}
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Reaction & Rate Coefficient & Reference \\
+Name & Reaction & Rate Coefficient & Reference \\
 \hline
-K$^+$ + e$^-$ + M $\rightarrow$ K + M & $4 \times 10^{-24}$ T$^{-1}$ cm$^3$/s & Jensen 1978 \\
+K$^+$ & K$^+$ + e$^-$ + M $\rightarrow$ K + M & $4 \times 10^{-24}$ T$^{-1}$ cm$^3$/s & Jensen 1978 \\
 \hline
-O$_2$ + e$^-$ + M $\rightarrow$ O$_2^-$ + M & Variable & Axford 1997 and Goodings 1979 \\
+O2\_A & O$_2$ + e$^-$ + M $\rightarrow$ O$_2^-$ + M & $5 \times 10^{-31} cm^6/s$ & Axford 1997 \\
 \hline
-OH + e$^-$ + M $\rightarrow$ OH$^-$ + M & $3 \times 10^{-31}$ cm$^6$/s & Axford 1997 \\
+O2\_B & ""                                          & $6 \times 10^{-34} cm^6/s$ &  Goodings 1979 \\
 \hline
-H$_2$O + e$^-$ $\rightarrow$ H$_2$O$^-$ & $1.6 \times 10^{-5}$ exp(36060/T) cm$^3$/s & Axford 1997 \\
+O2\_C & ""                                          & Weighted sum  &  Axford 1997 \\
+\hline
+OH & OH + e$^-$ + M $\rightarrow$ OH$^-$ + M & $3 \times 10^{-31}$ cm$^6$/s & Axford 1997 \\
+\hline
+H$_2$O & H$_2$O + e$^-$ $\rightarrow$ H$_2$O$^-$ & $1.6 \times 10^{-6}$ exp(36060/T) cm$^3$/s & Axford 1997 \\
 \hline
 \end{tabular}
 \end{table}
 
-
-For recombination with molecular oxygen, there is significant uncertainty in the rate constant and we consider a few possibilities indicated in the legend of \ref{fig:kwt_recombination}C. Axford 1997 discussed this uncertainty and presented a range of rate constants ultimately deciding on a value of $5e-31 cm^6/s$ for their H2 + O2 + N2 flame, which we consider as '$O2_A$' using the number density of all species as the collisional partner density. In the same discussion they specify the dominant collisional partners of the various literature values of the rate constant, so for '$O2_B$' we preform a sum of species dependent $k_{r,tm}$ with the CFD number densities for each collisional partner to determine an overall $k_r$. The constants presented by Axford 1997 include low temperature measurements, but mention that $k_{r,th}$ is expected to decrease at flame temperatures. Goodings 1979 found a much lower rate constant for similar flames and speculated a large negative temperature coefficient for the oxygen capture reaction. We consider this as '$O2_C$' and use the number density of all species as the collisional partner density. It is not clear why Axford 1997 did not mention the Goodings 1979 result (Hayhurst was on both papers). 
+For recombination with molecular oxygen, there is significant uncertainty in the rate constant and we consider a few possibilities indicated in the legend of \ref{fig:kwt_recombination}C. Axford 1997 discussed this uncertainty and presented a range of rate constants ultimately deciding on a value of $5e-31 cm^6/s$ for their H2 + O2 + N2 flame, which we consider as '$O2_A$' using the number density of all species as the collisional partner density. In the same discussion they specify the dominant collisional partners of the various literature values of the rate constant, so for '$O2_C$' we preform a sum of species dependent $k_{r,tm}$ with the CFD number densities for each collisional partner to determine an overall $k_r$. The constants presented by Axford 1997 include low temperature measurements, but mention that $k_{r,th}$ is expected to decrease at flame temperatures. Goodings 1979 found a much lower rate constant for similar flames and speculated a large negative temperature coefficient for the oxygen capture reaction. We consider this as '$O2_B$' and use the number density of all species as the collisional partner density. It is not clear why Axford 1997 did not mention the Goodings 1979 result (Hayhurst was on both papers). 
 
 In summary there is a large uncertainty in the $k_{r,th}$ for the oxygen capture reaction. We present a range of predictions in \ref{fig:kwt_recombination}C. Our results fall within this large deviation. All other reactions predict decays much longer than the observed experimental decay. 
 

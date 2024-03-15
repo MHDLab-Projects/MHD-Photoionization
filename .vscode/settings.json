@@ -115,7 +115,7 @@
 			"name": "lualatexmk",
 			"tools": [
 				"lualatexmk",
-                "manual_clean"
+                // "manual_clean"
                 // "lualatexmk_clean"
 
 			]

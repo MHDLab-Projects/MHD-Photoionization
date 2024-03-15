@@ -42,7 +42,7 @@ ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_p.coords['kwt'].values)
 
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
-goldi_pos = Quantity(178,'mm')
+goldi_pos = Quantity(180,'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 
@@ -149,12 +149,50 @@ ds_p['decay'].mean('run').plot(marker='o', label='experiment')
 plt.yscale('log')
 # %%
 
+ds_cfd['O2']
+
+#%%
+
 tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
-k_eff = 1/(tau_exp*ds_cfd['rho_number']**2)
+k_eff = 1/(tau_exp*ds_cfd['rho_number']*ds_cfd['O2'])
 
 k_eff = k_eff.pint.to('cm^6/particle^2/s')
+k_eff.attrs['long_name'] = 'Effective bimolecular rate'
 
 k_eff.plot(marker='o')
+
+
+#%%
+
+fig, axes = plt.subplots(3, 1, figsize=(5,7), sharex=True, sharey=False)
+
+# Plot decay
+ds_p['decay'].mean('run', keep_attrs=True).plot(ax=axes[0], marker='o')
+axes[0].set_title('MWS Time constant')
+axes[0].set_ylabel('Decay constant (us)')   
+axes[0].set_yscale('log')
+axes[0].set_xlabel('')
+
+# Plot ds_cfd['rho_number']
+ds_cfd['rho_number'].pint.to('particle/ml').plot(ax=axes[1], label='all species', marker='o')
+ds_cfd['O2'].pint.to('particle/ml').plot(ax=axes[1], label='O2', marker='o')
+axes[1].set_title('CFD Particle Density')
+axes[1].set_yscale('log')
+axes[1].set_xlabel('')
+
+axes[1].legend()
+
+# Calculate and plot k_eff
+
+k_eff.plot(marker='o', ax=axes[2])
+axes[2].set_title('Effective Bimolecular Rate')
+axes[2].set_yscale('log')
+
+
+plt.xscale('log')
+
+plt.xlabel('Nominal K wt%')
+plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_53x.png'))
 
 plt.yscale('log')
 # %%
