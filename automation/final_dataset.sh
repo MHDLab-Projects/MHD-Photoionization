@@ -57,3 +57,7 @@ popd
 pushd $REPO_DIR/experiment/analysis/topcam
 python spe_analysis_2023-05-18.py
 popd
+
+pushd $REPO_DIR/experiment/notebook/2023-05-18/mws
+python analysis_silicon_power.py
+popd
