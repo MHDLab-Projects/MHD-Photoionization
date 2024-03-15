@@ -58,7 +58,6 @@ df = df.drop(['Test Case', 'date', 'num'], axis=1)
 df
 
 #%%
-from pylatex import Document, Section, Figure, NoEscape
 
 output_dir = pjoin(DIR_FIG_OUT, 'signal_stats_repeat')
 if not os.path.exists(output_dir):
