@@ -1,40 +1,16 @@
 {
     "version": "2.0.0",
     "tasks": [
-        //Latex script: TODO: simplify this script into separate scripts/tasks
+        // Documents and Figures
         {
-            "label": "Run Shell Script with all",
+            "label": "Render Figures",
             "type": "shell",
-            "command": "./automation/gen_vis_latex.sh panels fig latex",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always"
-            },
-            "problemMatcher": []
+            "command": "cd final/figures && source gen_figs.sh",
         },
         {
-            "label": "Run Shell Script with fig",
+            "label": "Generate Documents",
             "type": "shell",
-            "command": "./automation/gen_vis_latex.sh fig",
-        },
-        {
-            "label": "Run Shell Script with collect",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh collect",
-
-        },
-        {
-            "label": "Run Shell Script with panels",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh panels",
-        },
-        {
-            "label": "Run Shell Script with latex",
-            "type": "shell",
-            "command": "./automation/gen_vis_latex.sh latex",
+            "command": "./automation/gen_docs.sh latex",
         },
         {
             "label": "Clean Latex Paper Directory",
@@ -62,7 +38,7 @@
             "type": "shell",
             "command": "./automation/render_all_expt.sh final",
         },
-        // Process data
+        // Data Pipeline #TODO: add munging
         {
             "label": "Process Munged Data",
             "type": "shell",
@@ -74,9 +50,20 @@
             "command": "./automation/final_dataset.sh",
         },
         {
+            "label": "Generate Final Panels",
+            "type": "shell",
+            "command": "cd final/figure_panels && source gen_all.sh"
+        },
+        // Data Collection
+        {
             "label": "collect test data",
             "type": "shell",
             "command": "cd tests && python collect_test_data.py",
-        }
+        },
+        {
+            "label": "Collect Final Files",
+            "type": "shell",
+            "command": "./automation/collect_final_files.sh"
+        },
     ]
 }
