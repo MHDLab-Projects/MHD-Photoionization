@@ -94,7 +94,7 @@
 		},
         {
     "name": "manual_clean",
-    "command" : "sh",
+    "command" : "bash",
     // "command" : "${workspaceFolder}/path/to/clean.sh", // for full path, for now putting a cleah.sh in each folder
     "args": ["clean.sh"],
     "env": {}

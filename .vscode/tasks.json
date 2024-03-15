@@ -1,6 +1,7 @@
 {
     "version": "2.0.0",
     "tasks": [
+        //Latex script: TODO: simplify this script into separate scripts/tasks
         {
             "label": "Run Shell Script with all",
             "type": "shell",
@@ -36,10 +37,32 @@
             "command": "./automation/gen_vis_latex.sh latex",
         },
         {
+            "label": "Clean Latex Paper Directory",
+            "type": "shell",
+            "command": "cd doc/paper && ./clean.sh"
+        },
+        {
+            "label": "Clean Latex SI Directory",
+            "type": "shell",
+            "command": "cd doc/SI_man && ./clean.sh"
+        },
+        {
+            "label": "Clean Both Latex Directories",
+            "dependsOn": ["Clean Latex Paper Directory", "Clean Latex SI Directory"],
+            "problemMatcher": []
+        },
+        // Render notebooks
+        {
             "label": "Render Exp. Analysis Notebooks",
             "type": "shell",
             "command": "./automation/render_all_expt.sh",
         },
+        {
+            "label": "Render Final Analysis Notebooks",
+            "type": "shell",
+            "command": "./automation/render_all_expt.sh final",
+        },
+        // Process data
         {
             "label": "Process Munged Data",
             "type": "shell",

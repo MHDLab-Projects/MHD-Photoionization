@@ -34,6 +34,17 @@ modeling/cfd/simulation_data
 
 Add inkscape to windows system path. This is method used before with LDES viability paper, see that readme. It says issues were encountered with inkscape python overriding venv, but I didn't encounter that. 
 
+-- latex on windows setup --
+
+latex workshop extension
+
+Install pandoc from github releases msi installer. Install for all users. (worked without setting up latex. )
+
+texlive:i https://www.tug.org/texlive/windows.html
+
+
+https://strawberryperl.com/
+
 ### WSL setup 
 
 clone repository. 
