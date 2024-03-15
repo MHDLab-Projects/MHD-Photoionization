@@ -340,6 +340,12 @@ df_out
     
 # %%
 
+import subprocess
+# Get the current commit hash
+commit_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf-8')
+
+
+
 
 from mhdpy.fileio.tdms import tdms2ds
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
@@ -382,5 +388,9 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
         df_out.to_excel(writer, sheet_name=sheet_names[key])
 
     params_table = extract_params(dsst['hvof'])
+
+    # Add the commit hash to the params_table DataFrame
+    params_table['Commit Hash'] = commit_hash
+
     params_table.to_excel(writer, sheet_name='Parameters')
 
