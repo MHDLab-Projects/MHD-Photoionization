@@ -2,15 +2,13 @@
 
 Various notes getting the repo and data pipeline working on various computers. 
 
-### Files to copy
+## Overview
 
-files currently needing to copy. create some sort of automation sync for this
+Originally was pursuing WSL but found some issues. So ended up getting full pipeline working with git bash (same setup on office comp)
+    * Seems to be more prone to memory errors. I think using git bash in native windows can take advantage of memory caching. 
+    * timestamp issues with lecroy munging, see lecroy timestamp seciton. Switched to trigger time attribute. Think this should relove the problem on WSL too, however have switched to multiprocessing for lecroy data to speed up time, and pretty sure this causes memory crashes, but should try again. 
 
-experiment/data/manual
-final/figures/setup_images
-modeling/cfd/simulation_data
-
-### Installation Process WSL
+## General installation process
 
 Documenting process of setting up repository. Vscode running WSL on same laptop codes were developed on. 
 palette: Ctrl + Shift + P
@@ -24,16 +22,53 @@ TODO: update/merge with above
     TODO: Full munging untested. Copying from sharepoint for now. 
 6. run processed munged data task in vscode
 
+### Files to copy
 
-Now installing on 7400
+files currently needing to copy. create some sort of automation sync for this
 
-#### WSL setup process
+experiment/data/manual
+final/figures/setup_images
+modeling/cfd/simulation_data
+
+### Git bash setup
+
+Add inkscape to windows system path. This is method used before with LDES viability paper, see that readme. It says issues were encountered with inkscape python overriding venv, but I didn't encounter that. 
+
+### WSL setup 
+
+clone repository. 
+follow install sequence above
+Mount the hard drive below before running munging 
+
+
+#TODO: Had to remount when reloading vscode window. Automate/fix. 
+Data is on external hard drive D:/
+
+1. create folder paths to H drive and Lecroy raw data in .env file (TODO: standardize names)
+2. mount the D drive in wsl
+    ```
+    mkdir /mnt/d
+    sudo mount -t drvfs D: /mnt/d
+    ```
+
+
+cant do everything because of memory errors- just manually copying proc_data and final dataset
+
+had to install inkscape : sudo apt install inkscape
+
+Installing latex: 
+
+latex workshop extension 
+sudo apt-get install texlive-full 
+
+
+#### Setting up WSL
+Documenting WSL setup process on Lattitude 7400
 
 TODO: redo this on fresh install. Should be able to upgrade to bookworm. then install `git python inkscape`
 
 1. Install wsl debian. install wsl, python, jupyter extensions in vscode and connect to wsl. open terminal
 2. sudo apt update, sudo apt upgrade
-
 
 3. sudo apt install git python (this installs python 3.9 as python3... not correct)
 
@@ -49,21 +84,6 @@ Switch from bullseye to bookworm
 9. had to sudo umount -l /lib/modules/ because of a usrmerge error
 10 sudo apt update/upgrade
 10. reboot/ reload
-
-#### repostiory setup
-
-clone repository. 
-follow install sequence above
-Mount the hard drive below before running munging 
-
-cant do everything because of memory errors- just manually copying proc_data and final dataset
-
-had to install inkscape : sudo apt install inkscape
-
-Installing latex: 
-
-latex workshop extension 
-sudo apt-get install texlive-full 
 
 
 #### Missing figures
@@ -92,21 +112,6 @@ experiment/analysis/auto/expt_overview.py
 experiment/analysis/mws/resampling
 
 experiment/analysis/topcam/spe_analysis_2023-05-18.py
-
-### Data Pipeline 
-
-#TODO: Had to remount when reloading vscode window. Automate/fix. 
-
-Notes on data pipeline. Processing from raw data on WSL. 
-
-Data is on external hard drive D:/
-
-1. create folder paths to H drive and Lecroy raw data in .env file (TODO: standardize names)
-2. mount the D drive in wsl
-    ```
-    mkdir /mnt/d
-    sudo mount -t drvfs D: /mnt/d
-    ```
 
 
 # Lecroy timestamp 
