@@ -50,6 +50,9 @@ Latex documents
 16. Run Clean latex dirs to clean up files
 
 
+Test data
+tests\collect_test_data.py
+PostProcessor\tests\populate_test_data.py
 
 
 ### Extra Input Data

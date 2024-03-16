@@ -58,3 +58,28 @@ use the xr package for references
 The .aux files need to be compiled and kept for the references to work. Need to add \externaldocument for the specific document that the label is in. 
 
 when using \ref, the reference is a hyperlink to the figure with the same number in the document...just going to use non hyperlink references with the SI using \ref*
+
+
+## Word to latex interop with citations 
+
+### Word to latex
+
+Used this citation style which worked. Have to find and replace after conversion to get the \cite{} showing up correctly. 
+
+https://retorque.re/zotero-better-bibtex/citing/migrating/
+
+https://forums.zotero.org/discussion/73847/porting-word-citations-to-latex-with-cite/p2
+
+
+### Latext to word 
+
+Tried going latex to word with zotero here but didn't work on first attempt, TODO
+
+
+https://medium.com/@zhelinchen91/how-to-convert-from-latex-to-ms-word-with-pandoc-f2045a762293
+
+Markdown instructions, tried CSL yaml and didnt work
+
+https://retorque.re/zotero-better-bibtex/exporting/pandoc/#from-markdown-to-zotero-live-citations
+
+https://tex.stackexchange.com/questions/111886/how-to-convert-a-scientific-manuscript-from-latex-to-word-using-pandoc

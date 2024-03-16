@@ -145,7 +145,7 @@ We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in q
 
 We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
 
-TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower proirity.
+TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower priority.
 
 This leads to a simple expression for $\Delta n_{e}$
 
@@ -190,14 +190,16 @@ In the results presented in the main text we assume a velocity of 1000 m/s and a
 
 To calculate $\mu_e$ and $n_i$ we model the combustion of seeded oxy-kerosene mixture with the Cantera python package. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction (1\%). This mixture is initialized at a inlet temperature (300 K) then allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (1e6 Pa).
 
-We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
+We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. ref shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
 We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross subsections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross subsections of constituent gasses.
 
-\includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
-
-Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.
-
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
+    \caption{a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.}
+    \label{fig:SI_Cantera_T}
+\end{figure} 
 
 
 \hypertarget{photoionization}{%
@@ -235,11 +237,18 @@ Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\texts
 
 To calculate \(\frac{\delta}{\delta_{KOH}\ }\) we utilize the compiled UV absorption cross subsection data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross subsections for the major species in the calculated gas mixtures.
 
-Figure 6 shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\)for various UV wavelengths and temperatures.
+\ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\)for various UV wavelengths and temperatures.
 
-\includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
 
-In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure 6. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
+    \caption{Your caption goes here.}
+    \label{fig:SI_atten_length}
+\end{figure}
+
+
+In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure \ref{fig:SI_atten_length}. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
 
 \subsubsection{UV Absorption Cross Sections}
 

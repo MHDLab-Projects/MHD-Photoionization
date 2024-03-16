@@ -2,17 +2,19 @@
 
 \section{Introduction}
 
-Motivation for oxy-fuel based MHD power generation.
+Motivation for oxy-fuel based MHD power generation. 
 
 In a 0D model, the ideal power density in a MHD generator is given by. 
 
 \begin{equation}
-P_{MHD} = K(1-K) u^2 B^2 \sigma
+P_{MHD} = K(1-K) u^2 B^2 \sigma(T)
 \label{eq:mhd_ideal_power}
 \end{equation}
 
 
-Where K is the MHD loading factor, u the fluid velocity, B the magnetic field, and σ is the fluid electrical conductivity. The dependence of $P_MHD$ on σ is a fundamental problem for combustion driven MHD power as combustion products are not intrinsically electrically conductive. This problem has historically been overcome by ‘seeding’ the flame with an alkali metal which will readily thermally ionize and increase the free electron density in the gas, forming an electrically conductive plasma. Thermal ionization of the alkali metal still requires a high temperature, typically 2000K and above, and the high temperature is a significant barrier to the practicality of MHD power generation. The dependence of conductivity on temperature is a particular problem for the electrode boundary layers, where there is a significant temperature drop due to heat transfer to the electrode walls. The temperature decrease near the electrode walls introduces high-resistivity boundary layers and concomitant voltage drops.[1], [2] In addition to the high resistance, charge transfer across these boundary layers can occur through arcing and lead to electrode damage.[3] 
+Where K is the MHD loading factor, u the fluid velocity, B the magnetic field, and $\sigma(T)$ is the fluid electrical conductivity. The dependence of $P_{MHD}$ on $\sigma(T)$ is a fundamental problem for combustion driven MHD power as combustion products are not intrinsically electrically conductive. This problem has historically been overcome by ‘seeding’ the flame with an alkali metal which can thermally ionize and increase the free electron density in the gas, forming an electrically conductive plasma.  
+
+Alkali seeding results in a $\sigma$ that is highly temperature dependent (\ref{fig:SI_Cantera_T}), which is a central problem for the practicality of this form of MHD power generation. Thermal ionization of the alkali metal still requires a high temperature, typically 2000K and above, and the high temperature is a significant barrier to the practicality of MHD power generation. The dependence of conductivity on temperature is a particular problem for the electrode boundary layers, where there is a significant temperature drop due to heat transfer to the electrode walls. The temperature decrease near the electrode walls introduces high-resistivity boundary layers and concomitant voltage drops.[1], [2] In addition to the high resistance, charge transfer across these boundary layers can occur through arcing and lead to electrode damage.[3] 
 
 
 In this paper we study the potential of UV photoionization as a method to enhance the conductivity of potassium seeded combustion products and improve the efficiency of MHD generators. In UV photoionization, the seeded combustion products are excited with a UV laser with photon energy above the potassium ionization energy to induce ionization and increase the free electron density. In principle, the increased conductivity could increase the efficiency of a MHD generator sufficiently to make the overall process have a net energy gain. UV Photoionization could be used to excite the bulk flow and extend MHD operation to lower temperatures, or to target the boundary layer and reduce the voltage drop across the boundary layer.
