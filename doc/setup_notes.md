@@ -8,6 +8,10 @@ Originally was pursuing WSL but found some issues. So ended up getting full pipe
     * Seems to be more prone to memory errors. I think using git bash in native windows can take advantage of memory caching. 
     * timestamp issues with lecroy munging, see lecroy timestamp seciton. Switched to trigger time attribute. Think this should relove the problem on WSL too, however have switched to multiprocessing for lecroy data to speed up time, and pretty sure this causes memory crashes, but should try again. 
 
+## Standard setup 
+
+Git bash installed on windows. Python 3.10.11 using requirements_gitbash.txt
+
 ## General installation process
 
 Documenting process of setting up repository. Vscode running WSL on same laptop codes were developed on. 
@@ -15,14 +19,40 @@ palette: Ctrl + Shift + P
 TODO: update/merge with above
 
 1. clone MHD-Photoionization repo (checkout dev branch)
-2. palette: create python environment (venv). Python 3.11.2.  use reqs/requirements.wsl
-3. run source install.sh
-4. setup .env file (rename .env_example to .env)
+2. palette: create python environment (venv). Python 3.11.2.  use reqs/requirements_gitbash.txt
+    ensure that the environment is activated when opening the terminal. `which python` should point to the new venv python. As of 03-15 need to have prerelease vscode extension. try killing and reopening terminal/closing opening vscode. 
+3. run `source install.sh` in base level of repository. 
+4. setup .env file (rename .env_example to .env) and check/update values. 
+
+
+Data Pipeline. Run a series of VScode tasks. 
+
 5. open terminal in `automation` and run `source munge.sh` (TODO: vscode task)
     TODO: Full munging untested. Copying from sharepoint for now. 
 6. run processed munged data task in vscode
+7. Run processed munged data
+8. Drag 'Extra Input Data' folders in to repository. (TODO: could be done earlier)
+9. Run Final Dataset
 
-### Files to copy
+Some figures have not been moved to the final data pipeline yet, and are from analysis scripts. These scripts are rendered to jupyter notebooks (not version controlled) in 'nb_render' folders. The rendering/figure generation can occur with:
+
+10. Render Final Analysis Notebooks
+10. Render Expt. Analysis Notebooks 
+
+11. figure panels
+12. render figures
+
+Latex documents 
+
+13. Run `doc/setup_repodir.py` (todo add to install.sh)
+14. Build SI_man.tex
+15. Build main.tex
+16. Run Clean latex dirs to clean up files
+
+
+
+
+### Extra Input Data
 
 files currently needing to copy. create some sort of automation sync for this
 
