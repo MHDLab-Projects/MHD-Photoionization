@@ -50,6 +50,11 @@
             "command": "./automation/final_dataset.sh",
         },
         {
+            "label": "Supplementary Dataset Scripts",
+            "type": "shell",
+            "command": "./automation/supp_scripts.sh",
+        },
+        {
             "label": "Generate Final Panels",
             "type": "shell",
             "command": "cd final/figure_panels && source gen_all.sh"
