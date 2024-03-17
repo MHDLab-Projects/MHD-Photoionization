@@ -2,11 +2,11 @@
 
 \subsection{General Model}
 
-In this section we derive a general nonequilibrium kinetic model used for fitting the MWS data and viability modeling. We consider in the rate of change of the electron density, \(n_{e}(t)\) in time. 
+In this section we derive a general nonequilibrium kinetic model used for fitting the MWS data and viability modeling. We consider in the rate of change of the electron density, \(n_{e}\) in time. 
 
 \begin{equation}
   \label{eq:start_deqn}
-\frac{dn_{e}(t)}{dt} = G - R
+\frac{dn_{e}}{dt} = G - R
 \end{equation}
 
 Where \(G\) is the generation rate of electrons and \(R\) is the recombination rate. We consider the generation rate to be comprised of a thermal generation rate and a nonequilibrium generation rate.
@@ -20,7 +20,7 @@ Where \(G_{th}\) is the thermal generation rate constant and \(G_{NE}\) is the N
 The recombination rate can be written
 
 \begin{equation}
-  R = - \sum_{i}^{}k_{r, b, i}n_{e}(t)n_{i}(t)
+  R = - \sum_{i}^{}k_{r, b, i}n_{e}n_{i}
 \end{equation}
 
 Where $k_{r, b, i} [cm^3/s]$  and $n_i$ are the bimolecular recombination rate constant and species density $[1/cm^3]$ for the \emph{i}\textsuperscript{th} species, respectively. 
@@ -28,49 +28,49 @@ Where $k_{r, b, i} [cm^3/s]$  and $n_i$ are the bimolecular recombination rate c
 We consider the system under a perturbation from equilibrium, and write the species density as the equilibrium density plus a perturbation.
 
 \begin{equation}
-  n_{i}(t) = n_{i,0} + \Delta n_{i}(t)
+  n_{i} = n_{i,0} + \Delta n_{i}
 \end{equation}
 
 With an identical equation for the electron density. We can then write the recombination rate as
 
 \begin{equation}
-  R = - \sum_{i}^{}k_{r, b, i}(n_{e,0} + \Delta n_{e}(t))(n_{i,0} + \Delta n_{i}(t))
+  R = - \sum_{i}^{}k_{r, b, i}(n_{e,0} + \Delta n_{e})(n_{i,0} + \Delta n_{i})
 \end{equation}
 
 Expanding the product
 
 \begin{equation}
   \label{eq:recomb_expand}
-  R = - \sum_{i}^{}[k_{r, b, i}n_{e,0}n_{i,0}  + k_{r, b, i}n_{i,0}\Delta n_{e}(t) + k_{r, b, i}n_{e,0}\Delta n_{i}(t) + k_{r, b, i}\Delta n_{e}(t)\Delta n_{i}(t)]
+  R = - \sum_{i}^{}[k_{r, b, i}n_{e,0}n_{i,0}  + k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}]
 \end{equation}
 
 
-If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac{dn_{e}}{dt} = 0$ and $G_{NE} = 0$, we can see that the first time independent term in \ref{eq:recomb_expand} is equal to $G_{th}$. Therefore this time independent term will cancel out in Equation \ref{eq:start_deqn} and we can write the full differential equation as
+If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac{dn_{e}}{dt} = 0$ and $G_{NE} = 0$, we can see that the first term in \ref{eq:recomb_expand} is equal to $G_{th}$. Therefore this term will cancel out in Equation \ref{eq:start_deqn} and we can write the full differential equation as
 
 \begin{equation}
   \label{eq:full_deqn}
-\frac{d\Delta n_{e}(t)}{dt} = G_{NE}  -  \sum_{i}^{}[k_{r, b, i}n_{i,0}\Delta n_{e}(t) + k_{r, b, i}n_{e,0}\Delta n_{i}(t) + k_{r, b, i}\Delta n_{e}(t)\Delta n_{i}(t)]
+\frac{d\Delta n_{e}}{dt} = G_{NE}  -  \sum_{i}^{}[k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}]
 \end{equation}
 
-We are now going to make a series of simplifying assumptions to this equation. These assumptions are geared towards the situation of a small perturbation of the electron density from equilibrium, where $\Delta n_{e}(t) << n_{e,0}$. Experimentally, we observe that the MWS signal eventually enters an exponentially decaying regime, which we interpret as the electron density entering this small-perturbation regime with $G_{NE} =0$ (the laser pulse is over). In this case, we know that the system enters a state where the differential equation becomes of an exponential form:
+We are now going to make a series of simplifying assumptions to this equation. These assumptions are geared towards the situation of a small perturbation of the electron density from equilibrium, where $\Delta n_{e} << n_{e,0}$. Experimentally, we observe that the MWS signal eventually enters an exponentially decaying regime, which we interpret as the electron density entering this small-perturbation regime with $G_{NE} =0$ (the laser pulse is over). In this case, we know that the system enters a state where the differential equation becomes of an exponential form:
 
 \begin{equation}
   \label{eq:small_pert_diffeq}
-\frac{d\Delta n_{e}(t)}{dt} = k_{r,m,eff} \Delta n_{e}(t)
+\frac{d\Delta n_{e}}{dt} = k_{r,m,eff} \Delta n_{e}
 \end{equation}
 
-Where $k_{r,m,eff}$ is the effective monomolecular recombination rate constant. This observation implies that $\Delta n_i(t)$ is proportional to $\Delta n_{e}(t)$, and we can write
+Where $k_{r,m,eff}$ is the effective monomolecular recombination rate constant. We can obtain a differential equation of this form by making the following assumption for $\Delta n_i$:
 
 \begin{equation}
   \label{eq:phi_def}
-\Delta n_i(t) = \phi_i \Delta n_{e}(t)
+\Delta n_i = \phi_i \Delta n_{e}
 \end{equation}
 
-Where $\phi_i$ is a proportionality constant and $\sum_{i}^{}\phi_i = 1$ from charge neutrality. We can then substitute this into Equation \ref{eq:full_deqn} to get
+Where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non equilibrium process and that this relationship can be expected to be linear in the small perturbation regime. We can then substitute this into Equation \ref{eq:full_deqn} to get
 
 \begin{equation}
   \label{eq:full_deqn_phi}
-\frac{d\Delta n_{e}(t)}{dt} = G_{NE} - k_{r, m, eff}\Delta n_{e}(t) - k_{r, b, eff} \Delta n_{e}(t)^2
+\frac{d\Delta n_{e}}{dt} = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, eff} \Delta n_{e}^2
 \end{equation}
 
 Where we have defined the effective monomolecular recombination rate constant, $k_{r, m, eff}$, and effective bimolecular recombination rate constant, $k_{r, b, eff}$, as
@@ -87,11 +87,11 @@ k_{r, b, eff} = \sum_{i}^{}k_{r, b, i}\phi_i
 \end{equation}
 
 
-With the earlier stated assumption that $\Delta n_{e}(t) << n_{e,0}$, we can see that the third (bimolecular) term in Equation \ref{eq:full_deqn_phi} indeed becomes Equation \ref{eq:small_pert_diffeq} in the case of $G_{NE} = 0$.
+With the earlier stated assumption that $\Delta n_{e} << n_{e,0}$, we can see that the third (bimolecular) term in Equation \ref{eq:full_deqn_phi} indeed becomes Equation \ref{eq:small_pert_diffeq} in the case of $G_{NE} = 0$.
 
-We have kept the bimolecular term in Equation \ref{eq:full_deqn_phi} even though it is potentially incompatible with the small perturbation assumption. From the MWS fitting, we observe that fitting the data in the high power regime is consistent with an equation of the form of Equation \ref{eq:full_deqn_phi} with $G_{NE} = 0$. However, the validity of Equations \ref{eq:phi_def} and \ref{eq:krb_eff_def} in the high power regime is not clear and should be further investigated. 
+We have kept the bimolecular term in Equation \ref{eq:full_deqn_phi} even though it is potentially incompatible with the small perturbation assumption. From the MWS fitting, we observe that fitting the data in the high power regime is consistent with an equation of the form of Equation \ref{eq:full_deqn_phi} with $G_{NE} = 0$. However, the validity of Equations \ref{eq:phi_def} and \ref{eq:krb_eff_def} in the high power regime is not clear and should be further investigated. In any, case the inclusion of this term does not affect the monomolecular term, which is the primary focus of this work. We will keep the bimolecular term in the following analysis, but we note that the validity of this term under the small perturbation regime assumptions is an open question.
 
-The $\phi_i$ are not known \emph{a priori} and are not easily measured. We are going to make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. This assumption allows us to write.   
+The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (\ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$, for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. We therefore make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. 
 
 This allows us to write
 
@@ -102,8 +102,8 @@ This allows us to write
 And simplify the form of Equation \ref{eq:full_deqn_phi} to
 
 \begin{equation}
-  \label{eq:final_deqn}
-\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e}(t) - k_{r, b, K_{+}}\Delta n_{e}(t)^2
+  \label{eq:final_deqn_Kp}
+\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
 \end{equation}
 
 
@@ -132,9 +132,9 @@ P_{MHD} = \frac{1}{2} e \mu_e n_e u^2 B^2
 
 Where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength.  The determination of $\mu_e$ is discussed later. The derivative $\frac{dP_{MHD}}{dn_{e}}$ can be easily determined. 
 
-For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
+For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn_Kp} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
 
-We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$. Note that $\ref{eq:ne_pert}$ can still be written with $\Delta n_e(t) = \Delta n_{e}$. (TODO need to think about how to rewrite general section with this.) With this, \ref{eq:final_deqn} which becomes
+We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$.  With this, \ref{eq:final_deqn_Kp} becomes
 
 \begin{equation}
 0 = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
@@ -261,9 +261,17 @@ For potassium we use compiled photoionization cross sections (Verner) for solar 
 \end{figure}
 
 
-% \clearpage
+\clearpage
 
-% \subsubsection{Supplemental PI Viability Results}
+\subsubsection{Supplemental PI Viability Results}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{\repodir/modeling/viability/figure_panels/output/P_zero_rxn_component.png} 
+    \caption{$P_{zero}$ calculated for various reactions. For each reaction, the reaction is considered to be the only recombination reaction, except for 'mm\_sum' where the sum over experimental O2, K+, H2O, and OH monomolecular recombination rates is used.}
+    \label{fig:SI_P_zero_rxn_component}
+\end{figure}
+% $krm_{O2_exp_eff} + 2*krm{K+} + krm_{H2O} + krm_{OH}$
 
 % \begin{figure}
 % \centering

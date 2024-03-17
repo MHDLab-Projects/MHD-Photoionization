@@ -194,10 +194,20 @@ We define an effective oxygen bimolecular recombination rate, $k_r{r, b,eff}$ Me
 
 \begin{equation}
     \label{eq:krbeff}
-    k_{r,b,eff} = \frac{1}{\tau_{experiment} * n_{all} * n_{O2}}
+    k_{r,b,eff} = \frac{1}{\tau_{experiment} *  n_{O2}}
 \end{equation}
 
-where $\tau_{experiment}$ is the measured decay time, $n_{all}$ is the total number density, and $n_{O2}$ is the oxygen number density predicted from CFD. Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombination coefficient for 53x.
+where $\tau_{experiment}$ is the measured decay time,  and $n_{O2}$ is the oxygen number density predicted from CFD. Additionally, if we assume that the collisional recombination partner of this effective reaction is the entire gas mixture, we can calculate the effective termolecular recombination coefficient as
+
+
+\begin{equation}
+    \label{eq:krteff}
+    k_{r,t,eff} = \frac{1}{\tau_{experiment} * n_{all} *  n_{O2}}
+\end{equation}
+
+Where $n_{all}$ is the total number density predicted from CFD.
+
+Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombination coefficients for 53x.
 
 \begin{figure}[]
 \centering

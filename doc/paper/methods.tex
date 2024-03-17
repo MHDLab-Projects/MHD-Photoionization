@@ -30,19 +30,20 @@ To probe the free electron density, we developed a custom-built microwave scatte
     U(t) = \sqrt{I(t)^2 + Q(t)^2}
 \end{equation}
 
-We calculate the transmission, ($T(t)$), by normalizing by the measured transmission in the absence of a free jet taken before or after the experiment, $U_{nothing}$. 
+We define the normalized transmission, ($T(t)$), by normalizing by the measured $U$ in the absence of a free jet taken before or after the experiment, $U_{nothing}$. 
 
 \begin{equation}
+    \label{eq:transmission_def}
     T(t) = \frac{U(t)}{U_{nothing}}
 \end{equation}
 
 We do not attempt to distinguish between absorbed and scattered microwaves and define a quantity, $AS(t) = 1- T(t)$, which is the combined absorption and scattering. We are interested in the change in $AS(t)$ in response to the laser pulse, $\Delta AS(t)$. In terms of the transmission, $\Delta AS(t)$ is given by
 
 \begin{equation}
-    \Delta AS(t) = T_{PP} - T(t)
+    \Delta AS(t) = AS(t) - AS_{PP} =  T_{PP} - T(t)
 \end{equation}
 
-Where $T_{PP}$ is the average transmission in a 1-2 $\mu s$ time window before the laser pulse. This processing of the MWS signal with an example date, measurements of $U_{nothing}$, and measurements with a Silicon test sample, are shown in the SI. The fitting of the MWS signal is described in the results section. 
+Where $T_{PP}$ is the average transmission in a 1-2 $\mu s$ time window before the laser pulse ($AS_{PP} = 1 - T_{PP}$). This processing of the MWS signal with an example date, measurements of $U_{nothing}$, and measurements with a Silicon test sample, are shown in the SI. The fitting of the MWS signal is described in the results section. 
 
 TODO: outline fit preparation and fitting procedure when pipeline is complete.
 
