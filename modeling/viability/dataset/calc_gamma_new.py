@@ -34,7 +34,7 @@ for species in ds_TP_species_rho.data_vars:
 
 # kth, krb = kinetics.calc_kth_krb_kelly(ds_TP_params, ds_TP_species)
 
-from pi_paper_utils.kinetics import gen_ds_krb
+from pi_paper_utils.kinetics import gen_ds_krb, calc_krm
 
 e = Quantity(1.602e-19, 'coulomb')
 mp = Quantity(1.672e-27, 'kg')
@@ -45,15 +45,11 @@ Eion = Quantity(4.34, 'eV')
 Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
 
 krb_all = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
+# krb_all['O2_exp_eff'] = Quantity(6.27e-32, 'cm**6/particle**2/s') #TODO: improve. 
 
-krb_O2 = krb_all['O2_A']
-krm_O2 = krb_O2*ds_TP_species_rho['O2']
-krm_Kp = krb_all['K+']*ds_TP_species_rho['K+']
+krm = calc_krm(krb_all, ds_TP_species_rho)
 
-krm_H20 = krb_all['H2O']*ds_TP_species_rho['H2O']
-krm_OH = krb_all['OH']*ds_TP_species_rho['OH']
-
-krm_sum = krm_O2 + 2*krm_Kp + krm_H20 + krm_OH
+krm_sum = krm['O2_A'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
 krm_sum = krm_sum.pint.to('1/s')
 
 
@@ -100,7 +96,7 @@ ds = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None)
 dss.append(ds.assign_coords(rxn='Kp').assign_coords(eta='perf'))
 
 constants_temp = constants.copy()
-constants_temp['krm'] = krm_O2.pint.dequantify()
+constants_temp['krm'] = krm['O2_A'].pint.dequantify()
 constants_temp['ne0'] = ne0.pint.dequantify()
 ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
 dss.append(ds.assign_coords(rxn='O2').assign_coords(eta='perf'))
