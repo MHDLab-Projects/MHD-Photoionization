@@ -47,7 +47,7 @@ gamma = gamma*da_dsigma_tot
 plt.figure()
 
 combo_downsel = {
-    'P_in' : 0,
+    # 'P_in' : 0,
     'Kwt': [0.001, 0.01, 0.1],
     'phi': 0.8,
     'rxn': 'mm_sum'

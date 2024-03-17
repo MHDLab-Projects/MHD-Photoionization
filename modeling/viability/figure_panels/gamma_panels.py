@@ -44,7 +44,7 @@ from matplotlib.colors import LogNorm
 
 plt.figure(figsize=(5,3))
 
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
+combo_sel = dict(l_bk=0,  Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
@@ -75,10 +75,10 @@ plt.savefig('output/gamma_curve_demo.png')
 
 
 combo_downsel = {
-    'P_in' : 0,
+    # 'P_in' : 0,
     # 'phi': [0.8],
     'l_bk': [0, 0.99],  
-    'eta': ['perf', 'eta_PI'],
+    'eta': ['perf', 'PI'],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
     # 'analysis': ['perf_Bconst']
@@ -104,3 +104,32 @@ g.axes[1,1].set_xlabel('Pressure (Pa)')
 
 plt.savefig('output/P_zero_l_bk_eta.png')
 # %%
+
+combo_downsel = {
+    # 'P_in' : 0,
+    'phi': [0.8, 1, 1.2],
+    'l_bk': [0],  
+    'eta': ['perf', 'PI'],
+    'Kwt': [0.01],
+    # 'rxn': 'mm_sum'
+    # 'analysis': ['perf_Bconst']
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+g = P_zero.plot(hue='rxn', row='eta', col='phi', y='T', xscale='log', figsize=(5,3))
+
+# for ax in g.axes.flatten():
+#     ax.plot([1e5], [3000], marker='*', markersize=10)
+# Get the legend and move it
+legend = g.fig.legends[0]
+legend.set_bbox_to_anchor((1.2, 0.5))  # coordinates are in figure units
+
+
+plt.xlim(0.8e4,1.2e6)
+plt.ylim(1200,3500)
+
+plt.tight_layout()
+
+
+plt.savefig('output/P_zero_rxn_component.png')

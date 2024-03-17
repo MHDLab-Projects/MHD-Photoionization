@@ -17,7 +17,11 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_specie
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
-ds_NE = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE_rxn_comp.cdf')).squeeze()
+ds_NE = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE.cdf')).squeeze()
+
+#%%
+
+ds_P_zero
 
 #%%
 
@@ -44,7 +48,7 @@ gamma = gamma -1
 
 # %%
 combo_downsel = {
-    'P_in' : 0,
+    # 'P_in' : 0,
     'l_bk': 0,
     'Kwt': 0.01,
     'phi': [0.8,1,1.2],
@@ -57,13 +61,13 @@ P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 P_zero
 # %%
 
-P_zero.plot(col='rxn', row='eta', hue='phi', y='T')
+P_zero.plot(row='rxn', col='eta', hue='phi', y='T')
 
 plt.xscale('log')
 
 #%%
 
-g = P_zero.plot(col='phi', hue='rxn', y='T', figsize=(4,2))
+g = P_zero.plot(hue='phi', row='rxn', col='eta', y='T', figsize=(4,2))
 
 
 plt.xscale('log')
@@ -79,7 +83,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'P_zero_rxn_phi.png'))
 
 
 # %%
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf')
+combo_sel = dict(l_bk=0, Kwt=0.01, phi=0.8, eta='perf')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
