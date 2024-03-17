@@ -154,17 +154,26 @@ ds_cfd['O2']
 #%%
 
 tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
-k_eff = 1/(tau_exp*ds_cfd['rho_number']*ds_cfd['O2'])
 
-k_eff = k_eff.pint.to('cm^6/particle^2/s')
-k_eff.attrs['long_name'] = 'Effective bimolecular rate'
+k_eff_bm = 1/(tau_exp*ds_cfd['O2'])
 
-k_eff.plot(marker='o')
+k_eff_bm = k_eff_bm.pint.to('ml/particle/s')
+k_eff_bm.attrs['long_name'] = 'Effective bimolecular rate'
+
+k_eff_bm.plot(marker='o')
+
+
+k_eff_tm = 1/(tau_exp*ds_cfd['rho_number']*ds_cfd['O2'])
+
+k_eff_tm = k_eff_tm.pint.to('ml^2/particle^2/s')
+k_eff_tm.attrs['long_name'] = 'Effective termolecular rate'
+
+k_eff_tm.plot(marker='o')
 
 
 #%%
 
-fig, axes = plt.subplots(3, 1, figsize=(5,7), sharex=True, sharey=False)
+fig, axes = plt.subplots(4, 1, figsize=(5,8), sharex=True, sharey=False)
 
 # Plot decay
 ds_p['decay'].mean('run', keep_attrs=True).plot(ax=axes[0], marker='o')
@@ -182,11 +191,21 @@ axes[1].set_xlabel('')
 
 axes[1].legend()
 
-# Calculate and plot k_eff
-
-k_eff.plot(marker='o', ax=axes[2])
+# Calculate and plot k_eff_bm
+k_eff_bm.plot(marker='o', ax=axes[2])
 axes[2].set_title('Effective Bimolecular Rate')
 axes[2].set_yscale('log')
+
+k_eff_avg = k_eff_bm.mean('kwt').item()
+axes[2].text(0.0, 0.85, 'Average: {:.3e}'.format(k_eff_avg), transform=axes[2].transAxes)
+
+# Calculate and plot k_eff_tm
+k_eff_tm.plot(marker='o', ax=axes[3])
+axes[3].set_title('Effective Termolecular Rate')
+axes[3].set_yscale('log')
+
+k_eff_avg = k_eff_tm.mean('kwt').item()
+axes[3].text(0.0, 0.85, 'Average: {:.3e}'.format(k_eff_avg), transform=axes[3].transAxes)
 
 
 plt.xscale('log')
