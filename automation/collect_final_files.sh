@@ -10,7 +10,11 @@ mkdir -p $output_dir
 echo "Collecting final documents"
 
 cd $REPO_DIR/doc/paper
-cp main.pdf $output_dir/Photoionization\ Draft.pdf
+
+mkdir -p output
+source pandoc_convert.sh
+
+cp main.pdf $output_dir/Photoionization.pdf
 cp output/Photoionization.docx $output_dir/Photoionization.docx
 cp ../SI_man/SI_man.pdf $output_dir/Supporting\ Information.pdf
 
