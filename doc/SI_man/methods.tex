@@ -76,6 +76,11 @@ The fit preparation pipeline consists of the following steps:
     \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occurs in the absence of a laser. 
 \end{enumerate}
 
+The data is either fit with an exponential or by solving the differential equation \ref{eq:final_deqn_Kp} with $G_{NE} =0$. Fitting is performed with the lmfit package in Python.
+
+For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$ after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) + C$.
+
+For the solution to the differential equation we assume a $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$ (TODO improve accuracy and source). The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized and normalized solution is fit to the normalized $\Delta AS$ curve with the lmfit package.
 
 \begin{figure}[]
 \centering
@@ -113,7 +118,7 @@ Before each experiment we performed measurements with a silicon sample in the lo
 \end{figure}
 
 \clearpage
-\subsection{Laser Profile}
+\subsubsection{Laser Profile}
 
 
 \begin{figure}[H]
@@ -127,16 +132,18 @@ Before each experiment we performed measurements with a silicon sample in the lo
 \subsection{Absorption Emission Spectroscopy (AES) Setup}
 
 
+The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately (TODO). The LED is fed into a Thorlabs 400 $\mu m$  0.39 NA optical fiber. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. The light is sent to AES collimating lenses with a 200 $\mu m$ fiber 0.39 NA fiber. The light is collected with collimating lenses using 600 $\mu m$ 0.5 NA fibers. The collected light is sent back to the multiplexer, which then sends the final collected light to a Ocean Optics HR4000 spectrometer.
+
+TODO: collimating and collection lens details
+
+The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The LED is triggered by the spectrometer. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
+
+Before and after the experiment, calibration spectra are taken with no free jet in place. The calibration is required to determine $\alpha(\lambda)$ as described in the main text. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is not reliable.  We observe changes in the calibration spectra throughout the experiment, which cause offsets in the absorption spectra. Further work to measure calibration during an experiment by vertically translating the AES diagnostic is planned. 
 
 
-Ocean Optics HR4000 Spectrometer. 
+In this work we develop a method to correct the calibration spectra using the LED on and off measurements.
 
-Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The LED output and spectrometer input are both connected to the multiplexer for both AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. 
-
-
-The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. The LED is triggered by the spectrometer. The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
-
-
+TODO: calibration correction methods
 
 
 Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.

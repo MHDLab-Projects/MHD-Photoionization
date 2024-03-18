@@ -24,7 +24,7 @@ In addition to experimental measurements we performed CFD simulations of the fre
 
 \subsubsection{Microwave scattering}
 
-To probe the free electron density, we developed a custom-built microwave scattering (MWS) diagnostic to directly probe changes in the free electron population and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[]  We describe the system in detail in the supporting information. Briefly, 90 GHz microwaves are transmitted through the seeded HVOF torch and the transmitted power is measured with a IQ mixer. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns.  The IQ mixer measures the in phase (I) and quadrature (Q) components of the transmitted microwave power. The IQ mixer combines the collected signal with the original microwave signal to measure the in phase (I) and quadrature (Q), or 90 degrees out of phase, components of the transmitted microwave power. Utilizing an IQ mixer allows us to enhance the sensitivity of the measurement by isolating the frequency of the microwave source, and to isolate changes in transmitted power from phase shifts. The magnitude, $U [V]$ of the transmitted microwaves is calculated through.
+To probe the free electron density, we developed a custom-built microwave scattering (MWS) diagnostic to directly probe changes in the free electron population and measure the electron-ion recombination rate. Similar diagnostic tools have been developed in the literature.[]  We describe the system and data analysis pipeline in more detail in the supporting information. Briefly, 90 GHz microwaves are transmitted through the seeded HVOF torch and the transmitted power is measured with a IQ mixer. The system measures the change in the transmitted microwave power when a UV pulse passes through the center of the horns.  The IQ mixer measures the in phase (I) and quadrature (Q) components of the transmitted microwave power. The IQ mixer combines the collected signal with the original microwave signal to measure the in phase (I) and quadrature (Q), or 90 degrees out of phase, components of the transmitted microwave power. Utilizing an IQ mixer allows us to enhance the sensitivity of the measurement by isolating the frequency of the microwave source, and to isolate changes in transmitted power from phase shifts. The magnitude, $U [V]$ of the transmitted microwaves is calculated through.
 
 \begin{equation}
     U(t) = \sqrt{I(t)^2 + Q(t)^2}
@@ -45,17 +45,16 @@ We do not attempt to distinguish between absorbed and scattered microwaves and d
 
 Where $T_{PP}$ is the average transmission in a 1-2 $\mu s$ time window before the laser pulse ($AS_{PP} = 1 - T_{PP}$). This processing of the MWS signal with an example date, measurements of $U_{nothing}$, and measurements with a Silicon test sample, are shown in the SI. The fitting of the MWS signal is described in the results section. 
 
-TODO: outline fit preparation and fitting procedure when pipeline is complete.
 
 \subsubsection{Absorption spectroscopy}
 
-The absorption emission spectroscopy (AES) is used to determine the potassium number density, $n_K$. the AES system uses a 780 nm LED source and a high resolution HR4000 spectrometer. Two separate AES setups are applied to the exit of the barrel and at the center of the microwave horns (see Figure \ref{fig:expt_setup}).
+The absorption emission spectroscopy (AES) is used to determine the potassium number density, $n_K$. The AES system measures the transmission of a LED generated light through the free jet, while also taking into account that the free jet is thermally emitting light of the same wavelength. The LED generates light with a spectrum centered around 780 nm with an approximately 50 nm bandwidth that includes the 767 and 770 nm potassium peaks. The light is passed through the free jet and measured with a high-resolution spectrometer. Two separate AES setups are applied to the exit of the barrel and at the center of the microwave horns (see Figure \ref{fig:expt_setup}).
 
-The spectrally dependent absorption, $\alpha(\lambda)$, is measured from the intensity of the LED with no free jet, $I_0$, the intensity of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet and LED together $I_{L+F}$
-
+The spectrally dependent absorption, $\alpha(\lambda)$, is measured from the intensity of the LED with no free jet, $I_{calib}$, the intensity of the seeded jet by itself, $I_F$ , and the intensity of the seeded free jet and LED together $I_{L+F}$
 
 \begin{equation}
-    \alpha(\lambda) = 1 - \left(\frac{I_{L+F}(\lambda) - I_{F}(\lambda)}{I_F(\lambda)}\right)
+    \label{eq:absorption_def}
+    \alpha(\lambda) = 1 - \left(\frac{I_{L+F}(\lambda) - I_{F}(\lambda)}{I_{calib}(\lambda)}\right)
 \end{equation}
 
 
@@ -65,9 +64,7 @@ We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K,
     \frac{dI}{dx}(\lambda) = -\kappa(\lambda) n_{K,max} f_{K, CFD}(x)
 \end{equation}
 
-Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,max}$ is the maximum potassium number density, and $f_{K, CFD}(x)$ is the profile of the potassium number density along the beam path determined by CFD. to determine $\alpha(\lambda)$, we solve this equation for each wavelength with the Euler method.  
-
-TODO: outline fit preparation and fitting procedure when pipeline is complete.
+Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,max}$ is the maximum potassium number density, and $f_{K, CFD}(x)$ is the profile of the potassium number density along the beam path determined by CFD. to determine $\alpha(\lambda)$, we solve this equation for each wavelength with the Euler method.  The AES system and data analysis pipeline are described in more detail in the supporting information. 
 
 \subsection{Experiment Procedures}
 

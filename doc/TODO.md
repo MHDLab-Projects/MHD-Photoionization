@@ -23,3 +23,11 @@
 - [] 3% case on 05-12
 
 - [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
+
+
+
+## Check in lab
+
+- [] Tcube current
+- [] fiber choices
+ - [] AES collimating lenses
