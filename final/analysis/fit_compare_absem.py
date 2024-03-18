@@ -6,11 +6,17 @@ import pi_paper_utils as ppu
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_absem_53x = xr.open_dataset(pjoin(data_directory, '53x_ds_absem.cdf')).xr_utils.stack_run()
-ds_absem_53x = ds_absem_53x.isel(run=-1).sel(kwt= [0.1,1], method='nearest')
+# ds_absem_53x = ds_absem_53x.isel(run=[-1])
+# ds_absem_53x = ds_absem_53x.sel(kwt= [0.1,1], method='nearest')
 ds_absem_pos = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
-ds_absem_pos = ds_absem_pos.isel(run=-1).sel(motor=[50, 180 ], method='nearest')
+# ds_absem_pos = ds_absem_pos.isel(run=[-1])
+# ds_absem_pos = ds_absem_pos.sel(motor=[50, 180 ], method='nearest')
 
 goldi_pos = Quantity(180, 'mm')
+
+#%%
+
+ds_absem_pos
 
 
 # %%
@@ -90,9 +96,31 @@ ds_fit_alpha, ds_p = perform_fit_sequence(ds_fit)
 
 #%%
 
-ds_p['nK_m3'].plot.line(x='kwt', col='mp', hue='method', marker='o')
+ds_p['nK_m3'].mean('run').plot.line(x='kwt', col='mp', hue='method', marker='o')
 
 plt.yscale('log')
+
+#%%
+
+da_plot = ds_fit_alpha.to_array('var').mean('run').sel(mp='barrel')
+
+da_plot
+
+da_plot.plot(row='kwt', col='method', hue='var', yscale='log', ylim=(1e-3,1.1), figsize=(10,10))
+
+plt.xlim(760,775)
+
+
+#%%
+
+
+da_plot = ds_fit_alpha.to_array('var').mean('run').sel(mp='mw_horns')
+
+da_plot
+
+da_plot.plot(row='kwt', col='method', hue='var', yscale='log', ylim=(1e-3,1.1), figsize=(10,10))
+
+plt.xlim(760,775)
 
 #%%[markdown]
 
@@ -117,12 +145,21 @@ ds_fit_alpha, ds_p = perform_fit_sequence(ds_fit)
 # %%
 
 # ds_p = ds_p.mean('run')
-g = ds_p['nK_m3'].plot.line(x='motor', col='mp', row='phi', hue='method', marker='o')
+g = ds_p['nK_m3'].mean('run').plot.line(x='motor', col='mp', row='phi', hue='method', marker='o')
 
 dropna(g)
 
 plt.yscale('log')
 # %%
 
+da_plot = ds_fit_alpha.to_array('var').sel(mp='mw_horns').mean('run').sel(phi=0.8, method='nearest').dropna('motor',how='all')
 
-ds_fit
+da_plot.plot(row='motor', col='method', hue='var', yscale='log', ylim=(1e-3,1.1), figsize=(10,10))
+
+plt.xlim(760,775)
+# %%
+
+da_plot = ds_fit_alpha.to_array('var').sel(mp='barrel').mean('run')
+
+da_plot = ds_fit_alpha.to_array('var').sel(mp='barrel').mean('run').sel(phi=0.8, method='nearest').dropna('motor',how='all')
+plt.xlim(760,775)
