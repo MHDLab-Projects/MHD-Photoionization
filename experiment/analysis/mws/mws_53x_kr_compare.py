@@ -158,7 +158,7 @@ tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
 k_eff_bm = 1/(tau_exp*ds_cfd['O2'])
 
 k_eff_bm = k_eff_bm.pint.to('ml/particle/s')
-k_eff_bm.attrs['long_name'] = 'Effective bimolecular rate'
+k_eff_bm.attrs['long_name'] = '$k_{r,bm,eff}$'
 
 k_eff_bm.plot(marker='o')
 
@@ -166,7 +166,7 @@ k_eff_bm.plot(marker='o')
 k_eff_tm = 1/(tau_exp*ds_cfd['rho_number']*ds_cfd['O2'])
 
 k_eff_tm = k_eff_tm.pint.to('ml^2/particle^2/s')
-k_eff_tm.attrs['long_name'] = 'Effective termolecular rate'
+k_eff_tm.attrs['long_name'] = '$k_{r,tm,eff}$'
 
 k_eff_tm.plot(marker='o')
 
@@ -198,11 +198,14 @@ axes[2].set_yscale('log')
 
 k_eff_avg = k_eff_bm.mean('kwt').item()
 axes[2].text(0.0, 0.85, 'Average: {:.3e}'.format(k_eff_avg), transform=axes[2].transAxes)
+axes[2].set_xlabel('')
+axes[2].set_ylabel('Effective Rate\n(ml/particle/s)')
 
 # Calculate and plot k_eff_tm
 k_eff_tm.plot(marker='o', ax=axes[3])
 axes[3].set_title('Effective Termolecular Rate')
 axes[3].set_yscale('log')
+axes[3].set_ylabel('Effective Rate\n(ml^2/particle^2/s)')
 
 k_eff_avg = k_eff_tm.mean('kwt').item()
 axes[3].text(0.0, 0.85, 'Average: {:.3e}'.format(k_eff_avg), transform=axes[3].transAxes)
