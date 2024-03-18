@@ -6,7 +6,9 @@ import pi_paper_utils as ppu
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_absem_53x = xr.open_dataset(pjoin(data_directory, '53x_ds_absem.cdf')).xr_utils.stack_run()
+ds_absem_53x = ds_absem_53x.isel(run=-1).sel(kwt= [0.1,1], method='nearest')
 ds_absem_pos = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
+ds_absem_pos = ds_absem_pos.isel(run=-1).sel(motor=[50, 180 ], method='nearest')
 
 goldi_pos = Quantity(180, 'mm')
 
@@ -38,13 +40,42 @@ plt.yscale('log')
 
 plt.ylim(1e-7,)
 plt.xlim(3,8)
+
+#%%
+
+from mhdpy.analysis.absem.fitting import AlphaFitPipeline2, AlphaFitPipelineNum1
+
+def perform_fit_sequence(ds_fit):
+    pipe_fit_alpha_2 = AlphaFitPipeline2()
+    pipe_fit_alpha_num_1 = AlphaFitPipelineNum1()
+
+    dss_p = []
+    dss_fit_alpha = []
+
+    ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
+    dss_p.append(ds_p_absem.assign_coords(method='num_1'))
+    dss_fit_alpha.append(ds_fit_alpha.assign_coords(method='num_1'))
+
+    pipe_fit_alpha_num_1.fit_prep_kwargs['led_off_norm_cutoff'] = None
+
+    ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
+    dss_p.append(ds_p_absem.assign_coords(method='num_1_full'))
+    dss_fit_alpha.append(ds_fit_alpha.assign_coords(method='num_1_full'))
+
+    ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_2(ds_fit)
+    dss_p.append(ds_p_absem.assign_coords(method='orig_pipe2'))
+    dss_fit_alpha.append(ds_fit_alpha.assign_coords(method='orig_pipe2'))
+
+    ds_p = xr.concat(dss_p, 'method')
+    ds_fit_alpha = xr.concat(dss_fit_alpha, 'method')
+
+    return ds_fit_alpha, ds_p
 # %%[markdown]
 
 # # 53x
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1, pipe_fit_alpha_2
 
 dss_p = []
 
@@ -53,24 +84,13 @@ da_cfd_beam_sel = da_cfd_beam.sel(motor=goldi_pos,method='nearest')
 ds_fit = ds_absem_53x#.isel(run=-1)
 ds_fit = ds_fit.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
 
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
-dss_p.append(ds_p_absem.assign_coords(method='num_1'))
-
-pipe_fit_alpha_num_1.fit_prep_kwargs['led_off_norm_cutoff'] = None
-
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
-dss_p.append(ds_p_absem.assign_coords(method='num_1_full'))
-
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_2(ds_fit)
-dss_p.append(ds_p_absem.assign_coords(method='orig_pipe2'))
-
+ds_fit_alpha, ds_p = perform_fit_sequence(ds_fit)
 
 # ds_fit_alpha.to_array('var').mean('run').plot(row='kwt', col='mp', hue='var', yscale='log', ylim=(1e-3,1.1), figsize=(10,10))
 
 #%%
 
-ds_p = xr.concat(dss_p, 'method')
-ds_p['nK_m3'].mean('run').plot.line(x='kwt', col='mp', hue='method', marker='o')
+ds_p['nK_m3'].plot.line(x='kwt', col='mp', hue='method', marker='o')
 
 plt.yscale('log')
 
@@ -82,29 +102,20 @@ plt.yscale('log')
 #%%
 
 
-dss_p = []
 
 da_cfd_beam_sel = da_cfd_beam.sel(kwt=1, method='nearest')
 
-ds_fit = ds_absem_pos.isel(run=-1)
+ds_fit = ds_absem_pos
 
 #TODO: motor coordinates not exactly the same, why? 
 da_cfd_beam_sel = da_cfd_beam_sel.sel(motor=ds_fit.coords['motor'].values, method='nearest')
 da_cfd_beam_sel = da_cfd_beam_sel.assign_coords(motor=ds_fit.coords['motor'].values) 
 
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
-dss_p.append(ds_p_absem.assign_coords(method='num_1'))
 
-pipe_fit_alpha_num_1.fit_prep_kwargs['led_off_norm_cutoff'] = None
+ds_fit_alpha, ds_p = perform_fit_sequence(ds_fit)
 
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam_sel})
-dss_p.append(ds_p_absem.assign_coords(method='num_1_full'))
-
-ds_fit_alpha, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_2(ds_fit)
-dss_p.append(ds_p_absem.assign_coords(method='orig_pipe2'))
 # %%
 
-ds_p = xr.concat(dss_p, 'method')
 # ds_p = ds_p.mean('run')
 g = ds_p['nK_m3'].plot.line(x='motor', col='mp', row='phi', hue='method', marker='o')
 
