@@ -89,7 +89,11 @@ ds_lecroy = ds_lecroy.unstack('run').mws.calc_mag_phase_AS(mag_0=mag_0).xr_utils
 
 ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
+ds_lecroy.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
+ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
+
 #%%
+
 
 #%%
 
@@ -191,8 +195,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 #%%
 
 
-ds_lecroy.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
-ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
+
 
 
 

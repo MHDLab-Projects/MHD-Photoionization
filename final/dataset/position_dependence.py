@@ -64,6 +64,7 @@ ds_lecroy_516 = ds_lecroy_516.stack(temp = stack_dims)
 ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp')
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
