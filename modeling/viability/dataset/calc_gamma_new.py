@@ -55,7 +55,7 @@ krm['mm_sum'] = krm_sum
 
 
 #%%
-ne0 = ds_TP_species['e-']
+ne0 = ds_TP_species_rho['e-']
 krb_Kp = krb_all['K+']
 
 # Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
@@ -161,4 +161,9 @@ da_dsigma_tot.to_netcdf('output/da_dsigma_tot.cdf')
 
 
 
+# %%
+
+# ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).squeeze().plot()
+
+ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
 # %%
