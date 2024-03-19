@@ -151,13 +151,44 @@ from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 ds_fit = ds_absem.mean('mnum')
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
+#%%
 
 ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]
-ds = ds.rename({'alpha_red': 'data', 'alpha_fit':'fit'})
-ds = ds.to_array('var')
+ds['alpha'] = ds_fit['alpha']
+ds = ds.rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha':'raw'})
+# ds = ds.to_array('var')
 
 ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
 ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
+ds
+#%%
+
+da_plot = ds.to_array('var').sel(phi=0.6, method='nearest').mean('run').dropna('motor',how='all')
+
+#going to downselect 0.8 phi motor to same in 0.6. Mainly to have something that fits on a page. 
+motor_vals_06 = da_plot.coords['motor'].values
+
+da_plot.attrs['long_name'] = '$\\alpha$'
+da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+
+plt.ylim(-0.1,1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi06_absem_fit.png'))
+#%%
+
+da_plot = ds.to_array('var').sel(phi=0.8, method='nearest').mean('run').dropna('motor',how='all')
+da_plot = da_plot.sel(motor=motor_vals_06)
+
+da_plot.attrs['long_name'] = '$\\alpha$'
+da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+
+plt.ylim(-0.1,1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_absem_fit.png'))
+
+#%%
+
 
 #%%
 
@@ -177,6 +208,5 @@ ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_po
 # %%
 
 #%%
-ds_alpha_fit['alpha'] = ds_fit['alpha']
 ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))
 # %%

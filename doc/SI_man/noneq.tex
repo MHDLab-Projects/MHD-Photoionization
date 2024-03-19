@@ -261,6 +261,45 @@ For potassium we use compiled photoionization cross sections (Verner) for solar 
 \end{figure}
 
 
+\subsubsection{Contact targeting}
+
+
+This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD Generators. In this case, P\_in would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series that this can be encapsulated by multiplying α with an enhancement factor.
+
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/schematics/output/contact_targeting.png} 
+    \caption{Schematic of the contact targeting concept}
+    \label{fig:SI_contact_targeting_schematic}
+\end{figure}
+
+
+To model both bulk and contact-targeted nonequilibrium generation we only include NEI in a fraction of the channel as shown in Figure 3. The system comprises a bulk region of width $w_{bk}$ and conductivity $\sigma_{bk}$, and a boundary layer region of width $w_{bl}$ and conductivity $\sigma_{bl}$. In this case the conductivity of the fluid in equation 1 can be replaced by an effective conductivity, $\sigma_{eff}$, 
+
+\[
+\sigma_{eff}=\frac{\sigma_{bk} \sigma_{bl}}{\sigma_{bk}+l_{bk}  (\sigma_{bl}  -\sigma_{bk})}
+\]
+
+This equation can be derived by considering the series resistance of the channel:
+
+Where we have defined the fractional bulk region width $l_{bk}=w_{bk}/(w_{bl}+w_{bk})$. The conductivities of the two regions are determined by setting two different gas temperatures and nonequilibrium generation conditions, as discussed below. In the limit of $l_{bk}\rightarrow1$ and $l_{bk}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{bk}$ and $\sigma_{eff}= \sigma_{bl}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{bl}\rightarrow1$ so that $\sigma_{eff}= \sigma_{bl}$ in equation 1. 
+
+To calculate $\alpha$ we use the chain rule
+\[
+\alpha_{bl}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{bl}} \frac{d\sigma_{bl}}{dn_e} \frac{dn_e}{dP_{in}}=\alpha \frac{d\sigma_{eff}}{d\sigma_{bl}} \tag{13}
+\]
+
+Where we have recognized that this expression is equivalent to $\alpha$ except for an 'enhancement' factor $\frac{d\sigma_{eff}}{d\sigma_{bl}}$. We can calculate $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ to be
+\[
+\frac{d\sigma_{eff}}{d\sigma_{bl}}=\frac{\sigma_{bk}^2 (1-l_{bk})}{[\sigma_{bk}+l_{bk} (\sigma_{bl}-\sigma_{bk})]^2} \tag{14}
+\]
+
+We calculate this quantity for a variety of different $T_{bl}$ and setting $T_{bk} = 3000$.
+
+Note that for cold boundary layers with small fractional width ($l_{bk}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ can approach a factor of 100. However, if the boundary layer temperature is near the bulk temperature, $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ can actually be much less than 1. This indicates that contact targeting is only effective for $T_{bl} \ll T_{bk}$.
+
+
 \clearpage
 
 \subsubsection{Supplemental PI Viability Results}

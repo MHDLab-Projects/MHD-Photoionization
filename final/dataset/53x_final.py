@@ -110,11 +110,19 @@ da_cfd_beam
 
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
-ds_fit_absem = ds_absem.mean('mnum')
-ds_fit_absem = ds_fit_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
-ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, perform_fit_kwargs={'nK_profile':da_cfd_beam})
-
+ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_fit.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
+ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam})
+ds_fit_absem['alpha'] = ds_fit['alpha']
 #%%
+
+da_plot = ds_fit_absem.mean('run').to_array('var')
+
+da_plot.attrs['long_name'] = '$\\alpha$'
+
+da_plot.plot.line(row='kwt', col='mp', hue='var')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_absem_fit.png'))
 
 # ds_p_absem['nK_m3'].sel(mp='barrel').mean('run').plot.line(x='kwt')
 
@@ -145,7 +153,7 @@ plt.xlim(-1,1)
 
 #%%
 
-ds_fit_mws.mean('run')[['AS_sel','AS_fit']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
+ds_fit_mws.mean('run')[['AS_sel','AS_fit','AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
 
 plt.yscale('log')
 plt.xlim(-1,40)
@@ -184,11 +192,11 @@ plt.xlim(-1,10)
 
 #%%
 
-ds_fit_mws.mean('run')[['AS_all','AS_fit']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
+ds_fit_mws.mean('run')[['AS_all','AS_fit','AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5,10))
 
 plt.yscale('log')
 plt.xlim(-1,40)
-plt.ylim(1e-3, 1.1)
+plt.ylim(1e-4, 1e-1)
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 
