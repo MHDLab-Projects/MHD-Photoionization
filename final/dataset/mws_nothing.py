@@ -146,6 +146,7 @@ ds_2['mag'].mean('mnum').plot(row='temp', marker='o')
 
 #%%
 
+plt.figure()
 
 ds_sel = ds_2.unstack('temp').sel(date='2023-05-24').dropna('tc', how='all')
 

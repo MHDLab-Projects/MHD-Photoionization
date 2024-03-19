@@ -1,28 +1,5 @@
 \section{Supplemental Results}
 
-\subsection{Experiment Overviews}
-
-Below are overviews of the experiments performed. The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences have been analyzed in this work.  
-
-
-\foreach \date in {2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24}{
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_\date.png} 
-        \caption{Experiment Overview for \date. The colored regions are test case sequences.}
-        \label{fig:SI_expt_overview_\date}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/other_signals/tc_plot_\date.png} 
-        \caption{Additional signals for \date. The colored regions are test case sequences with the same scheme as as in \ref{fig:SI_expt_overview_\date}.}
-        \label{fig:SI_expt_overview_other_\date}
-    \end{figure}
-
-}
-
-
 
 \clearpage
 
@@ -99,7 +76,7 @@ TODO: this maybe should be in the main text.
 \clearpage
 \subsection{ICCD Camera Measurements}
 
-This section contains additional measurements by the ICCD camera. Figure \ref{fig:SI_536_iccd} shows ICCD data taken at the 536 test case at the nominal position of 178 mm. Figure \ref{fig:SI_536_iccd}C shows that the photolumensence decay is very short compared the the mws decay. In previous experiments, we have investigated the time resolved spectral decay of the photolumensence and observed that it is entirely due to the decay of the potassium D1 line (TODO: check), and the 10ns decay profile closely matches the time profile of the laser pulse. 
+This section contains additional measurements by the ICCD camera. Figure \ref{fig:SI_536_iccd} shows ICCD data taken at the 536 test case at the nominal position of 178 mm. Figure \ref{fig:SI_536_iccd}C shows that the photoluminescence decay is very short compared the the mws decay. In previous experiments, we have investigated the time resolved spectral decay of the photoluminescence and observed that it is entirely due to the decay of the potassium D1 line (TODO: check), and the 10ns decay profile closely matches the time profile of the laser pulse. 
 
 The ICCD camera is calibrated using a projective transformation. The calibration image is shown in Figure \ref{fig:SI_iccd_calibration}. The calibration is performed by taking a picture of a ruler held at the exit of the HVOF barrel. The parameters for the projective transformation are determined by comparing the length of the ruler at the exit of the barrel and at 7 inches. From the transformed image, the pixel to mm conversion calibration is determined, and applied to calibrate the images. 
 
@@ -110,12 +87,11 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 \label{fig:SI_iccd_calibration}
 \end{figure}
 
-TODO: add old measurements with spectrograph
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/ICCD_SI1.png}
-\caption{ICCD camera images taken at 1\% potassium mass fraction in the Run 53x on 2023-05-24. During this test case the camera acquired 15 gate delay sweeps, which are averaged for these images. A) Images are taken at different gate delays. The laser is position at the nominal position. B) A zoom in of the norminal position. The image is averaged across gate delays C) The average of the region of interest used in B across the spatial dimension. TODO: uncalibrated}
+\caption{ICCD camera images taken at 1\% potassium mass fraction in the Run 53x on 2023-05-24. During this test case the camera acquired 15 gate delay sweeps, which are averaged for these images. A) Images are taken at different gate delays. The laser is position at the nominal position. B) A zoom in of the nominal position. The image is averaged across gate delays C) The average of the region of interest used in B across the spatial dimension. TODO: uncalibrated}
 \label{fig:SI_536_iccd}
 \end{figure}
 
@@ -144,19 +120,23 @@ TODO: add old measurements with spectrograph
 
 \subsection{Laser power dependence}
 
-Figure \ref{fig:SI_power_dependence} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential decay time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
+Figure \ref{fig:SI_power_dependence} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. The $\Delta AS_{max}$ as a function of laser fluence is fit to a power law of the form $\Delta AS_{max} = A * P^k$. The fit parameters are shown in Figure \ref{fig:SI_power_dependence}C.
+
+For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential decay time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_MWS.png} 
-    \caption{Power dependence}
+    \caption{Power dependence of $\Delta AS$ A) $\Delta AS$ time traces B) $\Delta AS_{max}$ as a function of laser power. }
     \label{fig:SI_power_dependence}
 \end{figure}
 
-% \begin{figure}[h]
-%     \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/tcs/output/figures/fit_mws_dnedt_power.png} 
-%     \caption{Fit parameters for power dependence}
-%     \label{fig:SI_power_dependence_fit}
-% \end{figure}
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_PD.png} 
+    \caption{Power dependence of the on-peak photodiode signal. A) Photodiode time traces B) $\Delta$ Photodiode signal as a function of laser power. The $\Delta$ Photodiode signal is the difference between the maximum photodiode signal in the 1 to 2 $\mu s$ window before the laser pulse}
+    \label{fig:SI_power_dependence_fit}
+\end{figure}
 
 \clearpage
 

@@ -18,7 +18,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
 da_lecroy = ds_lecroy['AS']
 
-
+ds_pd = ds_lecroy[['pd1','pd2', 'delta_pd1']].mean('run')
 #%%
 
 from pi_paper_utils import LASER_POWER, LASER_AREA
@@ -32,8 +32,9 @@ da_lecroy = da_lecroy.assign_coords(power=da_lecroy['power']*fluence)
 da_lecroy.coords['power'].attrs['units'] = 'mJ/cm^2'
 da_lecroy.coords['power'].attrs['long_name'] = 'Fluence'
 
-#%%
-
+ds_pd = ds_pd.assign_coords(power=ds_pd['power']*fluence)
+ds_pd.coords['power'].attrs['units'] = 'mJ/cm^2'
+ds_pd.coords['power'].attrs['long_name'] = 'Fluence'
 
 #%%
 
@@ -100,7 +101,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_time.png'))
 
 # %%
 
-da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
+# da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
+da_max = da_lecroy.mws._pulse_max()
 
 da_max.attrs['long_name'] = 'Max AS'
 
@@ -109,6 +111,7 @@ da_max
 from mhdpy.plot import dropna
 
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
+plt.yscale('log')
 
 
 # %%
@@ -129,7 +132,132 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max.png'))
 
 da_max2 = da_max.mean('run')
 da_max2.plot(marker='o')
-# plt.yscale('log')
+plt.yscale('log')
+plt.xscale('log')
+
+
+#%%
+
+delta_pd1.mean('run').plot(marker='o')
+
+
+#%%
+
+from lmfit.models import PowerLawModel
+
+model = PowerLawModel()
+
+params = model.make_params()
+
+params
+
+#%%
+
+da_fit = da_max2.sel(power=slice(1,100))
+
+da_max2
+
+result = model.fit(da_fit.values, x=da_fit['power'].values)
+
+params = result.params
+
+
+#%%
+
+vals  = model.eval(params, x=da_fit['power'].values)
+
+plt.plot(da_fit['power'], vals)
+
+plt.plot(da_fit['power'], da_fit.values)
+
+
+plt.yscale('log')
+plt.xscale('log')
+
+#%%
+
+da_mean = da_max.mean('run')
+da_std = da_max.std('run')
+
+plt.errorbar(da_mean['power'], da_mean, yerr=da_std, marker='o', capsize=5, label='Data')
+
+plt.plot(da_fit['power'], vals, label='Fit')
+
+# add fit params as text
+
+# plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
+# plt.text(0.1, 0.8, f'b: {params["exponent"].value:.2f}', transform=plt.gca().transAxes)
+# plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e}', transform=plt.gca().transAxes)
+
+plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
+plt.text(0.1, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
+plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
+
+plt.yscale('log')
+plt.xscale('log')
+
+plt.legend(loc='lower right')
+
+plt.xlabel('Fluence [mJ/cm^2]')
+plt.ylabel('$\Delta AS_{max}$')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max_fit.png'))
+
+#%%
+
+
+ds_pd['pd1'].plot(hue='power')
+plt.xlim(-1,20)
+plt.yscale('log')
+plt.ylim(1e-4,)
+plt.title('')
+plt.ylabel('PD on-peak [V]')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pd1_power_trace.png'))
+
+#%%
+
+ds_pd['delta_pd1'].plot(marker='o')
+
+#%%
+
+da_fit = ds_pd['delta_pd1'].sel(power=slice(1,100))
+
+model = PowerLawModel()
+
+params = model.make_params()
+
+result = model.fit(da_fit.values, x=da_fit['power'].values)
+
+result
+
+#%%
+
+da_fit
+
+#%%
+
+vals  = model.eval(result.params, x=da_fit['power'].values)
+
+plt.plot(da_fit['power'].values, vals, label='Fit')
+
+plt.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
+
+# plt.yscale('log') plt.xscale('log')
+
+plt.xlabel('Fluence [mJ/cm^2]')
+plt.ylabel('Delta PD1 [V]')
+
+plt.legend(loc='lower right')
+
+plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
+plt.text(0.1, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
+plt.text(0.1, 0.7, f'A: {result.params["amplitude"].value:.2e} ± {result.params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
+
+
 
 #%%
 
@@ -200,7 +328,14 @@ ds_p['decay'].plot(hue='run_plot', x='power', marker='o')
 
 plt.yscale('log')
 
-plt.ylim(1,20)
+plt.ylim(0.1,50)
+
+plt.xscale('log')
+
+plt.title('')
+plt.ylabel('Decay time [us]')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_decay_power.png'))
 
 #%%
 

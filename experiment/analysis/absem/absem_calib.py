@@ -7,30 +7,47 @@ import pi_paper_utils as ppu
 from mhdpy.analysis import absem
 
 #%%
+
+import pytz
+import datetime
+
 fp_calib = pjoin(DIR_EXPT_PROC_DATA, 'ds_calib.cdf')
 
 ds_calib = xr.load_dataset(fp_calib)
 
+
+
+timestamps = ds_calib['time'].values
+timestamps = [str(ts) for ts in timestamps]
+# Create a timezone object for PST
+pst = pytz.timezone('America/Los_Angeles')
+
+# Parse the timestamps, convert to PST, and format as HH:MM:SS
+times_pst = [datetime.datetime.strptime(ts[:26], '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.UTC).astimezone(pst).strftime('%H:%M:%S') for ts in timestamps]
+
 ts = ds_calib['time'].to_series()
-ds_calib['date'] = ts.apply(lambda x: x.date())
-ds_calib = ds_calib.set_index(dt = ('time', 'date'), append=True)
+ds_calib = ds_calib.assign_coords(date = ('time', ts.apply(lambda x: x.date())))
+ds_calib = ds_calib.assign_coords(time_pst= ('time', times_pst))
 
-# d
-# s_calib = ds_calib.unstack('dt')
 
-#%%
+ds_calib_plot = ds_calib.set_index(time = ('time_pst', 'date')).unstack('time')
 
 dates = set(ds_calib.coords['date'].values)
+dates = sorted(dates)
+
+ds_calib_plot
+
+#%%
 
 fig, axes = plt.subplots(len(dates),2, sharex=True, figsize=(10,10))
 
 # for date, ds in ds_calib.groupby('date'):
 for i, date in enumerate(dates):
-    ds = ds_calib.sel(date=date)
+    ds = ds_calib_plot.unstack().sel(date=date).dropna('time_pst', how='all')
 
     ax = axes[i,0]
     da = ds['diff'].sel(mp='barrel')
-    da.plot(hue='time', ax=ax)
+    da.plot(hue='time_pst', ax=ax)
     ax.get_legend().remove()
     ax.set_xlabel('')
 
@@ -39,12 +56,21 @@ for i, date in enumerate(dates):
 
     if 'mw_horns' in ds.coords['mp'].values:
         da = ds['diff'].sel(mp='mw_horns')
-        da.plot(hue='time', ax=ax)
-
-    ax.get_legend().remove()
+        da.plot(hue='time_pst', ax=ax)
+    # Format the legend labels to only show time
+    # ax.get_legend().remove()
     ax.set_xlabel('')
-    ax.set_title(date)
+    # ax.set_title(date)
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'absem_calib_dates.png'))
+
+#%%
+
+
+
+#%%
+
+ds_calib = ds_calib.reset_coords('time_pst' ,drop=True).set_index(dt = ('time', 'date'))
 
 #%%
 
