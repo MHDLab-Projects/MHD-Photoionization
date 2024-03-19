@@ -51,6 +51,9 @@ sigma_bl.plot()
 
 da_plot = da_dsigma_tot.sel(T=[1500,2000,2500,3000], method='nearest')
 
-da_plot.sel(seldict).plot(hue='T')
+da_plot.plot(hue='T')
+plt.gca().get_legend().set_bbox_to_anchor((1, 1))
 
 plt.yscale('log')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'bl_enhance.png'))

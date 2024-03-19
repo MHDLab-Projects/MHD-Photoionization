@@ -77,7 +77,7 @@ plt.savefig('output/gamma_curve_demo.png')
 combo_downsel = {
     # 'P_in' : 0,
     # 'phi': [0.8],
-    'l_bk': [0, 0.99],  
+    'l_bk': [0, 0.9],  
     'eta': ['perf', 'PI'],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
