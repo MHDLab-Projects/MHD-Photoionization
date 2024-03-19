@@ -2,13 +2,15 @@ import os
 import pandas as pd
 import numpy as np
 import xarray as xr
+from pint import Quantity
 
-e = 1.6e-19
-E_IP = 4.34
-K_MHD = 0.5
+# e = 1.6e-19
+e = Quantity(1, 'elementary_charge/particle')
+E_IP = Quantity(4.34, 'eV/particle')
+K_MHD = Quantity(0.5, 'dimensionless')
 
 def calc_G_NE(P_in, eta):
-    G_NE = eta*P_in/(e*E_IP)
+    G_NE = eta*P_in/E_IP
     return G_NE
 
 def calc_ne(G_th, G_NE, krb):
@@ -35,7 +37,7 @@ def calc_gamma_const_nx(krm, mue, u, B, eta):
 
     DPmhd_Dne = e*K_MHD*(1-K_MHD)*(u**2)*(B**2)*mue
 
-    DPR_Dne = e*E_IP*krm
+    DPR_Dne = E_IP*krm
 
     gamma = eta*(DPmhd_Dne/DPR_Dne)
 
@@ -55,11 +57,12 @@ def calc_ne_const_nx(ne0, krm, G_NE):
 
 def calc_NE_all_const_nx(P_in, eta, krm, mue_cant, B, u, ne0):
 
+    P_in = Quantity(P_in, 'W/cm**3') # P_in is a combo, cannot be passed in as a pint quantity
+
     G_NE = calc_G_NE(P_in, eta)
 
     ne = calc_ne_const_nx(ne0, krm, G_NE)
     ne.name = 'ne'
-    ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
 
     sig_NE = calc_sig(ne, mue_cant)
     sig_NE.name = 'sigma'
@@ -68,6 +71,11 @@ def calc_NE_all_const_nx(P_in, eta, krm, mue_cant, B, u, ne0):
     gamma.name = 'gamma'
 
     ds = xr.merge([ne, sig_NE, gamma])
+    ds['ne'] = ds['ne'].pint.to('particle/cm**3')
+    ds['sigma'] = ds['sigma'].pint.to('S/m')
+    ds['gamma'] = ds['gamma'].pint.to('dimensionless')
+
+    ds = ds.pint.dequantify()
 
     return ds
 
@@ -156,7 +164,6 @@ def calc_ne_finite(G_th, G_NE, krb, K):
 def calc_sig(ne,mue):
     #Need to compare this conductivity to cantera? 
     sig = e*mue*ne
-    sig = sig.assign_attrs(units = '$S/cm$', long_name = 'Conductivity')
     return sig
 
 
@@ -176,7 +183,7 @@ def calc_dsigma_tot(sigma_bl, sigma_bk, l_bk):
 def calc_atten_lengths(ds_cs, ds_species_rho):
     """Caclulate optical attenuation length for gas mixture defined by ds_species_rho (#/cm^3)"""
 
-    abstot = ds_species_rho['K'].where(False).fillna(0)
+    abstot = ds_species_rho['K'].pint.dequantify().where(False).fillna(0).pint.quantify('1/cm')
     for species in ds_cs.data_vars:
     #     if species == 'K':
     #         abstot = abstot + ds_cs[species]*ds_species_rho[species]
@@ -185,13 +192,13 @@ def calc_atten_lengths(ds_cs, ds_species_rho):
     lamtot = 1/abstot
         
     lamtot.name = 'tot'
-    lamtot.attrs = dict(long_name = 'Attenuation Length', units = 'cm')
+    lamtot.attrs['long_name'] = 'Attenuation Length'
 
     gas_lam = lamtot.to_dataset()
 
     for species in ds_cs.data_vars:
         lam = 1/(ds_species_rho[species]*ds_cs[species])
-        lam.attrs = dict(long_name = 'Attenuation Length from ' + species, units = 'cm')
+        lam.attrs['long_name'] = 'Attenuation Length from ' + species
         gas_lam = gas_lam.assign(temp=lam).rename(temp=species)
 
     return gas_lam
@@ -200,15 +207,21 @@ def calc_atten_lengths(ds_cs, ds_species_rho):
 def calc_FA(lamtot, L, R):
     FAL = (1-np.exp(-L/lamtot))
     FA = FAL/(1-(1-FAL)*R)
-    FA.attrs = dict(long_name = 'Total Fraction Absorbed')
+    FA.attrs['long_name'] = 'Total Fraction Absorbed'
     FA.name = 'FA'
 
     return FA
 
+c = Quantity(1, 'speed_of_light')
+h = Quantity(1, 'planck_constant')
+
 def calc_eta_PI(lamtot, lamK, FA):
-    E_ph = 1240/lamtot.coords['wl']*e
+    wls = lamtot.coords['wl'].pint.quantify('nm')
+    freqs = (c/wls).pint.to('Hz')
+    E_ph = (h*freqs)/Quantity(1,'particle')
+    # E_ph = 1240/lamtot.coords['wl']*e
     # Ratio of attenuation length of total mixture to potassum is the  the fractional absorbance of potassium. Have a onenote page that proves this is valid
-    eta_PI = (lamtot/lamK)*FA*(e*E_IP/E_ph)
+    eta_PI = (lamtot/lamK)*FA*(E_IP/E_ph)
     return eta_PI
 
 

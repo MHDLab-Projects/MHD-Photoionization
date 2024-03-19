@@ -29,6 +29,9 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho
 for species in ds_TP_species_rho.data_vars:
     ds_TP_species_rho[species] = ds_TP_species_rho[species].pint.quantify('particle/ml')
 
+#%%
+    
+ds_TP_params['sigma'].sel(Kwt=0.01, phi=0.8, P=1e5, method='nearest').plot()
 
 #%%
 
@@ -69,34 +72,32 @@ kth.name =  '$k_{th}$'
 kth = kth.pint.to('1/s')
 
 Gth = kth*ds_TP_species_rho['K']
-Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 
 #Perfect Ionization
 
-B_const =5e-4
-B_hall= np.sqrt(3600/(ds_TP_params['mobility'])**2)*1e-4
-B_hall.name = 'Bmax ion slip'
-
 # #Photoionization
 ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squeeze()
+ds_cs = ds_cs.pint.quantify()
 gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
 
 # FA = xr.DataArray([1], name='FA_1')
-FA = gas_lam['KOH'].pint.dequantify().where(False).fillna(1.0)
+FA = gas_lam['KOH'].pint.dequantify().where(False).fillna(1.0).pint.quantify('dimensionless')
 FA.name = 'FA_1'
 
-eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA)
+eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA).pint.to('dimensionless')
 
+#TODO: is there a way combos can be passed in quantified?
 combos = {
     # 'P_in' : np.array([0, *np.logspace(-10,10,11)]),
+    # 'P_in' : [Quantity(0, 'W/cm**3').magnitude],
     'P_in' : [0],
 }
 
 constants = {
-    'mue_cant': ds_TP_params['mobility']*10000,
-    'u': 1e5,
-    'eta': 1,
-    'B': B_const
+    'mue_cant': ds_TP_params['mobility'].pint.quantify(),
+    'u': Quantity(1e5, 'cm/s'),
+    'eta': Quantity(1, 'dimensionless'),
+    'B': Quantity(5,'T')
 }
 
 
@@ -117,8 +118,8 @@ for eta_str, eta in eta_dict.items():
     for krm_val in ['mm_sum', 'O2_A', 'O2_exp_eff', 'K+', 'H2O', 'OH']:
         constants_temp = constants.copy()
         constants_temp['eta'] = eta
-        constants_temp['ne0'] = ne0.pint.dequantify()
-        constants_temp['krm'] = krm[krm_val].pint.dequantify()
+        constants_temp['ne0'] = ne0
+        constants_temp['krm'] = krm[krm_val]
         ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
         dss.append(ds.assign_coords(rxn=krm_val).assign_coords(eta=eta_str))
 
@@ -142,17 +143,19 @@ ds_NE.attrs = {}
 ds_NE.to_netcdf('output/ds_NE.cdf')
 # %%
 
-sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
+sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
 # sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
+
+sig_bl = ds_NE['sigma'].pint.quantify()
 
 combos_l_bk = {'l_bk' :  [0, 0.5, 0.9, 0.99]}
 
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': ds_NE['sigma'] }, var_names = ['sigma_tot'])
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': sig_bl }, var_names = ['sigma_tot'])
 da_dsigma_tot = r.run_combos(combos_l_bk).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
-da_dsigma_tot.to_netcdf('output/da_dsigma_tot.cdf')
+da_dsigma_tot.pint.dequantify().to_netcdf('output/da_dsigma_tot.cdf')
 
 # gamma_bl = ds_NE['gamma']*da_dsigma_tot
 
@@ -166,4 +169,10 @@ da_dsigma_tot.to_netcdf('output/da_dsigma_tot.cdf')
 # ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).squeeze().plot()
 
 ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
+
+#%%
+
+
+da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_bk', col_wrap=2)
+
 # %%
