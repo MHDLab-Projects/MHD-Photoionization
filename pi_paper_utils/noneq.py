@@ -167,15 +167,15 @@ def calc_sig(ne,mue):
     return sig
 
 
-def calc_sigma_tot(sigma_bl, sigma_bk, l_bk):
-    num = sigma_bl*sigma_bk
-    dem = sigma_bk + l_bk*(sigma_bl - sigma_bk)
+def calc_sigma_tot(sigma_c, sigma_b, l_b):
+    num = sigma_c*sigma_b
+    dem = sigma_b + l_b*(sigma_c - sigma_b)
     return num/dem
 
 
-def calc_dsigma_tot(sigma_bl, sigma_bk, l_bk):
-    num = (1-l_bk)*sigma_bk**2
-    dem = ( sigma_bk + l_bk*(sigma_bl - sigma_bk) )**2
+def calc_dsigma_tot(sigma_c, sigma_b, l_b):
+    num = (1-l_b)*sigma_b**2
+    dem = ( sigma_b + l_b*(sigma_c - sigma_b) )**2
     return num/dem
 
 ### Photoionization ###

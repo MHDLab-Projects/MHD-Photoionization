@@ -48,7 +48,7 @@ beta = gamma -1
 
 combo_downsel = {
     'P_in' : 0,
-    'l_bk': 0,
+    'l_b': 0,
     'Kwt': [0.001, 0.01, 0.1],
     'phi': [0.8,1,1.2],
     'rxn': 'mm_sum'
@@ -62,7 +62,7 @@ P_zero.plot(col='phi', row='Kwt',hue='eta', y='T', xscale='log')
 
 
 combo_downsel = {
-    'l_bk': [0],
+    'l_b': [0],
     'phi': [0.8],
     'Kwt': [0.01],
     'eta': ['perf'],
@@ -86,13 +86,13 @@ combo_downsel = {
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-P_zero.plot(col='l_bk', row='Kwt', hue='eta', y='T', xscale='log')
+P_zero.plot(col='l_b', row='Kwt', hue='eta', y='T', xscale='log')
 
 # %%
 
 combo_downsel = {
     'P_in' : 0,
-    'l_bk': 0,
+    'l_b': 0,
     'phi': [0.8],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
@@ -114,7 +114,7 @@ combo_downsel = {
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-g = P_zero.plot(hue='l_bk', col='eta', y='T', xscale='log', col_wrap=2)
+g = P_zero.plot(hue='l_b', col='eta', y='T', xscale='log', col_wrap=2)
 
 for ax in g.axes.flatten():
     ax.plot([1e5], [3000], marker='*', markersize=10)

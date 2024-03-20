@@ -80,7 +80,7 @@ combos = {
     # 'P_in' : [0],
     # 'analysis': beta.coords['analysis'].values,
     'eta': beta.coords['eta'].values,
-    'l_bk': beta.coords['l_bk'].values,
+    'l_b': beta.coords['l_b'].values,
     'rxn': beta.coords['rxn'].values
 }
 

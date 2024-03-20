@@ -45,7 +45,7 @@ gamma = gamma*da_dsigma_tot
 
 plt.figure(figsize=(5,3))
 
-combo_sel = dict(l_bk=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
+combo_sel = dict(l_b=0, P_in=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)

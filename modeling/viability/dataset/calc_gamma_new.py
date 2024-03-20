@@ -112,7 +112,7 @@ constants = {
 
 dss = []
 
-eta_dict = {'perf': 1, 'PI': eta_PI}
+eta_dict = {'perf': 1, 'KOH': eta_PI}
 
 for eta_str, eta in eta_dict.items():
     for krm_val in ['mm_sum', 'O2_A', 'O2_exp_eff', 'K+', 'H2O', 'OH']:
@@ -143,24 +143,27 @@ ds_NE.attrs = {}
 ds_NE.to_netcdf('output/ds_NE.cdf')
 # %%
 
-sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
-# sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
+# b = bulk
+# c = contact/boundary layer
 
-sig_bl = ds_NE['sigma'].pint.quantify()
+sig_b = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
+# sig_b = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
 
-combos_l_bk = {'l_bk' :  [0, 0.5, 0.9, 0.99]}
+sig_c = ds_NE['sigma'].pint.quantify()
 
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': sig_bl }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_bk).squeeze()
+combos_l_b = {'l_b' :  [0, 0.5, 0.9, 0.99]}
+
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_b' :sig_b, 'sigma_c': sig_c }, var_names = ['sigma_tot'])
+da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
 da_dsigma_tot.pint.dequantify().to_netcdf('output/da_dsigma_tot.cdf')
 
-# gamma_bl = ds_NE['gamma']*da_dsigma_tot
+# gamma_c = ds_NE['gamma']*da_dsigma_tot
 
-# gamma_bl.name = 'gamma_bl'
-# gamma_bl.to_netcdf('output/gamma_bl.cdf')
+# gamma_c.name = 'gamma_c'
+# gamma_c.to_netcdf('output/gamma_c.cdf')
 
 
 
@@ -173,6 +176,6 @@ ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
 #%%
 
 
-da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_bk', col_wrap=2)
+da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_b', col_wrap=2)
 
 # %%

@@ -26,10 +26,10 @@ sig_bk = ds_TP_params['sigma'].sel(T=3000, phi=0.8, Kwt=0.01, P=1e5, method='nea
 # sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
 sigma_bl = ds_NE['sigma'].sel(phi=0.8, eta='perf', rxn='mm_sum', Kwt=0.01, P=1e5).squeeze()
 
-combos_l_bk = {'l_bk' :  np.linspace(0,1,100)}
+combos_l_b = {'l_b' :  np.linspace(0,1,100)}
 
 r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': sigma_bl }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_bk).squeeze()
+da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
@@ -49,7 +49,7 @@ sigma_bl.plot()
 
 # seldict = dict(phi=0.8, eta='perf', rxn='mm_sum', Kwt=0.01, P=1e5)
 
-da_plot = da_dsigma_tot.sel(T=[1500,2000,2500,3000], method='nearest')
+da_plot = da_dsigma_tot.sel(T=[1500,2000,2500,2700,3000], method='nearest')
 
 da_plot.plot(hue='T')
 plt.gca().get_legend().set_bbox_to_anchor((1, 1))
@@ -57,3 +57,8 @@ plt.gca().get_legend().set_bbox_to_anchor((1, 1))
 plt.yscale('log')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'bl_enhance.png'))
+# %%
+
+
+da_dsigma_tot
+# %%

@@ -49,7 +49,7 @@ gamma = gamma -1
 # %%
 combo_downsel = {
     # 'P_in' : 0,
-    'l_bk': 0,
+    'l_b': 0,
     'Kwt': 0.01,
     'phi': [0.8,1,1.2],
     # 'analysis': 'perf_Bconst'
@@ -83,7 +83,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'P_zero_rxn_phi.png'))
 
 
 # %%
-combo_sel = dict(l_bk=0, Kwt=0.01, phi=0.8, eta='perf')
+combo_sel = dict(l_b=0, Kwt=0.01, phi=0.8, eta='perf')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
