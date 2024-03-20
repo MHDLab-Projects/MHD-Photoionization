@@ -3,64 +3,29 @@
 
 # # 53x (seedramp) analysis
 
+
 #%%
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils as ppu
-from mhdpy.fileio.ct import load_df_cuttimes
+import pi_paper_utils #Sets matplotlib style
 
+data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-#%%
-
-fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
-df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
-ds_lecroy = ppu.fileio.load_lecroy('53x', avg_mnum=True, df_ct_downselect=df_cuttimes_seedtcs)
-
-# ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
-
-ds_fit = ds_lecroy
-da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
+ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()
+ds_species_cfd = xr.open_dataset(pjoin(data_directory, '53x_ds_species_cfd.cdf')).pint.quantify()
+ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
 
 #%%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
-
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
-#%%
-
-ds_p['decay'].mean('run').plot(marker='o')
-
-# ds_p['decay'].plot()k
-
-
-#%%
-# Load cfd K+
-
-
-ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_p.coords['kwt'].values)
-
-ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
-
-goldi_pos = Quantity(180,'mm')
-ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
-
-
-ds_cfd['Yeq_K+'].plot()
+ds_cfd = ds_species_cfd
+ds_p = ds_p_stats
+ds_p
 
 #%%
 
-ds_cfd['T']
-
+# ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
 #%%
-
-ds_cfd['rho_number'].pint.to('particle/ml').plot()
-
-#%%
-
-ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
-#%%
-ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
 
@@ -86,7 +51,7 @@ ds_p
 #%%
 # Factor of 2 only occurs for K+
 
-ds_species_decay = 1/(ds_p['decay'].pint.quantify('us')*ds_krb)
+ds_species_decay = 1/(ds_p['mws_fit_decay_exp_mean'].pint.quantify('us')*ds_krb)
 
 ds_species_decay = ds_species_decay.pint.to('particle/ml')
 
@@ -97,7 +62,7 @@ ds_species_decay
 fig, axes = plt.subplots(1, 2, figsize=(10,5), sharex=True, sharey=True)
 
 
-da_plot = ds_species_decay.to_array('species').mean('run')
+da_plot = ds_species_decay.to_array('species')
 
 da_plot
 
@@ -105,7 +70,7 @@ da_plot.plot(hue='species', marker='o', ax=axes[0])
 
 axes[0].set_title('Predicted density $k_{r,species}$ and $\\tau_{mws}$')
 
-ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O']].to_array('species').plot(hue='species', ax=axes[1], marker='o')
+ds_cfd[['K+', 'OH', 'O2', 'H2O']].to_array('species').plot(hue='species', ax=axes[1], marker='o')
 
 axes[1].set_title('CFD species density')
 
@@ -117,8 +82,7 @@ plt.yscale('log')
 
 #%%
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K']]
-ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
+
 
 from pi_paper_utils.kinetics import calc_krm
 
@@ -131,7 +95,7 @@ ds_tau = (1/ds_krm).pint.to('us')
 for species in ds_tau.data_vars:
     ds_tau[species].plot(marker='o', label="CFD: {}".format(species))
 
-ds_p['decay'].mean('run').plot(marker='o', label='Experiment')
+ds_p['mws_fit_decay_exp_mean'].plot(marker='o', color='black', label='Experiment')
 
 plt.legend()
 plt.yscale('log')
@@ -144,7 +108,7 @@ ds_tau
 
 ds_tau['O2_C'].plot()
 
-ds_p['decay'].mean('run').plot(marker='o', label='experiment')
+ds_p['mws_fit_decay_exp_mean'].plot(marker='o', label='experiment')
 
 plt.yscale('log')
 # %%
@@ -153,7 +117,7 @@ ds_cfd['O2']
 
 #%%
 
-tau_exp = ds_p['decay'].mean('run').pint.quantify('us')
+tau_exp = ds_p['mws_fit_decay_exp_mean'].pint.quantify('us')
 
 k_eff_bm = 1/(tau_exp*ds_cfd['O2'])
 
@@ -176,7 +140,7 @@ k_eff_tm.plot(marker='o')
 fig, axes = plt.subplots(4, 1, figsize=(5,8), sharex=True, sharey=False)
 
 # Plot decay
-ds_p['decay'].mean('run', keep_attrs=True).plot(ax=axes[0], marker='o')
+ds_p['mws_fit_decay_exp_mean'].plot(ax=axes[0], marker='o')
 axes[0].set_title('MWS Time constant')
 axes[0].set_ylabel('Decay constant (us)')   
 axes[0].set_yscale('log')
@@ -218,3 +182,18 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_53x.png'))
 
 plt.yscale('log')
 # %%
+
+# plot on only bimolecular rate
+
+fig, ax = plt.subplots(1, 1, figsize=(5,2))
+
+k_eff_bm.plot(marker='o', ax=ax)
+
+plt.ylabel('$k_{r,b,eff}$\n(ml/particle/s)')
+
+plt.xscale('log')
+plt.xlim(0.05, )
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_bm_53x.png'))
+
