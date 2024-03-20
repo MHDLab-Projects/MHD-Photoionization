@@ -85,7 +85,19 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp_dnedt_individual_compare.png'), 
 
 #%%
 
+plt.figure()
 
+da_plot = ds_plot[['AS_fit','AS_all']].to_array('var').sel(fit_method='exp')
+
+g = da_plot.plot(hue='var', figsize=(5,2))
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-5, 0.1)
+
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
@@ -215,7 +227,35 @@ plt.yscale('log')
 plt.ylabel("$\Delta n_e$ [um$^{-3}$]")
 plt.xlabel("K wt % nominal")
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_both.png'), dpi=300, bbox_inches='tight')
 
 
+# %%
+
+
+fig, ax = plt.subplots(figsize=(5,2.5))
+
+var = 'mws_fit_decay_exp'
+ax.errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_std'.format(var)], 
+    marker='o', capsize=5,
+    label='MWS Fit Expon.'
+    )
+
+for species in ds_tau.data_vars:
+    ds_tau[species].plot(label="CFD: {}".format(species), ax=ax)
+
+ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
+ax.set_ylabel("Time Constant [us]")
+ax.set_title('')
+ax.set_ylim(1e-1, 1e5)
+
+ax.set_xscale('log')
+ax.set_yscale('log')
+
+plt.xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_exp.png'), dpi=300, bbox_inches='tight')
 # %%
