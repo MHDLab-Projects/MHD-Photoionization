@@ -131,7 +131,7 @@ for i, (temp, ds) in enumerate(ds_concat.groupby('temp')):
 
 #%%
 
-# Drop test cases where motor was not at goldilocks position
+# Drop test cases where motor was not at SFR-maximized position
 
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 

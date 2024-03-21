@@ -333,7 +333,7 @@ plt.ylim(0.1,50)
 plt.xscale('log')
 
 plt.title('')
-plt.ylabel('Decay time [us]')
+plt.ylabel('Exponential time constant [us]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_decay_power.png'))
 

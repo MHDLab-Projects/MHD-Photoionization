@@ -130,7 +130,7 @@ line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0]
 axes[0].set_ylabel("Species Concentration [#/m^3]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)' , 'CFD All K (Goldi)'],
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ 180 mm', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
     bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
     )
 

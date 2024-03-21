@@ -115,5 +115,5 @@ mws_offset_min = Quantity(1 + 2/16, 'inches')
 mws_offset_max = Quantity(1 + 4/16, 'inches')
 pos_536_goldilocks = Quantity(150, 'mm')
 
-print("Goldilocks Position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
-print("Goldilocks Position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))
+print("SFR-maximized position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
+print("SFR-maximized position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))

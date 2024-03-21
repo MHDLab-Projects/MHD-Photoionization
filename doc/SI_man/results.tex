@@ -50,25 +50,25 @@ Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos te
 \end{figure}
 
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mws_AStime_phi.png}
-\caption{MWS AS time profiles for 5x6\_pos.}
-\label{fig:SI_5x6_pos_mws_AStime_phi}
-\end{figure}
+% \begin{figure}[]
+% \centering
+% \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mws_AStime_phi.png}
+% \caption{MWS AS time profiles for 5x6\_pos.}
+% \label{fig:SI_5x6_pos_mws_AStime_phi}
+% \end{figure}
 
 
 \clearpage
 \subsubsection{516 Position Dependence Test Case Sequence}
 
-This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS decay times than 5x3\_pos and 5x6\_pos test case sequences. We could also perform AES measurements which are presented in the main text. 
+This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. We could also perform AES measurements which are presented in the main text. 
 
 TODO: this maybe should be in the main text.
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/516_536_decay_compare.png}
-\caption{516 and 536 MWS AS decay time comparison.}
+\caption{516 and 536 MWS AS exponential time constant comparison.}
 \label{fig:SI_516_mws_decaytime}
 \end{figure}
 
@@ -122,7 +122,7 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 
 Figure \ref{fig:SI_power_dependence} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. The $\Delta AS_{max}$ as a function of laser fluence is fit to a power law of the form $\Delta AS_{max} = A * P^k$. The fit parameters are shown in Figure \ref{fig:SI_power_dependence}C.
 
-For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential decay time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
+For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential exponential time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_MWS.png} 
@@ -148,7 +148,7 @@ Temporary section for supplemental figures
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/krm_cfd_pos.png} 
     \caption{Lifetime predictions from CFD vs position}
-    \label{fig:SI_krm_cfd_pos.png}
+    \label{fig:SI_krm_cfd_pos}
 \end{figure}
 
 % TODO: update/remove
@@ -160,12 +160,12 @@ Temporary section for supplemental figures
 
 
 % experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png}
-\caption{Heat transfer comparison between CFD and experiment.}
-\label{fig:SI_heat_transfer_phi_cfd_expt}
-\end{figure}
+% \begin{figure}[]
+% \centering
+% \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png}
+% \caption{Heat transfer comparison between CFD and experiment.}
+% \label{fig:SI_heat_transfer_phi_cfd_expt}
+% \end{figure}
 
 
 \clearpage
@@ -177,7 +177,7 @@ We define an effective oxygen bimolecular recombination rate, $k_r{r, b,eff}$ Me
     k_{r,b,eff} = \frac{1}{\tau_{experiment} *  n_{O2}}
 \end{equation}
 
-where $\tau_{experiment}$ is the measured decay time,  and $n_{O2}$ is the oxygen number density predicted from CFD. Additionally, if we assume that the collisional recombination partner of this effective reaction is the entire gas mixture, we can calculate the effective termolecular recombination coefficient as
+where $\tau_{experiment}$ is the measured exponential time constant,  and $n_{O2}$ is the oxygen number density predicted from CFD. Additionally, if we assume that the collisional recombination partner of this effective reaction is the entire gas mixture, we can calculate the effective termolecular recombination coefficient as
 
 
 \begin{equation}
@@ -192,7 +192,7 @@ Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombina
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/experiment/analysis/mws/output/figures/krb_eff_53x.png}
-\caption{Effective recombination coefficient for seed ramp at the nominal position of 180 mm downstream of the barrel exit. a) The decay constant measured from the MWS monomolecular regime, averaged over runs. B) The CFD-predicted total and oxygen number density. C) The effective recombination coefficient. calculated from \ref{eq:krbeff}}
+\caption{Effective recombination coefficient for seed ramp at the nominal position of 180 mm downstream of the barrel exit. a) The exponential time constant measured from the MWS monomolecular regime, averaged over runs. B) The CFD-predicted total and oxygen number density. C) The effective recombination coefficient. calculated from \ref{eq:krbeff}}
 \label{fig:SI_krb_eff_53x}
 \end{figure}
 

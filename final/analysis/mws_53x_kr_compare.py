@@ -42,7 +42,7 @@ plt.yscale('log')
 
 # # Compare predicted and CFD species density
 
-# predicted density from decay constant and hayhurst reaction rates
+# predicted density from exponential time constant and hayhurst reaction rates
 
 #%%
 
@@ -78,7 +78,7 @@ plt.yscale('log')
 
 # %$[markdown]
 
-# # calculate predicted decay constant from CFD species density
+# # calculate predicted exponential time constant from CFD species density
 
 #%%
 
