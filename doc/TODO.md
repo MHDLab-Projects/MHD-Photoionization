@@ -14,7 +14,7 @@
 
 - [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
 
-
+ - [] make delta AS max plot with 530 and no torch. 
 
 ## Check in lab
 
