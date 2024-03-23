@@ -136,7 +136,7 @@ axes[0].legend(
 
 axes[0].set_title('')
 
-var = 'AS_max'
+var = 'dAS_abs_max'
 lineAS = axes[1].errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
@@ -151,7 +151,7 @@ axes[1].set_ylabel("$\Delta AS$ Maximum")
 
 ta = axes[1].twinx()
 #No standard deviation for delta_pd1 as only one run
-var = 'delta_pd1'
+var = 'dpd1_max'
 linePD = ta.plot(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 

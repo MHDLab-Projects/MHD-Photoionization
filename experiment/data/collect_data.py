@@ -71,6 +71,8 @@ for date in dates:
     ds = xr.load_dataset(fp)
     # ds = ds[['i', 'q']] # Removes the photodiode data which is only present on 2023-05-24. Doubles size with mostly NaNs. TODO: better way to handle this?
 
+
+
     dss.append(ds)
 
 ds_lecroy = xr.concat(dss, 'acq_time', join='override')

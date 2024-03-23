@@ -12,7 +12,7 @@ from mhdpy.analysis.mws.fitting import calc_dnedt_v2
 from scipy.integrate import solve_ivp
 
 ds_lecroy = ppu.fileio.load_lecroy('53x')
-da_sel = ds_lecroy.mws.calc_mag_phase_AS()['AS'].sel(kwt=1, method='nearest')
+da_sel = ds_lecroy.mws.calc_AS_rel()['AS'].sel(kwt=1, method='nearest')
 da_fit = da_sel.mean('mnum')
 da_fit = da_fit/da_fit.mws._pulse_max()
 

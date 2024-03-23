@@ -11,7 +11,7 @@ ds = xr.load_dataset(fp)
 
 ds.coords['time'].attrs['units'] = 'us'
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 ds['mag'].mean('acq_time').plot()
 

@@ -39,15 +39,15 @@ def ds_mws_all_mnum():
     # ds_lecroy = ds_lecroy.groupby('kwt').apply(lambda x: x.xr_utils.assign_mnum('mnum'))
 
     ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-    ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
+    ds_lecroy = ds_lecroy.mws.calc_AS_rel()
 
     return ds_lecroy
 
 
 import pi_paper_utils as ppu
 from pint import Unit
-def test_calc_mag_phase_AS(ds_mws):
-    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+def test_calc_AS_rel(ds_mws):
+    ds_mws = ds_mws.mws.calc_AS_rel()
 
     assert 'AS' in ds_mws
     
@@ -55,7 +55,7 @@ def test_calc_mag_phase_AS(ds_mws):
 
 def test_calc_mag_phase_AS_abs(ds_mws):
     ds_nothing = ppu.fileio.load_mws_T0()
-    ds_mws = ds_mws.mws.calc_mag_phase_AS(mag_0=ds_nothing)
+    ds_mws = ds_mws.mws.calc_AS_abs(mag_0=ds_nothing)
 
     assert 'AS_abs' in ds_mws
 
@@ -65,7 +65,7 @@ def test_calc_mag_phase_AS_abs(ds_mws):
 def test_pipe_fit_mws_1_avgbef(ds_mws):
 
     ds_mws = ds_mws.mean('mnum') 
-    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+    ds_mws = ds_mws.mws.calc_AS_rel()
 
     ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'])
 
@@ -84,7 +84,7 @@ def test_pipe_fit_mws_1_avgbef(ds_mws):
 #TODO: this fails when taking average after calculating mnum. Need to investigate why. 
 def test_pipe_fit_mws_1_avgafter(ds_mws):
 
-    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+    ds_mws = ds_mws.mws.calc_AS_rel()
     ds_mws = ds_mws.mean('mnum') 
 
     ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'])
@@ -98,7 +98,7 @@ def test_pipe_fit_mws_2(ds_mws_all_mnum):
 
 def test_pipe_fit_mws_3(ds_mws):
     ds_mws = ds_mws.mean('mnum') 
-    ds_mws = ds_mws.mws.calc_mag_phase_AS()
+    ds_mws = ds_mws.mws.calc_AS_rel()
 
     ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_3(ds_mws['AS'])
 

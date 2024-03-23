@@ -53,16 +53,21 @@ ds = ds.assign_coords(time=ds.coords['time']*1e6 - time_offset)
 ds.coords['time'].attrs['units'] = 'us'
 ds.coords['time'].attrs['long_name'] = 'Time'
 
+#TODO: Move this to munging. 
+for key in ['i', 'q', 'pd1','pd2']:
+    if key in ds:
+        ds[key].attrs['units'] = 'V'
+
 ds.to_netcdf(pjoin(data_folder, 'ds_lecroy_time.cdf'))
 
 
 
 # %%
 
-ds_out = ds.mws.calc_mag_phase_AS()[['mag_pp', 'mag_pp_std', 'AS']].mws._pulse_max()
+ds = ds.mws.calc_AS_rel()
+ds = ds.mws.calc_time_stats()
 
-mag_peak = ds.mws.calc_mag_phase_AS()['mag'].sel(time=slice(0, 0.1)).mean('time')
-ds_out = ds_out.assign({'mag_peak':mag_peak})
+ds_out = ds[['mag_pp', 'mag_fluct', 'dAS_rel_max', 'mag_peak']]
 
 ds_out = ds_out.rename({'acq_time':'time'})
 

@@ -23,7 +23,7 @@ fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
 ds_in = xr.load_dataset(fp_in)
 ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
+ds = ds_in.mws.calc_AS_rel().drop('mag_pp')
 
 
 tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]

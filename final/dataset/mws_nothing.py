@@ -59,7 +59,7 @@ fp = pjoin(dir, '2023-05-18', 'Lecroy', fn)
 ds = xr.load_dataset(fp)
 ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 ds['mag'].mean('acq_time').plot(ax=axes[0])
 
@@ -93,7 +93,7 @@ for date, fn_list in dates.items():
         ds = ds.assign_coords(tc=tc).expand_dims('tc')
         ds = ds.stack(temp=['date','tc'])
 
-        ds = ds.mws.calc_mag_phase_AS()
+        ds = ds.mws.calc_AS_rel()
         ds = ds.mean('time')
 
         # motor = da_motor.interp(acq_time=ds['acq_time'], method='nearest')
@@ -103,7 +103,7 @@ for date, fn_list in dates.items():
         dss.append(ds)
 
 
-# ds = ds.mws.calc_mag_phase_AS()
+# ds = ds.mws.calc_AS_rel()
 
 ds_concat = xr.concat(dss, dim='temp')
 

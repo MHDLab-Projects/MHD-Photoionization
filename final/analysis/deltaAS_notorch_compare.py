@@ -22,21 +22,21 @@ ds_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=True, AS_calc='absolute')
 
 fig,axes = plt.subplots(1,5, figsize=(15,5), sharey=True)
 
-ds_notorch['AS_abs'].mws._pulse_max().mean('run').plot(ax=axes[0])
+ds_notorch['dAS_abs'].mws._pulse_max().mean('run').plot(ax=axes[0])
 axes[0].set_title('No Torch')
 
-ds_5x0['AS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[1])
+ds_5x0['dAS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[1])
 axes[1].set_title('5x0')
-ds_5x3['AS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[2])
+ds_5x3['dAS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[2])
 
 axes[2].set_title('5x3')
 
-ds_5x6['AS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[3])
+ds_5x6['dAS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[3])
 
 axes[3].set_title('5x6')
 
 
-ds_536['AS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[4])
+ds_536['dAS_abs'].mws._pulse_max().mean('run').plot(hue='phi', ax=axes[4])
 axes[4].set_title('536')
 
 for ax in axes:
@@ -44,6 +44,8 @@ for ax in axes:
 
 
 #%%
+
+
     
 ds_notorch['AS_abs'].mws._pulse_max().mean('run').plot(label='No Torch')
 ds_5x0['AS_abs'].mws._pulse_max().mean('run').sel(phi=0.8, method='nearest').plot(label='5x0')
@@ -121,7 +123,7 @@ plt.yscale('log')
 
 #%%
 
-sfr = ds_536['delta_mag']/ds_536['mag_pp_std']
+sfr = ds_536['delta_mag']/ds_536['mag_fluct']
 
 sfr.mean('mnum').mean('run').plot()
 
@@ -274,7 +276,7 @@ plt.xlim(-10,)
 
 dAS_max = ds_536['AS_abs'].mws._pulse_max().sel(run=[('2023-05-18', 1), ('2023-05-18', 2)]).mean('mnum')
 
-mag_pp_std = ds_536['mag_pp_std'].sel(run=[('2023-05-18', 1), ('2023-05-18', 2)]).mean('mnum')
+mag_pp_std = ds_536['mag_fluct'].sel(run=[('2023-05-18', 1), ('2023-05-18', 2)]).mean('mnum')
 
 rat = dAS_max/mag_pp_std
 

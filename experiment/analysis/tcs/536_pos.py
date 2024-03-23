@@ -150,7 +150,7 @@ mws_max = ds_lecroy['AS'].max('time').rename('AS_max')
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
 mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
-mws_pp_std = ds_lecroy['mag_pp_std']
+mws_pp_std = ds_lecroy['mag_fluct']
 
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
@@ -173,12 +173,12 @@ ds = xr.merge([
     mws_pp_std,
     mws_max_std_ratio,
     nK,
-    delta_pd1.rename('delta_pd1') 
+    delta_pd1.rename('dpd1') 
     ]).sortby('motor').dropna('run', how='all')
 
 ds['AS_max'].attrs = dict(long_name='AS Max')
 ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
-ds['mag_pp_std'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
+ds['mag_fluct'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
 ds['AS_max_std_ratio'].attrs = dict(long_name='SFR', units='1/V')
 
 ds
@@ -195,9 +195,9 @@ fig, axes = plt.subplots(5, figsize=(4,12), sharex=True)
 
 ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[0],marker='o')
 ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[1], marker='o')
-ds['mag_pp_std'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
+ds['mag_fluct'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
 ds['AS_max_std_ratio'].plot(hue='run_plot', x='motor', ax=axes[3],marker='o')
-ds['delta_pd1'].plot(hue='run_plot', x='motor', ax=axes[4],marker='o')
+ds['dpd1'].plot(hue='run_plot', x='motor', ax=axes[4],marker='o')
 
 for ax in axes:
     ax.get_legend().remove()
@@ -211,7 +211,7 @@ axes[3].set_xlabel('Position [mm]')
 
 fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
 
-for i, var in enumerate(['AS_max', 'mag_pp_std', 'AS_max_std_ratio']):
+for i, var in enumerate(['AS_max', 'mag_fluct', 'AS_max_std_ratio']):
     ax = axes[i]
 
     ds_stat = ds.wma.initialize_stat_dataset(var, 'run')
@@ -233,7 +233,7 @@ axes[2].set_xlabel('Position [mm]')
 
 ta = axes[0].twinx()
 
-delta_pd1 = ds['delta_pd1'].dropna('run', how='all')
+delta_pd1 = ds['dpd1'].dropna('run', how='all')
 delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 delta_pd1.plot(ax=ta, color='red', marker='o')
 ta.set_ylabel('Delta PD1 [mV]')

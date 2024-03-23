@@ -23,9 +23,11 @@ ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
 #%%
 
+ds_p
+
 #%%
 
-da_sel = ds_lecroy['AS_abs'].dropna('run',how='all')
+da_sel = ds_lecroy['dAS_abs'].dropna('run',how='all')
 
 da_sel.dropna('motor', how='all')
 
@@ -67,7 +69,7 @@ ds_p_sel = ds_p.sel(phi=0.8, method='nearest')
 
 fig, axes = plt.subplots(1,2, figsize=(5,3), sharex=True)
 
-for i, var in enumerate(['AS_max', 'AS_max_std_ratio']):
+for i, var in enumerate(['dAS_abs_max', 'SFR_abs']):
     ax = axes[i]
 
     ds_stat = ds_p_sel.wma.initialize_stat_dataset(var, 'run')
@@ -90,7 +92,7 @@ for i, var in enumerate(['AS_max', 'AS_max_std_ratio']):
 ta = axes[0].twinx()
 
 ## photodiode 
-# delta_pd1 = ds_p_sel['delta_pd1'].dropna('run', how='all')
+# delta_pd1 = ds_p_sel['dpd1'].dropna('run', how='all')
 # delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 # delta_pd1.plot(ax=ta, color='red', marker='o')
 # ta.set_ylabel('Delta PD1 [mV]')

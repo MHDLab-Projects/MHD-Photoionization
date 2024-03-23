@@ -40,7 +40,7 @@ from mhdpy.analysis import mws
 fp = pjoin(munged_dir, datestr, 'ds_lecroy_time.cdf')
 ds_lecroy = xr.load_dataset(fp)
 
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS()
+ds_lecroy = ds_lecroy.mws.calc_AS_rel()
 
 ds_lecroy = ds_lecroy[['AS','pd1','pd2']]
 
@@ -140,12 +140,12 @@ ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
 #%%
 
 
-ds['delta_pd1'] = ds['pd1'] - ds['pd1'].sel(time=slice(-1,0)).mean('time')
+ds['dpd1'] = ds['pd1'] - ds['pd1'].sel(time=slice(-1,0)).mean('time')
 
 # For some reason can't use _pulse_max here
 ds_2 = ds.sel(time=slice(-1,1)).max('time')
 
-ds_2 = ds_2[['delta_pd1','mw']].to_array('var').mean('mnum')
+ds_2 = ds_2[['dpd1','mw']].to_array('var').mean('mnum')
 
 ds_2.plot(col='var', hue='phi', marker='o', sharey=False)
 

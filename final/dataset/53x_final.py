@@ -21,7 +21,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 
 # # Load MWS Data
 # TODO: having to 'cancel' AS calulation then perform again to avoid memory errors when downselecting. Revist
-ds_lecroy = ppu.fileio.load_lecroy(tc, AS_calc=None)
+ds_lecroy = ppu.fileio.load_lecroy(tc, AS_calc='absolute')
 
 # Load cfd line profiles
 ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_lecroy.coords['kwt'].values)
@@ -30,7 +30,7 @@ ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
 #%%
 
-ds_absem['alpha']
+ds_lecroy
 #%%
 
 
@@ -82,10 +82,10 @@ fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
-mag_0 = ppu.fileio.load_mws_T0()
+# mag_0 = ppu.fileio.load_mws_T0()
 
-ds_lecroy = ds_lecroy.mean('mnum')
-ds_lecroy = ds_lecroy.unstack('run').mws.calc_mag_phase_AS(mag_0=mag_0).xr_utils.stack_run()
+# ds_lecroy = ds_lecroy.mean('mnum')
+# ds_lecroy = ds_lecroy.unstack('run').mws.calc_AS_abs(mag_0=mag_0).xr_utils.stack_run()
 
 ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
@@ -131,7 +131,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_absem_fit.png'))
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
 ds_fit = ds_lecroy
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
+da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
 
 
 # ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
@@ -166,7 +166,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_dnedtv2.png'))
 from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 ds_fit = ds_lecroy
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
+da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
 
 ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
 
@@ -178,7 +178,7 @@ ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_d
 
 #TODO: output a standard plot of fits for SI or save to file
 
-da_sel = ds_lecroy['AS_abs'].sel(kwt=0.05,method='nearest').dropna('run',how='all').isel(run=2)
+da_sel = ds_lecroy['AS_abs'].mean('mnum').sel(kwt=0.05,method='nearest').dropna('run',how='all').isel(run=2)
 
 da_mean = da_sel
 da_std = da_sel
@@ -204,47 +204,18 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
 
 
 
-
-
-
-
-#%%
-
-da_stats = ds_lecroy['AS_abs'].sel(time=slice(-1,1))
-mws_max = da_stats.max('time')
-mws_std = da_stats.max('time')
-
-#%%
-
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-2,-1)).mean('time')
-delta_pd1 = delta_pd1.dropna('run', how='all')
-
-delta_pd1.isel(run=0).plot(hue='kwt')
-plt.xlim(-1,3)
-#%%
-
-# Excimer interference messes up maximum at 0, so we take the maximum between 0.8 and 1.5
-delta_pd1 = delta_pd1.sel(time=slice(0.8,1.5)).max('time')
-delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-
-#%%
-
-delta_pd1.plot.line(x='kwt')
-plt.xscale('log')
-plt.yscale('log')
-
+ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
+ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 
 #%%
 
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
     ds_p_absem['nK_m3'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
-    mws_max.rename('AS_max'),
-    mws_std.rename('AS_std'),
     ds_p_dnedt['decay'].rename('mws_fit_decay'),
     ds_p_exp['decay'].rename('mws_fit_decay_exp'),
     ds_p_dnedt['dne'].rename('mws_fit_dne'),
-    delta_pd1.rename('delta_pd1')
+    ds_stats_lecroy
     ])
 
 

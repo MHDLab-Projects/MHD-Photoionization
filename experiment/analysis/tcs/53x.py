@@ -103,7 +103,7 @@ ds_lecroy = ppu.fileio.load_lecroy('53x', df_ct_downselect=df_cuttimes_seedtcs, 
 # ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
 # ds_fit = ds_lecroy.mean('mnum')
-# da_fit = ds_fit.mws.calc_mag_phase_AS()['AS']
+# da_fit = ds_fit.mws.calc_AS_rel()['AS']
 
 da_fit = ds_lecroy['AS']
 

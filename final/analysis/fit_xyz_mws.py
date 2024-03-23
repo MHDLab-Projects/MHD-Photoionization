@@ -14,7 +14,7 @@ goldi_pos = Quantity(180, 'mm')
 # %%
 
 ds_fit = ds_mws_53x
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
+da_fit_lecroy = ds_fit.mws.calc_AS_rel()['AS_abs']
 
 da_fit_lecroy = da_fit_lecroy/da_fit_lecroy.mws._pulse_max()
 da_fit_lecroy = da_fit_lecroy.unstack('run')

@@ -86,9 +86,14 @@ def load_lecroy(tc,
         assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
         if AS_calc == 'absolute':
             da_nothing = load_mws_T0()
-            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
+            ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_nothing)
         else:
-            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 
+            ds_lecroy = ds_lecroy.mws.calc_AS_rel() 
+
+        ds_lecroy = ds_lecroy.mws.calc_dAS()
+
+    if 'pd1' in ds_lecroy:
+        ds_lecroy = ds_lecroy.mws.calc_dPD()
 
     ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
