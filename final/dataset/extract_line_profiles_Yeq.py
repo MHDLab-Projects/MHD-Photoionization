@@ -169,7 +169,7 @@ p.add_mesh(line1, color='red')
 
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
-p.show()
+# p.show()
 
 #%%
 
@@ -432,3 +432,5 @@ ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.
 
 df_lines
 # %%
+
+ds_out

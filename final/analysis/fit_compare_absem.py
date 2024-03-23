@@ -31,31 +31,6 @@ da_cfd_beam
 # %%
 
 
-da_cfd_beam.sel(motor=goldi_pos,method='nearest').plot(col='mp', hue='kwt')
-
-plt.yscale('log')
-
-plt.ylim(1e-7,)
-plt.xlim(3,8)
-
-plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_beam_goldi_pos_kwt.png'))
-#%%
-
-da_cfd_pos_plot = da_cfd_beam.sel(kwt=1, method='nearest')
-da_cfd_pos_plot = da_cfd_pos_plot.sel(motor = [50, 100, 150,175,200,250], method='nearest')
-da_cfd_pos_plot = da_cfd_pos_plot.assign_coords(motor = da_cfd_pos_plot.coords['motor'].round(2))
-
-da_cfd_pos_plot.plot(col='mp', hue='motor')
-
-
-plt.yscale('log')
-
-plt.ylim(1e-7,)
-plt.xlim(3,8)
-
-
-plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_beam_pos_dep.png'))
-
 #%%
 
 from mhdpy.analysis.absem.fitting import AlphaFitPipeline2, AlphaFitPipelineNum1

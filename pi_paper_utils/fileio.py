@@ -136,7 +136,7 @@ def load_cfd_centerline(kwt_interp = None):
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-def load_cfd_beam(kwt_interp = None):
+def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
 
 
     fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
@@ -156,7 +156,9 @@ def load_cfd_beam(kwt_interp = None):
 
 
     ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
-    ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
+
+    if convert_rho_number:
+        ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
 
     ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
 
