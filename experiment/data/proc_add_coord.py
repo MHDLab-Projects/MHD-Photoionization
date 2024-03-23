@@ -99,7 +99,9 @@ process_tcs = [
     '5x6_pos',
     '5x3_pos',
     '536_pos_power',
-    '516_pos'
+    '516_pos',
+    '5x0_pos',
+    'NoTorch_pos'
     ]
 
 # Minimum number of measurements that must be present in each timewindow
