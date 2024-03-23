@@ -16,6 +16,10 @@
 
  - [] make delta AS max plot with 530 and no torch. 
 
+- [] update CFD profiles to finite rate and compare
+
+- [] affect of position dependent T0 for 2023-05-24
+
 ## Check in lab
 
 - [] Tcube current
