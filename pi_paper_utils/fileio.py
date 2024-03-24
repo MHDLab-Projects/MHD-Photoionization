@@ -90,8 +90,6 @@ def load_lecroy(tc,
         else:
             ds_lecroy = ds_lecroy.mws.calc_AS_rel() 
 
-        ds_lecroy = ds_lecroy.mws.calc_dAS()
-
     if 'pd1' in ds_lecroy:
         ds_lecroy = ds_lecroy.mws.calc_dPD()
 

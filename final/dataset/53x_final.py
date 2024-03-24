@@ -89,7 +89,7 @@ ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
 ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
 
-ds_lecroy.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
+ds_lecroy.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
 ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
 
 #%%

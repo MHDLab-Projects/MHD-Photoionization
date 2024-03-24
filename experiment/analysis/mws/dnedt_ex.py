@@ -11,8 +11,8 @@ import pi_paper_utils as ppu
 from mhdpy.analysis.mws.fitting import calc_dnedt_v2
 from scipy.integrate import solve_ivp
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
-da_sel = ds_lecroy.mws.calc_AS_rel()['AS'].sel(kwt=1, method='nearest')
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
+da_sel = ds_lecroy['dAS_abs'].sel(kwt=1, method='nearest')
 da_fit = da_sel.mean('mnum')
 da_fit = da_fit/da_fit.mws._pulse_max()
 
@@ -80,8 +80,6 @@ ds_mws_fit.to_array('var').plot(x='time', row='run', hue='var')
 plt.yscale('log')
 
 #%%
-
-ds_p['A']
 
 
 #%%

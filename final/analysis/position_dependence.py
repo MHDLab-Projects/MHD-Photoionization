@@ -49,7 +49,7 @@ plt.yscale('log')
 
 #%%
 
-ds_p['AS_max'].mean('run').plot(hue='phi')
+ds_p['dAS_abs_max'].mean('run').plot(hue='phi')
 
 #%%
 
@@ -84,7 +84,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tigh
 # %%
 motor_sel = [34.81, 104.8, 178, 226.7]
 
-da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS_abs'].sel(motor=motor_sel, method='nearest')
 
 da_sel = da_sel.sel(phi=0.8, method='nearest')
 
@@ -113,6 +113,31 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
     # else:
     #     ax.get_legend().remove()
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel_row.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
+motor_sel = [34.81, 104.8, 178]
+
+fig, ax = plt.subplots(figsize=(3,3))
+
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Define a list of colors for the traces
+
+for i, motor in enumerate(motor_sel):
+    # Calculate mean and standard deviation
+    mean = da_sel.sel(motor=motor,method='nearest').mean(dim='run')
+    std = da_sel.sel(motor=motor,method='nearest').std(dim='run')
+
+    motor_val = da_sel.sel(motor=motor, method='nearest').coords['motor'].values
+    
+    # Plot mean and shaded region for standard deviation
+    ax.plot(mean['time'].values, mean.values, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
+    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color=colors[i % len(colors)], alpha=0.2)
+
+ax.set_xlabel('Time [us]')
+ax.set_ylabel('AS')
+ax.legend(bbox_to_anchor=(1,1.1))
+ax.set_ylim(0,1)
+
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
-
-
+# %%

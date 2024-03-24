@@ -79,7 +79,7 @@ ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='te
 # mag_0_stack = xr.DataArray(mag_0_stack, coords={'temp':ds_lecroy.coords['temp']}, dims='temp')
 # mag_0_stack = mag_0_stack.pint.quantify('V')
 
-ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_mws_nothing).mws.calc_dAS().mws.calc_dPD()
+ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_mws_nothing).mws.calc_dPD()
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 #%%

@@ -19,12 +19,12 @@ df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 #%%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
 
 ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
 ds_fit = ds_lecroy.mean('mnum')
-da_fit = ds_fit.mws.calc_AS_rel()['AS']
+da_fit = ds_fit['dAS_abs']
 
 # %%
 
