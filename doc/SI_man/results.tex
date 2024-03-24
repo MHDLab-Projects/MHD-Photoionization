@@ -1,28 +1,5 @@
 \section{Supplemental Results}
 
-\subsection{Experiment Overviews}
-
-Below are overviews of the experiments performed. The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences have been analyzed in this work.  
-
-
-\foreach \date in {2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24}{
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_\date.png} 
-        \caption{Experiment Overview for \date. The colored regions are test case sequences.}
-        \label{fig:SI_expt_overview_\date}
-    \end{figure}
-
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/other_signals/tc_plot_\date.png} 
-        \caption{Additional signals for \date. The colored regions are test case sequences with the same scheme as as in \ref{fig:SI_expt_overview_\date}.}
-        \label{fig:SI_expt_overview_other_\date}
-    \end{figure}
-
-}
-
-
 
 \clearpage
 
@@ -73,25 +50,25 @@ Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos te
 \end{figure}
 
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mws_AStime_phi.png}
-\caption{MWS AS time profiles for 5x6\_pos.}
-\label{fig:SI_5x6_pos_mws_AStime_phi}
-\end{figure}
+% \begin{figure}[]
+% \centering
+% \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mws_AStime_phi.png}
+% \caption{MWS AS time profiles for 5x6\_pos.}
+% \label{fig:SI_5x6_pos_mws_AStime_phi}
+% \end{figure}
 
 
 \clearpage
 \subsubsection{516 Position Dependence Test Case Sequence}
 
-This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS decay times than 5x3\_pos and 5x6\_pos test case sequences. We could also perform AES measurements which are presented in the main text. 
+This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. We could also perform AES measurements which are presented in the main text. 
 
 TODO: this maybe should be in the main text.
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/516_536_decay_compare.png}
-\caption{516 and 536 MWS AS decay time comparison.}
+\caption{516 and 536 MWS AS exponential time constant comparison.}
 \label{fig:SI_516_mws_decaytime}
 \end{figure}
 
@@ -99,7 +76,7 @@ TODO: this maybe should be in the main text.
 \clearpage
 \subsection{ICCD Camera Measurements}
 
-This section contains additional measurements by the ICCD camera. Figure \ref{fig:SI_536_iccd} shows ICCD data taken at the 536 test case at the nominal position of 178 mm. Figure \ref{fig:SI_536_iccd}C shows that the photolumensence decay is very short compared the the mws decay. In previous experiments, we have investigated the time resolved spectral decay of the photolumensence and observed that it is entirely due to the decay of the potassium D1 line (TODO: check), and the 10ns decay profile closely matches the time profile of the laser pulse. 
+This section contains additional measurements by the ICCD camera. Figure \ref{fig:SI_536_iccd} shows ICCD data taken at the 536 test case at the nominal position of 178 mm. Figure \ref{fig:SI_536_iccd}C shows that the photoluminescence decay is very short compared the the mws decay. In previous experiments, we have investigated the time resolved spectral decay of the photoluminescence and observed that it is entirely due to the decay of the potassium D1 line (TODO: check), and the 10ns decay profile closely matches the time profile of the laser pulse. 
 
 The ICCD camera is calibrated using a projective transformation. The calibration image is shown in Figure \ref{fig:SI_iccd_calibration}. The calibration is performed by taking a picture of a ruler held at the exit of the HVOF barrel. The parameters for the projective transformation are determined by comparing the length of the ruler at the exit of the barrel and at 7 inches. From the transformed image, the pixel to mm conversion calibration is determined, and applied to calibrate the images. 
 
@@ -110,12 +87,11 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 \label{fig:SI_iccd_calibration}
 \end{figure}
 
-TODO: add old measurements with spectrograph
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/ICCD_SI1.png}
-\caption{ICCD camera images taken at 1\% potassium mass fraction in the Run 53x on 2023-05-24. During this test case the camera acquired 15 gate delay sweeps, which are averaged for these images. A) Images are taken at different gate delays. The laser is position at the nominal position. B) A zoom in of the norminal position. The image is averaged across gate delays C) The average of the region of interest used in B across the spatial dimension. TODO: uncalibrated}
+\caption{ICCD camera images taken at 1\% potassium mass fraction in the Run 53x on 2023-05-24. During this test case the camera acquired 15 gate delay sweeps, which are averaged for these images. A) Images are taken at different gate delays. The laser is position at the nominal position. B) A zoom in of the nominal position. The image is averaged across gate delays C) The average of the region of interest used in B across the spatial dimension. TODO: uncalibrated}
 \label{fig:SI_536_iccd}
 \end{figure}
 
@@ -144,19 +120,23 @@ TODO: add old measurements with spectrograph
 
 \subsection{Laser power dependence}
 
-Figure \ref{fig:SI_power_dependence} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential decay time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
+Figure \ref{fig:SI_power_dependence_AS} shows the MWS signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. The $\Delta AS_{max}$ as a function of laser fluence is fit to a power law of the form $\Delta AS_{max} = A * P^k$. The fit parameters are shown in Figure \ref{fig:SI_power_dependence_AS}C.
+
+For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential exponential time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
 
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_MWS.png} 
-    \caption{Power dependence}
-    \label{fig:SI_power_dependence}
+    \caption{Power dependence of $\Delta AS$ A) $\Delta AS$ time traces B) $\Delta AS_{max}$ as a function of laser power. }
+    \label{fig:SI_power_dependence_AS}
 \end{figure}
 
-% \begin{figure}[h]
-%     \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/tcs/output/figures/fit_mws_dnedt_power.png} 
-%     \caption{Fit parameters for power dependence}
-%     \label{fig:SI_power_dependence_fit}
-% \end{figure}
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_PD.png} 
+    \caption{Power dependence of the on-peak photodiode signal. A) Photodiode time traces B) $\Delta$ Photodiode signal as a function of laser power. The $\Delta$ Photodiode signal is the difference between the maximum photodiode signal in the 1 to 2 $\mu s$ window before the laser pulse}
+    \label{fig:SI_power_dependence_PD}
+\end{figure}
 
 \clearpage
 
@@ -168,7 +148,7 @@ Temporary section for supplemental figures
 \begin{figure}[h]
     \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/krm_cfd_pos.png} 
     \caption{Lifetime predictions from CFD vs position}
-    \label{fig:SI_krm_cfd_pos.png}
+    \label{fig:SI_krm_cfd_pos}
 \end{figure}
 
 % TODO: update/remove
@@ -180,12 +160,12 @@ Temporary section for supplemental figures
 
 
 % experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png}
-\caption{Heat transfer comparison between CFD and experiment.}
-\label{fig:SI_heat_transfer_phi_cfd_expt}
-\end{figure}
+% \begin{figure}[]
+% \centering
+% \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/various/output/figures/heat_transfer_phi_cfd_expt.png}
+% \caption{Heat transfer comparison between CFD and experiment.}
+% \label{fig:SI_heat_transfer_phi_cfd_expt}
+% \end{figure}
 
 
 \clearpage
@@ -194,14 +174,82 @@ We define an effective oxygen bimolecular recombination rate, $k_r{r, b,eff}$ Me
 
 \begin{equation}
     \label{eq:krbeff}
-    k_{r,b,eff} = \frac{1}{\tau_{experiment} * n_{all} * n_{O2}}
+    k_{r,b,eff} = \frac{1}{\tau_{experiment} *  n_{O2}}
 \end{equation}
 
-where $\tau_{experiment}$ is the measured decay time, $n_{all}$ is the total number density, and $n_{O2}$ is the oxygen number density predicted from CFD. Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombination coefficient for 53x.
+where $\tau_{experiment}$ is the measured exponential time constant,  and $n_{O2}$ is the oxygen number density predicted from CFD. Additionally, if we assume that the collisional recombination partner of this effective reaction is the entire gas mixture, we can calculate the effective termolecular recombination coefficient as
+
+
+\begin{equation}
+    \label{eq:krteff}
+    k_{r,t,eff} = \frac{1}{\tau_{experiment} * n_{all} *  n_{O2}}
+\end{equation}
+
+Where $n_{all}$ is the total number density predicted from CFD.
+
+Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombination coefficients for 53x.
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/experiment/analysis/mws/output/figures/krb_eff_53x.png}
-\caption{Effective recombination coefficient for seed ramp at the nominal position of 180 mm downstream of the barrel exit. a) The decay constant measured from the MWS monomolecular regime, averaged over runs. B) The CFD-predicted total and oxygen number density. C) The effective recombination coefficient. calculated from \ref{eq:krbeff}}
+\caption{Effective recombination coefficient for seed ramp at the nominal position of 180 mm downstream of the barrel exit. a) The exponential time constant measured from the MWS monomolecular regime, averaged over runs. B) The CFD-predicted total and oxygen number density. C) The effective recombination coefficient. calculated from \ref{eq:krbeff}}
 \label{fig:SI_krb_eff_53x}
+\end{figure}
+
+
+
+Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. The full differential equation fitting method is more accurate, but the exponential fitting method is faster and more robust.  
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/figures/SI/output/Fig6_Kwt_Recombination_fitmethod_compare.png}
+\caption{Comparison of recombination coefficients calculated from the two fitting methods.}
+\label{fig:SI_Kwt_Recombination_fitmethod_compare}
+\end{figure}
+
+
+\subsubsection{AES and MWS Seed and Position dependence fits}
+
+This section contains plots of the fits led to the plotted fit parameters in the final text. In the following plots, the plots are averaged over run. In the actually performed fitting procedure, fits are performed on each individual run. 
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/536_pos_phi08_absem_fit.png}
+\caption{AES measurements and fits for 536\_pos and 0.8 equivalence ratio. Note that some stage position values that were only performed on 2023-05-12 have been dropped to reduce the size of the figure. }
+\label{fig:SI_536_pos_phi08_absem_fit}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/536_pos_phi06_absem_fit.png}
+\caption{AES measurements and fits for 536\_pos and 0.6 equivalence ratio. These measurements were only performed on 2023-05-24.}
+\label{fig:SI_536_pos_phi06_absem_fit}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/53x_absem_fit.png}
+\caption{AES measurements and fits for 53x.}
+\label{fig:SI_53x_absem_fit}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/53x_mws_fit_dnedtv2.png}
+\caption{MWS measurements and fits for 53x for the differential equation solving method. }
+\label{fig:SI_53x_mws_fit_dnedtv2}
+\end{figure}
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/53x_mws_fit_exp.png}
+\caption{MWS measurements and fits for 53x for the exponential fitting method. }
+\label{fig:SI_53x_mws_fit_exp}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_fitting_compare.png}
+\caption{Comparison of the fitting methods for the monomolecular regime. Fit to an exponential model and full solution of differential equation. }
+\label{fig:SI_mws_fitting_compare}
 \end{figure}

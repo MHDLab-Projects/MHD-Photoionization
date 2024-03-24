@@ -23,7 +23,7 @@ ds_lecroy = ppu.fileio.load_lecroy('53x', avg_mnum=True, AS_calc='relative')
 
 # %%
 
-da_sel = ds_lecroy['AS']#.sel(kwt=1, method='nearest')
+da_sel = ds_lecroy['dAS_rel']#.sel(kwt=1, method='nearest')
 da_fit = da_sel
 da_fit.plot(hue='run_plot', x='time', row='kwt')
 

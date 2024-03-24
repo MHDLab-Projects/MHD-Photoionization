@@ -24,7 +24,7 @@ ds.coords['time'].attrs['units'] = 'second'
 ds = ds.pint.quantify()
 ds.coords['time'] = ds.coords['time'].pint.to('microsecond')
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 # ds['AS'].dropna('acq_time','all')
 # %%
@@ -41,7 +41,7 @@ fp = pjoin(REPO_DIR, 'experiment/data/proc_data/ds_lecroy.cdf')
 
 ds = xr.load_dataset(fp)
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 #%%
 
@@ -68,7 +68,7 @@ for date in dates:
     ds = ds.pint.quantify()
     ds.coords['time'] = ds.coords['time'].pint.to('microsecond')
 
-    ds = ds.mws.calc_mag_phase_AS()
+    ds = ds.mws.calc_AS_rel()
 
     ds['AS'].mean('acq_time').plot(label='date')
 

@@ -435,3 +435,10 @@ for ax in axes:
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_comparison_2023-05-18_shockdiamonds.png'), bbox_inches='tight', dpi=300)
 # %%
+
+ds.to_netcdf(pjoin(DIR_DATA_OUT, 'topcam_536_pos1_shockdiamonds.cdf'))
+ds_cfd.to_netcdf(pjoin(DIR_DATA_OUT, 'cfd_536_pos1_shockdiamonds.cdf'))
+
+
+#%%
+ds_cfd

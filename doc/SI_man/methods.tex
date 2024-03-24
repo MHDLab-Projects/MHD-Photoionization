@@ -1,7 +1,51 @@
 \section{Methods Supplemental Information}
 
-\subsection{Microwave Scattering (MWS) Setup}
 
+\subsection{Experimental Procedures}
+
+\subsubsection{Test Case Sequences}
+
+
+Throughout the experimental campaign, we performed the following test case sequences. The test cases are presented below with our internal naming scheme that begins with a three digit number that represent the nominal values for the HVOF process inputs. The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = -/6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). A 'x' indicates that the nominal value was varied during that sequence. The sequence is then appended with 'pos' or 'pow' to indicate a position or power sweep, respectively. The absence of 'pos' or 'pow' indicates that the SFR-maximized position of 180mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally the sequence is appended with a 'run number' to indicate repeats of the sequence performed on the same day. 
+
+
+
+\begin{itemize}
+    \item 536 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.8
+    \item 516 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.6
+    \item 53x: Varying potassium mass fraction. MWS/AES diagnostic at nominal position. Full laser power.
+    \item 536 Power: Varying laser power. MWS/AES diagnostic at nominal position. Kwt = 1\%, 
+    \item 5xx: Varying potassium mass fraction and equivalence ratio. MWS/AES diagnostic at nominal position. Full laser power.
+    \item 5x6\_pos/5x3\_pos: Varying MWS/AES diagnostic position and equivalence ratio. Full laser power. Kwt = 0.1\% or 1\%
+\end{itemize}
+
+\subsubsection{Experiment Overviews}
+
+Below are overviews of the experiments performed. The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences have been analyzed in this work.  
+
+
+\foreach \date in {2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24}{
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/tc_plot_\date.png} 
+        \caption{Experiment Overview for \date. The colored regions are test case sequences.}
+        \label{fig:SI_expt_overview_\date}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\linewidth]{\repodir/experiment/analysis/auto/output/figures/other_signals/tc_plot_\date.png} 
+        \caption{Additional signals for \date. The colored regions are test case sequences with the same scheme as as in \ref{fig:SI_expt_overview_\date}.}
+        \label{fig:SI_expt_overview_other_\date}
+    \end{figure}
+
+}
+
+
+\subsection{Microwave Scattering (MWS) }
+
+
+\subsubsection{Setup Description}
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_Setup.png}
@@ -9,7 +53,7 @@
 \label{fig:SI_MWS_Setup}
 \end{figure}
 
-The microwave scattering setup is shown in \ref{fig:SI_MWS_Setup_Silicon}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
+The microwave scattering setup is shown in Figure \ref{fig:SI_MWS_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
 The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy WavePro 404HD-MS Oscilloscope.  The oscilloscope is triggered from the excimer laser. 
 
@@ -20,6 +64,8 @@ The excimer laser was used with 12 kV pulse power. The repetition rate of the la
 The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 0.1 inch opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, TODO) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
 
 The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
+
+\subsubsection{No Torch Mesurements}
 
 On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
 
@@ -55,8 +101,29 @@ The  measured at the nominal position (180 mm) for each of the dates is presente
 \label{fig:SI_MWS_nothing_T0}
 \end{figure}
 
+\subsubsection{MWS Data Processing and Fitting}
 
-\ref{fig:SI_mws_processing_overview} shows the processing steps for the MWS data. 
+
+
+\ref{fig:SI_mws_processing_overview} shows the processing steps for the MWS data. The raw data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed, though after TODO date the reptation rate was maximized to TODO Hz to minimize this effect. 
+
+The time traces are combined into a dataset with a common oscilloscope-time axis. The data is resampled to TODO. 
+
+The fit preparation pipeline consists of the following steps:
+
+\begin{enumerate}
+    \item The data is interpolated to a grid with 0.01 $\mu s$ spacing.
+    \item the data is resampled, averaging groups of 10 datapoints to a grid with 0.1 $\mu s$ spacing.
+    \item  All AS data with a maximum AS value less than $5e-4$ are removed.
+    \item the AS data is normalized to the maximum AS value.
+    \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occurs in the absence of a laser. 
+\end{enumerate}
+
+The data is either fit with an exponential or by solving the differential equation \ref{eq:final_deqn_Kp} with $G_{NE} =0$. Fitting is performed with the lmfit package in Python.
+
+For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$ after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) + C$.
+
+For the solution to the differential equation we assume a $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$ (TODO improve accuracy and source). The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized and normalized solution is fit to the normalized $\Delta AS$ curve with the lmfit package.
 
 \begin{figure}[]
 \centering
@@ -66,12 +133,12 @@ The  measured at the nominal position (180 mm) for each of the dates is presente
 \end{figure}
 
 
-Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. 
+Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. These measurements are consistent with the minority carrier lifetime in silicon. [TODO]
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_Silicon.png}
-\caption{Silicon Measurements}
+\caption{Measurements of the MWS system with a Silicon sample. A) Power dependent measurements of I, Q, and the calculated magnitude $U$. B) a picture of the silicon sample placed in the location of the torch. C) the $\Delta AS$ curve for the silicon sample with an exponential fit. }
 \label{fig:SI_MWS_Silicon}
 \end{figure}
 
@@ -86,21 +153,17 @@ Before each experiment we performed measurements with a silicon sample in the lo
 \end{figure}
 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_fitting_compare.png}
-\caption{Comparison of the fitting methods for the monomolecular regime. Fit to an exponential model and full solution of differential equation. }
-\label{fig:SI_mws_fitting_compare}
-\end{figure}
+
 
 \clearpage
-\subsection{Laser Profile}
+\subsubsection{Laser Profile}
 
+The laser profile was measured by imaging the laser beam on a white beam block. The images were taken with a Thorlabs Thorcam [TODO], and are shown in \ref{fig:SI_Laser_Profile}A. Cross sections of this image are taken to obtain the full width at half maximum (FWHM) of the laser profile and calculate the area of the beam.  
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/laser_profile.png}
-\caption{Laser profile measurement}
+\caption{Laser profile measurement. A) The image of the laser profile. B) The cross sections of the laser profile. The width of the cross sections and calculated area are indicated in the figure.}
 \label{fig:SI_Laser_Profile}
 \end{figure}
 
@@ -108,15 +171,11 @@ Before each experiment we performed measurements with a silicon sample in the lo
 \subsection{Absorption Emission Spectroscopy (AES) Setup}
 
 
+The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately (TODO). The LED is fed into a Thorlabs 400 $\mu m$  0.39 NA optical fiber. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. The light is sent to AES collimating lenses with a 200 $\mu m$ fiber 0.39 NA fiber. The light is collected with collimating lenses using 600 $\mu m$ 0.5 NA fibers. The collected light is sent back to the multiplexer, which then sends the final collected light to a Ocean Optics HR4000 spectrometer.
 
+TODO: collimating and collection lens details
 
-Ocean Optics HR4000 Spectrometer. 
-
-Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The LED output and spectrometer input are both connected to the multiplexer for both AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. 
-
-
-The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. The LED is triggered by the spectrometer. The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
-
+The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The LED is triggered by the spectrometer. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
 
 
 
@@ -124,15 +183,87 @@ Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES dat
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
+    \includegraphics[height=0.8\textheight]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
     \caption{AES processing overview}
     \label{fig:SI_AES_proc_overview}
 \end{figure}
 
 
+
+
+Before and after the experiment, calibration spectra are taken with no free jet in place. The calibration is required to determine $\alpha(\lambda)$ as described in the main text. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is not reliable.  
+
+In this work we develop a method to correct the calibration spectra using the LED on and off measurements. Figure \ref{fig:SI_absem_calib_dates} shows the calibration spectrum for for each date. The calibration spectra are taken similar to the normal absorption data, by taking the difference of the LED on and LED off measurements. For the position dependent measurements, the calibration spectra are taken at the nominal position (TODO). We observe changes in the calibration spectra throughout the experiment, which cause offsets in the absorption spectra. Further work to measure calibration during an experiment by vertically translating the AES diagnostic is planned. For the current work, we interpolate the calibration spectra shown in figure \ref{fig:SI_absem_calib_dates} to the time of any given measurement to determine the calibration spectrum for that measurement. 
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_calib_dates.png}
+    \caption{Calibration spectra dates}
+    \label{fig:SI_absem_calib_dates}
+\end{figure}
+
+Even with the interpolation, slight differences between the calibration spectrum and off-peak free-jet absorption measurements are observed. For some measurements, this offset is different on different sides of the absorption peak (see \ref{fig:SI_5x3_pos_alpha}). The cause of this asymmetric offset is unknown and we have not developed a method to correct for it. For constant offsets, we we perform an offset procedure that maintains the overall shape of the absorption spectrum and the high absorption data (i.e. the offset removal does not affect absorption values near 1). The offset procedure is as follows:
+
+\begin{enumerate}
+    \item calculate $\beta = -\ln(1 - \alpha)$, which represents the exponential component of the beer-lamert law. 
+    \item subtract off $\beta$ in a in a region of 750 to 755 nm where the absorption is expected to be zero.
+    \item recalculate $\alpha = 1 - e^{- (\beta - \beta_{off})}$ 
+\end{enumerate}
+
+The effect of the offset procedure is shown in \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
+
+\begin{enumerate}
+    \item Individual acquisitions with a negative absorption in the 765 to 772 nm range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and off measurements.
+    \item The data is reduced to the wings of the absorption profile. From the left and right of the spectrum, the data is kept until a point where the absorption is 0.8. This avoids fitting where the absorption is near 1. 
+    \item All individual acquisitions for a given test case are averaged.
+\end{enumerate}
+
+We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K, cl}$, by numerically integrating the Beer-Lambert law along the path of the beam (s).
+
+\begin{equation}
+    \frac{dI}{dx}(\lambda) = -\kappa(\lambda) n_{K,cl} f_{K, CFD}(s)
+\end{equation}
+
+Where $\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,cl}$ is the maximum potassium number density, and $f_{K, CFD}(s)$ is the profile of the potassium number density along the beam path determined by CFD. 
+
+The fitting procedure is as follows
+
+
+\begin{enumerate}
+    \item A profile of the potassium atom density from the CFD data along the beam path is obtained as shown in Figures \ref{fig:SI_cfd_beam_goldi_pos_kwt} and \ref{fig:SI_cfd_beam_pos_dep}. This profile is normalized to the climum value to give $f_{K, CFD} (s)$. s represents the distance along the beam path.
+
+    \item The potassium atom density profile is converted to $\kappa (s, \lambda) = n_{K, cl}* f_{K, CFD} (s) Q(\lambda)$, where $n_{K, cl}$ is a fit parameter corresponding to the centerline (maximum) potassium atom density in the profile and $Q(\lambda)$ is the potassium absorption cross section [$cm^2$] at wavelength $\lambda$, given by equation \ref{eq:cross_section_alpha_fit}.
+    \item For each wavelength, the intensity profile $I(s)$ is calculated along the beam path with the Euler method: $I(s + \Delta s) = I(s) + \kappa(s, \lambda) I(s) \Delta s$. The initial condition is $I(0) = 1$. If the intensity becomes negative, the calculation is stopped and the absorption is set to 1. An example of the Euler method is shown in \ref{fig:SI_euler_method_tophat_demo}.
+    \item The absorption is calculated as $\alpha(\lambda) = 1 - I(s_{max})$, where $s_{max}$ is the maximum distance along the beam path. 
+\end{enumerate}
+
+\begin{equation}
+    \label{eq:cross_section_alpha_fit}
+    Q(\lambda) = ...(TODO)
+\end{equation}
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_goldi_pos_kwt.png}
+    \caption{CFD beam profile for the 53x test case sequence.}
+    \label{fig:SI_cfd_beam_goldi_pos_kwt}
+
+    \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_pos_dep.png}
+    \caption{CFD beam profile for the 536\_pos test case.}
+    \label{fig:SI_cfd_beam_pos_dep}
+\end{figure}
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
+    \caption{Euler method demonstration with a top hat absorption profile.}
+    \label{fig:SI_euler_method_tophat_demo}
+\end{figure}
+
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected and then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 beam splitter into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. (TODO: fixed size iris? ). AThe photodiodes are powered with a PBM42 bias module powered by ? V (TODO). The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.
+Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected and then collimated into the beam splitter with F110SMA-780 fiber coupled lens (FCL) with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. (TODO: fixed size iris? ). AThe photodiodes are powered with a PBM42 bias module powered by ? V (TODO). The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements. The bandpass filters are Thorlabs TODO (770 $\pm$ 10 nm and 840 $\pm$ 10 nm). 
 
 
 

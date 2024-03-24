@@ -85,7 +85,19 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp_dnedt_individual_compare.png'), 
 
 #%%
 
+plt.figure()
 
+da_plot = ds_plot[['AS_fit','AS_all']].to_array('var').sel(fit_method='exp')
+
+g = da_plot.plot(hue='var', figsize=(5,2))
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-5, 0.1)
+
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
@@ -118,13 +130,13 @@ line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0]
 axes[0].set_ylabel("Species Concentration [#/m^3]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ Goldi', 'CFD KOH (Goldi)', 'CFD K (Goldi)' , 'CFD All K (Goldi)'],
+    ['Expt. $n_K$ Barrel', 'Expt $n_K$ 180 mm', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
     bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
     )
 
 axes[0].set_title('')
 
-var = 'AS_max'
+var = 'dAS_abs_max'
 lineAS = axes[1].errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
@@ -139,7 +151,7 @@ axes[1].set_ylabel("$\Delta AS$ Maximum")
 
 ta = axes[1].twinx()
 #No standard deviation for delta_pd1 as only one run
-var = 'delta_pd1'
+var = 'dpd1_max'
 linePD = ta.plot(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
@@ -215,7 +227,35 @@ plt.yscale('log')
 plt.ylabel("$\Delta n_e$ [um$^{-3}$]")
 plt.xlabel("K wt % nominal")
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_both.png'), dpi=300, bbox_inches='tight')
 
 
+# %%
+
+
+fig, ax = plt.subplots(figsize=(5,2.5))
+
+var = 'mws_fit_decay_exp'
+ax.errorbar(
+    ds_p_stats.coords['kwt'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_std'.format(var)], 
+    marker='o', capsize=5,
+    label='MWS Fit Expon.'
+    )
+
+for species in ds_tau.data_vars:
+    ds_tau[species].plot(label="CFD: {}".format(species), ax=ax)
+
+ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
+ax.set_ylabel("Time Constant [us]")
+ax.set_title('')
+ax.set_ylim(1e-1, 1e5)
+
+ax.set_xscale('log')
+ax.set_yscale('log')
+
+plt.xlabel("K wt % nominal")
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_exp.png'), dpi=300, bbox_inches='tight')
 # %%

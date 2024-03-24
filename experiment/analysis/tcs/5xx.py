@@ -28,12 +28,13 @@ tc = '5x6_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
+# ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_lecroy = ds_lecroy['AS']
 
 #%%
 
-da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
+da_max = da_lecroy.mws._pulse_max()
 
 da_max.plot()
 #%%
@@ -292,7 +293,7 @@ da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
 #%%
 
-da_max = da_lecroy_mean.sel(time=slice(-1,1)).max('time')
+da_max = da_lecroy_mean.mws._pulse_max()
 
 da_max.plot()
 #%%

@@ -19,7 +19,7 @@ fp_in = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy', '{}.cdf'.for
 
 ds_in = xr.load_dataset(fp_in)
 
-ds = ds_in.mws.calc_mag_phase_AS()
+ds = ds_in.mws.calc_AS_rel()
 
 ds = ds.sel(date='2023-05-24').sel(run_num=1)
 

@@ -30,6 +30,9 @@ ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'
 
 ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf')).sel({'phi': 0.7})
 
+for species in ds_TP_species_rho.data_vars:
+    ds_TP_species_rho[species] = ds_TP_species_rho[species].pint.quantify('particle/ml')
+
 seldict = {
     'P_combustor': ds_TP_params.coords['P_combustor'].item(),
     'inlet_T': ds_TP_params.coords['inlet_T'].item()
@@ -41,6 +44,7 @@ ds_HP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_HP_params.cdf'
 
 
 ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values)
+ds_cs = ds_cs.pint.quantify()
 ds_cs.coords['wl'] = ds_cs.coords['wl'].round(2)
 
 # %%

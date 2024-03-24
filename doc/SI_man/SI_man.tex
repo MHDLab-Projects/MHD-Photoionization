@@ -24,7 +24,9 @@
 \usepackage{xr}
 \usepackage{float} 
 \usepackage{pgffor}
-
+\usepackage[outer]{showlabels, rotating}
+\renewcommand{\showlabelsetlabel}[1]
+{\begin{turn}{90}\showlabelfont #1\end{turn}}
 \usepackage[a4paper, margin=1in]{geometry}
 
 % Night mode 
@@ -42,6 +44,9 @@
 \setlength{\parskip}{1em}
 
 \begin{document}
+
+\renewcommand{\thefigure}{S\arabic{figure}}  % Start numbering figures as S1, S2, etc.
+
 
 \maketitle
 

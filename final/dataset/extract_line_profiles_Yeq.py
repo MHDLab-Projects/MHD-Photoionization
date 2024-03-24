@@ -16,18 +16,37 @@ from mhdpy.pyvista_utils import AxiMesh
 
 sp_dir = gen_path('sharepoint')
 
-results_dir = pjoin(sp_dir, 'Data Share', 'Photoionization', 'Simulations', 'Study 1')
+# results_dir = pjoin(sp_dir, 'Data Share', 'Photoionization', 'Simulations', 'Study 1')
 # results_dir = 'input'
 
+# fps = {
+#     '0.8_0.1': pjoin(results_dir, 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
+#     '0.8_1.0': pjoin(results_dir, 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk'),
+#     '0.8_1.75': pjoin(results_dir, 'mdot0130_phi080_K175', 'frontCyl_chem1.vtk'),
+#     '0.6_0.1': pjoin(results_dir, 'mdot0130_phi060_K010', 'frontCyl_chem1.vtk'),
+#     '0.6_1.0': pjoin(results_dir, 'mdot0130_phi060_K100', 'frontCyl_chem1.vtk'),
+# }
+# soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+# soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
+# additional = ['T', 'p', 'rho']
+# all_fields = [*soi, *soi_Yeq, *additional]
+
+
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'coarse_22March24')
+
 fps = {
-    '0.8_0.1': pjoin(results_dir, 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
-    '0.8_1.0': pjoin(results_dir, 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk'),
-    '0.8_1.75': pjoin(results_dir, 'mdot0130_phi080_K175', 'frontCyl_chem1.vtk'),
-    '0.6_0.1': pjoin(results_dir, 'mdot0130_phi060_K010', 'frontCyl_chem1.vtk'),
-    '0.6_1.0': pjoin(results_dir, 'mdot0130_phi060_K100', 'frontCyl_chem1.vtk'),
+    '0.8_0.0': pjoin(results_dir, 'sweepK00_mdot0131_phi0801_K0000', 'frontCyl_chem1.vtk'),
+    '0.8_0.06': pjoin(results_dir, 'sweepK01_mdot0132_phi0793_K0006', 'frontCyl_chem1.vtk'),
+    '0.8_0.1': pjoin(results_dir, 'sweepK02_mdot0131_phi0799_K0010', 'frontCyl_chem1.vtk'),
+    '0.8_0.18': pjoin(results_dir, 'sweepK03_mdot0132_phi0789_K0018', 'frontCyl_chem1.vtk'),
+    '0.8_0.31': pjoin(results_dir, 'sweepK04_mdot0131_phi0797_K0031', 'frontCyl_chem1.vtk'),
+    '0.8_0.55': pjoin(results_dir, 'sweepK05_mdot0132_phi0782_K0055', 'frontCyl_chem1.vtk'),
+    '0.8_1.0': pjoin(results_dir, 'sweepK07_mdot0131_phi0787_K0099', 'frontCyl_chem1.vtk'),
+    '0.6_1.0': pjoin(results_dir, 'sweepK06_mdot0132_phi0584_K0099', 'frontCyl_chem1.vtk'),
+    '0.8_1.75': pjoin(results_dir, 'sweepK08_mdot0133_phi0759_K0175', 'frontCyl_chem1.vtk'),
 }
 
-soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']
 all_fields = [*soi, *soi_Yeq, *additional]
@@ -151,6 +170,10 @@ p.add_mesh(line1, color='red')
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
 # p.show()
+
+#%%
+
+mesh
 
 #%%
 
@@ -409,3 +432,5 @@ ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.
 
 df_lines
 # %%
+
+ds_out

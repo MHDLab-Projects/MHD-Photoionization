@@ -143,9 +143,20 @@ tau = I[-1]/I[0]
 
 print(tau)
 
-plt.plot(x, I)
-plt.twinx()
-plt.plot(x, kappa_profile, 'r')
+line1 = plt.plot(x, I, label='I(x)')
+plt.gca().set_ylabel('I(x)')
+plt.gca().set_xlabel('x [cm]')
+ta=  plt.twinx()
+ta.set_ylabel('kappa(x)')
+line2 = plt.plot(x, kappa_profile, 'r', label='kappa(x)')
+
+lines = line1 + line2
+labels = [l.get_label() for l in lines]
+plt.legend(lines, labels)
+
+plt.xlim(3,8)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'euler_method_tophat_demo.png'))
 
 
 # %%[markdown]

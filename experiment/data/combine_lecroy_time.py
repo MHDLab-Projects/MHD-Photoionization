@@ -1,4 +1,4 @@
-
+#%%
 from mhdpy.analysis.standard_import import *
 
 import json
@@ -25,8 +25,22 @@ lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 process_fns = ['ds_{}.cdf'.format(tc) for tc in process_tcs]
 input_fps = [pjoin(lecroy_munged_folder, fn) for fn in process_fns] 
 
+dss = []
+
+for fp in input_fps:
+    ds = xr.load_dataset(fp)
+
+    #TODO: the starting time of each pulse is not the same for each run.
+    # Could shift the starting time for each date, but dont sure how that would work with time_offset
+    # for now just trimming a few us off the start and end of each pulse
+    ds = ds.sel(time=slice(-48e-6, 48e-6))
+
+    # This could be used to investigate data taken with the longer silicon timebase (e.g. 'nothing' data on 2023-05-24) but not necessary because resampling has already put on the same grid. Just need to slice down as above. 
+    # if ds.attrs['TIMEBASE'] == '50_mV/div':
+        
+    dss.append(ds)
+
 # Seems equal by eye to approach of manual first time coord setting, but xarray says not equal. Think close enough for this situation. TODO: reexamine and impelent to munging or only once in trc processing pipeline. 
-dss = [xr.load_dataset(fp) for fp in input_fps]
 ds = xr.concat(dss, 'acq_time', join='override')
 
 ds = ds.sortby('acq_time')
@@ -34,15 +48,15 @@ ds = ds.sortby('acq_time')
 
 # Time processing #TODO: integrate with lecroy munging or move there. 
 
-#TODO: the starting time of each pulse is not the same for each run.
-# Could shift the starting time for each date, but dont sure how that would work with time_offset
-# for now just trimming a few us off the start and end of each pulse
-ds = ds.sel(time=slice(-48e-6, 48e-6))
-
 time_offset = 0.88
 ds = ds.assign_coords(time=ds.coords['time']*1e6 - time_offset)
 ds.coords['time'].attrs['units'] = 'us'
 ds.coords['time'].attrs['long_name'] = 'Time'
+
+#TODO: Move this to munging. 
+for key in ['i', 'q', 'pd1','pd2']:
+    if key in ds:
+        ds[key].attrs['units'] = 'V'
 
 ds.to_netcdf(pjoin(data_folder, 'ds_lecroy_time.cdf'))
 
@@ -50,7 +64,10 @@ ds.to_netcdf(pjoin(data_folder, 'ds_lecroy_time.cdf'))
 
 # %%
 
-ds_out = ds.mws.calc_mag_phase_AS()[['mag_pp', 'mag_pp_std', 'AS']].mws._pulse_max()
+ds = ds.mws.calc_AS_rel()
+ds = ds.mws.calc_time_stats()
+
+ds_out = ds[['mag_pp', 'mag_fluct', 'dAS_rel_max', 'mag_peak']]
 
 ds_out = ds_out.rename({'acq_time':'time'})
 

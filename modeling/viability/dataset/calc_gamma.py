@@ -114,10 +114,10 @@ ds_NE.to_netcdf('output/ds_NE_Kp.cdf')
 sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
 # sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
 
-combos_l_bk = {'l_bk' :  [0, 0.5, 0.9, 0.99]}
+combos_l_b = {'l_b' :  [0, 0.5, 0.9, 0.99]}
 
 r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': ds_NE['sigma'] }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_bk).squeeze()
+da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 

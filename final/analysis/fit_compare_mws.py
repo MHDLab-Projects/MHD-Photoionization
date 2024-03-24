@@ -13,19 +13,40 @@ goldi_pos = Quantity(180, 'mm')
 #%%
 
 
+from mhdpy.analysis.mws.fitting import MWSFitPipeline3, MWSFitPipelineExp
+
+def perform_fit_sequence(ds_fit):
+    pipe_fit_exp = MWSFitPipelineExp()
+    pipe_fit_mws_3 = MWSFitPipeline3()
+
+    pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(1, 'us'),Quantity(Quantity(20, 'us')))
+
+    dss_p = []
+    dss_fit_mws = []
+
+    ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(ds_fit)
+    dss_p.append(ds_p_mws.assign_coords(fit_method='exp'))
+    dss_fit_mws.append(ds_fit_mws.assign_coords(fit_method='exp'))
+
+    ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(ds_fit)
+    ds_p_mws['decay'] = 1/ds_p_mws['krm']
+    dss_p.append(ds_p_mws.assign_coords(fit_method='dnedt'))
+    dss_fit_mws.append(ds_fit_mws.assign_coords(fit_method='dnedt'))
+
+    ds_p = xr.concat(dss_p, 'fit_method')
+    ds_fit_mws = xr.concat(dss_fit_mws, 'fit_method')
+
+    return ds_fit_mws, ds_p
+
 # %%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_3, pipe_fit_exp
-
-pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(1, 'us'),Quantity(Quantity(20, 'us')))
-
-dss_p = []
-dss_fit_mws = []
-
 ds_fit = ds_mws_53x
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
-
+da_fit_lecroy = ds_fit['dAS_abs']
 da_fit_lecroy = da_fit_lecroy/da_fit_lecroy.mws._pulse_max()
+
+#%%
+
+da_fit_lecroy
 
 #%%
 
@@ -37,33 +58,19 @@ plt.xlim(-1,1)
 
 #%%
 
-# ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy)
-ds_p_mws['decay'] = 1/ds_p_mws['krm']
+# ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy, fit_method='iterative', fit_timewindow=slice(Quantity(5, 'us'),Quantity(15, 'us')))
+# ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy)
 
-dss_p.append(ds_p_mws.assign_coords(method='dnedt'))
-dss_fit_mws.append(ds_fit_mws.assign_coords(method='dnedt'))
+ds_fit_mws, ds_p = perform_fit_sequence(da_fit_lecroy)
 
-#%%
-
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
-
-dss_p.append(ds_p_mws.assign_coords(method='exp'))
-dss_fit_mws.append(ds_fit_mws.assign_coords(method='exp'))
-
-#%%
-
-ds_p = xr.concat(dss_p, 'method')
-ds_fit_mws = xr.concat(dss_fit_mws, 'method')
-
-ds_p['decay'].mean('run').plot(hue='method')
+ds_p['decay'].mean('run').plot(hue='fit_method')
 
 plt.yscale('log')
 
 plt.ylim(1,20)
 # %%
 
-g= ds_fit_mws.mean('run').to_array('var').plot(row='kwt', col='method', hue='var', figsize=(5,10))
+g= ds_fit_mws.mean('run').to_array('var').plot(row='kwt', col='fit_method', hue='var', figsize=(5,10))
 
 plt.yscale('log')
 plt.ylim(1e-4, 1.1)
@@ -75,10 +82,10 @@ dropna(g)
 # %%
 
 #TODO: why can't I use sel here?
-ds_dnedt = ds_fit_mws.isel(method=0).isel(run=[-1])
+ds_dnedt = ds_fit_mws.sel(fit_method='dnedt').isel(run=[-1])
 
 g= ds_dnedt.mean('run').to_array('var').plot(row='kwt', hue='var', figsize=(5,10))
-# g= ds_fit_mws.isel(method='dnedt').mean('run').to_array('var').plot(row='kwt', hue='var', figsize=(5,10)
+# g= ds_fit_mws.isel(fit_method='dnedt').mean('run').to_array('var').plot(row='kwt', hue='var', figsize=(5,10)
 
 
 g
@@ -98,3 +105,4 @@ dropna(g)
 plt.yscale('log')
 plt.ylim(1e-2, 5.1)
 plt.xlim(-1,5)
+# %%

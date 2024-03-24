@@ -86,9 +86,12 @@ def load_lecroy(tc,
         assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
         if AS_calc == 'absolute':
             da_nothing = load_mws_T0()
-            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=da_nothing)
+            ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_nothing)
         else:
-            ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() 
+            ds_lecroy = ds_lecroy.mws.calc_AS_rel() 
+
+    if 'pd1' in ds_lecroy:
+        ds_lecroy = ds_lecroy.mws.calc_dPD()
 
     ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
@@ -136,7 +139,7 @@ def load_cfd_centerline(kwt_interp = None):
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-def load_cfd_beam(kwt_interp = None):
+def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
 
 
     fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
@@ -156,7 +159,9 @@ def load_cfd_beam(kwt_interp = None):
 
 
     ds_cfd_beam = ds_cfd_beam.cfd.quantify_default()
-    ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
+
+    if convert_rho_number:
+        ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
 
     ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
 

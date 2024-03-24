@@ -21,7 +21,7 @@ ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
 
 from mhdpy.analysis.mws import MwsAccessor
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 # %%
 
@@ -103,7 +103,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'silicon_power_raw.png'), bbox_inches='tight')
 
 #%%
 
-ds[['i','q']].mws.calc_mag_phase_AS()['AS'].plot(hue='fw')
+ds[['i','q']].mws.calc_AS_rel()['AS'].plot(hue='fw')
 
 plt.yscale('log')
 

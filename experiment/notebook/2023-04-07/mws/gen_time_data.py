@@ -46,7 +46,7 @@ ds = xr.concat(dss, 'acq_time')
 
 ds = ds.sortby('acq_time')
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 #%%
 

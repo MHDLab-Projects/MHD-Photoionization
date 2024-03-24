@@ -43,7 +43,7 @@ ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(t
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS() # calculate before or after mnum mean?
+ds_lecroy = ds_lecroy.mws.calc_AS_rel() # calculate before or after mnum mean?
 
 ds_lecroy = ds_lecroy.drop('acq_time')
 

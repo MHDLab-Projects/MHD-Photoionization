@@ -32,6 +32,8 @@
     "2023-05-24": {
         "has_multiplexer": true,
         "mws_process_tcs": [
+            "5x0",
+            "Nothing_Init",
             "516",
             "536_power",
             "5x6",

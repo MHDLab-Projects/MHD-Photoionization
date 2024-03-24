@@ -23,7 +23,7 @@ fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
 ds_in = xr.load_dataset(fp_in)
 ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-ds = ds_in.mws.calc_mag_phase_AS().drop('mag_pp')
+ds = ds_in.mws.calc_AS_rel().drop('mag_pp')
 
 
 tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
@@ -115,5 +115,5 @@ mws_offset_min = Quantity(1 + 2/16, 'inches')
 mws_offset_max = Quantity(1 + 4/16, 'inches')
 pos_536_goldilocks = Quantity(150, 'mm')
 
-print("Goldilocks Position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
-print("Goldilocks Position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))
+print("SFR-maximized position min: {}".format((mws_offset_min + pos_536_goldilocks).to('mm')))
+print("SFR-maximized position max: {}".format((mws_offset_max + pos_536_goldilocks).to('mm')))

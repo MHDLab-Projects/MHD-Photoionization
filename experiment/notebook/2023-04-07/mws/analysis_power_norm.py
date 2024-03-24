@@ -20,7 +20,7 @@ fp_in = pjoin(data_folder, 'Lecroy',  '{}.cdf'.format(tc))
 
 ds_in = xr.load_dataset(fp_in)
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 ds.coords['acq_time'].attrs = dict(long_name='Acquisition Time')
 ds.coords['time'].attrs = dict(long_name='Osc. Time', units = '$\mu s$')

@@ -47,7 +47,7 @@ gamma = gamma*da_dsigma_tot
 plt.figure()
 
 combo_downsel = {
-    'P_in' : 0,
+    # 'P_in' : 0,
     'Kwt': [0.001, 0.01, 0.1],
     'phi': 0.8,
     'rxn': 'mm_sum'
@@ -55,7 +55,7 @@ combo_downsel = {
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-P_zero.plot(col='l_bk', row='Kwt',hue='eta', y='T', xscale='log')
+P_zero.plot(col='l_b', row='Kwt',hue='eta', y='T', xscale='log')
 # P_zero.plot(row='Kwt',hue='analysis', y='T', xscale='log')
 
 plt.savefig('output/beta_boundary_layer.png')

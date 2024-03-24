@@ -14,7 +14,7 @@ goldi_pos = Quantity(180, 'mm')
 # %%
 
 ds_fit = ds_mws_53x
-da_fit_lecroy = ds_fit.mws.calc_mag_phase_AS()['AS_abs']
+da_fit_lecroy = ds_fit['dAS_abs']
 
 da_fit_lecroy = da_fit_lecroy/da_fit_lecroy.mws._pulse_max()
 da_fit_lecroy = da_fit_lecroy.unstack('run')
@@ -99,7 +99,7 @@ for i, ax in enumerate(g.axes.flat):
     kwt = da_plot.kwt.values[i]
 
     # Select the corresponding data from ds_mws['AS_abs']
-    da_abs = ds_mws['AS_abs'].sel(kwt=kwt).mean('run')
+    da_abs = ds_mws['dAS_abs'].sel(kwt=kwt).mean('run')
 
     # Add the data to the plot
     ax.plot(da_abs.time, da_abs, label='AS_abs', color='gray')

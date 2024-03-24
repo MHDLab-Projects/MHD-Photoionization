@@ -1,1 +1,1 @@
-pandoc -f latex -t docx main.tex -o output/Photoionization.docx --reference-doc input/custom-reference.docx
+pandoc -f latex -t docx main.tex -o output/Photoionization.docx --reference-doc input/custom-reference.docx --filter pandoc-crossref -M autoEqnLabels -M tableEqns  

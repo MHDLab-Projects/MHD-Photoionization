@@ -15,7 +15,7 @@ from mhdpy.analysis import mws
 # %%
 
 ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='relative')
-da_sel = ds_lecroy['AS'].sel(kwt=1, method='nearest')
+da_sel = ds_lecroy['dAS_rel'].sel(kwt=1, method='nearest')
 # %%
 
 da_sel.sel(mnum=slice(0,10)).plot(hue='mnum', row='run')

@@ -64,6 +64,7 @@ ds_lecroy_516 = ds_lecroy_516.stack(temp = stack_dims)
 ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp')
 ds_absem = ds_absem.xr_utils.stack_run()
 ds_absem = ds_absem.absem.calc_alpha()
+ds_absem = ds_absem.sel(wavelength=slice(750,790))
 
 ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
@@ -71,55 +72,26 @@ ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem
 
 da_mws_nothing  = ppu.fileio.load_mws_T0()
 
-ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp')#.unstack('temp')
+ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp').unstack('temp')
 
-# How to normalize without having to unstack...avoids memory error
-mag_0_stack = [da_mws_nothing.loc[date].item().magnitude for date in ds_lecroy.coords['date'].values]
-mag_0_stack = xr.DataArray(mag_0_stack, coords={'temp':ds_lecroy.coords['temp']}, dims='temp')
-mag_0_stack = mag_0_stack.pint.quantify('V')
+# # How to normalize without having to unstack...avoids memory error
+# mag_0_stack = [da_mws_nothing.loc[date].item().magnitude for date in ds_lecroy.coords['date'].values]
+# mag_0_stack = xr.DataArray(mag_0_stack, coords={'temp':ds_lecroy.coords['temp']}, dims='temp')
+# mag_0_stack = mag_0_stack.pint.quantify('V')
 
-ds_lecroy = ds_lecroy.mws.calc_mag_phase_AS(mag_0=mag_0_stack)
-
-
-#%%
-
-ds_lecroy
+ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_mws_nothing).mws.calc_dPD()
+ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 #%%
 
-mws_max = ds_lecroy['AS_abs'].mean('mnum').max('time').rename('AS_max')
-mws_pp = ds_lecroy['mag_pp'].mean('mnum').rename('mag_pp')
-mws_pp_std = ds_lecroy['mag_pp_std'].mean('mnum').rename('mag_pp_std')
-mws_max_std_ratio = mws_max/mws_pp_std
-mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
-
-delta_pd1 = ds_lecroy['delta_pd1'].mean('mnum').rename('delta_pd1')
-
-ds_p_mws = xr.merge([mws_max, mws_pp, mws_pp_std, mws_max_std_ratio, delta_pd1])
-
-ds_p_mws['AS_max'].attrs = dict(long_name='$\Delta AS$ Max')
-ds_p_mws['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
-ds_p_mws['AS_max_std_ratio'].attrs = dict(long_name='SFR', units='1/V')
-
-ds_p_mws = ds_p_mws.unstack('temp').xr_utils.stack_run()
+ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
+ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 
 #%%
 
 # Now that statistics are calculated we average over mnum and unstack. 
+ds_lecroy = ds_lecroy.mean('mnum')
 
-ds_lecroy = ds_lecroy.mean('mnum').unstack('temp')
-
-ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
-# ds_lecroy = ds_lecroy.drop_sel(run=('2023-05-12'))
-
-#%%
-
-#%%
-# da_counts = ds_lecroy['AS_abs'].isel(time=0).count('mnum')
-# da_counts = da_counts.where(da_counts > 0).dropna('run', how='all')
-
-# da_counts.plot(row='run', marker='o')
 
 
 #%%k
@@ -150,13 +122,44 @@ from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 ds_fit = ds_absem.mean('mnum')
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
+#%%
 
 ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]
-ds = ds.rename({'alpha_red': 'data', 'alpha_fit':'fit'})
-ds = ds.to_array('var')
+ds['alpha'] = ds_fit['alpha']
+ds = ds.rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha':'raw'})
+# ds = ds.to_array('var')
 
 ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
 ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
+ds
+#%%
+
+da_plot = ds.to_array('var').sel(phi=0.6, method='nearest').mean('run').dropna('motor',how='all')
+
+#going to downselect 0.8 phi motor to same in 0.6. Mainly to have something that fits on a page. 
+motor_vals_06 = da_plot.coords['motor'].values
+
+da_plot.attrs['long_name'] = '$\\alpha$'
+da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+
+plt.ylim(-0.1,1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi06_absem_fit.png'))
+#%%
+
+da_plot = ds.to_array('var').sel(phi=0.8, method='nearest').mean('run').dropna('motor',how='all')
+da_plot = da_plot.sel(motor=motor_vals_06)
+
+da_plot.attrs['long_name'] = '$\\alpha$'
+da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+
+plt.ylim(-0.1,1.1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_absem_fit.png'))
+
+#%%
+
 
 #%%
 
@@ -166,7 +169,7 @@ nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
 ds = xr.merge([
     nK_mw_horns,
     nK_barrel,
-    ds_p_mws,
+    ds_stats_lecroy,
     ]).sortby('motor').dropna('run', how='all')
 
 
@@ -176,6 +179,5 @@ ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_po
 # %%
 
 #%%
-ds_alpha_fit['alpha'] = ds_fit['alpha']
 ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))
 # %%

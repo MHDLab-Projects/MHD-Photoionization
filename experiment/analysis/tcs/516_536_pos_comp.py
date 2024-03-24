@@ -60,7 +60,7 @@ ds_p
 
 mws_max = ds_lecroy['AS_abs'].max('time').rename('AS_max')
 mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
-mws_pp_std = ds_lecroy['mag_pp_std']
+mws_pp_std = ds_lecroy['mag_fluct']
 mws_max_std_ratio = mws_max/mws_pp_std
 mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
 # %%

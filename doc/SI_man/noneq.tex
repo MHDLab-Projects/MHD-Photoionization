@@ -2,11 +2,11 @@
 
 \subsection{General Model}
 
-In this section we derive a general nonequilibrium kinetic model used for fitting the MWS data and viability modeling. We consider in the rate of change of the electron density, \(n_{e}(t)\) in time. 
+In this section we derive a general nonequilibrium kinetic model used for fitting the MWS data and viability modeling. We consider in the rate of change of the electron density, \(n_{e}\) in time. 
 
 \begin{equation}
   \label{eq:start_deqn}
-\frac{dn_{e}(t)}{dt} = G - R
+\frac{dn_{e}}{dt} = G - R
 \end{equation}
 
 Where \(G\) is the generation rate of electrons and \(R\) is the recombination rate. We consider the generation rate to be comprised of a thermal generation rate and a nonequilibrium generation rate.
@@ -20,93 +20,90 @@ Where \(G_{th}\) is the thermal generation rate constant and \(G_{NE}\) is the N
 The recombination rate can be written
 
 \begin{equation}
-  R = \sum_{i}^{}k_{r, b, i}n_{e}(t)n_{i}
+  R = - \sum_{i}^{}k_{r, b, i}n_{e}n_{i}
 \end{equation}
 
 Where $k_{r, b, i} [cm^3/s]$  and $n_i$ are the bimolecular recombination rate constant and species density $[1/cm^3]$ for the \emph{i}\textsuperscript{th} species, respectively. 
 
-We are going to consider the situation where $G_{NE}$ is small compared to $G_{th}$, and make the following assumptions:
+We consider the system under a perturbation from equilibrium, and write the species density as the equilibrium density plus a perturbation.
 
-\begin{itemize}
-\item $n_{K_+}(t) = n_{e}(t)$, where $n_{K_+}$ is the concentration of potassium ions. 
-\item all other electron-capturing species $n_i$ are in thermal equilibrium.
-\end{itemize}
+\begin{equation}
+  n_{i} = n_{i,0} + \Delta n_{i}
+\end{equation}
+
+With an identical equation for the electron density. We can then write the recombination rate as
+
+\begin{equation}
+  R = - \sum_{i}^{}k_{r, b, i}(n_{e,0} + \Delta n_{e})(n_{i,0} + \Delta n_{i})
+\end{equation}
+
+Expanding the product
+
+\begin{equation}
+  \label{eq:recomb_expand}
+  R = - \sum_{i}^{}[k_{r, b, i}n_{e,0}n_{i,0}  + k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}]
+\end{equation}
+
+
+If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac{dn_{e}}{dt} = 0$ and $G_{NE} = 0$, we can see that the first term in \ref{eq:recomb_expand} is equal to $G_{th}$. Therefore this term will cancel out in Equation \ref{eq:start_deqn} and we can write the full differential equation as
+
+\begin{equation}
+  \label{eq:full_deqn}
+\frac{d\Delta n_{e}}{dt} = G_{NE}  -  \sum_{i}^{}[k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}]
+\end{equation}
+
+We are now going to make a series of simplifying assumptions to this equation. These assumptions are geared towards the situation of a small perturbation of the electron density from equilibrium, where $\Delta n_{e} << n_{e,0}$. Experimentally, we observe that the MWS signal eventually enters an exponentially decaying regime, which we interpret as the electron density entering this small-perturbation regime with $G_{NE} =0$ (the laser pulse is over). In this case, we know that the system enters a state where the differential equation becomes of an exponential form:
+
+\begin{equation}
+  \label{eq:small_pert_diffeq}
+\frac{d\Delta n_{e}}{dt} = k_{r,m,eff} \Delta n_{e}
+\end{equation}
+
+Where $k_{r,m,eff}$ is the effective monomolecular recombination rate constant. We can obtain a differential equation of this form by making the following assumption for $\Delta n_i$:
+
+\begin{equation}
+  \label{eq:phi_def}
+\Delta n_i = \phi_i \Delta n_{e}
+\end{equation}
+
+Where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non equilibrium process and that this relationship can be expected to be linear in the small perturbation regime. We can then substitute this into Equation \ref{eq:full_deqn} to get
+
+\begin{equation}
+  \label{eq:full_deqn_phi}
+\frac{d\Delta n_{e}}{dt} = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, eff} \Delta n_{e}^2
+\end{equation}
+
+Where we have defined the effective monomolecular recombination rate constant, $k_{r, m, eff}$, and effective bimolecular recombination rate constant, $k_{r, b, eff}$, as
+
+
+\begin{equation}
+\label{eq:krm_eff_def}
+k_{r, m, eff} = \sum_{i}^{}k_{r, b, i}[n_{i,0} + n_{e,0}\phi_i]
+\end{equation}
+
+\begin{equation}
+\label{eq:krb_eff_def}
+k_{r, b, eff} = \sum_{i}^{}k_{r, b, i}\phi_i
+\end{equation}
+
+
+With the earlier stated assumption that $\Delta n_{e} << n_{e,0}$, we can see that the third (bimolecular) term in Equation \ref{eq:full_deqn_phi} indeed becomes Equation \ref{eq:small_pert_diffeq} in the case of $G_{NE} = 0$.
+
+We have kept the bimolecular term in Equation \ref{eq:full_deqn_phi} even though it is potentially incompatible with the small perturbation assumption. From the MWS fitting, we observe that fitting the data in the high power regime is consistent with an equation of the form of Equation \ref{eq:full_deqn_phi} with $G_{NE} = 0$. However, the validity of Equations \ref{eq:phi_def} and \ref{eq:krb_eff_def} in the high power regime is not clear and should be further investigated. In any, case the inclusion of this term does not affect the monomolecular term, which is the primary focus of this work. We will keep the bimolecular term in the following analysis, but we note that the validity of this term under the small perturbation regime assumptions is an open question.
+
+The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (\ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$, for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. We therefore make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. 
 
 This allows us to write
-
-\begin{equation}
-R = k_{r, b, K_{+}}n_{e}(t)^2 + \sum_{i \neq K+}^{}k_{r, m, i}n_{e}(t)
-\end{equation}
-
-The assumption that $n_i$ is in thermal equilibrium allows us to define the monomolecular recombination rate constant, $k_{r, m, i}$ 
-
-\begin{equation}
-\label{eq:monomolecular_recombination}
-k_{r, m, i} = k_{r, b, i}n_{i}
-\end{equation}
-
-
-We write the $n_{e}(t)$ as being comprised of the equilibrium electron density, \(n_{e,0}\), and a perturbation, \(\Delta n_{e}(t)\).
-
-\begin{equation}
-  \label{eq:ne_pert}
-n_{e}(t) = n_{e,0} + \Delta n_{e}(t)
-\end{equation}
-
-This allows us to write the recombination rate as
-
-\begin{equation}
-R = k_{r, b, K_{+}}(n_{e,0} + \Delta n_{e}(t))^2 + \sum_{i \neq K+}^{}k_{r, m, i}(n_{e,0} + \Delta n_{e}(t))
-\end{equation}
-
-expanding the square
-
-\begin{equation}
-R = k_{r, b, K_{+}}(n_{e,0}^2 + 2n_{e,0}\Delta n_{e}(t) + \Delta n_{e}(t)^2) + \sum_{i \neq K+}^{}k_{r, m, i}(n_{e,0} + \Delta n_{e}(t))
-\end{equation}
-
-We can group the time independent and time dependent terms together
-
-\begin{align}
-R = & k_{r, b, K_{+}}n_{e,0}^2 + \sum_{i \neq K+}^{}k_{r, m, i}n_{e,0} \nonumber \\
-    & + 2k_{r, b, K_{+}}n_{e,0}\Delta n_{e}(t) + \sum_{i \neq K+}^{}k_{r, m, i} \Delta n_{e}(t) + k_{r, b, K_{+}}\Delta n_{e}(t)^2 
-\end{align}
-
-If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac{dn_{e}}{dt} = 0$ and $G_{NE} = 0$, we can see that the time independent terms are equal to $G_{th}$. Therefore the time independent terms will cancel out in Equation \ref{eq:start_deqn} and we can write
-
-\begin{equation}
-\frac{d\Delta n_{e}}{dt} = G_{NE}  -  2k_{r, b, K_{+}}n_{e,0}\Delta n_{e}(t) - \sum_{i \neq K+}^{}k_{r, m, i} \Delta n_{e}(t)- k_{r, b, K_{+}}\Delta n_{e}(t)^2
-\end{equation}
-
-Where we have used the fact that $n_{e,0}$ is constant in time. We also use the equation $n_{e,0} = n_{K_{+}}$ from our earlier assumption. 
-
-\begin{equation}
-\frac{d\Delta n_{e}}{dt} = G_{NE}   -   2k_{r, m, K_{+}}\Delta n_{e}(t) - \sum_{i \neq K+}^{}k_{r, m, i}\Delta n_{e}(t) - k_{r, b, K_{+}}\Delta n_{e}(t)^2
-\end{equation}
-
-The monomolecular recombination rates can be combined into an effective monomolecular recombination rate, $k_{r, m, eff}$. 
 
 \begin{equation}
   k_{r, m, eff} = 2k_{r, m, K_{+}} + \sum_{i \neq K+}^{}k_{r, m, i}
 \end{equation}
 
-We then arrive at the final form of the differential equation for the time dependence of the electron density
+And simplify the form of Equation \ref{eq:full_deqn_phi} to
 
 \begin{equation}
-  \label{eq:final_deqn}
-\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e}(t) - k_{r, b, K_{+}}\Delta n_{e}(t)^2
-\end{equation}
-
-
-
-\subsection{MWS Kinetic fitting}
-
-TODO: this probably can just be in the main text. 
-
-For fitting of MWS data, we are interested in the time dependence after the laser pulse has ended. In this situation, we can assume that $G_{NE}$ is zero. Then Equation \ref{eq:final_deqn} becomes: 
-
-\begin{equation}
-\frac{d\Delta n_{e}}{dt} =   -   k_{r, m, eff}\Delta n_{e}(t)  - k_{r, b, K_{+}}\Delta n_{e}(t)^2
+  \label{eq:final_deqn_Kp}
+\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
 \end{equation}
 
 
@@ -116,7 +113,7 @@ For fitting of MWS data, we are interested in the time dependence after the lase
 
 \subsubsection{Figure of Merit}
 
-In this subsection we develop a model to assess the fundamental viability of photoionization as a method of increasing the power output of an MHD power system. We seek regimes where the power output from the MHD system will be increased by more than the power input of the nonequilibrium generation process. We define a figure of merit, $\gamma$ as the ratio of the increase in MHD power to the increase in power input.
+In this subsection we develop a model to assess the fundamental viability of photoionization as a method of increasing the power output of an MHD power system. We seek regimes where the power output from the MHD system will be increased by more than the power input of the nonequilibrium generation process. We define a figure of merit, $\gamma$ as the ratio of the increase in MHD power to the increase in power input, $P_{in}$.
 
 
 \begin{equation}
@@ -124,7 +121,7 @@ In this subsection we develop a model to assess the fundamental viability of pho
 \gamma = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0} = \frac{dP_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\Big|_{P_{in}=0}
 \end{equation}
 
-Where we have indicated that we will evaluate $\gamma$ at $P_{in} = 0$. We have chosen to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A $\gamma > 1$ is possible as photoionization has the potential to significantly increase the efficiency of the MHD generator. 
+Where we have indicated that we will evaluate $\gamma$ at $P_{in} = 0$. We define $P_{in}$ as a volumetric power input with units [$W/cm^3$] We have chosen to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A $\gamma > 1$ is possible as photoionization has the potential to significantly increase the efficiency of the MHD generator. 
 
 For the MHD Power density we use the equation
 
@@ -135,9 +132,9 @@ P_{MHD} = \frac{1}{2} e \mu_e n_e u^2 B^2
 
 Where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength.  The determination of $\mu_e$ is discussed later. The derivative $\frac{dP_{MHD}}{dn_{e}}$ can be easily determined. 
 
-For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
+For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn_Kp} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
 
-We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$. Note that $\ref{eq:ne_pert}$ can still be written with $\Delta n_e(t) = \Delta n_{e}$. (TODO need to think about how to rewrite general section with this.) With this, \ref{eq:final_deqn} which becomes
+We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$.  With this, \ref{eq:final_deqn_Kp} becomes
 
 \begin{equation}
 0 = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
@@ -145,7 +142,7 @@ We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in q
 
 We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
 
-TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower proirity.
+TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower priority.
 
 This leads to a simple expression for $\Delta n_{e}$
 
@@ -190,14 +187,16 @@ In the results presented in the main text we assume a velocity of 1000 m/s and a
 
 To calculate $\mu_e$ and $n_i$ we model the combustion of seeded oxy-kerosene mixture with the Cantera python package. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction (1\%). This mixture is initialized at a inlet temperature (300 K) then allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (1e6 Pa).
 
-We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. Figure 1 shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
+We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. ref shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
 We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross subsections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross subsections of constituent gasses.
 
-\includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
-
-Figure 1: a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.
-
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
+    \caption{a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.}
+    \label{fig:SI_Cantera_T}
+\end{figure} 
 
 
 \hypertarget{photoionization}{%
@@ -216,7 +215,7 @@ We apply our model to the specific case of UV photoionization. Photoionization, 
   The calculations employed estimates of the potassium electron recombination rate, and experimental measurements of these reaction rates have been performed since then.
 \end{itemize}
 
-To apply our viability model to UV photoionization, we need to calculate the ionization efficiency for photoionization, \(\eta_{PI}\). We consider a fraction of the incident photons that are absorbed by potassium, hydroxide \(FA_{KOH}\). We assume a best case yield of KOH to electrons of 1. We define the efficiency as the ratio of the absorbed energy per incident photon to the ionization potential of potassium.
+To apply our viability model to UV photoionization, We consider a fraction of the incident photons that are absorbed by potassium, hydroxide \(FA_{KOH}\). We assume a best case yield of KOH to electrons of 1. We define the efficiency $\eta{KOH}$ as the ratio of the absorbed energy per incident photon to the ionization potential of potassium.
 
 
 \begin{equation}
@@ -231,15 +230,18 @@ Where \(FA_{KOH}\) has been expressed in terms of the optical attenuation length
 \delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}}
 \end{equation}
 
-Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{KOH} = n_{KOH}Q_{KOH}\)where the \(KOH\) stands for potassium.
+Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{KOH} = n_{KOH}Q_{KOH}\)where the \(KOH\) stands for potassium. To calculate \(\frac{\delta}{\delta_{KOH}\ }\) we utilize the compiled UV absorption cross subsection data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross subsections for the major species in the calculated gas mixtures. \ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\)for various UV wavelengths and temperatures.
 
-To calculate \(\frac{\delta}{\delta_{KOH}\ }\) we utilize the compiled UV absorption cross subsection data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross subsections for the major species in the calculated gas mixtures.
 
-Figure 6 shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\)for various UV wavelengths and temperatures.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
+    \caption{Your caption goes here.}
+    \label{fig:SI_atten_length}
+\end{figure}
 
-\includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
 
-In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure 6. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
+In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure \ref{fig:SI_atten_length}. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
 
 \subsubsection{UV Absorption Cross Sections}
 
@@ -255,9 +257,67 @@ For potassium we use compiled photoionization cross sections (Verner) for solar 
 \end{figure}
 
 
-% \clearpage
+\subsubsection{Contact targeting}
 
-% \subsubsection{Supplemental PI Viability Results}
+
+This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD Generators. In this case, P\_in would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series that this can be encapsulated by multiplying α with an enhancement factor.
+
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/schematics/output/contact_targeting.png} 
+    \caption{Schematic of the contact targeting concept}
+    \label{fig:SI_contact_targeting_schematic}
+\end{figure}
+
+
+To model both bulk and contact-targeted nonequilibrium generation we only include NEI in a fraction of the channel as shown in Figure 3. The system comprises a bulk channel region of width $w_{b}$ and conductivity $\sigma_{b}$, and a boundary layer region near the contact of width $w_{c}$ and conductivity $\sigma_{c}$. In this case the conductivity of the fluid in equation 1 can be replaced by an effective conductivity, $\sigma_{eff}$, 
+
+\[
+\sigma_{eff}=\frac{\sigma_{b} \sigma_{c}}{\sigma_{b}+l_{b}  (\sigma_{c}  -\sigma_{b})}
+\]
+
+This equation can be derived by considering the series resistance of the channel:
+
+Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b})$. The conductivities of the two regions are determined by setting two different gas temperatures and nonequilibrium generation conditions, as discussed below. In the limit of $l_{b}\rightarrow1$ and $l_{b}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{b}$ and $\sigma_{eff}= \sigma_{c}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{c}\rightarrow1$ so that $\sigma_{eff}= \sigma_{c}$ in equation 1. 
+
+To calculate $\gamma$ we use the chain rule
+\[
+\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} \tag{13}
+\]
+
+Where we have recognized that this expression is equivalent to $\gamma$ except for an 'enhancement' factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. We can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
+\[
+\frac{d\sigma_{eff}}{d\sigma_{c}}=\frac{\sigma_{b}^2 (1-l_{b})}{[\sigma_{b}+l_{b} (\sigma_{c}-\sigma_{b})]^2} \tag{14}
+\]
+
+%https://www.wolframgamma.com/input?i=derivative+of+%28b*c%29%2F%28b%2B+l+%28c++-b%29%29+with+respect+to+c
+
+In the paper and figures below, we calculate this quantity for a variety of different $T_{c}$ and setting $T_{b} = 3000$.
+
+For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can approach a factor of 100. However, if the boundary layer temperature is near the bulk temperature, $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can actually be much less than 1. This indicates that contact targeting is only effective for $T_{c} \ll T_{b}$. 
+
+It is still possible to have an $\frac{d\sigma_{eff}}{d\sigma_{c}}$ of less than 1 even if $T_{c} \ll T_{b}$ if the fractional width of the boundary layer is large and the  boundary layer temperature is near the bulk temperature. In this situation, changes in the boundary layer conductivity have a small effect on the effective conductivity. While the enhancement viability $\gamma$ is lowered in this situation, the absolute efficiency of the generator will be larger than for the case of a larger boundary layer width.
+
+
+
+\begin{figure}[h]
+    \includegraphics[width=0.8\linewidth]{\repodir/modeling/viability/analysis/output/figures/bl_enhance.png} 
+    \caption{Enhancement factor for contact targeting.}
+    \label{fig:SI_bl_enhance}
+\end{figure}
+
+\clearpage
+
+\subsubsection{Supplemental PI Viability Results}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{\repodir/modeling/viability/figure_panels/output/P_zero_rxn_component.png} 
+    \caption{$P_{zero}$ calculated for various reactions. For each reaction, the reaction is considered to be the only recombination reaction, except for 'mm\_sum' where the sum over experimental O2, K+, H2O, and OH monomolecular recombination rates is used.}
+    \label{fig:SI_P_zero_rxn_component}
+\end{figure}
+% $krm_{O2_exp_eff} + 2*krm{K+} + krm_{H2O} + krm_{OH}$
 
 % \begin{figure}
 % \centering

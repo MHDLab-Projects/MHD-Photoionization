@@ -11,7 +11,7 @@ ds = xr.load_dataset(fp)
 
 ds.coords['time'].attrs['units'] = 'us'
 
-ds = ds.mws.calc_mag_phase_AS()
+ds = ds.mws.calc_AS_rel()
 
 ds['mag'].mean('acq_time').plot()
 
@@ -21,6 +21,8 @@ tc = '536_pos'
 
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_nothing = ppu.fileio.load_mws_T0()
+
+ds_lecroy = ds_lecroy.mws.calc_time_stats()
 
 # %%
 
@@ -38,19 +40,25 @@ da_sel = da_sel/norm
 
 da_sel = da_sel.dropna('run', how='all')
 
-da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
+g = da_sel.plot(col='motor', hue='run_plot', x='time', figsize=(10,3))
+
+dropna(g)
 
 #%%
 
 mag_pp = ds_lecroy['mag_pp'].dropna('run','all')
 
-mag_pp.plot(hue='run_plot', x='motor')
+g = mag_pp.plot(hue='run_plot', x='motor')
+
+dropna(g)
 
 #%%
 
 da_mag_norm = mag_pp/ds_lecroy['mag_0']
 
-da_mag_norm = da_mag_norm.plot(hue='run_plot', x='motor')
+g = da_mag_norm = da_mag_norm.plot(hue='run_plot', x='motor')
+
+dropna(g)
 #%%[markdown]
 
 # %%

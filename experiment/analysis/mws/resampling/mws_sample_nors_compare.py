@@ -38,7 +38,7 @@ for tc in ['raw', 'pw_10_1000']:
     ds = ds.assign_coords(tc=tc)
 
     ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
-    ds = ds.mws.calc_mag_phase_AS()
+    ds = ds.mws.calc_AS_rel()
 
     dss.append(ds)
 

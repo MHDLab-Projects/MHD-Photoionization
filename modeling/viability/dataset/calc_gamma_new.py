@@ -29,12 +29,15 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(canterapath, 'ds_TP_species_rho
 for species in ds_TP_species_rho.data_vars:
     ds_TP_species_rho[species] = ds_TP_species_rho[species].pint.quantify('particle/ml')
 
+#%%
+    
+ds_TP_params['sigma'].sel(Kwt=0.01, phi=0.8, P=1e5, method='nearest').plot()
 
 #%%
 
 # kth, krb = kinetics.calc_kth_krb_kelly(ds_TP_params, ds_TP_species)
 
-from pi_paper_utils.kinetics import gen_ds_krb
+from pi_paper_utils.kinetics import gen_ds_krb, calc_krm
 
 e = Quantity(1.602e-19, 'coulomb')
 mp = Quantity(1.672e-27, 'kg')
@@ -45,20 +48,17 @@ Eion = Quantity(4.34, 'eV')
 Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
 
 krb_all = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
+krb_all['O2_exp_eff'] = Quantity(2.66e-13, 'ml/particle/s') #TODO: improve. 
 
-krb_O2 = krb_all['O2_A']
-krm_O2 = krb_O2*ds_TP_species_rho['O2']
-krm_Kp = krb_all['K+']*ds_TP_species_rho['K+']
+krm = calc_krm(krb_all, ds_TP_species_rho)
 
-krm_H20 = krb_all['H2O']*ds_TP_species_rho['H2O']
-krm_OH = krb_all['OH']*ds_TP_species_rho['OH']
-
-krm_sum = krm_O2 + 2*krm_Kp + krm_H20 + krm_OH
+krm_sum = krm['O2_exp_eff'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
 krm_sum = krm_sum.pint.to('1/s')
+krm['mm_sum'] = krm_sum
 
 
 #%%
-ne0 = ds_TP_species['e-']
+ne0 = ds_TP_species_rho['e-']
 krb_Kp = krb_all['K+']
 
 # Keq from 1. Ashton, A.F., and Hayhurst, A.N. (1973). Kinetics of collisional ionization of alkali metal atoms and recombination of electrons with alkali metal ions in flames. Combustion and Flame 21, 69–75. 10.1016/0010-2180(73)90008-4.
@@ -72,72 +72,57 @@ kth.name =  '$k_{th}$'
 kth = kth.pint.to('1/s')
 
 Gth = kth*ds_TP_species_rho['K']
-Gth.attrs = dict(units = '$\#/cm^3 s$', long_name = 'Thermal Generation Rate')
 
 #Perfect Ionization
 
-B_const =5e-4
-B_hall= np.sqrt(3600/(ds_TP_params['mobility'])**2)*1e-4
-B_hall.name = 'Bmax ion slip'
-
-combos = {
-    'P_in' : np.array([0, *np.logspace(-10,10,11)]),
-}
-
-constants = {
-    'mue_cant': ds_TP_params['mobility']*10000,
-    'u': 1e5,
-    'eta': 1,
-    'B': B_const
-}
-
-dss = []
-
-constants_temp = constants.copy()
-constants_temp['G_th'] = Gth.pint.dequantify()
-constants_temp['krb'] = krb_Kp.pint.dequantify()
-ds = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None).run_combos(combos)
-dss.append(ds.assign_coords(rxn='Kp').assign_coords(eta='perf'))
-
-constants_temp = constants.copy()
-constants_temp['krm'] = krm_O2.pint.dequantify()
-constants_temp['ne0'] = ne0.pint.dequantify()
-ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-dss.append(ds.assign_coords(rxn='O2').assign_coords(eta='perf'))
-
-constants_temp = constants.copy()
-constants_temp['krm'] = krm_sum.pint.dequantify()
-constants_temp['ne0'] = ne0.pint.dequantify()
-ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='perf'))
-
-
 # #Photoionization
 ds_cs = abscs.calc_ds_cs(ds_TP_species_rho.coords['T'].values, wls= [248]).squeeze()
+ds_cs = ds_cs.pint.quantify()
 gas_lam = noneq.calc_atten_lengths(ds_cs, ds_TP_species_rho)
 
 # FA = xr.DataArray([1], name='FA_1')
-FA = gas_lam['KOH'].pint.dequantify().where(False).fillna(1.0)
+FA = gas_lam['KOH'].pint.dequantify().where(False).fillna(1.0).pint.quantify('dimensionless')
 FA.name = 'FA_1'
 
-eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA)
+eta_PI = noneq.calc_eta_PI(gas_lam['tot'], gas_lam['KOH'], FA).pint.to('dimensionless')
 
-constants_temp = constants.copy()
-constants_temp['eta'] = eta_PI
-constants_temp['krm'] = krm_sum.pint.dequantify()
-constants_temp['ne0'] = ne0.pint.dequantify()
-ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI'))
+#TODO: is there a way combos can be passed in quantified?
+combos = {
+    # 'P_in' : np.array([0, *np.logspace(-10,10,11)]),
+    # 'P_in' : [Quantity(0, 'W/cm**3').magnitude],
+    'P_in' : [0],
+}
+
+constants = {
+    'mue_cant': ds_TP_params['mobility'].pint.quantify(),
+    'u': Quantity(1e5, 'cm/s'),
+    'eta': Quantity(1, 'dimensionless'),
+    'B': Quantity(5,'T')
+}
 
 
-constants_temp = constants.copy()
-constants_temp['eta'] = eta_PI*0.3
-constants_temp['krm'] = krm_sum.pint.dequantify()
-constants_temp['ne0'] = ne0.pint.dequantify()
-ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
-dss.append(ds.assign_coords(rxn='mm_sum').assign_coords(eta='eta_PI_QY'))
+# constants_temp = constants.copy()
+# constants_temp['G_th'] = Gth.pint.dequantify()
+# constants_temp['krb'] = krb_Kp.pint.dequantify()
+# ds = xyzpy.Runner(noneq.calc_NE_all, constants = constants_temp, var_names=None).run_combos(combos)
+# dss.append(ds.assign_coords(rxn='K+_bm').assign_coords(eta='perf'))
 
-eta_PI
+#TODO: incorportate these for loops into xyzpy runner, 
+# also readd K+ bimolecular, but should be consistent wiht K+ monomolecular for P_in=0
+
+dss = []
+
+eta_dict = {'perf': 1, 'KOH': eta_PI}
+
+for eta_str, eta in eta_dict.items():
+    for krm_val in ['mm_sum', 'O2_A', 'O2_exp_eff', 'K+', 'H2O', 'OH']:
+        constants_temp = constants.copy()
+        constants_temp['eta'] = eta
+        constants_temp['ne0'] = ne0
+        constants_temp['krm'] = krm[krm_val]
+        ds = xyzpy.Runner(noneq.calc_NE_all_const_nx, constants = constants_temp, var_names=None).run_combos(combos)
+        dss.append(ds.assign_coords(rxn=krm_val).assign_coords(eta=eta_str))
+
 
 #%%
 
@@ -158,23 +143,39 @@ ds_NE.attrs = {}
 ds_NE.to_netcdf('output/ds_NE.cdf')
 # %%
 
-sig_bk = ds_TP_params['sigma'].sel(T=3000, method='nearest')
-# sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
+# b = bulk
+# c = contact/boundary layer
 
-combos_l_bk = {'l_bk' :  [0, 0.5, 0.9, 0.99]}
+sig_b = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
+# sig_b = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
 
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': ds_NE['sigma'] }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_bk).squeeze()
+sig_c = ds_NE['sigma'].pint.quantify()
+
+combos_l_b = {'l_b' :  [0, 0.5, 0.9, 0.99]}
+
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_b' :sig_b, 'sigma_c': sig_c }, var_names = ['sigma_tot'])
+da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
-da_dsigma_tot.to_netcdf('output/da_dsigma_tot.cdf')
+da_dsigma_tot.pint.dequantify().to_netcdf('output/da_dsigma_tot.cdf')
 
-# gamma_bl = ds_NE['gamma']*da_dsigma_tot
+# gamma_c = ds_NE['gamma']*da_dsigma_tot
 
-# gamma_bl.name = 'gamma_bl'
-# gamma_bl.to_netcdf('output/gamma_bl.cdf')
+# gamma_c.name = 'gamma_c'
+# gamma_c.to_netcdf('output/gamma_c.cdf')
 
 
+
+# %%
+
+# ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).squeeze().plot()
+
+ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
+
+#%%
+
+
+da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_b', col_wrap=2)
 
 # %%
