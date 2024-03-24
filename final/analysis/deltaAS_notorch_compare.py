@@ -99,131 +99,14 @@ xr_errorbar_axes(da_mean, da_std, label='536', axes=axes)
 
 
 plt.legend()
-
-#%%
-
-ds_536 = ds_536.mws.calc_time_stats()
-
-ds_536['mag_peak'] = ds_536['mag'].sel(time=slice(0,.1)).mean('time')
-
-ds_536['delta_mag'] = ds_536['mag_pp'] - ds_536['mag_peak'] 
-
-da_mean = ds_536['delta_mag'].mean('mnum').mean('run')
-da_std = ds_536['delta_mag'].std('mnum').mean('run')
-
-fig,axes = plt.subplots(1, figsize=(15,5), sharey=True)
-
-xr_errorbar_axes(da_mean, da_std, label='536', axes=axes)
-
-#%%
-
-ds_536['delta_mag_time'] = ds_536['mag_pp'] - ds_536['mag']
-
-ds_536['delta_mag_time'].mean('mnum').sel(motor=180, method='nearest').mean('run').plot()
-
-plt.yscale('log')
-
-#%%
-
-
-ds_536['SFR_abs'].mean('mnum').mean('run').plot()
-
-plt.ylabel('SFR (delta mag / mag_pp_std)')
-
-
-#%%
-
-da_plot = ds_536['T_abs'].mean('mnum').mean('run')
-da_plot = da_plot.sel(motor=[0,50,100,150,200,250], method='nearest')
-
-da_plot.plot(hue='motor')
-
-#%%
-da_plot = ds_536['AS_abs'].mean('mnum').mean('run')
-da_plot = da_plot.sel(motor=[0,50,100,150,180,250], method='nearest')
-
-da_plot.plot(hue='motor')
-
-plt.ylabel('AS')
-
-#%%
-
-g = da_plot.sel(motor=[100,180], method='nearest').plot(col='motor', sharey=False)
-
-for ax in g.axes.flatten():
-    # ax.set_yscale('log')
-    ax.set_ylabel('AS')
-
-#%%
-
-AS_pp = ds_536['AS_abs'].sel(time=slice(-50,-1)).mean('time')
-AS_pp.mean('mnum').mean('run').plot(label='AS Pre Pulse')
-
-AS_laser = ds_536['AS_abs'].mws._pulse_max()
-AS_laser.mean('mnum').mean('run').plot(label='AS Laser')
-
-plt.ylabel('AS')
-
-plt.legend()
-
-
-#%%
-
-# Pre Pulse
-AS_pp_mean = AS_pp.mean('mnum').mean('run')
-AS_pp_std = AS_pp.mean('mnum').std('run')
-
-# Laser
-AS_laser_mean = AS_laser.mean('mnum').mean('run')
-AS_laser_std = AS_laser.mean('mnum').std('run')
-
-fig, ax = plt.subplots()
-
-
-xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax)
-xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax)
-
-plt.ylabel('AS')
-
-#%%
-
-
-# ds_536_200 = ds_536.where(ds_536['mnum'] < 200, drop=True)
-
-ds_plot = ds_536
-
-AS_pp_fluct = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).std('time')
-AS_pp = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).mean('time')
-AS_laser = (ds_plot['AS_abs']).mws._pulse_max()
-
-AS_pp_mean = AS_pp.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-AS_pp_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-
-AS_laser_mean = AS_laser.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-AS_laser_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-
-fig, ax = plt.subplots()
-
-xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax, capsize=5)
-xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax, capsize=5)
-
-
-plt.ylabel('AS')
-
-
-#%%
-
-count = ds_536['T_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all').count('mnum').isel(time=0)
-
-count.plot()
-
-plt.ylabel("Count")
-
 #%%
 
 # T_laser = ds_536['T_abs'].sel(time=slice(0,.1)).mean('time')
 # AS_laser = 1 - T_laser
 
+ds_536 = ds_536.mws.calc_time_stats()
+
+#%%
 
 
 g = ds_536['AS_abs'].mean('mnum').mean('run').plot(row='motor', sharey=False)
@@ -274,3 +157,5 @@ for window_min in window_mins:
     mag_pp_std.plot(label='{} us'.format(window_min))
 
 plt.legend()
+
+# %%

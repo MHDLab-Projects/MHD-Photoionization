@@ -3,6 +3,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
+from mhdpy.plot.common import xr_errorbar_axes
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -12,36 +13,107 @@ ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 # ds_p = ds_p.drop(34.81, 'motor')
 
-#%%
-
-
-ds_cfd = ppu.fileio.load_cfd_centerline()
-
-ds_cfd = ds_cfd.sel(offset=0).sel(phi=0.8)
-
-ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
+ds_lecroy_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
 
 #%%
 
 
-all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
-ds_cfd[[*all_K_species, 'all_K_Yeq']].to_array('var').plot(hue='var',row='kwt')
+#%%
 
-plt.yscale('log')
+ds_536 = ds_lecroy_536.mws.calc_time_stats()
 
-# plt.gca().get_legend().set_bbox_to_anchor((1,1))
 
-plt.ylim(1e8,1e17)
+da_plot = ds_536['T_abs'].mean('mnum').mean('run')
+da_plot = da_plot.sel(motor=[0,50,100,150,200,250], method='nearest')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_K_species.png'), dpi=300, bbox_inches='tight')
+da_plot.plot(hue='motor')
+
+#%%
+da_plot = ds_536['AS_abs'].mean('mnum').mean('run')
+da_plot = da_plot.sel(motor=[0,50,100,150,180,250], method='nearest')
+
+da_plot.plot(hue='motor')
+
+plt.ylabel('AS')
+
+#%%
+
+g = da_plot.sel(motor=[100,180], method='nearest').plot(col='motor', sharey=False)
+
+for ax in g.axes.flatten():
+    # ax.set_yscale('log')
+    ax.set_ylabel('AS')
+
+#%%
+
+AS_pp = ds_536['AS_abs'].sel(time=slice(-50,-1)).mean('time')
+AS_pp.mean('mnum').mean('run').plot(label='AS Pre Pulse')
+
+AS_laser = ds_536['AS_abs'].mws._pulse_max()
+AS_laser.mean('mnum').mean('run').plot(label='AS Laser')
+
+plt.ylabel('AS')
+
+plt.legend()
 
 
 #%%
 
+# Pre Pulse
+AS_pp_mean = AS_pp.mean('mnum').mean('run')
+AS_pp_std = AS_pp.mean('mnum').std('run')
+
+# Laser
+AS_laser_mean = AS_laser.mean('mnum').mean('run')
+AS_laser_std = AS_laser.mean('mnum').std('run')
+
+fig, ax = plt.subplots()
+
+
+xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax)
+xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax)
+
+plt.ylabel('AS')
+
+#%%
+
+
+# ds_536_200 = ds_536.where(ds_536['mnum'] < 200, drop=True)
+
+ds_plot = ds_536
+
+AS_pp_fluct = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).std('time')
+AS_pp = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).mean('time')
+AS_laser = (ds_plot['AS_abs']).mws._pulse_max()
+
+AS_pp_mean = AS_pp.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
+AS_pp_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
+
+AS_laser_mean = AS_laser.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
+AS_laser_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
+
+fig, ax = plt.subplots()
+
+xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax, capsize=5)
+xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax, capsize=5)
+
+
+plt.ylabel('AS')
 
 
 #%%
 
+count = ds_536['T_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all').count('mnum').isel(time=0)
+
+count.plot()
+
+plt.ylabel("Count")
+
+
+
+
+
+#%%
 
 ds_p['nK_mw_horns'].mean('run').plot(hue='phi')
 

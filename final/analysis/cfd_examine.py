@@ -96,3 +96,24 @@ plt.xlim(3,8)
 plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_beam_pos_dep.png'))
 
 # %%
+ds_cfd = ppu.fileio.load_cfd_centerline()
+
+ds_cfd = ds_cfd.sel(offset=0).sel(phi=0.8)
+
+ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
+
+#%%
+
+
+all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
+ds_cfd[[*all_K_species, 'all_K_Yeq']].to_array('var').plot(hue='var',row='kwt')
+
+plt.yscale('log')
+
+# plt.gca().get_legend().set_bbox_to_anchor((1,1))
+
+plt.ylim(1e8,1e17)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_K_species.png'), dpi=300, bbox_inches='tight')
+
+
