@@ -36,10 +36,12 @@ mag_0 = ds_sel['mag_0'].item()
 axes[1].axhline(mag_0, color='k', linestyle='--')
 
 ds_sel['T_abs'].plot(ax=axes[2])
-axes[2].set_ylabel('T_abs')
+axes[2].set_ylabel('Transmission')
 
-ds_sel['AS_abs'].plot(ax=axes[3])
-axes[3].set_ylabel('AS_abs')
+ds_sel['AS_abs'].plot(ax=axes[3], label='AS Abs.')
+ds_sel['dAS_abs'].plot(ax=axes[3], label='$\Delta$AS Abs.')
+axes[3].set_ylabel('AS')
+axes[3].legend()
 
 for ax in axes:
     ax.set_title('')

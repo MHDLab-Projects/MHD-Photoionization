@@ -2,23 +2,32 @@
 
 # Immediate
 
-- [] get tau and ne_0 for nominal case. Calcaulate eta_experiment. Add to discussion
-
-- [] fix CFD barrel. Think it has to do with spike. Check beam position. 
-
  change particle to molecule
 
 - [] syringe zero removal duplicated in post processing? 
 
-- [] 3% case on 05-12
 
 - [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
 
+## SI 
+
+- [] run through of writing
+
+- [] fix top cam figures
+
  - [] make delta AS max plot with 530 and no torch. 
 
-- [] update CFD profiles to finite rate and compare
+- [] euler method demo with cfd profile
+
+- [] fix 5x3 nK
+
+## Long term
+
 
 - [] affect of position dependent T0 for 2023-05-24
+
+- [] 3% case on 05-12
+
 
 ## Check in lab
 
