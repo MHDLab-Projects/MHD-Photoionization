@@ -42,7 +42,7 @@ plt.ylim(-0.2,1.1)
 
 #%%
 
-wl_range = slice(740,750)
+wl_range = slice(750,755)
 
 rat = ds['diff']/ds['calib']
 

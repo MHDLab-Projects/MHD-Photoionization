@@ -3,8 +3,6 @@
 # Immediate
 
 
-- [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
-
 ## SI 
 
 - [] run through of writing

@@ -101,7 +101,7 @@ ds_fit = ds_fit.absem.drop_alpha_peaks_negative()
 
 #%%
 
-ds_sel['alpha'].sel(kwt=0.05).dropna('mnum').plot(row='mnum')
+ds_sel['alpha'].sel(kwt=0.05, method='nearest').dropna('mnum').plot(row='mnum')
 
 plt.ylim(-1.1,1.1)
 
