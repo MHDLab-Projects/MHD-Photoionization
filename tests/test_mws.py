@@ -49,9 +49,9 @@ from pint import Unit
 def test_calc_AS_rel(ds_mws):
     ds_mws = ds_mws.mws.calc_AS_rel()
 
-    assert 'AS' in ds_mws
+    assert 'dAS_rel' in ds_mws
     
-    assert ds_mws['AS'].pint.quantify().pint.units == Unit('dimensionless')
+    assert ds_mws['dAS_rel'].pint.quantify().pint.units == Unit('dimensionless')
 
 def test_calc_mag_phase_AS_abs(ds_mws):
     ds_nothing = ppu.fileio.load_mws_T0()
@@ -67,7 +67,7 @@ def test_pipe_fit_mws_1_avgbef(ds_mws):
     ds_mws = ds_mws.mean('mnum') 
     ds_mws = ds_mws.mws.calc_AS_rel()
 
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'])
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['dAS_rel'])
 
     assert 'AS_fit' in ds_mws_fit
 
@@ -87,26 +87,26 @@ def test_pipe_fit_mws_1_avgafter(ds_mws):
     ds_mws = ds_mws.mws.calc_AS_rel()
     ds_mws = ds_mws.mean('mnum') 
 
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['AS'])
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_1(ds_mws['dAS_rel'])
 
     assert 'AS_fit' in ds_mws_fit
 
 
 def test_pipe_fit_mws_2(ds_mws_all_mnum):
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['AS'].mean('mnum'))
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_2(ds_mws_all_mnum['dAS_rel'].mean('mnum'))
 
 
 def test_pipe_fit_mws_3(ds_mws):
     ds_mws = ds_mws.mean('mnum') 
     ds_mws = ds_mws.mws.calc_AS_rel()
 
-    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_3(ds_mws['AS'])
+    ds_mws_fit, ds_p, ds_p_stderr = mws.fitting.pipe_fit_mws_3(ds_mws['dAS_rel'])
 
 # from mhdpy.analysis.mws.fitting import gen_model_dnedt
 # from mhdpy.xr_utils import fit_da_lmfit_global
 # def test_mws_fit_global_ne0(ds_mws_all_mnum):
 
-#     da_fit = ds_mws_all_mnum['AS']
+#     da_fit = ds_mws_all_mnum['dAS_rel']
 #     da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
 
 #     mod, params = gen_model_dnedt(take_log=True)
@@ -115,7 +115,7 @@ def test_pipe_fit_mws_3(ds_mws):
 
 # def test_mws_fit_global_kr(ds_mws_all_mnum):
 
-#     da_fit = ds_mws_all_mnum['AS']
+#     da_fit = ds_mws_all_mnum['dAS_rel']
 #     da_fit = da_fit.sel(kwt=slice(0.1, 10)) #Low seed takes long time, but passes
 
 #     mod, params = gen_model_dnedt(take_log=True)

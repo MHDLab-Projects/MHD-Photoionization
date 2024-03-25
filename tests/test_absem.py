@@ -82,6 +82,7 @@ def test_pipe_fit_alpha_num_1(ds_absem):
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
     ds_fit_absem = ds_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
+    da_cfd_beam = da_cfd_beam.dropna('dist') # Having to do this with coarse CFD data?
     ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
 
