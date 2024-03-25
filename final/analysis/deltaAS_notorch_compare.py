@@ -60,6 +60,10 @@ plt.title('phi=0.8')
 
 plt.ylabel('$\Delta AS_{max}$')
 
+plt.xlabel('Motor Position (mm)')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'dAS_max_notorch_compare.png'))
+
 # plt.yscale('log')
 # %%
 ds_notorch = ppu.fileio.load_lecroy('NoTorch_pos', avg_mnum=False, AS_calc='absolute')

@@ -357,6 +357,8 @@ diff.plot()
 
 #%%
 
+plt.figure()
+
 ds_cfd['Yeq_KOH'].plot(x = 'pos_x', cmap='winter')
 diff.plot(alpha=0.5)
 

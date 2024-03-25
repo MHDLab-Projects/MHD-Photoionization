@@ -29,7 +29,7 @@ ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
 da_cfd = ds_cfd['Yeq_KOH']
 
-goldi_pos = Quantity(178, 'cm')
+goldi_pos = Quantity(180, 'mm')
 
 da_cfd = da_cfd.sel(motor=goldi_pos.magnitude, method='nearest').sel(kwt=1)
 

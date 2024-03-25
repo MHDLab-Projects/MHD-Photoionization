@@ -14,7 +14,7 @@ ds_cfd = ppu.fileio.load_cfd_centerline()
 ds_cfd = ds_cfd.sel(offset=0)
 ds_cfd
 
-goldi_pos =  Quantity(178, 'mm')
+goldi_pos = Quantity(180, 'mm')
 
 #%%
 # Calculate krb
@@ -55,6 +55,25 @@ for ax in g.axes.flatten():
     ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
 
 #%%
+plt.figure()
+# show species densities on similar plot 
+da_plot = ds_cfd[['Yeq_K+', 'OH', 'O2', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
+
+
+g = da_plot.plot(hue='var', col='phi')
+
+plt.yscale('log')
+
+plt.ylim(1e12,)
+
+
+for ax in g.axes.flatten():
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_pos.png'))
+
+#%%
 
 from pi_paper_utils.kinetics import calc_krm
 
@@ -71,6 +90,21 @@ plt.ylim(0.1,1e3)
 
 for ax in g.axes[:,0]:
     ax.set_ylabel("Tau [$\mu s$]")
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+#%%
+
+da_plot = ds_tau[['K+','O2_A', 'OH', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
+
+g= da_plot.plot(hue='var', col='phi')
+
+plt.yscale('log')
+
+plt.ylim(0.1,1e3)
+
+g.axes[0,0].set_ylabel("Tau [$\mu s$]")
+
+for ax in g.axes.flatten():
     ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
 
 

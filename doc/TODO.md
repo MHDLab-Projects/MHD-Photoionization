@@ -7,13 +7,12 @@
 
 - [] run through of writing
 
-- [] fix top cam figures
-
- - [] make delta AS max plot with 530 and no torch. 
-
-- [] euler method demo with cfd profile
 
 - [] fix 5x3 nK
+
+- [] change kappa to be consistent with AIAA 2020
+
+- [] add references.
 
 ## Long term
 
@@ -24,6 +23,7 @@
 
 - [] change particle to molecule. Should this be done for nK too? 
 
+- [] euler method demo with cfd profile
 ## Check in lab
 
 - [] Tcube current

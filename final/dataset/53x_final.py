@@ -38,7 +38,7 @@ ds_lecroy['i'].mean('mnum').mean('run').plot(hue='kwt',marker='o')
 plt.xlim(-1,1)
 #%%
 
-goldi_pos =  Quantity(178, 'mm')
+goldi_pos = Quantity(180, 'mm')
 ds_cfd = ds_cfd.sel(x = goldi_pos, method='nearest')
 
 #%%
@@ -120,7 +120,7 @@ da_plot = ds_fit_absem.mean('run').to_array('var')
 
 da_plot.attrs['long_name'] = '$\\alpha$'
 
-da_plot.plot.line(row='kwt', col='mp', hue='var')
+da_plot.plot.line(row='kwt', col='mp', hue='var', figsize=(8,12))
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_absem_fit.png'))
 
