@@ -36,6 +36,75 @@ da_plot.plot(hue='motor')
 
 plt.ylabel('AS')
 
+
+#%%
+
+ds_plot = ds_536.sel(run=('2023-05-18', 1)).dropna('motor', how='all')
+
+da_plot = ds_plot['AS_abs']
+
+motor_sel = [30, 100, 180]
+motor_actual = []
+
+fig, ax = plt.subplots(figsize=(3,3))
+
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Define a list of colors for the traces
+
+for i, motor in enumerate(motor_sel):
+    # Calculate mean and standard deviation
+    mean = da_plot.sel(motor=motor,method='nearest').mean(dim='mnum')
+    std = da_plot.sel(motor=motor,method='nearest').std(dim='mnum')
+
+    motor_val = da_plot.sel(motor=motor, method='nearest').coords['motor'].values
+    motor_actual.append(motor_val)
+    
+    # Plot mean and shaded region for standard deviation
+    ax.plot(mean['time'].values, mean.values, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
+    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color=colors[i % len(colors)], alpha=0.2)
+
+ax.set_xlabel('Time [us]')
+ax.set_ylabel('AS')
+ax.legend(bbox_to_anchor=(1,1.1))
+ax.set_ylim(-0.05,1.05)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
+# %%
+
+da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all')
+
+AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time')
+AS_pp_fluct = da_plot.sel(time=slice(-50,-1)).std('mnum').mean('time')
+AS_laser = da_plot.mws._pulse_max().mean('mnum')
+AS_laser_fluct = da_plot.mws._pulse_max().std('mnum')
+
+fig, ax = plt.subplots()
+
+xr_errorbar_axes(AS_pp, AS_pp_fluct, axes=ax, capsize=5, label='AS Pre Laser')
+xr_errorbar_axes(AS_laser, AS_laser_fluct, axes=ax, capsize=5, label='AS Laser')
+
+for motor_val in motor_actual:
+    plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
+
+dropna(ax)
+
+plt.legend()
+
+plt.ylabel('AS')
+
+#%%
+
+da_plot = ds_536['SFR_abs'].dropna('run', how='all')
+
+g=  da_plot.mean('mnum').plot(hue='run_plot', x='motor', marker='o')
+
+for motor_val in motor_actual:
+    plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
+
+plt.title('')
+plt.xlim(0, )
+
+dropna(g)
+
 #%%
 
 g = da_plot.sel(motor=[100,180], method='nearest').plot(col='motor', sharey=False)
@@ -74,32 +143,6 @@ xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax)
 xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax)
 
 plt.ylabel('AS')
-
-#%%
-
-
-# ds_536_200 = ds_536.where(ds_536['mnum'] < 200, drop=True)
-
-ds_plot = ds_536
-
-AS_pp_fluct = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).std('time')
-AS_pp = (ds_plot['AS_abs']).sel(time=slice(-50,-1)).mean('time')
-AS_laser = (ds_plot['AS_abs']).mws._pulse_max()
-
-AS_pp_mean = AS_pp.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-AS_pp_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-
-AS_laser_mean = AS_laser.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-AS_laser_std = AS_pp_fluct.mean('mnum').sel(run=('2023-05-18', 2)).dropna('motor', how='all')
-
-fig, ax = plt.subplots()
-
-xr_errorbar_axes(AS_pp_mean, AS_pp_std, label='AS Pre Pulse', axes=ax, capsize=5)
-xr_errorbar_axes(AS_laser_mean, AS_laser_std, label='AS Laser', axes=ax, capsize=5)
-
-
-plt.ylabel('AS')
-
 
 #%%
 
