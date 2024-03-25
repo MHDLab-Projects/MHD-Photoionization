@@ -2,7 +2,6 @@
 
 # Immediate
 
- change particle to molecule
 
 - [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
 
@@ -25,6 +24,7 @@
 
 - [] 3% case on 05-12
 
+- [] change particle to molecule. Should this be done for nK too? 
 
 ## Check in lab
 
