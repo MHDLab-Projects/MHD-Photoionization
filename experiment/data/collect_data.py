@@ -82,15 +82,26 @@ ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 
 # Narrow down dsst groups and concatenate across dates
 
-keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel', 'lasen_meter1', 'lasen_meter2', 'o2', 'tc1']
+keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel', 'lasen_meter1', 'lasen_meter2', 'o2', 'tc1', 'spectral_wlstats', 'mws_time']
+
+dsst_date_dict = {}
+
+for date in dates:
+    data_folder = pjoin('munged',date) 
+    dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+
+    dsst_date_dict[date] = dsst_date
+
 
 dsst = {}
 
 for key in keep_keys:
     dss = []
     for date in dates:
-        data_folder = pjoin('munged',date) 
-        dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+
+        dsst_date = dsst_date_dict[date]
+        if key not in dsst_date:
+            continue
 
         if key == 'tc1':
             dsst_date[key] = dsst_date[key][['ambient_T']]
