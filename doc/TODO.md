@@ -4,9 +4,6 @@
 
  change particle to molecule
 
-- [] syringe zero removal duplicated in post processing? 
-
-
 - [] make pre norm cutoff None by default (And similar kwargs) and update/test pipelines
 
 ## SI 

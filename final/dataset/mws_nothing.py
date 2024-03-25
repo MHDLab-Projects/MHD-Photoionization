@@ -242,7 +242,7 @@ val_178_05_12
 #%%
 
 s = m.to_pandas()
-s.loc['2023-05-12'] = val_178_05_12.magnitude
+s.loc['2023-05-12'] = val_178_05_12
 
 s = s.sort_index()
 
