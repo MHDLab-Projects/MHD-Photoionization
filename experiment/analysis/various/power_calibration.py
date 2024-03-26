@@ -37,8 +37,38 @@ df_fullpower_times
 
 pow_pe_fullpower = downselect_acq_time(pow_pe, df_fullpower_times, timeindex='time')
 
-pow_pe_fullpower.mean('time')
 
+#%%
+pow_pe_fullpower = pow_pe_fullpower.assign_coords(date = ('time', pow_pe_fullpower['time'].dt.date.values))
+
+pow2 = pow_pe_fullpower.set_index(time='date', append=True)
+
+pow_mean = pow2.groupby('date').mean('time')
+pow_std = pow2.groupby('date').std('time')
+
+#TODO: the time windows on 2023-05-18 in UTC cause this to regiser as 05-19. Hack to get right date to display
+datestrs = pow_mean['date'].astype(str).str.replace('2023-05-19', '2023-05-18').values
+
+#%%
+
+plt.errorbar(datestrs, pow_mean, pow_std, capsize=5, marker='o')
+
+plt.ylabel("Pulse Energy (J)")
+
+plt.xticks(rotation=90)
+
+avg_power = pow_pe_fullpower.mean('time').item()
+
+plt.title("Average Energy: {:2f} J".format(avg_power))
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'laser_energy_date.png'))
+
+#%%
+
+avg_power
+
+#%%
+pow_mean['date']
 
 
 #%%

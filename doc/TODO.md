@@ -12,6 +12,8 @@
 
 - [] change kappa to be consistent with AIAA 2020
 
+- [] ladder to bottleneck
+
 ## Long term
 
 
@@ -22,8 +24,3 @@
 - [] change particle to molecule. Should this be done for nK too? 
 
 - [] euler method demo with cfd profile
-## Check in lab
-
-- [] Tcube current
-- [] fiber choices
- - [] AES collimating lenses

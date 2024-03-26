@@ -41,7 +41,7 @@ Below are overviews of the experiments performed. The independent variables that
 
 }
 
-
+\clearpage
 \subsection{Microwave Scattering (MWS) }
 
 
@@ -53,19 +53,21 @@ Below are overviews of the experiments performed. The independent variables that
 \label{fig:SI_MWS_Setup}
 \end{figure}
 
-The microwave scattering setup is shown in Figure \ref{fig:SI_MWS_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (TODO). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
+The microwave scattering setup is shown in Figure \ref{fig:SI_MWS_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
+
+% Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
 The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy WavePro 404HD-MS Oscilloscope.  The oscilloscope is triggered from the excimer laser. 
 
-The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the I/Q signals, and 50 ohm input impedance for the photodiode signals. The vertical coupling was 20mV per division on 2023-04-07 and 2023-05-12, and 50mV per division on 2023-05-18 and 2023-05-24 for the IQ signals. The vertical coupling of the photodiode signals was 20 mV/division for on-peak, and 10mV per division off-peak. The horizontal coupling was 10 $\mu s$ per division. 
+The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the I/Q signals, and 50 ohm input impedance for the photodiode signals. The vertical coupling was 20mV per division on 2023-04-07 and 2023-05-12, and 50mV per division on 2023-05-18 and 2023-05-24 for the IQ signals. There is was an increased signal intensity on the second two dates, which we suspect was due to cleaning of residue from the microwave horns, as discussed below. The vertical coupling of the photodiode signals was 20 mV/division for on-peak, and 10mV per division off-peak. The horizontal coupling was 10 $\mu s$ per division. 
 
-The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 TODO?, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
+The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 5Hz, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
 
-The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 0.1 inch opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, TODO) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
+The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
 
 The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
 
-\subsubsection{No Torch Mesurements}
+\subsubsection{No Torch Measurements}
 
 On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
 
@@ -103,7 +105,7 @@ The  measured at the nominal position (180 mm) for each of the dates is presente
 
 \subsubsection{MWS Data Processing and Fitting}
 
-The raw MWS data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed, though after TODO date the reptation rate was maximized to TODO Hz to minimize this effect. 
+The raw MWS data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
 
 The MWS data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mws_resampling}
 
@@ -180,9 +182,9 @@ The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. The measured exp
 
 
 \clearpage
-\subsubsection{Laser Profile}
+\subsubsection{Laser Profile and Power}
 
-The laser profile was measured by imaging the laser beam on a white beam block. The images were taken with a Thorlabs Thorcam [TODO], and are shown in \ref{fig:SI_Laser_Profile}A. Cross sections of this image are taken to obtain the full width at half maximum (FWHM) of the laser profile and calculate the area of the beam.  
+The laser profile was measured by imaging the laser beam on a white beam block. The images were taken with a Thorlabs DCC1240C-HQ camera, and are shown in \ref{fig:SI_Laser_Profile}A. Cross sections of this image are taken to obtain the full width at half maximum (FWHM) of the laser profile and calculate the area of the beam.  
 
 \begin{figure}[H]
 \centering
@@ -191,17 +193,32 @@ The laser profile was measured by imaging the laser beam on a white beam block. 
 \label{fig:SI_Laser_Profile}
 \end{figure}
 
+The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter before and after the experiments as shown in \ref{fig:SI_Laser_Energy} 
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/various/output/figures/laser_energy_date.png}
+\caption{Measurement of the laser pulse energy. The datapoints include measurements before and after the experiment. The average laser power across all measurements is shown in the figure title. }
+\label{fig:SI_Laser_Energy}
+\end{figure}
+
+
 \clearpage
 \subsection{Absorption Emission Spectroscopy (AES) Setup}
 
+\subsubsection{Setup Description}
 
-The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately (TODO). The LED is fed into a Thorlabs 400 $\mu m$  0.39 NA optical fiber. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. The light is sent to AES collimating lenses with a 200 $\mu m$ fiber 0.39 NA fiber. The light is collected with collimating lenses using 600 $\mu m$ 0.5 NA fibers. The collected light is sent back to the multiplexer, which then sends the final collected light to a Ocean Optics HR4000 spectrometer.
+The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. After collection of light with the collection lenses (described below), the light of both barrel exit and mobile setup is sent back to the multiplexer. Finally, the light passes from multiplexer to spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber.
 
-TODO: collimating and collection lens details
+For the barrel exit measurement, the light is collimated with a RC02SMA-P01 reflective parabolic mirror. The light is directed at a 90 degree angle with a MRA05-E3 dielectric mirror. The light passes through a glass slide which is used to protect the optics from the torch. The collecting side uses the same glass slide and parabolic mirror. The light is collected with a RC04-SMA-P01 parabolic mirror. There are irises of approximately 1 mm on the sending and collecting sides. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 200um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 600 um 0.5NA fiber. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
+
+For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses.  On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400 um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
 The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The LED is triggered by the spectrometer. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
 
-
+\subsubsection{Data processing and Fitting}
 
 Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.
 
@@ -310,7 +327,7 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected and then collimated into the beam splitter with F110SMA-780 fiber coupled lens (FCL) with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. (TODO: fixed size iris? ). AThe photodiodes are powered with a PBM42 bias module powered by ? V (TODO). The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements. The bandpass filters are Thorlabs TODO (770 $\pm$ 10 nm and 840 $\pm$ 10 nm). 
+Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
 
 
 
