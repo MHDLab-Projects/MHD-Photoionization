@@ -134,7 +134,30 @@ For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$
 \end{figure}
 
 
-Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. These measurements are consistent with the minority carrier lifetime in silicon. [TODO]
+Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. 
+
+The silicon wafer was ordered from MTI corporation (Item Number: SIUa50D05C1R1000) and has the properties shown in Table \ref{table:material_properties}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Property & Value \\
+\hline
+Single crystal & Si \\
+Conductive type & N type, undoped \\
+Resistivity & > 1000 ohm-cm \\
+Size & 2" diameter x 0.5 mm \\
+Orientation & (100) \\
+Polish & one side polished \\
+Surface roughness & < 5A RMS \\
+\hline
+\end{tabular}
+\caption{Properties of the test silicon wafer}
+\label{table:material_properties}
+\end{table}
+
+The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} 
 
 \begin{figure}[]
 \centering
@@ -239,7 +262,7 @@ The fitting procedure is as follows
     \item The spectrometer has a finite resolution that 'blurs' the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of 0.026 nm. The data is first interpolated to a grid with 0.026 nm spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
 \end{enumerate}
 
-The absorption cross section is modeled as a sum of two Voigt line profiles. This profile follows Bedick et al [TODO], and is converted to a wavelength basis wit the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. The absorption cross section is given by:
+The absorption cross section is modeled as a sum of two Voigt line profiles, following Bedick et al.\cite{bedickDeterminationElectricalConductivity2019} and is converted to a wavelength basis with the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. The absorption cross section is given by:
 
 \begin{equation}
     \label{eq:cross_section_alpha_fit}
@@ -320,9 +343,9 @@ Potassium was introduced into the HVOF system by creating a potassium carbonate 
 
 distributing brine droplets within part of the fuel supply via a water-in-oil emulsion (W/O). A droplet of W/O emulsion might be expected to pass through the combustor atomizer and promptly evaporate/burn from outer surface in. High surface to volume ratio, as well as close contact with the fuel should help the brine promptly evaporate, freeing the K2CO3 to dissociate, releasing gaseous, metallic potassium. To the extent the water boils after kerosene, water flashing to steam can break up kerosene droplets in the combustor and increase the effectiveness of mixing there. 
 
-Literature was reviewed for an emulsion specifically designed to work with brine – especially water-in-oil (W/O) emulsions.  Developing emulsions for use in oilfields, Mohamed et al.\cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (~20% by mass).  
+Literature was reviewed for an emulsion specifically designed to work with brine – especially water-in-oil (W/O) emulsions.  Developing emulsions for use in oilfields, Mohamed et al.\cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (~20\% by mass).  
 
-We noted the most stable result in ​[1]​ “reproduced” it using a potassium carbonate brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended HLB of 6.8. The concentration of the surfactant was 0.5% of the emulsion by volume - the minimum necessary found in [1] to obtain a stable emulsion. (Mohamed et al. measured ~5% of liquid came out of emulsion in 100 minutes at 120 °C).  
+We noted the most stable result in \cite{mohamedInfluenceSurfactantStructure2017a} “reproduced” it using a potassium carbonate brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended HLB of 6.8. The concentration of the surfactant was 0.5\% of the emulsion by volume - the minimum necessary found in [1] to obtain a stable emulsion. (Mohamed et al. measured ~5\% of liquid came out of emulsion in 100 minutes at 120 °C).  
 
 To generate the initial brine droplets, we used a spray nozzle. Spraying to create an emulsion is an age-old practice \cite{atkinsonKeroseneEmulsionHow1890} with relevance here because it avoids the temperature-rise associated with higher energy processes. These spray-generated droplets were then passed through an ultrasonic process to break them up further. This continuous process also minimized temperature rise because the material exited seconds after entering the ultrasonic field. 
 

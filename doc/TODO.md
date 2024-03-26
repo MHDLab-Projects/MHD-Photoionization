@@ -12,8 +12,6 @@
 
 - [] change kappa to be consistent with AIAA 2020
 
-- [] add references.
-
 ## Long term
 
 

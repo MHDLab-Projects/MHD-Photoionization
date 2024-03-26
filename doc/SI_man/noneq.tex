@@ -96,6 +96,7 @@ The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ioni
 This allows us to write
 
 \begin{equation}
+  \label{eq:krm_eff_final}
   k_{r, m, eff} = 2k_{r, m, K_{+}} + \sum_{i \neq K+}^{}k_{r, m, i}
 \end{equation}
 
@@ -142,8 +143,6 @@ We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in q
 
 We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
 
-TODO: we could try and calculate the maximum power to which this would be valid. From our results we are entering the high-power regime where the second term is important with our pulsed laser. In any case, the argument of infinitesimal power input being best case scenario is valid and including the second term in general or exploring higher laser powers should be a lower priority.
-
 This leads to a simple expression for $\Delta n_{e}$
 
 \begin{equation}
@@ -158,7 +157,7 @@ We consider an arbitrary ionization mechanism that requires a power input per un
 \end{equation}
 
 
-This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.{[}15{]} 
+This equation is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.\cite{turkOpticalDetectionLaserInduced1986}
 
 We can then write the electron density as a function of the power input
 
@@ -178,7 +177,7 @@ Finally, we can combine these results to find $\gamma$
 \gamma = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}
 \end{equation}
 
-In the results presented in the main text we assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. $E_{IP}$ is the ionization potential of potassium, 4.34 eV. In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH (described later). For $k_{r, m, eff}$ we utilize equation \ref{eq:monomolecular_recombination}. The equilibrium species concentrations, $n_i$, and $\mu_e$ we use values calculated from from the chemical equilibrium model discussed in the next section. 
+In the results presented in the main text we assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. $E_{IP}$ is the ionization potential of potassium, 4.34 eV. In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH (described later). For $k_{r, m, eff}$ we utilize equation \ref{eq:krm_eff_final}. The equilibrium species concentrations, $n_i$, and $\mu_e$ we use values calculated from from the chemical equilibrium model discussed in the next section. 
 
 
 
@@ -189,7 +188,7 @@ To calculate $\mu_e$ and $n_i$ we model the combustion of seeded oxy-kerosene mi
 
 We then model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. ref shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
-We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.{[}14{]} Briefly, the collisional cross subsections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross subsections of constituent gasses.
+We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.\cite{bedickCombustionPlasmaElectrical2017} Briefly, the collisional cross subsections for alkali vapors in flames. Then the electron mobility, \(\mu_{e}\), is calculated using the species-dependent collisional cross subsections of constituent gasses.
 
 \begin{figure}[ht]
     \centering
@@ -204,7 +203,7 @@ We calculate $\mu_e$ of the gas mixture following the method outlined previously
 
 
 
-We apply our model to the specific case of UV photoionization. Photoionization, where potassium atoms are ionized by UV photons with energy above the potassium ionization potential, is a potential method of increasing the electrical conductivity of seeded combustion products. Photoionization is particularly attractive for contact targeting, due to the ability to direct and spatially confine light. Photoionization was considered as a method of increasing \(\sigma\) in MHD power systems early in MHD power research.{[}4{]} In that work, the potential of photoionization as an effective method of achieving sufficiently high electrical conductivity for MHD power was estimated. Those estimates were lacking in multiple ways:
+We apply our model to the specific case of UV photoionization. Photoionization, where potassium atoms are ionized by UV photons with energy above the potassium ionization potential, is a potential method of increasing the electrical conductivity of seeded combustion products. Photoionization is particularly attractive for contact targeting, due to the ability to direct and spatially confine light. Photoionization was considered as a method of increasing \(\sigma\) in MHD power systems early in MHD power research.\cite{rosaNonequilibriumIonizationMHD1963} In that work, the potential of photoionization as an effective method of achieving sufficiently high electrical conductivity for MHD power was estimated. Those estimates were lacking in multiple ways:
 
 \begin{itemize}
 \item
@@ -245,9 +244,9 @@ In the following work we analyze these gasses excited by 248 nm light. This is p
 
 \subsubsection{UV Absorption Cross Sections}
 
-We compiled data on UV absorption cross sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-285 nm). The consolidated data is show in \ref{fig:SI_UV_abscs}. TODO: replace citations. 
+We compiled data on UV absorption cross sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-285 nm). The consolidated data is show in \ref{fig:SI_UV_abscs}.  
 
-For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.{[}17{]} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.{[}18{]} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.{[}19{]} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.{[}20{]} empirical formulas for the wavelength and temperature dependent UV cross sections exist for CO2{[}21{]}, H2O,{[}22{]} and O2.{[}22{]} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et all and extrapolate it in the range 190-200 nm.{[}23{]} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.{[}24{]}
+For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross sections exist for CO2\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H2O,\cite{zuevUVABSORPTIONCROSS} and O2.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et all and extrapolate it in the range 190-200 nm.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963}
 
 
 \begin{figure}[h]
