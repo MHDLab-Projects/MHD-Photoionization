@@ -67,6 +67,44 @@ The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent t
 
 The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
 
+
+\subsubsection{Data Processing and Fitting}
+
+The raw MWS data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
+
+The MWS data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mws_resampling}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/resampling/output/figures/mws_sample_nors_compare.png}
+\caption{Comparison of the resampling methods. Both left and right panels show the same time trace, with the right panel being zoomed into the peak.}
+\label{fig:SI_mws_resampling}
+\end{figure}
+
+\ref{fig:SI_mws_processing_overview} shows the following processing steps for the MWS data to determine the AS profiles as described in the text.
+
+The fit preparation pipeline consists of the following steps:
+
+\begin{enumerate}
+    \item The data is interpolated to a grid with 0.01 $\mu s$ spacing.
+    \item the data is resampled, averaging groups of 10 datapoints to a grid with 0.1 $\mu s$ spacing.
+    \item  All AS data with a maximum AS value less than $5e-4$ are removed.
+    \item the AS data is normalized to the maximum AS value.
+    \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occurs in the absence of a laser. 
+\end{enumerate}
+
+
+For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$ after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) $.
+
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
+\caption{Microwave processing overview}
+\label{fig:SI_mws_processing_overview}
+\end{figure}
+
+
 \subsubsection{No Torch Measurements}
 
 On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
@@ -103,38 +141,7 @@ The  measured at the nominal position (180 mm) for each of the dates is presente
 \label{fig:SI_MWS_nothing_T0}
 \end{figure}
 
-\subsubsection{MWS Data Processing and Fitting}
-
-The raw MWS data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
-
-The MWS data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mws_resampling}
-
-
-\ref{fig:SI_mws_processing_overview} shows the following processing steps for the MWS data to determine the AS profiles as described in the text.
-
-The fit preparation pipeline consists of the following steps:
-
-\begin{enumerate}
-    \item The data is interpolated to a grid with 0.01 $\mu s$ spacing.
-    \item the data is resampled, averaging groups of 10 datapoints to a grid with 0.1 $\mu s$ spacing.
-    \item  All AS data with a maximum AS value less than $5e-4$ are removed.
-    \item the AS data is normalized to the maximum AS value.
-    \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occurs in the absence of a laser. 
-\end{enumerate}
-
-
-
-For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$ after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) $.
-
-
-
-\begin{figure}[]
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
-\caption{Microwave processing overview}
-\label{fig:SI_mws_processing_overview}
-\end{figure}
-
+\subsubsection{Silicon test sample}
 
 Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. 
 
@@ -171,12 +178,6 @@ The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. The measured exp
 
 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/resampling/output/figures/mws_sample_nors_compare.png}
-\caption{Comparison of the resampling methods. Both left and right panels show the same time trace, with the right panel being zoomed into the peak.}
-\label{fig:SI_mws_resampling}
-\end{figure}
 
 
 
@@ -327,14 +328,14 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
+Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) setup. \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
 
 
 
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/final/figures/schematics/output/PD_setup.png}
-    \caption{Photodiode (PD) setup schematic.}
+    \caption{Photodiode (PD) setup schematic. The acronyms are FCL: fiber coupled lens, BS: beam splitter, PB: bandpass filter, PD: photodiode, AMP: transimpedance amplifier, Osc.: Oscilloscope}
     \label{fig:SI_PD_setup_schematic}
 \end{figure}
 
@@ -343,7 +344,7 @@ Figure \ref{fig:PD_setup_schematic} shows the photodiode setup schematic. All pa
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/final/figures/setup_images/Photodiode_Setup.png}
-    \caption{Image of the photodiode setup}
+    \caption{Image of the photodiode setup. Taken on 2023-05-24. }
     \label{fig:SI_PD_setup_image}
 \end{figure}
 
