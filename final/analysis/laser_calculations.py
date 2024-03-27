@@ -50,7 +50,7 @@ f_A_nint
 
 #%%
 
-from pi_paper_utils import LASER_POWER, LASER_AREA
+from pi_paper_utils.constants import LASER_POWER, LASER_AREA
 
 absorption_length = Quantity(3, 'cm')
 n_KOH = da_cfd.max('dist').item()

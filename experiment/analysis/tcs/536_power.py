@@ -16,12 +16,12 @@ tc = '536_power'
 ds_absem = ppu.fileio.load_absem(tc)
 
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
-da_lecroy = ds_lecroy['AS']
+da_lecroy = ds_lecroy['AS_rel']
 
 ds_pd = ds_lecroy[['pd1','pd2', 'dpd1']].mean('run')
 #%%
 
-from pi_paper_utils import LASER_POWER, LASER_AREA
+from pi_paper_utils.constants import LASER_POWER, LASER_AREA
 
 fluence = LASER_POWER/LASER_AREA
 

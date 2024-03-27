@@ -76,7 +76,7 @@ coords_to_assign = gen_coords_to_assign_1(
         phi_bins = [0.5,0.7,0.9,1.1,1.3,1.5]
     )
 
-from pi_paper_utils import MOTOR_OFFSET
+from pi_paper_utils.constants import MOTOR_OFFSET
 coords_to_assign['motor'] = coords_to_assign['motor'] + MOTOR_OFFSET.to('mm').magnitude
 
 dss = [da.to_dataset(name=name) for name, da in coords_to_assign.items()]
