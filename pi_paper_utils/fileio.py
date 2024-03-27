@@ -7,6 +7,8 @@ from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
+from .constants import MAG_MWS_BLOCK
+
 
 def load_absem(
         tc, 
@@ -86,7 +88,7 @@ def load_lecroy(tc,
         assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
         if AS_calc == 'absolute':
             da_nothing = load_mws_T0()
-            ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_nothing)
+            ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_nothing, mag_block=MAG_MWS_BLOCK)
         else:
             ds_lecroy = ds_lecroy.mws.calc_AS_rel() 
 

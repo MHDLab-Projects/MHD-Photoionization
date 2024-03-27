@@ -4,6 +4,7 @@
 
 
 - [] table of main conditions/ emulsion and fuel properties. 
+        generalize AIAA 2020 table function 
 
 
 - [] ladder to bottleneck

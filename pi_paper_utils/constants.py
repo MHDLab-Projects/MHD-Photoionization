@@ -11,4 +11,5 @@ MOTOR_OFFSET = Quantity(1 + 3/16, 'inches')
 
 ## final\analysis\mws_block_expt.py
 MAG_MWS_BLOCK = Quantity(0.006245581698287483, 'V')
+# MAG_MWS_BLOCK = Quantity(0, 'V')
 

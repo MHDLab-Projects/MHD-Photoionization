@@ -24,7 +24,7 @@ ds_536 = ds_lecroy_536.mws.calc_time_stats()
 
 
 da_plot = ds_536['T_abs'].mean('mnum').mean('run')
-da_plot = da_plot.sel(motor=[0,50,100,150,200,250], method='nearest')
+da_plot = da_plot.sel(motor=[0,50,100,150,180,200,250], method='nearest')
 
 da_plot.plot(hue='motor')
 
@@ -64,7 +64,7 @@ for i, motor in enumerate(motor_sel):
 
 ax.set_xlabel('Time [us]')
 ax.set_ylabel('AS')
-ax.legend(bbox_to_anchor=(1,1.1))
+ax.legend(bbox_to_anchor=(0.5,0.8))
 ax.set_ylim(-0.05,1.05)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
@@ -91,6 +91,8 @@ plt.legend()
 
 plt.ylabel('AS')
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_stats_20230518.png'))
+
 #%%
 
 da_plot = ds_536['SFR_abs'].dropna('run', how='all')
@@ -105,13 +107,20 @@ plt.xlim(0, )
 
 dropna(g)
 
+plt.savefig(pjoin(DIR_FIG_OUT, 'pow_mws_sfr_dates.png'))
+
 #%%
 
+da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all').mean('mnum')
 g = da_plot.sel(motor=[100,180], method='nearest').plot(col='motor', sharey=False)
 
 for ax in g.axes.flatten():
     # ax.set_yscale('log')
     ax.set_ylabel('AS')
+
+#%%
+    
+da_plot
 
 #%%
 
