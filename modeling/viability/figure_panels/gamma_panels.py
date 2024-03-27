@@ -38,6 +38,12 @@ gamma = gamma*da_dsigma_tot
 
 beta = gamma -1 
 
+#%%
+ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
+
+plt.xscale('log')
+
+plt.savefig(os.path.join('output', 'viability_kwt.png'))
 # %%
 
 from matplotlib.colors import LogNorm

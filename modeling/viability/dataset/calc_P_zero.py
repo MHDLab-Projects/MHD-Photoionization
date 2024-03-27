@@ -76,7 +76,7 @@ r = xyzpy.Runner(calc_beta_zero,
 combos = {
     'T' : beta.coords['T'].values,
     'phi': [0.8, 1, 1.2],
-    'Kwt': [0.001, 0.01, 0.1],
+    'Kwt': beta.coords['Kwt'].values,
     # 'P_in' : [0],
     # 'analysis': beta.coords['analysis'].values,
     'eta': beta.coords['eta'].values,

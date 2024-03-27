@@ -171,11 +171,11 @@ da_dsigma_tot.pint.dequantify().to_netcdf('output/da_dsigma_tot.cdf')
 
 # ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).squeeze().plot()
 
-ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
+# ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
 
 #%%
 
 
-da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_b', col_wrap=2)
+# da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_b', col_wrap=2)
 
 # %%

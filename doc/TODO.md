@@ -3,16 +3,18 @@
 # Immediate
 
 
-## SI 
+- [] table of main conditions/ emulsion and fuel properties. 
 
-- [] run through of writing
+
+- [] ladder to bottleneck
+
+## SI 
 
 
 - [] fix 5x3 nK
 
 - [] change kappa to be consistent with AIAA 2020
 
-- [] ladder to bottleneck
 
 ## Long term
 

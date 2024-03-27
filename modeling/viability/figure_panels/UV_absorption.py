@@ -28,7 +28,7 @@ if not os.path.exists('output'): os.mkdir('output')
 ds_TP_species = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species.cdf'))
 ds_TP_params = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_params.cdf'))
 
-ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf')).sel({'phi': 0.7})
+ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_species_rho.cdf')).sel({'phi': 0.8})
 
 for species in ds_TP_species_rho.data_vars:
     ds_TP_species_rho[species] = ds_TP_species_rho[species].pint.quantify('particle/ml')
