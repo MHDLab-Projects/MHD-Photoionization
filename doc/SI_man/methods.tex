@@ -9,26 +9,19 @@
 Throughout the experimental campaign, we performed the following test case sequences. The test cases are presented below with our internal naming scheme that begins with a three digit number that represent the nominal values for the HVOF process inputs. The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = -/6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). A 'x' indicates that the nominal value was varied during that sequence. The sequence is then appended with 'pos' or 'pow' to indicate a position or power sweep, respectively. The absence of 'pos' or 'pow' indicates that the SFR-maximized position of 180mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally the sequence is appended with a 'run number' to indicate repeats of the sequence performed on the same day. 
 
 
-
 \begin{itemize}
-    \item 536 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.8
-    \item 516 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.6
-    \item 53x: Varying potassium mass fraction. MWS/AES diagnostic at nominal position. Full laser power.
+    \item 536 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.8 (presented in main text)
+    \item 516 Position: Varying MWS/AES diagnostic position. Full laser power. Kwt = 1\%, phi = 0.6 (presented in main text)
+    \item 53x: Varying potassium mass fraction. MWS/AES diagnostic at nominal position. Full laser power. (presented in main text)
     \item 536 Power: Varying laser power. MWS/AES diagnostic at nominal position. Kwt = 1\%, 
     \item 5xx: Varying potassium mass fraction and equivalence ratio. MWS/AES diagnostic at nominal position. Full laser power.
     \item 5x6\_pos/5x3\_pos: Varying MWS/AES diagnostic position and equivalence ratio. Full laser power. Kwt = 0.1\% or 1\%
 \end{itemize}
 
-
-
-The results in this paper derive from an experimental campaign that was conducted over 4 dates: 2023-04-07, 2023-05-12, 2023-05-18, and 2023-05-24. Throughout the campaign the above test case sequences were repeated to ensure reproducibility of the results. On some dates, the same test case sequence was repeated within a date, so we define a ’Run’ as a unique instance of a test case sequence labeled by the date and an integer ("run number"). Unless otherwise noted, error bars in the results represent the standard deviation across Runs. On later experiment dates, additional diagnostic measurements were added. 2023-05-12: ICCD and AES2. 2023-05-24: PD.
-
-
 For each diagnostic, data is obtained continuously throughout the experiment and indexed in time. For each individual test case, there are a number of repeated acquisitions depending on the duration of the test case and acquisition rate of the diagnostic. In the data processing, these repeated acquisitions are averaged to obtain a single value for each test case before further analysis (e.g. fitting). For statistics across runs, the variation within repeat acquisitions is not considered. Importantly, the position dependent nK measurement was taken by multiplexing both AES diagnostics to the same spectrometer, meaning only one AES measurement could be taken at a time. Throughout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements at the two AES locations are not simultaneous.
 
-
-The time limitation on seeding duration limits the AES diagnostic more than the MWS diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWS diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (10 Hz TODO check this). Therefore for a given test case sequences, the MWS diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
-
+The syringe pump limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. Furthermore, it was not possible to maintain consistent durations for the same test cases performed in different sequences.
+The time limitation on seeding duration limits the AES diagnostic more than the MWS diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWS diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser.  Therefore for a given test case sequences, the MWS diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
 
 Another limitation of the AES diagnostic is that it must be calibrated to the spectral LED intensity without any absorbing medium. It is not possible to stop HVOF system to perform a AES calibration without risking the system not being able to restart. Therefore, measurements of the AES calibration can only be performed at the beginning and end of a given experiment. We interpolate this calibration throughout the time of the experiment to help reduce the influence of calibration drift, but it is not always possible to eliminate this effect which shows as an offset in the off-peak absorption coefficient.
 
