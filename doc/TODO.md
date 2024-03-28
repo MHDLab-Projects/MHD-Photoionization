@@ -3,11 +3,17 @@
 # Immediate
 
 
-- [] table of main conditions/ emulsion and fuel properties. 
-        generalize AIAA 2020 table function 
+- [] add emulsion and fuel properties to caption of table 1
+
+- [] FFT of prepulse fluctuation
+- [] change SFR to be AS fluct
 
 
-- [] ladder to bottleneck
+- [] clean up figure 3
+
+- [] change kreff to experimental sum comparison. 
+
+
 
 ## SI 
 
