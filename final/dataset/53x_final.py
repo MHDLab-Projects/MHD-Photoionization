@@ -169,6 +169,7 @@ ds_fit = ds_lecroy
 da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
 
 ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
+ds_p_mws['decay'] = ds_p_mws['decay'].pint.quantify('us') # could we do this in the pipe?
 
 ds_p_exp = ds_p_mws.copy()
 
@@ -209,11 +210,14 @@ ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 
 #%%
 
+ds_p_exp['krm'] = 1/ds_p_exp['decay']
+
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
     ds_p_absem['nK_m3'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
     ds_p_dnedt['decay'].rename('mws_fit_decay'),
     ds_p_exp['decay'].rename('mws_fit_decay_exp'),
+    ds_p_exp['krm'].rename('mws_fit_krm'),
     ds_p_dnedt['dne'].rename('mws_fit_dne'),
     ds_stats_lecroy
     ])
@@ -227,8 +231,8 @@ count = ds_params['nK_m3_barrel'].count('run')
 ds_p_stats = xr.Dataset(coords=count.coords)
 
 for var in ds_params.data_vars:
-    mean = ds_params[var].mean('run')
-    std = ds_params[var].std('run')
+    mean = ds_params[var].mean('run', keep_attrs=True)
+    std = ds_params[var].std('run', keep_attrs=True)
     stderr = std/np.sqrt(count)
 
     ds_p_stats["{}_mean".format(var)] = mean
@@ -241,3 +245,4 @@ ds_p_stats = ds_p_stats.pint.dequantify()
 ds_p_stats.to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_p_stats.cdf'))
 
 # %%
+

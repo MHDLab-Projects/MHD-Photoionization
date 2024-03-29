@@ -24,6 +24,18 @@ ds_p
 
 #%%
 
+krm_eff = ds_p['mws_fit_krm_mean']
+krm_eff.plot()
+
+mean_krm = krm_eff.pint.to('1/s').mean().item()
+
+plt.text(0.05, 0.85, 'Average: {:.3e}'.format(mean_krm), transform=plt.gca().transAxes)
+
+print(mean_krm)
+
+#%%
+
+
 # ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
 #%%
 

@@ -5,13 +5,7 @@
 
 - [] add emulsion and fuel properties to caption of table 1
 
-- [] FFT of prepulse fluctuation
-- [] change SFR to be AS fluct
-
-
-- [] clean up figure 3
-
-- [] change kreff to experimental sum comparison. 
+- [] viability O2 experimetn and O2_A
 
 
 
