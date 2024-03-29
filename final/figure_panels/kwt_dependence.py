@@ -14,7 +14,16 @@ ds_mws_fit_exp = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_exp.cdf')
 ds_mws_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_dnedt.cdf')).pint.quantify()
 
 
+# Load in the raw lecroy data for confidence intervals. Doing this here to avoid having to save raw mnum acquisitions...Revisit. 
+from mhdpy.fileio.ct import load_df_cuttimes
+from mhdpy.coords.ct import downselect_acq_time
 ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
+# Downselect times to those in the CFD input kwt cases 
+fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
+df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
+
+ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
+
 
 #TODO: the time grids are not the same for the two fitting methods. Why?
 ds_mws_fit_exp = ds_mws_fit_exp.interp(time=ds_mws_fit_dnedt.time, method='linear')
