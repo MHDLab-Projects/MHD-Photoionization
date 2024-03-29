@@ -2,8 +2,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-import pi_paper_utils #Sets matplotlib style
-
+import pi_paper_utils as ppu #Sets matplotlib style
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -15,6 +14,7 @@ ds_mws_fit_exp = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_exp.cdf')
 ds_mws_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_dnedt.cdf')).pint.quantify()
 
 
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
 
 #TODO: the time grids are not the same for the two fitting methods. Why?
 ds_mws_fit_exp = ds_mws_fit_exp.interp(time=ds_mws_fit_dnedt.time, method='linear')
@@ -97,7 +97,55 @@ plt.ylim(1e-5, 0.1)
 
 plt.title('')
 
+# plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
+#%%
+
+
+#%%
+
+run_sel = ('2023-05-12', 1)
+
+plt.figure(figsize=(5,2))
+
+da_plot = ds_lecroy['dAS_abs'].sel(run=run_sel).sel(kwt=1, method='nearest')
+da_plot
+
+# Calculate mean and standard deviation
+mean = da_plot.mean('mnum')
+std = da_plot.std('mnum')
+count = da_plot.count('mnum')
+std_err = std / np.sqrt(count)
+
+print("Number of acquisitions: {}".format(count.isel(time=0).values))
+
+# Get x values (assuming they are the same for mean and std)
+x = mean.coords[mean.dims[0]].values
+# Plot mean
+plt.plot(x, mean, label='AS')
+
+da_plot_fit = ds_mws_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
+da_plot_fit.plot(label='AS Fit')
+
+# Plot confidence interval
+plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
+
+
+
+
+
+plt.yscale('log')
+plt.xlim(-1,40)
+plt.ylim(1e-5,)
+plt.ylabel('$\Delta AS$ [dimensionless]')
+
+plt.title('')
+plt.legend(['Data', 'Fit'])
+
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
+
+#%%
+
+
 
 #%%
 
