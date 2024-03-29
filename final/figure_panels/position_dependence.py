@@ -113,7 +113,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight
 
 #%%
 
-fig, axes = plt.subplots(2, figsize=(4.5,5), sharex=True)
+fig, axes = plt.subplots(2, figsize=(5,4.5), sharex=True)
 
 
 # Phi =0.8
@@ -139,7 +139,7 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
 
 ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax1.set_title('phi = {}'.format(phi_val_expt))
+ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 
 # Phi = 0.65
@@ -165,7 +165,7 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
 ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
-ax2.set_title('phi = {}'.format(phi_val_expt))
+ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 for ax in axes:
 
@@ -174,6 +174,7 @@ for ax in axes:
     ax.set_xlim(-10,250)
     ax.set_yscale('log')
     ax.legend()
+    ax.set_ylabel('$n_K [m^{-3}$]')
 
 ax2.set_xlabel('Position [mm]')
 ax1.set_xlabel('')
@@ -183,6 +184,10 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 # Phi =0.65
 # ax2 = axes[1]
 # %%
+
+ds_alpha_fit
+
+#%%
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8, method='nearest')
 
 # da_plot.plot(col='phi', hue='var', row='motor')
@@ -217,3 +222,4 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_alpha_fit.png'), dpi=300, bbox_inches='tight
 
 
 ds_plot
+# %%

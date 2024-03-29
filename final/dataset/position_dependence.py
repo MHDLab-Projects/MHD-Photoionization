@@ -124,9 +124,9 @@ ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwarg
 
 #%%
 
-ds = ds_alpha_fit[['alpha_red', 'alpha_fit']]
-ds['alpha'] = ds_fit['alpha']
-ds = ds.rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha':'raw'})
+ds_alpha_fit['alpha_full'] = ds_fit['alpha']
+ds = ds_alpha_fit[['alpha_red', 'alpha_fit', 'alpha_full']]
+ds = ds.rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha_full':'full'})
 # ds = ds.to_array('var')
 
 ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
