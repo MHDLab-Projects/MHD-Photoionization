@@ -36,7 +36,8 @@ tc_dim_dict = {
 tc_dim = tc_dim_dict[tc]
 
 figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_1d_noise', tc)
-shutil.rmtree(figure_out_dir)
+if os.path.exists(figure_out_dir):
+    shutil.rmtree(figure_out_dir)
 os.makedirs(figure_out_dir)
 
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
@@ -86,7 +87,7 @@ def plot_1(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p1'):
 
     for i, ax in enumerate(axes):
 
-        da = ds_plot['AS'].isel({tc_dim: i}).plot(ax=ax)
+        da = ds_plot['AS_rel'].isel({tc_dim: i}).plot(ax=ax)
 
     if savefig:
         plt.tight_layout()
@@ -123,7 +124,7 @@ def plot_2(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p2'):
 
     for i, ax in enumerate(axes):
 
-        ds_plot['AS'].isel({tc_dim: i}).plot(ax=ax)
+        ds_plot['AS_rel'].isel({tc_dim: i}).plot(ax=ax)
 
         if i < len(axes)-1:
             ax.set_xlabel('')
@@ -142,7 +143,7 @@ ds_lecroy_mm.sel(time=slice(-50,-1)).groupby('run').apply(lambda x: plot_2(*grou
 
 def plot_3(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p3'):
     plt.figure()
-    ds_plot['AS'].sel(time=slice(-50,-1)).std('time').plot(hue=tc_dim)
+    ds_plot['AS_rel'].sel(time=slice(-50,-1)).std('time').plot(hue=tc_dim)
 
     plt.yscale('log')
     plt.ylabel("AS Pre Pulse Std Dev.")

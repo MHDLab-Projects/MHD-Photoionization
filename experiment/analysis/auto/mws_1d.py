@@ -26,7 +26,7 @@ def main(datestr):
         ds_in = xr.load_dataset(fp_in)
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
 
-        ds = ds_in.mws.calc_AS_rel().drop('mag_pp')
+        ds = ds_in.mws.calc_AS_rel().mws.calc_time_stats()
         ds_std = ds.std('mnum', keep_attrs=True)
 
         tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]

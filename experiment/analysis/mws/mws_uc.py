@@ -6,15 +6,17 @@
 from mhdpy.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mws
-from mhdpy.plot import dropna
-from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdpy.fileio.ct import load_df_cuttimes
 
 
 #%%
 
-ds_lecroy = ppu.fileio.load_lecroy('53x')
+fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
+df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
+ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute', df_ct_downselect=df_cuttimes_seedtcs)
+
+ds_lecroy = ds_lecroy.dropna('run', how='all')
 
 #%%
 
@@ -34,7 +36,7 @@ def custom_plot(time, mean, std, count, **kwargs):
     plt.fill_between(time, lower_bound, upper_bound, alpha=0.5, color='gray')  # alpha sets the transparency
     # count should be a single value, add it as text to the plot in the upper left
     if not np.isnan(count):
-        plt.text(0.05, 0.9, '{}'.format(int(count)), transform=plt.gca().transAxes, color='red', fontsize=14, fontweight='bold')
+        plt.text(0.5, 0.8, '{}'.format(int(count)), transform=plt.gca().transAxes, color='red', fontsize=14, fontweight='bold')
 
 
 
@@ -46,21 +48,33 @@ g.map(custom_plot, 'time', 'mean', 'std', 'count')
 
 plt.xlim(-10,10)
 
+
 #%%
 
-ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('AS', 'mnum')
+ds_l_unc = ds_lecroy.wma.initialize_stat_dataset('dAS_abs', 'mnum')
+
+ds_l_unc = ds_l_unc.where(ds_l_unc['count'] > 0).dropna('run', how='all')
+
 ds_l_unc['count'] = ds_l_unc['count'].isel(time=0)
 ds_l_unc
 
 #%%
 
-g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt')
+g = xr.plot.FacetGrid(ds_l_unc, col='run', row='kwt', figsize=(10,10))
 
 # Apply the custom function to each facet
 
 g.map(custom_plot, 'time', 'mean', 'std', 'count')
 
-plt.xlim(-10,10)
+for ax in g.axes[:,0]:
+    ax.set_ylabel('$\Delta AS$')
+
+for ax in g.axes[-1,:]:
+    ax.set_xlabel('Time ($\mu$s)')
+
+plt.xlim(-1,10)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'mws_53x_std_individual_count.png'))
 
 #%%
 
