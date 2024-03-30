@@ -2,23 +2,15 @@
 
 # Immediate
 
-
-- [] add emulsion and fuel properties to caption of table 1
-
-- [] viability O2 experimetn and O2_A
-
 - [] mws mnum fluctuation and decay
 
-## SI 
-
-
-- [] fix 5x3 nK
-
-- [] change kappa to be consistent with AIAA 2020
+- [] SI: change kappa to be consistent with AIAA 2020
 
 
 ## Long term
 
+
+- [] revist fitting to try and fix 5x3 nK in SI
 
 - [] affect of position dependent T0 for 2023-05-24
 

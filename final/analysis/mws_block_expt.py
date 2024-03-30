@@ -45,6 +45,10 @@ ds
 #%%
 ds['mag']
 
+#%%
+
+ds[['i','q']].mean('time')
+
 
 #%%
 
@@ -63,6 +67,11 @@ ds2= ds2.assign_coords(mnum = [mnum_dict[m] for m in mnum_dict])
 ds2 = ds2.rename(mnum='tc')
 
 ds2
+
+#%%
+
+ds2[['i','q']].to_array('var').mean('time').plot(hue='var')
+plt.xticks(rotation=90)
 
 #%%
 
