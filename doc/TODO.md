@@ -2,8 +2,6 @@
 
 # Immediate
 
-- [] mws mnum fluctuation and decay
-
 - [] SI: change kappa to be consistent with AIAA 2020
 
 
