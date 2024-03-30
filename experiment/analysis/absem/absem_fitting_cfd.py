@@ -62,82 +62,37 @@ plt.plot(x, nK_profile)
 
 # # I(x) solution functions
 #
-# Solve differential equation dI/dx = -kappa(x) I(x)
+# Solve differential equation dI/dx = -mu_atten(x) I(x)
 #
 # We want to solve the differential equation for I(x) using the normalized number density profile nK_CFD(x).
 #
-# Given a max nK_max (Fit parameter) we calculate the absorption coefficient kappa(x) = Q(nK_max) * nK_profile(x).
+# Given a max nK_max (Fit parameter) we calculate the absorption coefficient mu_atten(x) = kapppa * nK_max * nK_profile(x).
 #
 # x is the distance along the beam axis.
 #
-# Below are three methods to solve the differential equation for I(x) using the kappa(x) profile.
+# Below are three methods to solve the differential equation for I(x) using the mu_atten(x) profile.
 #
 # We first test everything with the tophat profile, and just selecting a single wavelength and nK_max
 
 # %%
 
 from scipy.integrate import solve_ivp
-from mhdpy.analysis.absem.fitting import Q_2peak
+from mhdpy.analysis.absem.fitting import kappa_2peak
 from pint import Quantity
 
 from mhdpy.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
 
-# def dI_dx(x, I, kappa_profile):
-
-#     # differential equation for I(x)
-#     # dI/dx = -kappa(x) * I(x)
-
-#     kappa = np.interp(x, kappa_profile.index, kappa_profile)
-#     return -kappa * I
-
-# def calc_I_profile_deq(kappa_profile):
-#     """
-#     Solve the differential equation for I(x) using the kappa(x) profile
-#     """
-
-#     x = kappa_profile.index
-
-#     I_0 = 1
-#     sol = solve_ivp(dI_dx, [x[0], x[-1]], [I_0], args=(kappa_profile,), t_eval=x, method='BDF', max_step=0.1)
-
-#     I = sol.y[0]
-
-#     return I
-
-# from scipy.integrate import cumtrapz
-
-# def calc_I_profile_num(kappa_profile):
-#     """
-#     numerically integrate the differential equation for I(x) using the kappa(x) profile
-#     """
-#     x = kappa_profile.index
-
-#     # Compute -kappa(x) * I(x)
-#     dI_dx = -kappa_profile.values
-
-#     # Compute the cumulative integral
-#     I = cumtrapz(dI_dx, x, initial=0)
-
-#     # Add the initial condition
-#     I += 1
-
-#     return I
-
-
-
-# %%
-
 
 wl = Quantity(770, 'nm')
 
-Q = Q_2peak(wl)
+kappa = kappa_2peak(wl)
 nK = Quantity(1e21, '1/m^3')
 
-kappa_max = (Q*nK).to('1/cm').magnitude
-kappa_profile = kappa_max * nK_profile
-kappa_profile = pd.Series(kappa_profile, index=x)
+mu_atten_max = (kappa*nK).to('1/cm').magnitude
+kappa_profile = mu_atten_max * nK_profile
+mu_atten_max_profile = pd.Series(mu_atten_max, index=x)
 
-I = calc_I_profile_euler(kappa_profile)
+I = calc_I_profile_euler(mu_atten_max_profile)
 
 tau = I[-1]/I[0]
 
@@ -147,8 +102,8 @@ line1 = plt.plot(x, I, label='I(x)')
 plt.gca().set_ylabel('I(x)')
 plt.gca().set_xlabel('x [cm]')
 ta=  plt.twinx()
-ta.set_ylabel('kappa(x)')
-line2 = plt.plot(x, kappa_profile, 'r', label='kappa(x)')
+ta.set_ylabel('mu_atten_max(x)')
+line2 = plt.plot(x, kappa_profile, 'r', label='mu_atten_max(x)')
 
 lines = line1 + line2
 labels = [l.get_label() for l in lines]
@@ -161,7 +116,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'euler_method_tophat_demo.png'))
 
 # %%[markdown]
 
-# Now pull in the CFD data to make a normalized number density profile nK_CFD(x) that is used to calculate the absorption coefficient kappa(x) = Q * nK(x).
+# Now pull in the CFD data to make a normalized number density profile nK_CFD(x) that is used to calculate the absorption coefficient mu_atten(x) = kappa * nK(x).
 
 
 # %%
@@ -184,22 +139,22 @@ plt.xlim(3,7)
 # %%
 da_cfd_sel = da_cfd.sel(kwt=1)
 
-da_cfd_kappa = (da_cfd_sel/da_cfd_sel.max())*kappa_max
+da_cfd_mu_atten = (da_cfd_sel/da_cfd_sel.max())*mu_atten_max
 
-da_cfd_kappa 
+da_cfd_mu_atten 
 
 Is = []
 
-for motor in da_cfd_kappa.coords['motor'].values:
-    da_sel = da_cfd_kappa.sel(motor=motor)
-    kappa_profile = pd.Series(da_sel.values, index=da_sel.coords['dist'].values)
+for motor in da_cfd_mu_atten.coords['motor'].values:
+    da_sel = da_cfd_mu_atten.sel(motor=motor)
+    mu_atten_profile = pd.Series(da_sel.values, index=da_sel.coords['dist'].values)
 
-    I = calc_I_profile_euler(kappa_profile)
+    I = calc_I_profile_euler(mu_atten_profile)
 
     Is.append(I)
 
 
-da_I_pos = xr.DataArray(Is, coords=da_cfd_kappa.coords, dims=['motor', 'dist'])
+da_I_pos = xr.DataArray(Is, coords=da_cfd_mu_atten.coords, dims=['motor', 'dist'])
 
 
 # %%

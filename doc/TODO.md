@@ -2,8 +2,9 @@
 
 # Immediate
 
-- [] SI: change kappa to be consistent with AIAA 2020
+- [] data pipeline overview SI
 
+- [] add mws refs
 
 ## Long term
 

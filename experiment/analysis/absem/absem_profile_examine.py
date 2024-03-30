@@ -3,7 +3,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis.absem.fitting import Q_2peak
+from mhdpy.analysis.absem.fitting import kappa_2peak
 
 
 
@@ -17,8 +17,8 @@ wls = np.arange(760,775,0.001)
 
 for T in Ts:
     T = Quantity(T, 'K')
-    Qs = Q_2peak(wls, T=T)
-    plt.plot(wls, Qs, label=T)
+    kappas = kappa_2peak(wls, T=T)
+    plt.plot(wls, kappas, label=T)
 
 
 plt.legend()
