@@ -2,9 +2,9 @@
 
 # Immediate
 
-- [] data pipeline overview SI
-
 - [] add mws refs
+
+- [] move new position panels from analysis
 
 ## Long term
 

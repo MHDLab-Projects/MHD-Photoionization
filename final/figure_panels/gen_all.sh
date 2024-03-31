@@ -1,2 +1,0 @@
-python kwt_dependence.py
-python position_dependence.py

@@ -49,6 +49,22 @@ Below are overviews of the experiments performed. The independent variables that
 }
 
 \clearpage
+
+\subsection{Data Pipeline}
+
+The results of this work are created from a set of codes located at \url{https://github.com/MHDLab-Projects/MHD-Photoionization}. The final results and figures are the output of a data pipeline.  The data pipeline starts from the raw experimental dataset, which consists of unprocessed data taken during the experiments. The data pipeline consists of a series of shell scripts that in turn primarily run python scripts. Therefore, the shell scripts in the repository can act as a map of the data processing methodology. The data pipeline has the following steps: 
+
+\begin{enumerate}
+    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), notably resampling from 1kHz data acquisition rate to a 1 sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWS oscilloscope data.  At this stage, each experiment date is processed separately.
+    \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in the final form of xarray datasets.
+    \item Create Final Dataset (\texttt{/automation/final\_dataset.sh}): The final dataset is created by applying various analysis steps (data extraction, fitting, etc.) to the processed data. 
+    \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.)for the main manuscript. 
+    \item Render Figures (\texttt{/automation/render\_figures.sh}): The figure panels are combined into the final figures for the manuscript. The figures panels are laid out in SVG files, and the SVG file is rendered with Inkscape to create the final figure PNG file. 
+\end{enumerate}
+
+In addition to the above steps, the repository contains a variety of analysis scripts that contains supplemental figures generated throughout the data analysis process. These scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks 'renders'. During this process many of the supplemental figures are created, though those figures could also be generated running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
+
+\clearpage
 \subsection{Microwave Scattering (MWS) }
 
 

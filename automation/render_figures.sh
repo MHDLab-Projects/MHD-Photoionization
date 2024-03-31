@@ -1,7 +1,11 @@
-#!/bin/sh
 # Convert all arguments (assumed to be SVG) to a TIFF.
 # Requires Inkscape and ImageMagick 6.8 (doesn't work with 6.6.9).
 # From matsen: https://gist.github.com/matsen/4263955
+
+source .env
+
+pushd $REPO_DIR/final/figures
+
 
 mkdir -p output
 
@@ -41,3 +45,5 @@ for i in *.svg; do
 done
 
 cd ..
+
+popd

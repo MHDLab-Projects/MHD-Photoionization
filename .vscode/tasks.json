@@ -5,7 +5,7 @@
         {
             "label": "Render Figures",
             "type": "shell",
-            "command": "cd final/figures && source gen_figs.sh",
+            "command": "./automation/render_figures.sh",
         },
         {
             "label": "Generate Documents",
@@ -57,7 +57,7 @@
         {
             "label": "Generate Final Panels",
             "type": "shell",
-            "command": "cd final/figure_panels && source gen_all.sh"
+            "command": "./automation/gen_fig_panels.sh"
         },
         // Data Collection
         {
