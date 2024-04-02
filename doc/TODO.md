@@ -2,9 +2,13 @@
 
 # Immediate
 
-- [] add mws refs
-
 - [] move new position panels from analysis
+
+- [] distribution of fluctuations 
+
+- [] weighted sum discussion 
+
+ - [] rep rate of laser slow enough to refresh gasses. 
 
 ## Long term
 

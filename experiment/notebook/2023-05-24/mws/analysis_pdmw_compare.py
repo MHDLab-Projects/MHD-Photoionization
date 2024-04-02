@@ -42,9 +42,11 @@ ds_lecroy = xr.load_dataset(fp)
 
 ds_lecroy = ds_lecroy.mws.calc_AS_rel()
 
-ds_lecroy = ds_lecroy[['AS','pd1','pd2']]
+ds_lecroy = ds_lecroy[['AS_rel','pd1','pd2']]
 
-ds_lecroy = ds_lecroy.rename({'AS':'mw'})
+ds_lecroy = ds_lecroy.rename({'AS_rel':'mw'})
+
+ds_lecroy = ds_lecroy.pint.dequantify()
 
 
 
@@ -68,6 +70,11 @@ ds = ds.dropna('mnum', how='all')
 #%%
 
 ds.mean('mnum').to_array('var').plot(row='kwt', hue='var')
+
+#%%
+
+
+ds[['pd1','pd2']].mean('mnum').to_array('var').plot(row='kwt', hue='var')
 
 
 #%%
