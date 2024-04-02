@@ -50,7 +50,7 @@ from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
 
 ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
 
-ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
+ds_krb['O2_S'] = calc_krbO2_weighted(ds_cfd)
 
 ds_krb
 

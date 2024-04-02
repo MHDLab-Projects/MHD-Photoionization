@@ -43,7 +43,7 @@ from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
 
 ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
 
-ds_krb['O2_C'] = calc_krbO2_weighted(ds_cfd)
+ds_krb['O2_S'] = calc_krbO2_weighted(ds_cfd)
 
 
 ds_krb.to_array('species').plot(hue='species', marker='o')
@@ -118,7 +118,7 @@ ds_tau
 
 #%%
 
-ds_tau['O2_C'].plot()
+ds_tau['O2_S'].plot()
 
 ds_p['mws_fit_decay_exp_mean'].plot(marker='o', label='experiment')
 
@@ -223,10 +223,10 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_bm_53x.png'))
 fig, ax = plt.subplots(1, 1, figsize=(5,2))
 
 ln = k_eff_bm.plot(marker='x', ax=ax, label='Experiment')
-g = ds_krb[['O2_A', 'O2_B', 'O2_C']].to_array('rxn').plot(hue='rxn', marker='o')
+g = ds_krb[['O2_A', 'O2_G', 'O2_S']].to_array('rxn').plot(hue='rxn', marker='o')
 
 lns = ln + g
-labs = ['Experiment', 'O2_A', 'O2_B', 'O2_C']
+labs = ['Experiment', 'O2_A', 'O2_G', 'O2_S']
 
 leg = plt.legend(lns, labs)
 leg.set_bbox_to_anchor((1,0.8))
