@@ -2,13 +2,9 @@
 
 # Immediate
 
-- [] move new position panels from analysis
-
 - [] distribution of fluctuations 
 
-- [] weighted sum discussion 
-
- - [] rep rate of laser slow enough to refresh gasses. 
+- [] plots of fig5B vs CFD K and CFD KOH
 
 ## Long term
 

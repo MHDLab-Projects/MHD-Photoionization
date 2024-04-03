@@ -15,8 +15,8 @@ tc = '536_power'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
-da_lecroy = ds_lecroy['AS_rel']
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
+da_lecroy = ds_lecroy['dAS_abs']
 
 ds_pd = ds_lecroy[['pd1','pd2', 'dpd1']].mean('run')
 #%%
@@ -57,7 +57,7 @@ from mhdpy.xr_utils.stats import WeightedMeanAccessor
 
 #TODO: add weighted mean dataarray acessor and tests
 
-ds_stat = da_lecroy.to_dataset().wma.initialize_stat_dataset('AS', 'run')
+ds_stat = da_lecroy.to_dataset().wma.initialize_stat_dataset('dAS_abs', 'run')
 
 ds_stat = ds_stat.drop(0,'power')
 
@@ -92,7 +92,7 @@ plt.yscale('log')
 plt.xlim(-1,50)
 plt.ylim(1e-5,1e-1)
 
-plt.ylabel('AS')
+plt.ylabel('AS_abs')
 plt.xlabel('Time [us]')
 
 plt.legend(title='Fluence\n[mJ/cm^2]')
@@ -138,7 +138,7 @@ plt.xscale('log')
 
 #%%
 
-delta_pd1.mean('run').plot(marker='o')
+# delta_pd1.mean('run').plot(marker='o')
 
 
 #%%

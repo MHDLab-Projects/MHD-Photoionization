@@ -166,3 +166,15 @@ plt.xlabel("K wt % nominal")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_both.png'), dpi=300, bbox_inches='tight')
 
+
+# %%
+
+ds_2 = ds_lecroy.mws.calc_time_stats()
+
+ds_2
+
+#%%
+
+ds_2['dpd1'].mean('run').mean('mnum').plot(hue='kwt')
+
+plt.xlim(-2,3)

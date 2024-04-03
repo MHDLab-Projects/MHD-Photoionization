@@ -194,34 +194,3 @@ ax.text(0.0, 0.85, 'Average: {:.3e}'.format(kr_eff_avg), transform=ax.transAxes)
 
 
 # plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_bm_53x.png'))
-
-
-#%%
-
-
-# plot on only bimolecular rate
-
-fig, ax = plt.subplots(1, 1, figsize=(5,2))
-
-ln = k_eff_bm.plot(marker='x', ax=ax, label='Experiment')
-g = ds_krb[['O2_A', 'O2_G', 'O2_S']].to_array('rxn').plot(hue='rxn', marker='o')
-
-lns = ln + g
-labs = ['Experiment', 'O2_A', 'O2_G', 'O2_S']
-
-leg = plt.legend(lns, labs)
-leg.set_bbox_to_anchor((1,0.8))
-
-plt.ylabel('$k_{r,b}$\n(ml/particle/s)')
-plt.xlabel('Nominal K wt%')
-
-plt.xscale('log')
-plt.yscale('log')
-plt.xlim(0.05, )
-plt.title('')
-
-plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_bm_53x_O2.png'))
-
-#%%
-
-labs

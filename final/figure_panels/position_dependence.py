@@ -98,6 +98,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 # ax2 = axes[1]
 
 #%%
+
+plt.figure()
+
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8, method='nearest')
 
 # da_plot.plot(col='phi', hue='var', row='motor')
@@ -128,9 +131,9 @@ axes[0].set_ylabel('$\\alpha$')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_alpha_fit.png'), dpi=300, bbox_inches='tight')
 
-# %%
-
 #%%
+
+plt.figure()
 
 ds_plot = ds_536.sel(run=('2023-05-18', 1)).dropna('motor', how='all')
 
@@ -156,12 +159,16 @@ for i, motor in enumerate(motor_sel):
     ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color=colors[i % len(colors)], alpha=0.2)
 
 ax.set_xlabel('Time [us]')
-ax.set_ylabel('AS')
+ax.set_ylabel('AS [dimensionless]')
 ax.legend(bbox_to_anchor=(0.5,0.8))
 ax.set_ylim(-0.05,1.05)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
 # %%
+
+plt.figure()
+
+
 da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all')
 
 AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time')
@@ -180,14 +187,17 @@ for motor_val in motor_actual:
 dropna(ax)
 
 plt.legend()
+plt.xlim(-5,270)
 
-plt.ylabel('AS')
+plt.ylabel('AS [dimensionless]')
 plt.xlabel('Stage Position [mm]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_stats_20230518.png'))
 
 #%%
 #%%
+
+plt.figure()
 
 da_plot = ds_536['SFR_abs'].dropna('run', how='all')
 
@@ -197,10 +207,14 @@ for motor_val in motor_actual:
     plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
 
 plt.title('')
-plt.xlim(0, )
+plt.xlim(-5, 270)
+plt.ylim(-5,125)
 plt.xlabel('Stage Position [mm]')
+plt.ylabel('SFR [dimensionless]')
 
 dropna(g)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pow_mws_sfr_dates.png'))
 
+
+# %%
