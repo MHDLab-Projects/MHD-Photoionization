@@ -57,7 +57,7 @@ krb_all['O2_exp_eff'] = Quantity(2.66e-13, 'ml/particle/s')
 
 krm = calc_krm(krb_all, ds_TP_species_rho)
 
-krm_sum = krm['O2_exp_eff'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
+krm_sum = krm['O2_A'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
 krm_sum = krm_sum.pint.to('1/s')
 krm['mm_sum'] = krm_sum
 
