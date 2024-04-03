@@ -37,79 +37,6 @@ ds_mws_fit = xr.concat([
 
 #%%
 
-# ds_mws_fit_dnedt.coords['time']
-ds_mws_fit_exp.coords['time']
-
-
-
-#%%
-
-plt.figure(figsize=(4,2))
-
-ds_plot = ds_mws_fit.sel(date='2023-05-12').sel(run_num=1).sel(fit_method='exp')
-
-# da_plot = ds_plot[['AS_fit','AS_all']].to_array('var')
-
-
-ds_plot['AS_all'].plot(hue='kwt')
-
-
-plt.gca().get_legend().set_title('K wt %')
-
-for kwt in ds_plot.coords['kwt']:
-    ds_plot['AS_fit'].sel(kwt=kwt).plot(color='black', linestyle='-', alpha=0.5)
-
-
-plt.yscale('log')
-plt.xlim(-1,40)
-plt.ylim(1e-5, 0.1)
-
-plt.title('')
-
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
-
-
-#%%
-
-ds_plot = ds_mws_fit.sel(kwt=1, method='nearest').sel(date='2023-05-12').sel(run_num=1)
-
-g = ds_plot[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='fit_method', sharey=False)
-
-g.axes[0][1].set_ylabel('$\Delta AS$ Normalized [dimensionless]')
-
-for ax in g.axes.flatten():
-    ax.set_yscale('log')
-
-plt.xlim(-1,40)
-g.axes[0][0].set_ylim(1e-5, 2e-1)
-g.axes[0][1].set_ylim(1e-4, 2)
-
-g.axes[0][0].set_title('Method: Exponential')
-g.axes[0][1].set_title('Method: Diff. Eq')
-
-
-plt.tight_layout()
-
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp_dnedt_individual_compare.png'), dpi=300, bbox_inches='tight')
-
-#%%
-
-plt.figure()
-
-da_plot = ds_plot[['AS_fit','AS_all']].to_array('var').sel(fit_method='exp')
-
-g = da_plot.plot(hue='var', figsize=(5,2))
-
-plt.yscale('log')
-plt.xlim(-1,40)
-plt.ylim(1e-5, 0.1)
-
-plt.title('')
-
-# plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
-#%%
-
-
 #%%
 
 run_sel = ('2023-05-12', 1)
@@ -139,9 +66,6 @@ da_plot_fit.plot(label='AS Fit')
 plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
 
 
-
-
-
 plt.yscale('log')
 plt.xlim(-1,40)
 plt.ylim(1e-5,)
@@ -151,9 +75,6 @@ plt.title('')
 plt.legend(['Data', 'Fit'])
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
-
-#%%
-
 
 
 #%%
@@ -229,63 +150,6 @@ axes[-1].set_xlabel("K wt % nominal")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization.png'), dpi=300, bbox_inches='tight')
 # %%
-
-
-fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
-
-ax = axes[0]
-
-var = 'mws_fit_decay'
-ax.errorbar(
-    ds_p_stats.coords['kwt'], 
-    ds_p_stats['{}_mean'.format(var)], 
-    yerr=ds_p_stats['{}_std'.format(var)], 
-    marker='o', capsize=5,
-    label='MWS Fit Diff. Eq.'
-    )
-
-
-var = 'mws_fit_decay_exp'
-ax.errorbar(
-    ds_p_stats.coords['kwt'], 
-    ds_p_stats['{}_mean'.format(var)], 
-    yerr=ds_p_stats['{}_std'.format(var)], 
-    marker='o', capsize=5,
-    label='MWS Fit Expon.'
-    )
-
-for species in ds_tau.data_vars:
-    ds_tau[species].plot(label="CFD: {}".format(species), ax=ax)
-
-ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
-ax.set_ylabel("Time Constant [us]")
-ax.set_title('')
-ax.set_ylim(1e-1, 1e5)
-
-ax.set_xscale('log')
-ax.set_yscale('log')
-
-# ax.set_ylim(1e-2, 1e6)
-
-
-ax = axes[1]
-
-var = 'mws_fit_dne'
-ax.errorbar(
-    ds_p_stats.coords['kwt'], 
-    ds_p_stats['{}_mean'.format(var)], 
-    yerr=ds_p_stats['{}_std'.format(var)], 
-    marker='o', capsize=5,
-    label='MWS Fit Diff. Eq.'
-    )
-
-plt.yscale('log')
-
-plt.ylabel("$\Delta n_e$ [um$^{-3}$]")
-plt.xlabel("K wt % nominal")
-
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_both.png'), dpi=300, bbox_inches='tight')
-
 
 # %%
 
