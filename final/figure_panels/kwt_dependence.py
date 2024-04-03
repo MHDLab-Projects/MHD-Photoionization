@@ -105,11 +105,11 @@ linenK = ds_species_cfd['Yeq_K'].pint.to('particle/m**3').plot(ax=axes[0], label
 line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
 
 
-axes[0].set_ylabel("Species Concentration [#/m^3]")
+axes[0].set_ylabel("Species Concentration [$\#/m^3$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
     ['Expt. $n_K$ Barrel', 'Expt $n_K$ 180 mm', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
-    bbox_to_anchor=(0.85, 0.9), loc='upper left', framealpha=1
+    bbox_to_anchor=(0.75, 0.85), loc='upper left', framealpha=1
     )
 
 axes[0].set_title('')
@@ -125,6 +125,7 @@ lineAS = axes[1].errorbar(
     )
 
 axes[1].set_ylabel("$\Delta AS$ Maximum")
+axes[1].set_xlabel('')
 
 
 ta = axes[1].twinx()
@@ -138,9 +139,15 @@ linePD = ta.plot(
     color='darkblue'
     )
 
+axes[1].set_ylim(5e-3,1.1e-1)
+axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
+
 ta.set_ylabel("Delta PD1 [mV]")
 
-axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
+ta.set_yscale('log')
+ta.set_ylim(3.5e-1,2.5e0)
+
+
 
 for ax in axes:
     ax.set_xscale('log')

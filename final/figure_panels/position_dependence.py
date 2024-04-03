@@ -2,15 +2,18 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
-
+from mhdpy.plot.common import xr_errorbar_axes
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
-ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 
+ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
+
+ds_lecroy_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
+ds_536 = ds_lecroy_536.mws.calc_time_stats()
 
 #%%
 
@@ -20,96 +23,6 @@ ds_cfd = ds_cfd.sel(kwt=1)
 
 ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
 
-
-#%%
-
-ds_p
-
-#%%
-
-da_sel = ds_lecroy['dAS_abs'].dropna('run',how='all')
-
-da_sel.dropna('motor', how='all')
-
-da_sel.plot(col='motor', col_wrap=3, hue='run_plot', x='time', figsize=(6,10))
-
-#%%
-
-
-fig, axes = plt.subplots(1, 2, figsize=(6,3), sharex=True, sharey=False)
-
-
-da_plot = da_sel.sel(motor = 105, method='nearest').dropna('run',how='all')
-da_plot.plot(hue='run_plot', x='time', ax=axes[0])
-
-motor_expt = da_plot.coords['motor'].item()
-
-axes[0].set_title('Position: {:.0f} mm'.format(motor_expt))
-axes[0].set_ylim(-0.03,0.35)
-axes[0].set_ylabel('$\Delta AS$')
-
-
-da_sel_mean = da_sel.mean('run').sel(motor=180, method='nearest')
-da_sel_std = da_sel.std('run').sel(motor=180, method='nearest')
-
-motor_expt = da_sel_mean.coords['motor'].item()
-
-da_sel_mean.plot(x='time', ax=axes[1])
-axes[1].fill_between(da_sel_mean['time'].values, (da_sel_mean-da_sel_std).values, (da_sel_mean+da_sel_std).values, color='b', alpha=0.2)
-axes[1].set_title('Position: {:.0f} mm'.format(motor_expt))
-axes[1].set_ylabel('')
-# axes[1].set_yscale('log')
-
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
-
-
-#%%
-
-ds_p_sel = ds_p.sel(phi=0.8, method='nearest') 
-
-fig, axes = plt.subplots(1,2, figsize=(5,3), sharex=True)
-
-for i, var in enumerate(['dAS_abs_max', 'SFR_abs']):
-    ax = axes[i]
-
-    ds_stat = ds_p_sel.wma.initialize_stat_dataset(var, 'run')
-
-    # plot with confidence interval
-
-    # ds_stat['mean'].plot(ax=ax)
-    # ax.fill_between(ds_stat.coords['motor'], ds_stat['mean'] - ds_stat['std'], ds_stat['mean'] + ds_stat['std'], alpha=0.2)
-
-    ax.errorbar(ds_stat.coords['motor'], ds_stat['mean'], yerr=ds_stat['std'], marker='o', capsize=5)
-
-    ax.set_title('')
-    ax.set_xlabel('Stage Position [mm]')
-
-    unit_str = '[' + ds_p_sel[var].attrs['units']+ ']' if 'units' in ds_p_sel[var].attrs else '' 
-    ax.set_ylabel(ds_p_sel[var].attrs['long_name'] + unit_str)
-    
-# axes[2].set_xlabel('Position [mm]')
-
-ta = axes[0].twinx()
-
-## photodiode 
-# delta_pd1 = ds_p_sel['dpd1'].dropna('run', how='all')
-# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
-# delta_pd1.plot(ax=ta, color='red', marker='o')
-# ta.set_ylabel('Delta PD1 [mV]')
-# ta.set_title('')
-
-motor_sel = [ 104.8, 178]
-
-for mp in motor_sel:
-    if mp == 178:
-        axes[1].axvline(mp, color='gold', linestyle='--')
-    else:
-        axes[1].axvline(mp, color='gray', linestyle='--')
-
-
-plt.tight_layout()
-
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
@@ -176,16 +89,13 @@ for ax in axes:
     ax.legend()
     ax.set_ylabel('$n_K [m^{-3}$]')
 
-ax2.set_xlabel('Position [mm]')
+ax2.set_xlabel('Stage Position [mm]')
 ax1.set_xlabel('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
 
 # Phi =0.65
 # ax2 = axes[1]
-# %%
-
-ds_alpha_fit
 
 #%%
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8, method='nearest')
@@ -220,6 +130,77 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_alpha_fit.png'), dpi=300, bbox_inches='tight
 
 # %%
 
+#%%
 
-ds_plot
+ds_plot = ds_536.sel(run=('2023-05-18', 1)).dropna('motor', how='all')
+
+da_plot = ds_plot['AS_abs']
+
+motor_sel = [30, 100, 180]
+motor_actual = []
+
+fig, ax = plt.subplots(figsize=(3,3))
+
+colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Define a list of colors for the traces
+
+for i, motor in enumerate(motor_sel):
+    # Calculate mean and standard deviation
+    mean = da_plot.sel(motor=motor,method='nearest').mean(dim='mnum', keep_attrs=True)
+    std = da_plot.sel(motor=motor,method='nearest').std(dim='mnum', keep_attrs=True)
+
+    motor_val = da_plot.sel(motor=motor, method='nearest').coords['motor'].values
+    motor_actual.append(motor_val)
+    
+    # Plot mean and shaded region for standard deviation
+    ax.plot(mean['time'].values, mean.values, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
+    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color=colors[i % len(colors)], alpha=0.2)
+
+ax.set_xlabel('Time [us]')
+ax.set_ylabel('AS')
+ax.legend(bbox_to_anchor=(0.5,0.8))
+ax.set_ylim(-0.05,1.05)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
 # %%
+da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all')
+
+AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time')
+AS_pp_fluct = da_plot.sel(time=slice(-50,-1)).std('mnum').mean('time')
+AS_laser = da_plot.mws._pulse_max().mean('mnum')
+AS_laser_fluct = da_plot.mws._pulse_max().std('mnum')
+
+fig, ax = plt.subplots()
+
+xr_errorbar_axes(AS_pp, AS_pp_fluct, axes=ax, capsize=5, label='AS Pre Laser')
+xr_errorbar_axes(AS_laser, AS_laser_fluct, axes=ax, capsize=5, label='AS Laser')
+
+for motor_val in motor_actual:
+    plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
+
+dropna(ax)
+
+plt.legend()
+
+plt.ylabel('AS')
+plt.xlabel('Stage Position [mm]')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_stats_20230518.png'))
+
+#%%
+#%%
+
+da_plot = ds_536['SFR_abs'].dropna('run', how='all')
+
+g=  da_plot.mean('mnum', keep_attrs=True).plot(hue='run_plot', x='motor', marker='o')
+
+for motor_val in motor_actual:
+    plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
+
+plt.title('')
+plt.xlim(0, )
+plt.xlabel('Stage Position [mm]')
+
+dropna(g)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pow_mws_sfr_dates.png'))
+
