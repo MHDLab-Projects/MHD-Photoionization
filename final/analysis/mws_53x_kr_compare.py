@@ -11,6 +11,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils #Sets matplotlib style
+from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -20,13 +21,7 @@ ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
 
 #%%
 
-ds_cfd = ds_species_cfd
-ds_p = ds_p_stats
-ds_p
-
-#%%
-
-krm_eff = ds_p['mws_fit_krm_mean']
+krm_eff = ds_p_stats['mws_fit_krm_mean']
 krm_eff.plot()
 
 mean_krm = krm_eff.pint.to('1/s').mean().item()
@@ -37,16 +32,9 @@ print(mean_krm)
 
 #%%
 
+ds_krb = gen_ds_krb(ds_species_cfd['T'], ds_species_cfd['rho_number'])
 
-# ds_cfd[['N2','O2','CO2','H2O']].to_array('var').plot(hue='var')
-#%%
-
-from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted
-
-ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
-
-ds_krb['O2_S'] = calc_krbO2_weighted(ds_cfd)
-
+ds_krb['O2_S'] = calc_krbO2_weighted(ds_species_cfd)
 
 ds_krb.to_array('species').plot(hue='species', marker='o')
 
@@ -58,14 +46,11 @@ plt.yscale('log')
 
 # predicted density from exponential time constant and hayhurst reaction rates
 
-#%%
-
-ds_p
 
 #%%
 # Factor of 2 only occurs for K+
 
-ds_species_decay = 1/(ds_p['mws_fit_decay_exp_mean'].pint.quantify('us')*ds_krb)
+ds_species_decay = 1/(ds_p_stats['mws_fit_decay_exp_mean'].pint.quantify('us')*ds_krb)
 
 ds_species_decay = ds_species_decay.pint.to('particle/ml')
 
@@ -84,7 +69,7 @@ da_plot.plot(hue='species', marker='o', ax=axes[0])
 
 axes[0].set_title('Predicted density $k_{r,species}$ and $\\tau_{mws}$')
 
-ds_cfd[['K+', 'OH', 'O2', 'H2O']].to_array('species').plot(hue='species', ax=axes[1], marker='o')
+ds_species_cfd[['K+', 'OH', 'O2', 'H2O']].to_array('species').plot(hue='species', ax=axes[1], marker='o')
 
 axes[1].set_title('CFD species density')
 
@@ -95,21 +80,15 @@ plt.yscale('log')
 # # calculate predicted exponential time constant from CFD species density
 
 #%%
-
-
-
-from pi_paper_utils.kinetics import calc_krm
-
 ds_krm = calc_krm(ds_krb, ds_species_cfd)
 
 ds_tau = (1/ds_krm).pint.to('us')
-
 
 #%%
 for species in ds_tau.data_vars:
     ds_tau[species].plot(marker='o', label="CFD: {}".format(species))
 
-ds_p['mws_fit_decay_exp_mean'].plot(marker='o', color='black', label='Experiment')
+ds_p_stats['mws_fit_decay_exp_mean'].plot(marker='o', color='black', label='Experiment')
 
 plt.legend()
 plt.yscale('log')
@@ -122,18 +101,18 @@ ds_tau
 
 ds_tau['O2_S'].plot()
 
-ds_p['mws_fit_decay_exp_mean'].plot(marker='o', label='experiment')
+ds_p_stats['mws_fit_decay_exp_mean'].plot(marker='o', label='experiment')
 
 plt.yscale('log')
 # %%
 
-ds_cfd['O2']
+ds_species_cfd['O2']
 
 #%%
 
-tau_exp = ds_p['mws_fit_decay_exp_mean'].pint.quantify('us')
+tau_exp = ds_p_stats['mws_fit_decay_exp_mean'].pint.quantify('us')
 
-k_eff_bm = 1/(tau_exp*ds_cfd['O2'])
+k_eff_bm = 1/(tau_exp*ds_species_cfd['O2'])
 
 k_eff_bm = k_eff_bm.pint.to('ml/particle/s')
 k_eff_bm.attrs['long_name'] = '$k_{r,bm,eff}$'
@@ -141,7 +120,7 @@ k_eff_bm.attrs['long_name'] = '$k_{r,bm,eff}$'
 k_eff_bm.plot(marker='o')
 
 
-k_eff_tm = 1/(tau_exp*ds_cfd['rho_number']*ds_cfd['O2'])
+k_eff_tm = 1/(tau_exp*ds_species_cfd['rho_number']*ds_species_cfd['O2'])
 
 k_eff_tm = k_eff_tm.pint.to('ml^2/particle^2/s')
 k_eff_tm.attrs['long_name'] = '$k_{r,tm,eff}$'
@@ -154,15 +133,15 @@ k_eff_tm.plot(marker='o')
 fig, axes = plt.subplots(4, 1, figsize=(5,8), sharex=True, sharey=False)
 
 # Plot decay
-ds_p['mws_fit_decay_exp_mean'].plot(ax=axes[0], marker='o')
+ds_p_stats['mws_fit_decay_exp_mean'].plot(ax=axes[0], marker='o')
 axes[0].set_title('MWS Time constant')
 axes[0].set_ylabel('Decay constant (us)')   
 axes[0].set_yscale('log')
 axes[0].set_xlabel('')
 
-# Plot ds_cfd['rho_number']
-ds_cfd['rho_number'].pint.to('particle/ml').plot(ax=axes[1], label='all species', marker='o')
-ds_cfd['O2'].pint.to('particle/ml').plot(ax=axes[1], label='O2', marker='o')
+# Plot ds_species_cfd['rho_number']
+ds_species_cfd['rho_number'].pint.to('particle/ml').plot(ax=axes[1], label='all species', marker='o')
+ds_species_cfd['O2'].pint.to('particle/ml').plot(ax=axes[1], label='O2', marker='o')
 axes[1].set_title('CFD Particle Density')
 axes[1].set_yscale('log')
 axes[1].set_xlabel('')
