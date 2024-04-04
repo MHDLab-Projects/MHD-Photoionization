@@ -136,6 +136,12 @@ ds_orig = xr.merge(das)
 
 #%%
 
+#TODO: why are these missing?
+ds_orig['CC_o2_flow_in'].attrs['long_name'] = 'O2 Flow Rate'
+ds_orig['CC_water_flow_in'].attrs['long_name'] = 'Cooling Water Flow Rate'
+
+#%%
+
 
 plt.rcParams.update({'font.size': 12})
 
@@ -146,7 +152,7 @@ for date, df in df_ct.groupby('date'):
         Timestamp(df_exptw.loc[date]['Stop Time'])
         )
 
-    ds_plot = ds_orig.sel(time=timewindow)
+    ds_plot = ds_orig.sel(time=timewindow).pint.dequantify()
 
     # Generate da_ct from df_cuttimes with date column
     

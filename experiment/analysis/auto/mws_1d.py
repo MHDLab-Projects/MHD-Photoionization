@@ -3,6 +3,7 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 from mhdpy.analysis import mws
 import seaborn as sns
+import pi_paper_utils as ppu
 # sns.set_theme(style="darkgrid")
 
 def main(datestr):
@@ -23,16 +24,19 @@ def main(datestr):
 
         fp_in = pjoin(DIR_LECROY_PROC_DATA, '{}.cdf'.format(tc))
 
+        mag_0 = ppu.fileio.load_mws_T0()
+
         ds_in = xr.load_dataset(fp_in)
+
+        ds_in = ds_in.mws.calc_AS_abs(mag_0=mag_0).mws.calc_time_stats()
         ds_in = ds_in.sel(date=datestr).sel(run_num=1)
+        ds_in = ds_in[['i','q','mag','phase','AS_abs', 'dAS_abs']] #Plotted variables
 
-        ds = ds_in.mws.calc_AS_rel().mws.calc_time_stats()
-        ds_std = ds.std('mnum', keep_attrs=True)
+        tc_dim = [dim for dim in ds_in.dims if dim not in ['time','mnum']][0]
+        mnum_counts = ds_in['i'].mean('time').groupby(tc_dim).count('mnum')
 
-        tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
-        mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
-
-        ds = ds.mean('mnum', keep_attrs=True)
+        ds = ds_in.mean('mnum', keep_attrs=True)
+        ds_std = ds_in.std('mnum', keep_attrs=True)
 
         tc_fig_dir = pjoin(figure_out_dir, tc)
         if not os.path.exists(tc_fig_dir): os.makedirs(tc_fig_dir)
@@ -100,7 +104,7 @@ def main(datestr):
 
         tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
 
-        ds['AS'].plot(hue=tc_dim)
+        ds['AS_abs'].plot(hue=tc_dim)
 
         plt.yscale('log')
 
@@ -122,19 +126,19 @@ def main(datestr):
 
         tc_vals = ds.coords[tc_dim]
         fig, axes = plt.subplots(len(tc_vals), figsize=(5, 3*len(tc_vals)), sharex=True)
-        # ds['AS'].plot(hue=tc_dim)
-        # dss_std[tc]['AS'].plot(hue=tc_dim, linestyle='--')
+        # ds['AS_abs'].plot(hue=tc_dim)
+        # dss_std[tc]['AS_abs'].plot(hue=tc_dim, linestyle='--')
 
         ds = ds.drop_vars([var for var in ds.coords if var not in ds.dims])
 
-        # xr_errorbar(ds['AS'], dss_std[tc]['AS'], huedim=tc_dim)
+        # xr_errorbar(ds['AS_abs'], dss_std[tc]['AS_abs'], huedim=tc_dim)
 
         for i, c in enumerate(ds.coords[tc_dim]):
-            ds_sel_mean = ds.sel({tc_dim: c})['AS']
+            ds_sel_mean = ds.sel({tc_dim: c})['AS_abs']
             xs = ds_sel_mean.coords['time'].values
 
             vals_mean = ds_sel_mean.values
-            vals_std = ds_std.sel({tc_dim: c})['AS'].values
+            vals_std = ds_std.sel({tc_dim: c})['AS_abs'].values
 
             plt.sca(axes[i])
             plt.plot(xs, vals_mean)
@@ -180,11 +184,11 @@ def main(datestr):
         plot_names = [['pulse_max'], ['pre_pulse_avg'], ['pre_pulse_std']]
         fig, axes = plt.subplot_mosaic(plot_names, figsize=figsize, sharex=True)
 
-        pulse_max = ds['AS'].sel(time=max_window).max('time')
+        pulse_max = ds['AS_abs'].sel(time=max_window).max('time')
         pulse_max.name = 'pulse_max'
-        pre_pulse_avg =ds['AS'].sel(time=pre_pulse).mean('time') 
+        pre_pulse_avg =ds['AS_abs'].sel(time=pre_pulse).mean('time') 
         pre_pulse_avg.name = 'pre_pulse_avg'
-        pre_pulse_std =ds['AS'].sel(time=pre_pulse).std('time') 
+        pre_pulse_std =ds['AS_abs'].sel(time=pre_pulse).std('time') 
         pre_pulse_std.name = 'pre_pulse_std'
 
         ds_out = xr.merge([
@@ -214,7 +218,7 @@ def main(datestr):
         print(tc)
         ds = dss[tc]
 
-        da_fit = ds['AS'].copy()
+        da_fit = ds['dAS_abs'].copy()
 
         ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_1(da_fit)
 

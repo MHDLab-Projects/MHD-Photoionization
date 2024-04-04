@@ -6,6 +6,7 @@ Analysis of 2D parameter sweeps
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
+import pi_paper_utils as ppu
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
@@ -37,6 +38,8 @@ coldim = 'motor'
 
 from mhdpy.analysis import mws
 
+mag_0 = ppu.fileio.load_mws_T0()
+
 dss = {}
 
 for tc in tcs:
@@ -44,17 +47,15 @@ for tc in tcs:
     fp_in = pjoin(DIR_LECROY_PROC_DATA, '{}.cdf'.format(tc))
 
     ds_in = xr.load_dataset(fp_in)
+
+    ds_in = ds_in.mws.calc_AS_abs(mag_0=mag_0).mws.calc_time_stats()
     ds_in = ds_in.sel(date=datestr).sel(run_num=1)
+    ds_in = ds_in[['i','q','mag','phase','AS_abs', 'dAS_abs']] #Plotted variables
 
-    ds_in = ds_in.drop('kwt')
+    tc_dim = [dim for dim in ds_in.dims if dim not in ['time','mnum']][0]
+    mnum_counts = ds_in['i'].mean('time').groupby(tc_dim).count('mnum')
 
-    ds = ds_in.mws.calc_AS_rel().drop('mag_pp')
-
-
-    tc_dim = [dim for dim in ds.dims if dim not in ['time','mnum']][0]
-    mnum_counts = ds['i'].mean('time').groupby(tc_dim).count('mnum')
-
-    ds = ds.mean('mnum', keep_attrs=True)
+    ds = ds_in.mean('mnum', keep_attrs=True)
 
     tc_fig_dir = pjoin(figure_out_dir, tc)
     if not os.path.exists(tc_fig_dir): os.makedirs(tc_fig_dir)

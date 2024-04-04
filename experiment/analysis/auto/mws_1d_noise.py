@@ -5,6 +5,7 @@ Keeping separate from mws_1d.py to use medthods in absem_1d.py that avoid for lo
 #%%
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
+import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mws_1d import tc_dict
@@ -12,7 +13,7 @@ from mws_1d import tc_dict
 import argparse
 import shutil
 
-# tc = '536_pos'
+# tc = '53x'
 
 
 # Create the parser
@@ -40,13 +41,17 @@ if os.path.exists(figure_out_dir):
     shutil.rmtree(figure_out_dir)
 os.makedirs(figure_out_dir)
 
+
+mag_0 = ppu.fileio.load_mws_T0()
+
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
+
+ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=mag_0) # calculate before or after mnum mean?
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
-
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
-ds_lecroy = ds_lecroy.mws.calc_AS_rel() # calculate before or after mnum mean?
 
-ds_lecroy = ds_lecroy.drop('acq_time')
+ds_lecroy = ds_lecroy.drop('acq_time').drop('mag_0')
+ds_lecroy = ds_lecroy.dropna('run', how='all')
 
 # %%
 
@@ -87,7 +92,7 @@ def plot_1(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p1'):
 
     for i, ax in enumerate(axes):
 
-        da = ds_plot['AS_rel'].isel({tc_dim: i}).plot(ax=ax)
+        da = ds_plot['AS_abs'].isel({tc_dim: i}).plot(ax=ax)
 
     if savefig:
         plt.tight_layout()
@@ -124,7 +129,7 @@ def plot_2(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p2'):
 
     for i, ax in enumerate(axes):
 
-        ds_plot['AS_rel'].isel({tc_dim: i}).plot(ax=ax)
+        ds_plot['AS_abs'].isel({tc_dim: i}).plot(ax=ax)
 
         if i < len(axes)-1:
             ax.set_xlabel('')
@@ -143,7 +148,7 @@ ds_lecroy_mm.sel(time=slice(-50,-1)).groupby('run').apply(lambda x: plot_2(*grou
 
 def plot_3(ds_plot, run_name, figsize=(8,11), savefig=True, plot_name='p3'):
     plt.figure()
-    ds_plot['AS_rel'].sel(time=slice(-50,-1)).std('time').plot(hue=tc_dim)
+    ds_plot['AS_abs'].sel(time=slice(-50,-1)).std('time').plot(hue=tc_dim)
 
     plt.yscale('log')
     plt.ylabel("AS Pre Pulse Std Dev.")
@@ -160,7 +165,7 @@ ds_lecroy_mm.groupby('run').apply(lambda x: plot_3(*groupby_run_processor(x), pl
 
 #%%
 
-da = ds_lecroy['mag']
+da = ds_lecroy['mag'].pint.dequantify()
 
 da
 
@@ -174,7 +179,7 @@ def hist_plot_1(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist1
     bins = np.linspace(da_mag.min(),da_mag.max())
     h = histogram(da_mag, bins=bins, dim=['mnum'])
 
-    h.plot(row=tc_dim)
+    h.plot(col=tc_dim, col_wrap=3)
 
     if savefig:
         # plt.tight_layout()
