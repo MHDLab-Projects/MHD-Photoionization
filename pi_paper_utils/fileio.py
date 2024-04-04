@@ -79,7 +79,7 @@ def load_lecroy(tc,
     ds_lecroy = ds_lecroy.mws.calc_mag_phase()
 
     if avg_mnum:
-        ds_lecroy = ds_lecroy.mean('mnum')
+        ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
 
     ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 
