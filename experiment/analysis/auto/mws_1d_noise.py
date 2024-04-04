@@ -13,7 +13,7 @@ from mws_1d import tc_dict
 import argparse
 import shutil
 
-# tc = '53x'
+# tc = '536_pos'
 
 
 # Create the parser
@@ -192,18 +192,79 @@ da.groupby('run').apply(lambda x: hist_plot_1(*groupby_run_processor(x), plot_na
 
 #%%
 
+# def hist_plot_2(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist2'):
+
+
+#     bins = np.linspace(da_mag.min(),da_mag.max())
+#     h = histogram(da_mag, bins=bins, dim=['mnum'])
+
+#     tc_vals = h.coords[tc_dim]
+#     fig, axes = plt.subplots(len(tc_vals), figsize=(5, 3*len(tc_vals)), sharex=True)
+
+#     for i, c in enumerate(h.coords[tc_dim]):
+#         h_sel = h.sel({tc_dim: c})
+#         h_sel.plot(ax=axes[i])
+
+#     if savefig:
+#         # plt.tight_layout()
+#         fp_fig_out = gen_path_fig_out(run_name, plot_name, tc)
+#         plt.savefig(fp_fig_out)
+
+#     return da_mag
+
+
+# da.groupby('run').apply(lambda x: hist_plot_2(*groupby_run_processor(x), plot_name='hist2'))
+
+
+
+#%%
+
+from matplotlib.ticker import FuncFormatter
+
+# Define a function to format the tick values
+def format_tick(x, pos):
+    return f'{x:.3f}'
+
+formatter = FuncFormatter(format_tick)
+
 def hist_plot_2(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist2'):
 
+    col_wrap = 3
+
+    # da_mag = da.sel(run=('2023-05-18', 1)).dropna(tc_dim, how='all')
 
     bins = np.linspace(da_mag.min(),da_mag.max())
     h = histogram(da_mag, bins=bins, dim=['mnum'])
+    h.attrs['long_name'] = 'Bin Count'
 
-    tc_vals = h.coords[tc_dim]
-    fig, axes = plt.subplots(len(tc_vals), figsize=(5, 3*len(tc_vals)), sharex=True)
+    # Calculate the number of rows needed
+    nrows = np.ceil(len(h[tc_dim]) / col_wrap).astype(int)
 
-    for i, c in enumerate(h.coords[tc_dim]):
-        h_sel = h.sel({tc_dim: c})
-        h_sel.plot(ax=axes[i])
+    # Create a 2D array of Axes objects
+    fig, axes = plt.subplots(nrows=nrows, ncols=col_wrap, figsize=(3*col_wrap, 3*nrows))
+
+    # Flatten the array of Axes objects for easy iteration
+    axes_flat = axes.flatten()
+
+    # Loop over the Axes objects and plot the data
+    for ax, (label, da_plot) in zip(axes_flat, h.groupby(tc_dim)):
+        da_plot.plot(ax=ax)
+        ax.set_title(label)
+        ax.xaxis.set_major_formatter(formatter)
+        ax.tick_params(axis='x', labelcolor='black', color='white', rotation=45)  # Set the tick labels to black and ticks to white
+
+    # remove x labels from each row except the bottom
+    # remove y labels from each column except the left
+
+    if nrows > 1:
+        for ax in axes[:, 1:].flatten():
+            ax.set_ylabel('')
+
+    
+    for ax in axes_flat[:-col_wrap]:
+        ax.set_xlabel('')
+
+    plt.tight_layout()
 
     if savefig:
         # plt.tight_layout()
@@ -213,4 +274,57 @@ def hist_plot_2(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist2
     return da_mag
 
 
+
 da.groupby('run').apply(lambda x: hist_plot_2(*groupby_run_processor(x), plot_name='hist2'))
+
+#%%
+
+
+def hist_plot_3(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist3'):
+
+    # da_mag = da.sel(run=('2023-05-18', 1)).dropna(tc_dim, how='all')
+    da_mag = da_mag.sel(time=slice(-50,1))
+
+    bins = np.linspace(da_mag.min(),da_mag.max())
+    h = histogram(da_mag, bins=bins, dim=['mnum'])
+
+    h.attrs['long_name'] = 'Bin Count'
+
+    h.mean('time').plot(col=tc_dim, col_wrap=3, marker='o')
+
+    if savefig:
+        # plt.tight_layout()
+        fp_fig_out = gen_path_fig_out(run_name, plot_name, tc)
+        plt.savefig(fp_fig_out)
+
+    return da_mag
+
+
+da.groupby('run').apply(lambda x: hist_plot_3(*groupby_run_processor(x), plot_name='hist3'))
+
+#%%
+
+
+
+da_mag = da.sel(time=slice(-50,1))
+
+bins = np.linspace(da_mag.min(),da_mag.max())
+h = histogram(da_mag, bins=bins, dim=['mnum'])
+
+h.attrs['long_name'] = 'Bin Count'
+h = h.mean('time', keep_attrs=True)
+
+h = h.unstack('run').xr_utils.stack_run()
+
+h.plot(col=tc_dim, hue='run_plot', x='mag_bin', col_wrap=3, marker='o')
+
+
+plt.yscale('log')
+
+plt.ylim(1e-3,1e3)
+
+gen_path_fig_out('all', 'hist4', tc)
+plt.savefig(pjoin(figure_out_dir, 'hist4', 'hist4_{}.png'.format(tc)))
+
+#%%
+
