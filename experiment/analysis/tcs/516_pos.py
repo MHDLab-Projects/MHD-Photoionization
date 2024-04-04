@@ -92,7 +92,7 @@ plt.yscale('log')
 #%%
 
 
-da_max = ds_lecroy['AS'].mws._pulse_max()
+da_max = ds_lecroy['AS_rel'].mws._pulse_max()
 
 
 
@@ -101,7 +101,7 @@ da_max.mean('mnum').plot()
 
 #%%
 
-ds_lecroy['AS'].mean('mnum').plot(row='motor')
+ds_lecroy['AS_rel'].mean('mnum').plot(row='motor')
 
 plt.yscale('log')
 
@@ -110,7 +110,7 @@ plt.yscale('log')
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
-da_fit = ds_lecroy['AS'].mean('mnum')
+da_fit = ds_lecroy['dAS_rel'].mean('mnum')
 
 
 pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))

@@ -29,7 +29,7 @@ ds = ds.mws.calc_AS_rel()
 # ds['AS'].dropna('acq_time','all')
 # %%
 
-ds['AS'].mean('acq_time').plot(marker='o')
+ds['AS_rel'].mean('acq_time').plot(marker='o')
 
 plt.xlim(-2,2)
 
@@ -48,7 +48,7 @@ ds = ds.mws.calc_AS_rel()
 
 ds_day = ds.groupby(ds.acq_time.dt.day).mean('acq_time')
 
-ds_day['AS'].plot(hue='day')
+ds_day['AS_rel'].plot(hue='day')
 
 plt.xlim(-2,2)
 # %%
@@ -70,7 +70,7 @@ for date in dates:
 
     ds = ds.mws.calc_AS_rel()
 
-    ds['AS'].mean('acq_time').plot(label='date')
+    ds['AS_rel'].mean('acq_time').plot(label='date')
 
 # plt.xlim(-2,2)
 plt.xlim(-50,-48)

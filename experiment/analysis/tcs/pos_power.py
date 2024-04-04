@@ -13,8 +13,8 @@ tc = '536_pos_power'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
-da_lecroy = ds_lecroy['AS'] 
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
+da_lecroy = ds_lecroy['AS_abs'] 
 
 # %%
 

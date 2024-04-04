@@ -18,7 +18,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_lecroy = ds_lecroy['dAS_abs']
 
-ds_pd = ds_lecroy[['pd1','pd2', 'dpd1']].mean('run')
+ds_pd = ds_lecroy.mws.calc_time_stats()[['pd1','pd2', 'dpd1', 'dpd1_max']].mean('run')
 #%%
 
 from pi_paper_utils.constants import LASER_POWER, LASER_AREA
@@ -217,11 +217,15 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pd1_power_trace.png'))
 
 #%%
 
-ds_pd['dpd1'].plot(marker='o')
+ds_pd['dpd1_max'].plot(marker='o')
+
+
+#%%
+ds_pd['dpd1_max']
 
 #%%
 
-da_fit = ds_pd['dpd1'].sel(power=slice(1,100))
+da_fit = ds_pd['dpd1_max'].sel(power=slice(1,100))
 
 model = PowerLawModel()
 

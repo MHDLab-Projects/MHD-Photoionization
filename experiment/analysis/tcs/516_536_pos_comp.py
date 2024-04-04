@@ -11,26 +11,27 @@ import pi_paper_utils as ppu
 tc = '536_pos'
 
 ds_absem_536 = ppu.fileio.load_absem(tc).expand_dims('phi')
-ds_lecroy_536 = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute').expand_dims('phi')
+ds_lecroy_536 = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute').expand_dims('phi')
 
 tc = '516_pos'
 
 ds_absem_536 = ppu.fileio.load_absem(tc).expand_dims('phi')
-ds_lecroy_516 = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute').expand_dims('phi')
+ds_lecroy_516 = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute').expand_dims('phi')
 
 
 ds_lecroy = xr.merge([ds_lecroy_536, ds_lecroy_516])
 
-ds_lecroy
-#%%
+ds_lecroy = ds_lecroy.mws.calc_time_stats()
 
-ds_lecroy['AS_abs']
+ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
+
+ds_lecroy
 
 # %%
 
 from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
 
-da_fit = ds_lecroy['AS_abs']
+da_fit = ds_lecroy['dAS_abs']
 
 pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
 
@@ -55,19 +56,11 @@ ds_p
 
 #%%
 
-#%%
-
-
-mws_max = ds_lecroy['AS_abs'].max('time').rename('AS_max')
-mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
-mws_pp_std = ds_lecroy['mag_fluct']
-mws_max_std_ratio = mws_max/mws_pp_std
-mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
 # %%
 
 fig, axes= plt.subplots(2, figsize=(3,5), sharex=True)
 
-g = mws_max_std_ratio.mean('run').plot(hue='phi', marker='o', ax=axes[0])
+g = ds_lecroy['SFR_abs'].mean('run').plot(hue='phi', marker='o', ax=axes[0])
 dropna(g)
 
 ds_p['decay'].mean('run').plot(marker='o', hue='phi', ax= axes[1])
@@ -77,7 +70,7 @@ axes[1].get_legend().remove()
 for ax in axes:
     ax.set_title('')
 
-axes[0].set_ylabel('AS Max / PP Std Dev')
+axes[0].set_ylabel('SFR')
 axes[1].set_ylabel('Decay Time (us)')
 axes[1].set_xlabel('Stage Position (mm)')
 

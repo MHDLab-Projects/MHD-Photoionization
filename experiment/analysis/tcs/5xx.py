@@ -30,7 +30,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 
 # ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
-da_lecroy = ds_lecroy['AS']
+da_lecroy = ds_lecroy['AS_abs']
 
 #%%
 
@@ -204,8 +204,8 @@ tc = '5x3_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
-da_lecroy = ds_lecroy['AS']
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
+da_lecroy = ds_lecroy['AS_abs']
 
 #%%
 

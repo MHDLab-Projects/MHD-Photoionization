@@ -13,7 +13,7 @@ import pi_paper_utils as ppu
 tc = '536_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
 tc = '5x6_pos'
@@ -23,6 +23,8 @@ ds_lecroy_5x6 = ds_lecroy_5x6.sel(phi=0.8, method='nearest')
 ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 
 ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
+
+ds_lecroy = ds_lecroy.mws.calc_time_stats()
 
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
@@ -88,7 +90,7 @@ plt.yscale('log')
 
 # %%
 
-g = ds_lecroy['AS'].plot(hue='run_plot', row='motor', x='time')
+g = ds_lecroy['AS_abs'].plot(hue='run_plot', row='motor', x='time')
 
 dropna(g)
 
@@ -96,7 +98,7 @@ dropna(g)
 
 motor_sel = [34.81, 104.8, 178, 226.7]
 
-da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS_abs'].sel(motor=motor_sel, method='nearest')
 
 fig, axes = plt.subplots(4, figsize=(3,12), sharex=True, sharey=True)
 
@@ -105,7 +107,7 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
     da_sel.sel(motor=motor).plot(hue='run_plot', x='time', ax=ax)
     ax.set_title('Position: {} mm'.format(motor))
     ax.set_xlabel('')
-    ax.set_ylabel('AS')
+    ax.set_ylabel('AS_abs')
 
     if i == len(da_sel.coords['motor'].values) - 1:
         ax.set_xlabel('Time [us]')
@@ -118,7 +120,7 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
 #%%
 
-da_sel = ds_lecroy['AS'].sel(motor=motor_sel, method='nearest')
+da_sel = ds_lecroy['AS_abs'].sel(motor=motor_sel, method='nearest')
 
 da_sel = da_sel.mean('run')
 
@@ -133,7 +135,7 @@ plt.xlim(-1, 20)
 
 # plt.figure(figsize=(4,6))
 
-# da_sel = ds_lecroy['AS'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
+# da_sel = ds_lecroy['AS_abs'].mean('mnum').sel(motor=[50,100,150,180,225], method='nearest')
 da_sel = ds_lecroy['mag'].sel(motor=[50,100,150,180,225], method='nearest')
 
 da_sel = da_sel.dropna('run', how='all')
@@ -146,40 +148,20 @@ ds_lecroy
 
 #%%
 
-mws_max = ds_lecroy['AS'].max('time').rename('AS_max')
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
-mws_pp = ds_lecroy['mag_pp'].rename('mag_pp')
-mws_pp_std = ds_lecroy['mag_fluct']
 
-mws_max_std_ratio = mws_max/mws_pp_std
-mws_max_std_ratio = mws_max_std_ratio.rename('AS_max_std_ratio')
-
-
-delta_pd1 = ds_lecroy['pd1'] - ds_lecroy['pd1'].sel(time=slice(-1,0))
-delta_pd1 = delta_pd1.dropna('run', how='all')
-delta_pd1 = delta_pd1.max('time')
-# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
 
 #%%
 
-ds_lecroy['pd1'].dropna('run', how='all')
 
 #%%
 
 ds = xr.merge([
-    mws_max, 
-    mws_pp,
-    mws_pp_std,
-    mws_max_std_ratio,
     nK,
-    delta_pd1.rename('dpd1') 
+    ds_stats_lecroy,
     ]).sortby('motor').dropna('run', how='all')
-
-ds['AS_max'].attrs = dict(long_name='AS Max')
-ds['mag_pp'].attrs = dict(long_name='Mag. Pre Pulse (PP)', units='V')
-ds['mag_fluct'].attrs = dict(long_name='Pre Pulse (PP) Std Dev.', units='V')
-ds['AS_max_std_ratio'].attrs = dict(long_name='SFR', units='1/V')
 
 ds
 #%%
@@ -194,15 +176,16 @@ dropna(g)
 fig, axes = plt.subplots(5, figsize=(4,12), sharex=True)
 
 ds['nK_m3'].plot(hue='run_plot', x='motor', ax=axes[0],marker='o')
-ds['AS_max'].plot(hue='run_plot', x='motor', ax=axes[1], marker='o')
+ds['dAS_abs_max'].plot(hue='run_plot', x='motor', ax=axes[1], marker='o')
 ds['mag_fluct'].plot(hue='run_plot', x='motor', ax=axes[2],marker='o')
-ds['AS_max_std_ratio'].plot(hue='run_plot', x='motor', ax=axes[3],marker='o')
-ds['dpd1'].plot(hue='run_plot', x='motor', ax=axes[4],marker='o')
+ds['SFR_abs'].plot(hue='run_plot', x='motor', ax=axes[3],marker='o')
+ds['dpd1_max'].plot(hue='run_plot', x='motor', ax=axes[4],marker='o')
 
 for ax in axes:
     ax.get_legend().remove()
     ax.set_title('')
     ax.set_xlabel('')
+
 
 axes[3].set_xlabel('Position [mm]')
 
@@ -211,7 +194,7 @@ axes[3].set_xlabel('Position [mm]')
 
 fig, axes = plt.subplots(3, figsize=(3,10), sharex=True)
 
-for i, var in enumerate(['AS_max', 'mag_fluct', 'AS_max_std_ratio']):
+for i, var in enumerate(['dAS_abs_max', 'mag_fluct', 'SFR_abs']):
     ax = axes[i]
 
     ds_stat = ds.wma.initialize_stat_dataset(var, 'run')
@@ -233,8 +216,8 @@ axes[2].set_xlabel('Position [mm]')
 
 ta = axes[0].twinx()
 
-delta_pd1 = ds['dpd1'].dropna('run', how='all')
-delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
+delta_pd1 = ds['dpd1_max'].mean('run')
+# delta_pd1 = delta_pd1.pint.quantify('V').pint.to('mV')
 delta_pd1.plot(ax=ta, color='red', marker='o')
 ta.set_ylabel('Delta PD1 [mV]')
 ta.set_title('')
@@ -279,17 +262,21 @@ ds_cfd_norm = ds_cfd/ds_cfd.max()
 #TODO: this is still for k=0.1
 fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'beam_conv.cdf' )
 
-ds_cfd_beam = xr.load_dataset(fp_cfd_beam)
+ds_cfd_beam = ppu.fileio.load_cfd_beam()
 
+ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1)
 
-xs = ds_cfd_beam.coords['x_beam'].values
+xs = ds_cfd_beam.coords['dist'].values
 xs = (xs - xs[0])*1000
 
-ds_cfd_beam = ds_cfd_beam.assign_coords(x_beam = xs)
+ds_cfd_beam = ds_cfd_beam.assign_coords(dist = xs)
 
 #TODO: Convert to number density
 ds_cfd_beam_norm = ds_cfd_beam/ds_cfd_beam.max()
 
+#%%
+
+ds_cfd_beam
 
 #%%
 
@@ -382,7 +369,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 
 # %%
 
-g = ds['AS_max'].plot(hue='run_plot', x='motor', marker='o')
+g = ds['dAS_abs_max'].plot(hue='run_plot', x='motor', marker='o')
 
 dropna(g)
 
