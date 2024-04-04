@@ -89,8 +89,8 @@ kappa = kappa_2peak(wl)
 nK = Quantity(1e21, '1/m^3')
 
 mu_atten_max = (kappa*nK).to('1/cm').magnitude
-kappa_profile = mu_atten_max * nK_profile
-mu_atten_max_profile = pd.Series(mu_atten_max, index=x)
+mu_atten_max_profile = mu_atten_max * nK_profile
+mu_atten_max_profile = pd.Series(mu_atten_max_profile, index=x)
 
 I = calc_I_profile_euler(mu_atten_max_profile)
 
@@ -103,16 +103,19 @@ plt.gca().set_ylabel('I(x)')
 plt.gca().set_xlabel('x [cm]')
 ta=  plt.twinx()
 ta.set_ylabel('mu_atten_max(x)')
-line2 = plt.plot(x, kappa_profile, 'r', label='mu_atten_max(x)')
+line2 = plt.plot(x, mu_atten_max_profile, 'r', label='$\mu_{atten}$ (x)')
 
 lines = line1 + line2
 labels = [l.get_label() for l in lines]
-plt.legend(lines, labels)
+plt.legend(lines, labels, loc=(0.2,1.05))
 
 plt.xlim(3,8)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'euler_method_tophat_demo.png'))
 
+#%%
+
+mu_atten_max_profile
 
 # %%[markdown]
 

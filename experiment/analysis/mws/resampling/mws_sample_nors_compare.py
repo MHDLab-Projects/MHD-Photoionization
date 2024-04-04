@@ -17,7 +17,7 @@ from scipy.integrate import solve_ivp
 ds_lecroy = ppu.fileio.load_lecroy('536_pos')
 
 ds_final = ds_lecroy.sel(run=('2023-05-18',1)).sel(motor=180, method='nearest')
-
+mag_0 = ppu.fileio.load_mws_T0()
 
 
 # %%
@@ -46,7 +46,7 @@ for tc in ['raw', 'pw_10_1000']:
 
 for ds in dss:
     tc = ds.coords['tc'].item()
-    ds['AS'].mean('acq_time').plot(label=tc)
+    ds['AS_rel'].mean('acq_time').plot(label=tc)
 
 plt.legend()
 
@@ -62,7 +62,7 @@ fig, axes = plt.subplots(1,2, figsize=(10,5))
 
 for ds in dss:
     tc = ds.coords['tc'].item()
-    ds['AS'].mean('acq_time').plot(label=tc, ax=axes[0])
+    ds['AS_rel'].mean('acq_time').plot(label=tc, ax=axes[0])
 
 
 axes[0].set_xlim(0,20)
@@ -71,7 +71,10 @@ axes[0].legend(['No Resample', '10 peak/1000 off peak'])
 
 for ds in dss:
     tc = ds.coords['tc'].item()
-    ds['AS'].mean('acq_time').plot(label=tc, ax=axes[1])
+    ds['AS_rel'].mean('acq_time').plot(label=tc, ax=axes[1])
+
+for ax in axes:
+    ax.set_title('')
 
 axes[1].set_xlim(0.8,2.1)
 axes[1].set_ylim(0.03,0.1)
