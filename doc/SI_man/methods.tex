@@ -123,7 +123,7 @@ For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
-\caption{Microwave processing overview}
+\caption{Microwave processing overview. From top to bottom: A) raw I and Q signals. B) the calculated magnitude C) The absolute Transmission. D) Absolute AS. See main text for formulas.  }
 \label{fig:SI_mws_processing_overview}
 \end{figure}
 
@@ -160,7 +160,7 @@ The  measured at the nominal position (180 mm) for each of the dates is presente
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/mws_nothing_T0.png}
-\caption{A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described in the text) B) position dependent transmission measurement.}
+\caption{A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described elsewhere in SI) B) position dependent transmission measurement.}
 \label{fig:SI_MWS_nothing_T0}
 \end{figure}
 
@@ -249,7 +249,7 @@ Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES dat
 \begin{figure}[]
     \centering
     \includegraphics[height=0.8\textheight]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
-    \caption{AES processing overview}
+    \caption{AES processing overview: from top to bottom: A) LED on and off measurements. B) Difference (LED on - LED off) compared to the interpolated calibration measurement. C) Absorption calculation (raw) and absorption after offset removal. D) Fitted absorption profile (Data) and fit.}
     \label{fig:SI_AES_proc_overview}
 \end{figure}
 
@@ -263,7 +263,7 @@ In this work we develop a method to correct the calibration spectra using the LE
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_calib_dates.png}
-    \caption{Calibration spectra dates}
+    \caption{Calibration spectra taken at different time on different dates. }
     \label{fig:SI_absem_calib_dates}
 \end{figure}
 
@@ -295,7 +295,7 @@ Where, $\mu_{atten} (\lambda, s)$ [1/cm] is the attenuation coefficient, which i
     \mu_{atten}(\lambda, s) = -\kappa(\lambda) n_{K,cl} f_{K, CFD}(s)
 \end{equation}
 
-$\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,cl}$ is the maximum potassium number density, and $f_{K, CFD}(s)$ is the profile of the potassium number density along the beam path determined by CFD. 
+$\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,cl}$ is the maximum potassium number density, and $f_{K, CFD}(s)$ is the profile of the potassium number density along the beam path determined by CFD. The $f_{K, CFD}(s)$ profiles are extracted along a line perpindicular to the torch axis for the barrel exit measurements, and along the beam path (ratio of 1.875 to 4.25 parallel and perpindicular to the torch axis, respectively) for the mobile measurements. The CFD profiles are shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt} and Figure \ref{fig:SI_cfd_beam_pos_dep}.
 
 The fitting procedure is as follows
 
@@ -339,11 +339,11 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_goldi_pos_kwt.png}
-    \caption{CFD beam profile for the 53x test case sequence.}
+    \caption{CFD beam profiles used for numerical fitting for the 53x test case sequence.  }
     \label{fig:SI_cfd_beam_goldi_pos_kwt}
 
     \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_pos_dep.png}
-    \caption{CFD beam profile for the 536\_pos test case.}
+    \caption{CFD beam profiles used for numerical fitting for the 536\_pos test case sequence.}
     \label{fig:SI_cfd_beam_pos_dep}
 \end{figure}
 
@@ -351,7 +351,7 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
-    \caption{Euler method demonstration with a top hat absorption profile.}
+    \caption{Euler method demonstration with a top hat absorption profile. The top hat profile has a constant potassium density for 1 cm and zero elsewhere. The calculated intensity found with the Euler method is also shown.}
     \label{fig:SI_euler_method_tophat_demo}
 \end{figure}
 

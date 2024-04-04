@@ -22,6 +22,8 @@ dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
 ds_cfd = ppu.fileio.load_cfd_centerline()
 ds_cfd = ds_cfd.sel(offset=0)
 
+ds_cfd
+
 # %%
 
 tc = '5x6_pos'
@@ -29,12 +31,15 @@ tc = '5x6_pos'
 ds_absem = ppu.fileio.load_absem(tc)
 
 # ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
-da_lecroy = ds_lecroy['AS_abs']
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute')
+
+ds_lecroy = ds_lecroy.mws.calc_time_stats()
+
+ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
 
 #%%
 
-da_max = da_lecroy.mws._pulse_max()
+da_max = ds_lecroy['dAS_abs_max']
 
 da_max.plot()
 #%%
@@ -71,7 +76,7 @@ for phi in da_max['phi']:
     labels.append(phi.values)
 
 ax1.legend(lines, labels, title="Expt.", loc="upper right")
-ax1.set_ylim(-0.05,0.3)
+# ax1.set_ylim(-0.05,0.3)
 
 lines = []
 labels = []
@@ -92,7 +97,11 @@ plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_KOH.png'), dpi=300)
 #%%
 
 
-da_lecroy_mean = da_lecroy
+da_lecroy_mean = ds_lecroy['dAS_abs'].mean('run', keep_attrs=True)
+
+da_lecroy_mean
+
+#%%
 
 da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
@@ -100,13 +109,13 @@ plt.xlim(-1,)
 
 #%%
 
-da_lecroy_mean = da_lecroy
 
-da_lecroy_mean.plot(col='motor',hue='phi', col_wrap=3)
+da_lecroy_mean.plot(col='motor',hue='phi')
 
 plt.yscale('log')
 
 plt.xlim(-1,)
+plt.ylim(1e-5,5e-1)
 
 plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_AStime_phi.png'), dpi=300)
 
@@ -204,28 +213,17 @@ tc = '5x3_pos'
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
-da_lecroy = ds_lecroy['AS_abs']
+ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute')
+
+ds_lecroy = ds_lecroy.mws.calc_time_stats()
+
+ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
+
+ds_lecroy['phi'].attrs = {'long_name': 'Equivalence Ratio'}
+ds_lecroy['motor'].attrs = {'long_name': 'Stage Position', 'units': 'mm'}
 
 #%%
 
-
-da_lecroy_mean = da_lecroy
-
-da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
-
-plt.xlim(-1,)
-
-#%%
-
-da_lecroy_mean = da_lecroy
-
-da_lecroy_mean.plot(row='motor',hue='phi')
-
-plt.yscale('log')
-
-
-plt.xlim(-1,)
 
 #%%[markdown]
 
@@ -283,22 +281,72 @@ plt.ylim(0,1)
 plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_alpha.png'), dpi=300)
 
 
+#%%
+
+ds_lecroy['phi']
+
 # %%
 
+fig, axes = plt.subplots(2, 1, figsize=(6, 8), sharex=False, sharey=False)
+
+da_AS = ds_lecroy.mean('run', keep_attrs=True)['AS_abs_pp']
+
+da_AS.plot(hue='phi', marker='o', ax=axes[0])
+da_AS.plot(ax=axes[1])
+
+for ax in axes:
+    ax.set_title('')
+
+
+axes[0].get_legend().set_bbox_to_anchor((1, 0.6))
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_AS.png'), dpi=300)
+
+
+#%%
+
+fig, axes = plt.subplots(2, 1, figsize=(6, 8), sharex=False, sharey=False)
+
+da_AS = ds_lecroy.mean('run',keep_attrs=True)['dAS_abs_max']
+
+
+da_AS.plot(hue='phi', marker='o', ax=axes[0])
+da_AS.plot(ax=axes[1])
+for ax in axes:
+    ax.set_title('')
+
+axes[0].get_legend().set_bbox_to_anchor((1, 0.6))
+
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_dAS.png'), dpi=300)
+
+#%%
+
+
+da_lecroy = ds_lecroy['dAS_abs']
 da_lecroy_mean = da_lecroy
 
 da_lecroy_mean.plot(row='motor',hue='phi', sharey=False)
 
+plt.xlim(-1,)
+
+#%%
+
+da_lecroy_mean = da_lecroy
+
+da_lecroy_mean.plot(row='motor',hue='phi')
+
+plt.yscale('log')
+
+
+plt.xlim(-1,)
+
+#%%
+
 
 
 #%%
 
-da_max = da_lecroy_mean.mws._pulse_max()
-
-da_max.plot()
-#%%
-
-da_max.plot(hue='phi', marker='o')
+da_max = ds_lecroy['dAS_abs_max']
 
 #%%
 
@@ -306,6 +354,8 @@ da_max
 
 #%%
 
+
+#%%
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
 
@@ -321,7 +371,7 @@ for phi in da_max['phi']:
     labels.append(phi.values)
 
 ax1.legend(lines, labels, title="Expt.", loc="upper right")
-ax1.set_ylim(-0.01,0.1)
+# ax1.set_ylim(-0.01,0.1)
 
 lines = []
 labels = []
