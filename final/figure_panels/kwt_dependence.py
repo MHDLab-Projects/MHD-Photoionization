@@ -113,6 +113,7 @@ axes[0].legend(
     )
 
 axes[0].set_title('')
+axes[0].set_xlabel('')
 
 var = 'dAS_abs_max'
 lineAS = axes[1].errorbar(
@@ -125,7 +126,6 @@ lineAS = axes[1].errorbar(
     )
 
 axes[1].set_ylabel("$\Delta AS$ Maximum")
-axes[1].set_xlabel('')
 
 
 ta = axes[1].twinx()
