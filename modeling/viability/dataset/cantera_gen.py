@@ -59,7 +59,7 @@ gas_tr, electron_trans = ct_utils.gen_gas(
 
 
 combos_HP = {
-    'phi':[0.8,1.0,1.2],
+    'phi':[0.8,0.9,1.0],
     'Kwt':np.logspace(-6,-1,6),
     'inlet_T': np.linspace(300,1000,3),
     'P_combustor': np.logspace(5,7,3),

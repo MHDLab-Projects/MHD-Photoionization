@@ -92,30 +92,54 @@ combo_downsel = {
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-g = P_zero.plot(hue='phi', col='eta', row='l_b', y='T', xscale='log', figsize=(5,3))
 
-# for ax in g.axes.flatten():
-#     ax.plot([1e5], [3000], marker='*', markersize=10)
-# Get the legend and move it
-legend = g.fig.legends[0]
-legend.set_bbox_to_anchor((1.1, 0.5))  # coordinates are in figure units
+fig, axes = plt.subplots(2, 2, figsize=(4,3), sharex=True, sharey=True)
 
+
+for i, eta in enumerate(['perf', 'KOH']):
+    for j, l_b in enumerate([0, 0.9]):
+        ax = axes[j,i]
+
+        da_sel = P_zero.sel(eta=eta, l_b=l_b)
+
+        lns = da_sel.plot(hue='phi', y='T', xscale='log', ax=ax)
+        ax.set_title(f'$\eta$ = {eta}, $l_b$ = {l_b}')
+
+        ax.get_legend().remove()
+        ax.set_title('')
+        ax.set_xlabel('')
+        ax.set_ylabel('')
+
+
+labs = [0.8, 0.9, 1.0]
+
+leg = fig.legend(lns, labs, title='Equiv.\nRatio')
+leg.set_bbox_to_anchor((1.18, 0.7))  # coordinates are in figure units
 
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
 
 
-g.axes[1,0].set_xlabel('Pressure (Pa)')
-g.axes[1,1].set_xlabel('Pressure (Pa)')
+axes[0,0].set_title('$\eta$ = 1.0')
+axes[0,1].set_title('$\eta_{KOH}$')
 
-plt.tight_layout()
+axes[1,0].set_xlabel('Pressure (Pa)')
+axes[1,1].set_xlabel('Pressure (Pa)')
+
+axes[0,0].set_ylabel('T (K)')
+axes[1,0].set_ylabel('T (K)')
+
+axes[0,1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes[0,1].transAxes, rotation=-90, va='center')
+axes[1,1].text(1.05, 0.5, '$l_{bl} = 0.1$', transform=axes[1,1].transAxes, rotation=-90, va='center')
+
+plt.tight_layout(pad=0.6)
 
 plt.savefig('output/P_zero_l_b_eta.png')
 # %%
 
 combo_downsel = {
     # 'P_in' : 0,
-    'phi': [0.8, 1, 1.2],
+    'phi': [0.8, 0.9, 1.0],
     'l_b': [0],  
     'eta': ['perf', 'KOH'],
     'Kwt': [0.01],
