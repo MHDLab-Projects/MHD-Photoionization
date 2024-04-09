@@ -4,6 +4,9 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu #Sets matplotlib style
 
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()
@@ -178,3 +181,162 @@ ds_2
 ds_2['dpd1'].mean('run').mean('mnum').plot(hue='kwt')
 
 plt.xlim(-2,3)
+
+
+#%%
+
+
+# ds_p_stats
+# ds_species_cfd
+
+fig, axes = plt.subplots(1, 1, figsize=(5,5), sharex=True)
+
+ax = axes
+
+
+var = 'dAS_abs_max'
+ax.errorbar(
+    ds_species_cfd['Yeq_K'], 
+    ds_p_stats['{}_mean'.format(var)], 
+    yerr=ds_p_stats['{}_std'.format(var)], 
+    marker='o', capsize=5,
+    label='MWS Fit Diff. Eq.'
+    )
+
+plt.yscale('log')
+
+plt.ylabel("$\Delta AS$ Maximum")
+
+plt.xlabel("K [um$^{-3}$]")
+# plt.xscale('log')
+
+#%%
+# With a colorbar corresponding to K value
+
+# Create a colormap
+cmap = cm.get_cmap('viridis')
+
+# Normalize the 'kwt' values to the range [0, 1] for the colormap
+norm = plt.Normalize(ds_species_cfd['kwt'].min(), ds_species_cfd['kwt'].max())
+
+fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
+
+vars = ['dAS_abs_max', 'dpd1_max']
+
+xvar = 'Yeq_K'
+
+for i, var in enumerate(vars):
+    ax = axes[i]
+
+    # Add connecting lines
+    
+    ax.plot(
+        ds_species_cfd[xvar], 
+        ds_p_stats['{}_mean'.format(var)], 
+        color='black'
+    )
+
+    # No error bars for dpd1_max as only one run
+
+    if var != 'dpd1_max':
+        # Add error bars
+        ax.errorbar(
+            ds_species_cfd[xvar], 
+            ds_p_stats['{}_mean'.format(var)], 
+            yerr=ds_p_stats['{}_std'.format(var)], 
+            fmt='', capsize=5, color='black', alpha=1.0,
+            zorder=1
+        )
+
+
+    # Use scatter instead of errorbar to be able to specify a color for each point
+    sc = ax.scatter(
+        ds_species_cfd[xvar], 
+        ds_p_stats['{}_mean'.format(var)], 
+        c=ds_species_cfd['kwt'], cmap=cmap, norm=norm,
+        marker='o',
+        zorder=2
+    )
+
+    # Add a colorbar
+    cbar = fig.colorbar(sc, ax=ax)
+    cbar.set_label("Nominal K wt %")
+
+
+    ax.set_yscale('log')
+
+
+    ax.set_xlabel("CFD K [cm$^{-3}$]")
+
+axes[0].set_ylabel("$\Delta AS$ Maximum")
+axes[1].set_ylabel("Delta PD1 [mV]")
+axes[0].set_ylim(5e-3,1.1e-1)
+axes[1].set_ylim(3.5e-1,2.5e0)
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization_vsCFDK.png'), dpi=300, bbox_inches='tight')
+
+# %%
+
+# Create a colormap
+cmap = cm.get_cmap('viridis')
+
+# Normalize the 'kwt' values to the range [0, 1] for the colormap
+norm = plt.Normalize(ds_species_cfd['kwt'].min(), ds_species_cfd['kwt'].max())
+
+fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
+
+vars = ['dAS_abs_max', 'dpd1_max']
+
+xvar = 'Yeq_KOH'
+
+for i, var in enumerate(vars):
+    ax = axes[i]
+
+    # Add connecting lines
+    
+    ax.plot(
+        ds_species_cfd[xvar], 
+        ds_p_stats['{}_mean'.format(var)], 
+        color='black'
+    )
+
+    # No error bars for dpd1_max as only one run
+
+    if var != 'dpd1_max':
+        # Add error bars
+        ax.errorbar(
+            ds_species_cfd[xvar], 
+            ds_p_stats['{}_mean'.format(var)], 
+            yerr=ds_p_stats['{}_std'.format(var)], 
+            fmt='', capsize=5, color='black', alpha=1.0,
+            zorder=1
+        )
+
+
+    # Use scatter instead of errorbar to be able to specify a color for each point
+    sc = ax.scatter(
+        ds_species_cfd[xvar], 
+        ds_p_stats['{}_mean'.format(var)], 
+        c=ds_species_cfd['kwt'], cmap=cmap, norm=norm,
+        marker='o',
+        zorder=2
+    )
+
+    # Add a colorbar
+    cbar = fig.colorbar(sc, ax=ax)
+    cbar.set_label("Nominal K wt %")
+
+
+    ax.set_yscale('log')
+
+
+    ax.set_xlabel("CFD KOH [um$^{-3}$]")
+
+axes[0].set_ylabel("$\Delta AS$ Maximum")
+axes[1].set_ylabel("Delta PD1 [mV]")
+axes[0].set_ylim(5e-3,1.1e-1)
+axes[1].set_ylim(3.5e-1,2.5e0)
+
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization_vsCFDKOH.png'), dpi=300, bbox_inches='tight')
