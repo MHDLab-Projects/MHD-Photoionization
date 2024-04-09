@@ -44,7 +44,7 @@
        width="174.83667"
        height="134.95866"
        preserveAspectRatio="none"
-       xlink:href="../../experiment/analysis/topcam/output/figures/spe_cfd_compare_2ns_2023-05-24.png"
+       xlink:href="../figure_panels/output/figures/spe_cfd_compare_2ns_2023-05-24.png"
        id="image1"
        x="10.817185"
        y="16.995575" /><text
@@ -111,7 +111,7 @@
        width="85.610931"
        height="36.151768"
        preserveAspectRatio="xMidYMid"
-       xlink:href="../../experiment/analysis/topcam/output/figures/536_iccd_timedecay.png"
+       xlink:href="../figure_panels/output/figures/536_iccd_timedecay.png"
        id="image1-2"
        x="99.054237"
        y="111.98482" /></g></svg>

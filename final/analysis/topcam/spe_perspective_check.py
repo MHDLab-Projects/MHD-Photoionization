@@ -5,13 +5,16 @@ from skimage import transform
 from skimage.io import imread, imshow
 import cv2
 import pickle
+from pi_paper_utils.spe_calib_utils import pipe_transform_projective
 
-
-fp_transform = pjoin(DIR_DATA_OUT, 'tform_projective.pkl')
+DATA_DIR_OUT = pjoin(REPO_DIR, 'final','dataset','topcam','output')
+fp_transform = pjoin(DATA_DIR_OUT, 'tform_projective.pkl')
 with open(fp_transform, 'rb') as f:
     tform = pickle.load(f)
 
 #%%
+
+
 
 #TODO: incorporate into data pipeline
 fp_in = pjoin(REPO_DIR, 'experiment','data','manual', 'PI Max Calibration', 'Log_PI_TopCam_0 2023 May 18 11_13_47_process.tif')
@@ -84,7 +87,6 @@ imshow(img_test_tf[460:550, 100:600])
 #%%
 # interpolate to 2d grid and use skimage.transform.warp to apply the transformation
 
-from experiment.analysis.topcam.calib_utils import pipe_transform_projective
 
 da_tf = pipe_transform_projective(ds, tform)
 
@@ -113,8 +115,6 @@ ds_cal = ds_cal/ds_cal.max('x').max('y') # Normalize
 
 ds_cal['counts'].plot(robust=True)
 # %%
-
-from experiment.analysis.topcam.calib_utils import transform_projective, pipe_transform_projective
 
 # Assign a dummy gatedelay, as pipe_transform_projective expects it...TODO: fix this
 ds_cal = ds_cal.assign_coords(gatedelay=[0])

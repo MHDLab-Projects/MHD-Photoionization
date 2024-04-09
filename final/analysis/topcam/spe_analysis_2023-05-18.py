@@ -4,13 +4,19 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 import pickle
-from calib_utils import pipe_transform_projective, calibrate_da_pimax_simple
+from pi_paper_utils.spe_calib_utils import pipe_transform_projective, calibrate_da_pimax_simple
 
 datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+
+dir_tfm = pjoin(REPO_DIR, 'final','dataset','topcam','output')
+fp_transform = pjoin(dir_tfm, 'tform_projective.pkl')
+with open(fp_transform, 'rb') as f:
+    tform = pickle.load(f)
+
 # %%
 
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged', datestr)
@@ -184,9 +190,6 @@ da_sel.mean(['x','y']).plot(marker='o')
 
 #%%
 
-fp_transform = pjoin(DIR_DATA_OUT, 'tform_projective.pkl')
-with open(fp_transform, 'rb') as f:
-    tform = pickle.load(f)
 
 gatedelay_on = slice(797,801)
 gatedelay_off = slice(700,793)
@@ -425,9 +428,9 @@ for ax in axes:
 plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_comparison_2023-05-18_shockdiamonds.png'), bbox_inches='tight', dpi=300)
 # %%
 
-ds.to_netcdf(pjoin(DIR_DATA_OUT, 'topcam_536_pos1_shockdiamonds.cdf'))
-ds_cfd.to_netcdf(pjoin(DIR_DATA_OUT, 'cfd_536_pos1_shockdiamonds.cdf'))
+# ds.to_netcdf(pjoin(DIR_DATA_OUT, 'topcam_536_pos1_shockdiamonds.cdf'))
+# ds_cfd.to_netcdf(pjoin(DIR_DATA_OUT, 'cfd_536_pos1_shockdiamonds.cdf'))
 
 
-#%%
-ds_cfd
+# #%%
+# ds_cfd
