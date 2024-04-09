@@ -2,8 +2,9 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-
-from calib_utils import calibrate_da_pimax_simple
+from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+import pickle
+from calib_utils import pipe_transform_projective, calibrate_da_pimax_simple
 
 datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
@@ -31,7 +32,6 @@ for name in names:
 
 #%%
 
-import pandas as pd
 
 df = pd.DataFrame(index=das.keys())
 
@@ -123,8 +123,6 @@ dst_coords
 
 #%%
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
-
 dst_coords['motor'].sel(time=tw).plot()
 
 # assign_signal(da, dst_coords['motor'])
@@ -164,7 +162,6 @@ da_536_fullpow = da.sel(estime=tw_536_fullpow).mean('estime')
 da_536_fullpow.sel(gatedelay=[800,850]).plot(col='gatedelay', robust=True)
 
 
-
 #%%
 
 da = das['63']
@@ -187,15 +184,9 @@ da_sel.mean(['x','y']).plot(marker='o')
 
 #%%
 
-
-import pickle
-from calib_utils import pipe_transform_projective, CORRECTED_IMG_SCALE, LOC_BARREL_EXIT, LOC_BARREL_CENTERLINE
-
 fp_transform = pjoin(DIR_DATA_OUT, 'tform_projective.pkl')
 with open(fp_transform, 'rb') as f:
     tform = pickle.load(f)
-
-tform
 
 gatedelay_on = slice(797,801)
 gatedelay_off = slice(700,793)
@@ -213,7 +204,6 @@ ds_cfd['pos_y'] = ds_cfd['pos_y'] * 1000
 #%%
 
 ds_cfd['Yeq_KOH'].plot(x = 'pos_x')
-
 
 
 #%%[markdown]
@@ -294,9 +284,6 @@ plt.xlabel('x (mm)')
 diff = ds['las_on'] - ds['las_off']
 
 diff.plot()
-
-#%%
-
 
 # %%
 
