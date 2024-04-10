@@ -34,3 +34,6 @@ find "$REPO_DIR" -type d -name 'nb_render' -print0 | while IFS= read -r -d '' di
     # Copy the nb_render directory to the destination directory
     cp -r "$dir/"* "$dest/"
 done
+
+# Convert notebooks to PDF
+find "${output_dir}/nb_renders" -name '*.ipynb' -exec jupyter nbconvert --to pdf {} \;
