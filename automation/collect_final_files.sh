@@ -9,13 +9,28 @@ mkdir -p $output_dir
 
 echo "Collecting final documents"
 
-cd $REPO_DIR/doc/paper
 
-mkdir -p output
-source pandoc_convert.sh
+# mkdir -p output
+# source pandoc_convert.sh
 
-cp main.pdf $output_dir/Photoionization.pdf
-cp output/Photoionization.docx $output_dir/Photoionization.docx
-cp ../SI_man/SI_man.pdf $output_dir/Supporting\ Information.pdf
+# cp main.pdf $output_dir/Photoionization.pdf
+# cp output/Photoionization.docx $output_dir/Photoionization.docx
 
 
+cd $REPO_DIR/doc/SI_man
+cp SI_man.pdf $output_dir/Supporting\ Information.pdf
+
+# Remove the output_dir/nb_renders directory
+rm -rf "${output_dir}/nb_renders"
+
+# Walk through directories in REPO_DIR
+find "$REPO_DIR" -type d -name 'nb_render' -print0 | while IFS= read -r -d '' dir; do
+    # Construct the destination directory path
+    dest="${output_dir}/nb_renders/${dir#$REPO_DIR}"
+
+    # Create the destination directory
+    mkdir -p "$dest"
+
+    # Copy the nb_render directory to the destination directory
+    cp -r "$dir/"* "$dest/"
+done
