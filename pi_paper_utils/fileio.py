@@ -168,3 +168,30 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
 
     return ds_cfd_beam
+
+
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_24Apr24')
+
+basename = 'sweep' #sweepK for coarse run
+
+cfd_fp_dict = {
+    '0.8_0.0': pjoin(results_dir, f'{basename}00_mdot0131_phi0801_K0000', 'frontCyl_chem2.vtk'),
+    '0.8_0.06': pjoin(results_dir, f'{basename}01_mdot0132_phi0793_K0006', 'frontCyl_chem2.vtk'),
+    '0.8_0.1': pjoin(results_dir, f'{basename}02_mdot0131_phi0799_K0010', 'frontCyl_chem2.vtk'),
+    '0.8_0.18': pjoin(results_dir, f'{basename}03_mdot0132_phi0789_K0018', 'frontCyl_chem2.vtk'),
+    '0.8_0.31': pjoin(results_dir, f'{basename}04_mdot0131_phi0797_K0031', 'frontCyl_chem2.vtk'),
+    '0.8_0.55': pjoin(results_dir, f'{basename}05_mdot0132_phi0782_K0055', 'frontCyl_chem2.vtk'),
+    '0.8_1.0': pjoin(results_dir, f'{basename}07_mdot0131_phi0787_K0099', 'frontCyl_chem2.vtk'),
+    '0.6_1.0': pjoin(results_dir, f'{basename}06_mdot0132_phi0584_K0099', 'frontCyl_chem2.vtk'),
+    '0.8_1.75': pjoin(results_dir, f'{basename}08_mdot0133_phi0759_K0175', 'frontCyl_chem2.vtk'),
+}
+
+# sp_dir = gen_path('sharepoint')
+# results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
+
+# fps = {
+#     '0.8_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
+#     '0.8_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk'),
+#     '0.6_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi060_K010', 'frontCyl_chem1.vtk'),
+#     '0.6_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi060_K100', 'frontCyl_chem1.vtk'),
+# }
