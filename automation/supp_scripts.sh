@@ -21,12 +21,6 @@ python munge_spe.py
 python analysis_beam_timing.py
 popd
 
-pushd $REPO_DIR/experiment/analysis/topcam
-python spe_perspective.py
-python spe_analysis_2023-05-24.py
-popd
-
-
 ## SI Auxilliary datasets ##
 
 pushd $REPO_DIR/experiment/analysis/auto
@@ -36,10 +30,6 @@ popd
 pushd $REPO_DIR/experiment/analysis/mws/resampling
 python process.py
 python mws_sample_nors_compare.py
-popd
-
-pushd $REPO_DIR/experiment/analysis/topcam
-python spe_analysis_2023-05-18.py
 popd
 
 pushd $REPO_DIR/experiment/notebook/2023-05-18/mws

@@ -20,3 +20,9 @@ echo "Position dependence"
 python position_dependence.py
 
 popd
+
+
+pushd $REPO_DIR/final/dataset/topcam
+
+python spe_perspective_tform_gen.py
+python spe_process_2023-05-24.py

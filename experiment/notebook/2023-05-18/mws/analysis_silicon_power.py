@@ -103,7 +103,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'silicon_power_raw.png'), bbox_inches='tight')
 
 #%%
 
-ds[['i','q']].mws.calc_AS_rel()['AS'].plot(hue='fw')
+ds[['i','q']].mws.calc_AS_rel()['AS_rel'].plot(hue='fw')
 
 plt.yscale('log')
 
@@ -118,7 +118,7 @@ from mhdpy.analysis.mws.fitting import pipe_fit_exp
 
 # da_fit = da_sel.mean('mnum')
 
-da_fit = ds.copy()['AS'].drop(0, 'fw')
+da_fit = ds.copy()['dAS_rel'].drop(0, 'fw')
 
 da_fit
 
@@ -175,7 +175,7 @@ plt.title('')
 
 plt.legend(['Data','Fit'], loc='lower left')
 
-plt.ylabel('AS')
+plt.ylabel('AS_rel')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'silicon_power_fit.png'), bbox_inches='tight')
 
