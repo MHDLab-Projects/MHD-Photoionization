@@ -170,7 +170,7 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_24Apr24')
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_24Apr24_corr')
 
 basename = 'sweep' #sweepK for coarse run
 

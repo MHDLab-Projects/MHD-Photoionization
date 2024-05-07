@@ -18,14 +18,7 @@ import pint_pandas
 from pi_paper_utils.fileio import cfd_fp_dict
 
 
-soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-# soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
-# additional = ['T', 'p', 'rho']
-# all_fields = [*soi, *soi_Yeq, *additional]
-
-
-
-# soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi = ['K', 'K+', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']
 all_fields = [*soi, *soi_Yeq, *additional]
