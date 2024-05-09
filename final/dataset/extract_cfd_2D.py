@@ -15,21 +15,9 @@ from mhdpy.fileio import gen_path
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pint_pandas
-from pi_paper_utils.fileio import cfd_fp_dict
-
-
-soi = ['K', 'K+', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
-additional = ['T', 'p', 'rho']
-all_fields = [*soi, *soi_Yeq, *additional]
-
-
-
-# %%
+from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 
 from mhdpy.pyvista_utils import AxiMesh, pv_to_unstack_xr, downsel_arrays, pv_to_xr
-
-
 
 #%%[markdown]
 
@@ -75,7 +63,7 @@ from pv_axi_utils import AxiInterpolator
 
 #%%
 
-ai = AxiInterpolator(mesh, var_names = all_fields)
+ai = AxiInterpolator(mesh, var_names = cfd_all_fields)
 
 # ai returns a 2D array of the fields at the points in the grid.
 f_out = ai(grid.points)

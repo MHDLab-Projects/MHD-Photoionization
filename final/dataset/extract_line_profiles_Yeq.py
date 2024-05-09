@@ -13,14 +13,9 @@ import pint_pandas
 
 import pyvista as pv
 from mhdpy.pyvista_utils import AxiMesh
-from pi_paper_utils.fileio import cfd_fp_dict
+from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 
 sp_dir = gen_path('sharepoint')
-
-soi = ['K', 'K+', 'e-', 'OH', 'OH-', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
-additional = ['T', 'p', 'rho']
-all_fields = [*soi, *soi_Yeq, *additional]
 
 
 #%%
@@ -179,7 +174,7 @@ for key, fp in cfd_fp_dict.items():
 
             line_out = extract_line_axi(mesh, a, b)
 
-            df_lines = convert_line_df(line_out, all_fields)
+            df_lines = convert_line_df(line_out, cfd_all_fields)
 
             df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 
@@ -290,7 +285,7 @@ for key, fp in cfd_fp_dict.items():
 
     line_out = extract_line_axi(mesh, a, b)
 
-    df_lines = convert_line_df(line_out, all_fields)
+    df_lines = convert_line_df(line_out, cfd_all_fields)
     df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 
     ds_out = xr.Dataset(df_int)
@@ -366,7 +361,7 @@ for key, fp in cfd_fp_dict.items():
 
         line_out = extract_line_axi(mesh, a, b)
 
-        df_lines = convert_line_df(line_out, all_fields)
+        df_lines = convert_line_df(line_out, cfd_all_fields)
 
         df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
 

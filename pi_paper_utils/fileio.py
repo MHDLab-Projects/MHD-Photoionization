@@ -170,7 +170,7 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_24Apr24_corr')
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_07May24')
 
 basename = 'sweep' #sweepK for coarse run
 
@@ -185,6 +185,12 @@ cfd_fp_dict = {
     '0.6_1.0': pjoin(results_dir, f'{basename}06_mdot0132_phi0584_K0099', 'frontCyl_chem2.vtk'),
     '0.8_1.75': pjoin(results_dir, f'{basename}08_mdot0133_phi0759_K0175', 'frontCyl_chem2.vtk'),
 }
+
+# soi = ['K', 'K+', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
+additional = ['T', 'p', 'rho']
+cfd_all_fields = [*soi, *soi_Yeq, *additional]
 
 # sp_dir = gen_path('sharepoint')
 # results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
