@@ -170,7 +170,7 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_07May24')
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_8June24')
 
 basename = 'sweep' #sweepK for coarse run
 
@@ -187,7 +187,8 @@ cfd_fp_dict = {
 }
 
 # soi = ['K', 'K+', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+# soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi = ['K',  'OH', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']
 cfd_all_fields = [*soi, *soi_Yeq, *additional]
