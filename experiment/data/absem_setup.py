@@ -33,7 +33,7 @@ has_multiplexer = settings['has_multiplexer']
 
 data_folder = os.path.join('munged',datestr)
 
-dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)

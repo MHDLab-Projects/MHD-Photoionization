@@ -13,7 +13,7 @@ from collections import defaultdict
 from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
 from mhdpy.fileio.tdms import tdms2ds
 
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 
 coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
 

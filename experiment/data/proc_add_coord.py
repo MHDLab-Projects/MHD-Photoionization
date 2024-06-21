@@ -18,7 +18,7 @@ ds_absem = ds_absem.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_lecroy.cdf'))
 
 
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXP_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXP_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 # Generate binned coordinates to assign along time dimension
 
 # Downselect to only sequence timewindows, see experiment/analysis/various/dst_coords_ex.py

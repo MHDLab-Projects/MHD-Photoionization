@@ -14,7 +14,7 @@ DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy
 
 figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_2d', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 # #%%
 
 tc_dict = {

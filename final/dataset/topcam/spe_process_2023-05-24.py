@@ -11,7 +11,7 @@ from pi_paper_utils.spe_calib_utils import pipe_transform_projective
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 # %%
 
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged', datestr)

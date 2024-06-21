@@ -5,7 +5,7 @@ from mhdpy.analysis.standard_import import *
 from mhdpy.fileio import TFxr
 from mhdpy.fileio.path import gen_path_date
 data_folder = gen_path_date('2023-04-07')
-dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 ds_calib_mp = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_calib.cdf'))
 ds_mp_mean = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_mean.cdf'))

@@ -12,7 +12,7 @@ datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 data_folder = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
 

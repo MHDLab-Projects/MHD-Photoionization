@@ -17,11 +17,11 @@ from mhdpy.fileio.spectral import load_absem
 
 # datestr = '2023-05-24'
 # data_folder = os.path.join(REPO_DIR, 'experiment', 'data' , 'munged',datestr)
-# dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+# dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp_dsst = os.path.join(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 
-dsst = TFxr(fp_dsst).as_dsst()
+dsst = TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 fp = os.path.join(DIR_EXPT_PROC_DATA, 'ds_absem.cdf')
 ds_absem = xr.load_dataset(fp)

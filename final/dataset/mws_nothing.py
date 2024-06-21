@@ -15,13 +15,13 @@ plt.rcParams['timezone'] = 'US/Pacific'
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 da_motor = dsst['motor']['Motor C Relative'].rename(time='acq_time')
 da_motor    
 
 # fp_dst = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-# dst = mhdpy.fileio.TFxr(fp_dst).as_dsst()['coords']
+# dst = mhdpy.fileio.TFxr(fp_dst).as_dsst(convert_to_PT=False)['coords']
 
 # da_motor_coords = dst['motor'].rename(time='acq_time')
 

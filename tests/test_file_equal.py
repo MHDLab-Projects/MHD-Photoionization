@@ -56,8 +56,8 @@ def data_tuple_tdms(request, tdms_file) -> (xr.Dataset, xr.Dataset):
     # Log the files being processed
     logging.info(f'Processing files: {fp_old}, {fp_new}')
 
-    dsst_old = TFxr(fp_old).as_dsst()
-    dsst_new = TFxr(fp_new).as_dsst()
+    dsst_old = TFxr(fp_old).as_dsst(convert_to_PT=False)
+    dsst_new = TFxr(fp_new).as_dsst(convert_to_PT=False)
 
     return (dsst_new, dsst_old) 
 

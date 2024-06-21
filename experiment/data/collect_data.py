@@ -88,7 +88,7 @@ dsst_date_dict = {}
 
 for date in dates:
     data_folder = pjoin('munged',date) 
-    dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+    dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
     dsst_date_dict[date] = dsst_date
 

@@ -9,7 +9,7 @@ create_standard_folders()
 datestr = '2023-04-07'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-# dsst = mhdpy.fileio.TFxr().as_dsst()
+# dsst = mhdpy.fileio.TFxr().as_dsst(convert_to_PT=False)
 
 lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 input_fns = [fn for fn in os.listdir(lecroy_munged_folder) if 'Silicon' not in fn]

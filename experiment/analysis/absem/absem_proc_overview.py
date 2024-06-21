@@ -90,7 +90,7 @@ from mhdpy.coords.spectral import assign_multiplexer_coord
 
 data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'munged',datestr)
 
-dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 # Determine LED switching events
 switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=['led_off','led_on'])

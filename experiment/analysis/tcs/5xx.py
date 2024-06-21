@@ -12,10 +12,10 @@ from mhdpy.plot import dropna
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 #%%
 
@@ -153,7 +153,7 @@ ds_absem_time = ds_absem_time['alpha']
 ds_absem_time
 
 #%%
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
 tw = slice(Timestamp('2023-05-24 20:12:07.301042944'), Timestamp('2023-05-24 20:12:46.490260736'), None)

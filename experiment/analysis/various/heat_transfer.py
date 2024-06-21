@@ -6,10 +6,10 @@ from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst()
+dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst()['coords']
+dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 dst_coords
 

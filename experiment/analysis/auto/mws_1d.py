@@ -13,7 +13,7 @@ def main(datestr):
     data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
     DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
-    dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+    dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
     figure_out_dir = pjoin(DIR_DATA_OUT, 'mws_1d', datestr)
 

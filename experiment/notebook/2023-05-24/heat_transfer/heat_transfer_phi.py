@@ -14,7 +14,7 @@ from mhdpy.plot.common import xr_errorbar, xr_errorbar_axes
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst()
+dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 # %% [markdown]
 # # Test Case analysis

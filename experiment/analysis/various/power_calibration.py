@@ -11,7 +11,7 @@ from mhdpy.fileio.tdms import TFxr
 from mhdpy.coords.ct import downselect_acq_time
 dir_dataset = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
 
-dsst = TFxr(pjoin(dir_dataset,'dsst.tdms')).as_dsst()
+dsst = TFxr(pjoin(dir_dataset,'dsst.tdms')).as_dsst(convert_to_PT=False)
 
 dsst
 

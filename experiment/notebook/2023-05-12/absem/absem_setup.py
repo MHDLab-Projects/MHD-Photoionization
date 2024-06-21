@@ -14,7 +14,7 @@ from mhdpy.fileio.path import gen_path_date
 from mhdpy.fileio.spectral import load_absem
 
 data_folder = gen_path_date('2023-05-12')
-dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst()
+dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
 ds_absem = load_absem(fp)
