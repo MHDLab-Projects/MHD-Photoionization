@@ -170,25 +170,27 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_8June24')
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'coarse_22March24')
 
-basename = 'sweep' #sweepK for coarse run
+basename = 'sweepK' #sweepK for coarse run, sweep otherwise
+filename = 'frontCyl_chem1.vtk' # chem2 for medium, chem1 for coarse
 
 cfd_fp_dict = {
-    '0.8_0.0': pjoin(results_dir, f'{basename}00_mdot0131_phi0801_K0000', 'frontCyl_chem2.vtk'),
-    '0.8_0.06': pjoin(results_dir, f'{basename}01_mdot0132_phi0793_K0006', 'frontCyl_chem2.vtk'),
-    '0.8_0.1': pjoin(results_dir, f'{basename}02_mdot0131_phi0799_K0010', 'frontCyl_chem2.vtk'),
-    '0.8_0.18': pjoin(results_dir, f'{basename}03_mdot0132_phi0789_K0018', 'frontCyl_chem2.vtk'),
-    '0.8_0.31': pjoin(results_dir, f'{basename}04_mdot0131_phi0797_K0031', 'frontCyl_chem2.vtk'),
-    '0.8_0.55': pjoin(results_dir, f'{basename}05_mdot0132_phi0782_K0055', 'frontCyl_chem2.vtk'),
-    '0.8_1.0': pjoin(results_dir, f'{basename}07_mdot0131_phi0787_K0099', 'frontCyl_chem2.vtk'),
-    '0.6_1.0': pjoin(results_dir, f'{basename}06_mdot0132_phi0584_K0099', 'frontCyl_chem2.vtk'),
-    '0.8_1.75': pjoin(results_dir, f'{basename}08_mdot0133_phi0759_K0175', 'frontCyl_chem2.vtk'),
+    '0.8_0.0': pjoin(results_dir, f'{basename}00_mdot0131_phi0801_K0000', filename),
+    '0.8_0.06': pjoin(results_dir, f'{basename}01_mdot0132_phi0793_K0006', filename),
+    '0.8_0.1': pjoin(results_dir, f'{basename}02_mdot0131_phi0799_K0010', filename),
+    '0.8_0.18': pjoin(results_dir, f'{basename}03_mdot0132_phi0789_K0018', filename),
+    '0.8_0.31': pjoin(results_dir, f'{basename}04_mdot0131_phi0797_K0031', filename),
+    '0.8_0.55': pjoin(results_dir, f'{basename}05_mdot0132_phi0782_K0055', filename),
+    '0.8_1.0': pjoin(results_dir, f'{basename}07_mdot0131_phi0787_K0099', filename),
+    '0.6_1.0': pjoin(results_dir, f'{basename}06_mdot0132_phi0584_K0099', filename),
+    '0.8_1.75': pjoin(results_dir, f'{basename}08_mdot0133_phi0759_K0175', filename),
 }
 
-# soi = ['K', 'K+', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-# soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi = ['K',  'OH', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
+soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for coarse
+# soi = ['K', 'K+', 'e-', 'OH', 'OH-', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for 24Apr24_corr
+# soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] #?
+# soi = ['K',  'OH', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for june08
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']
 cfd_all_fields = [*soi, *soi_Yeq, *additional]
