@@ -59,6 +59,7 @@ ds_lin = ds_sel.copy()
 
 #%%
 
+plt.figure()
 
 ds_square['T_abs'].plot(label='Square')
 ds_lin['T_abs'].plot(label='Linear')
@@ -67,8 +68,13 @@ plt.legend()
 
 plt.xlim(-1,30)
 
+plt.title('')
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_T_lin_square_compare.png'), dpi=300, bbox_inches='tight')
+
 #%%
 
+plt.figure()
 
 ds_square['AS_abs'].plot(label='Square')
 ds_lin['AS_abs'].plot(label='Linear')
@@ -76,10 +82,14 @@ ds_lin['AS_abs'].plot(label='Linear')
 plt.legend()
 # %%
 
+plt.figure()
+
 ds_square['dAS_abs'].plot()
 ds_lin['dAS_abs'].plot()
 
 # %%
+
+plt.figure()
 
 ds_square['dAS_abs'].plot(label='Square')
 ds_lin['dAS_abs'].plot(label='Linear')  
@@ -90,6 +100,7 @@ plt.yscale('log')
 
 plt.xlim(-1,30)
 plt.ylim(1e-4,1e0)
+plt.title('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, '536_dAS_lin_square_compare.png'), dpi=300, bbox_inches='tight')
 
