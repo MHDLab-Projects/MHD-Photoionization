@@ -4,3 +4,6 @@
 [submodule "PostProcessor"]
 	path = PostProcessor
 	url = https://github.com/MHDLab/PostProcessor
+[submodule "modeling/em-sim"]
+	path = modeling/em-sim
+	url = https://github.com/MHDLab/em-sim
