@@ -139,7 +139,7 @@ linePD = ta.plot(
     color='darkblue'
     )
 
-axes[1].set_ylim(5e-3,1.1e-1)
+axes[1].set_ylim(1e-2,2e-1)
 axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
 
 ta.set_ylabel("Delta PD1 [mV]")
