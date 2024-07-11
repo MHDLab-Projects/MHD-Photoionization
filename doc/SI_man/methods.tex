@@ -233,15 +233,11 @@ The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter bef
 
 \subsubsection{Mie Scattering Analysis}
 
-TODO: update refs
+To examine the relative contributions of absorption and scattering of microwaves our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.\cite{bohrenAbsorptionScatteringLight2007} We model our laser-plasma interaction volume as a sphere, which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is 10 mm and the radiation wavelength is 3 mm, which are approximately the size of of laser diameter and wavelength of our 90Ghz source, respectively. 
 
-To examine the relative contributions of absorption and scattering of microwaves our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.[Bohren] We model our laser-plasma interaction volume as a sphere, where analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is 10 mm and the radiation wavelength is 3 mm, which are approximately the size of of laser diameter and wavelength of our 90Ghz source, respectively. (see x and x)
+$Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$ Where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=abs$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively.\cite{bohrenAbsorptionScatteringLight2007}  The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. 
 
-$Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$ Where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=aba$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively. [Bohren] The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. 
-
-
-
-We use the python package PyMieScatt to determine the various efficiencies, $Q$, as a function of the imaginary permitivity, $\epsilon_i$, as shown in Figure \ref{fig:SI_Mie_Scattering}A. $\epsilon_i$ is related to the electrical conductivity, $\sigma$, through, $\epsilon_i = \sigma/\omega$, where $\omega$ is the frequency of radiation. [Colton 2021] We model the complex index of refraction, $\epsilon$, as $\epsilon = 1 + i\epsilon_i$. We double-check correct use of the analytical expressions by performing 3D FDTD simulations of transmission through a sphere and measuring the transmission directly, also shown in Figure \ref{fig:SI_Mie_Scattering}. It can be see that as $\epsilon_i \rightarrow 0$, $Q_{ext}$ becomes dominated by $Q_{abs}$, indicating that absorption is the primary mechanism by which radiation transmission is reduced. 
+We use the python package PyMieScatt to determine the various efficiencies, $Q$, as a function of the imaginary permitivity, $\epsilon_i$, as shown in Figure \ref{fig:SI_Mie_Scattering}A. $\epsilon_i$ is related to the electrical conductivity, $\sigma$, through, $\epsilon_i = \sigma/\omega$, where $\omega$ is the frequency of radiation.\cite{coltonComplexWaveNumber2021}  We model the complex index of refraction, $\epsilon$, as $\epsilon = 1 + i\epsilon_i$. We double-check correct use of the analytical expressions by performing 3D FDTD simulations of transmission through a sphere and measuring the transmission directly, also shown in Figure \ref{fig:SI_Mie_Scattering}. It can be see that as $\epsilon_i \rightarrow 0$, $Q_{ext}$ becomes dominated by $Q_{abs}$, indicating that absorption is the primary mechanism by which radiation transmission is reduced.
 
 In Figure \ref{fig:SI_Mie_Scattering}B, we perform a power-law fit of $Q_{ext}$ for small $\epsilon_i$, and determine an exponent approaching 1, indicating the relationship that $Q_{abs} \propto \sigma$. 
 
@@ -249,23 +245,17 @@ In Figure \ref{fig:SI_Mie_Scattering}B, we perform a power-law fit of $Q_{ext}$ 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MieScatt.png}
-\caption{Mie Scattering analysis}
+\caption{Analysis of Mie Scattering. A) The absorption, scattering, and extinction efficiencies as a function of the imaginary permitivity, $\epsilon_i$. B) The extinction efficiency as a function of $\epsilon_i$ for small $\epsilon_i$. The power law fit is shown in the figure.}
 \label{fig:SI_Mie_Scattering}
 \end{figure}
 
-In Figure \ref{fig:SI_MWS_lin_square_compare} we compare the transmission calculated from the microwave signal magnitude ($U$) squared , as done in the paper with the same expression but measuring the 'magnitude tramsission'
-
-\begin{equation}
-    T  = \frac{U - U_{block}}{U_0 - U_{block}}
-\end{equation}
-
-Where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The lifetime of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
+In Figure \ref{fig:SI_MWS_lin_square_compare} we compare the transmission calculated from the microwave signal magnitude ($U$) squared , as done in the paper with the same expression but measuring the 'magnitude tramsission' $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_lin_square_compare.png}
-\caption{Mie Scattering analysis}
+\caption{Comparison of the transmission calculated from the microwave magnitude ($U$) magnitude squared and not squared (linear)}
 \label{fig:SI_MWS_lin_square_compare}
 \end{figure}
 
