@@ -192,14 +192,15 @@ def calc_atten_lengths(ds_cs, ds_species_rho):
     lamtot = 1/abstot
         
     lamtot.name = 'tot'
-    lamtot.attrs['long_name'] = 'Attenuation Length'
+    lamtot.attrs['long_name'] = '$\delta$'
 
     gas_lam = lamtot.to_dataset()
 
     for species in ds_cs.data_vars:
         lam = 1/(ds_species_rho[species]*ds_cs[species])
-        lam.attrs['long_name'] = 'Attenuation Length from ' + species
+        lam.attrs['long_name'] = "$\delta_{" + species + "}$"
         gas_lam = gas_lam.assign(temp=lam).rename(temp=species)
+        gas_lam = gas_lam.pint.to('cm')
 
     return gas_lam
 
@@ -207,7 +208,7 @@ def calc_atten_lengths(ds_cs, ds_species_rho):
 def calc_FA(lamtot, L, R):
     FAL = (1-np.exp(-L/lamtot))
     FA = FAL/(1-(1-FAL)*R)
-    FA.attrs['long_name'] = 'Total Fraction Absorbed'
+    FA.attrs['long_name'] = 'FA'
     FA.name = 'FA'
 
     return FA

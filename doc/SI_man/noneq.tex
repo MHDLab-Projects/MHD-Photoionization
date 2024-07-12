@@ -52,21 +52,14 @@ If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac
 \frac{d\Delta n_{e}}{dt} = G_{NE}  -  \sum_{i}^{}[k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}]
 \end{equation}
 
-We are now going to make a series of simplifying assumptions to this equation. These assumptions are geared towards the situation of a small perturbation of the electron density from equilibrium, where $\Delta n_{e} << n_{e,0}$. Experimentally, we observe that the MWS signal eventually enters an exponentially decaying regime, which we interpret as the electron density entering this small-perturbation regime with $G_{NE} =0$ (the laser pulse is over). In this case, we know that the system enters a state where the differential equation becomes of an exponential form:
-
-\begin{equation}
-  \label{eq:small_pert_diffeq}
-\frac{d\Delta n_{e}}{dt} = k_{r,m,eff} \Delta n_{e}
-\end{equation}
-
-Where $k_{r,m,eff}$ is the effective monomolecular recombination rate constant. We can obtain a differential equation of this form by making the following assumption for $\Delta n_i$:
+We assume that $\Delta n_i$ is proportional to $\Delta n_e$:
 
 \begin{equation}
   \label{eq:phi_def}
 \Delta n_i = \phi_i \Delta n_{e}
 \end{equation}
 
-Where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non equilibrium process and that this relationship can be expected to be linear in the small perturbation regime. We can then substitute this into Equation \ref{eq:full_deqn} to get
+Where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non equilibrium process. The focus of our analysis is for small perturbations from equilibrium (discussed below), and we assume that the relationship between any created $\Delta n_i$ and $\Delta n_e$ can be linearized. We can then substitute this into Equation \ref{eq:full_deqn} to get
 
 \begin{equation}
   \label{eq:full_deqn_phi}
@@ -87,28 +80,23 @@ k_{r, b, eff} = \sum_{i}^{}k_{r, b, i}\phi_i
 \end{equation}
 
 
-With the earlier stated assumption that $\Delta n_{e} << n_{e,0}$, we can see that the third (bimolecular) term in Equation \ref{eq:full_deqn_phi} indeed becomes Equation \ref{eq:small_pert_diffeq} in the case of $G_{NE} = 0$.
-
-We have kept the bimolecular term in Equation \ref{eq:full_deqn_phi} even though it is potentially incompatible with the small perturbation assumption. From the MWS fitting, we observe that fitting the data in the high power regime is consistent with an equation of the form of Equation \ref{eq:full_deqn_phi} with $G_{NE} = 0$. However, the validity of Equations \ref{eq:phi_def} and \ref{eq:krb_eff_def} in the high power regime is not clear and should be further investigated. In any, case the inclusion of this term does not affect the monomolecular term, which is the primary focus of this work. We will keep the bimolecular term in the following analysis, but we note that the validity of this term under the small perturbation regime assumptions is an open question.
-
-The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (\ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$, for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. We therefore make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. 
-
-This allows us to write
+For small enough $\Delta n_e$, the second (bimolecular) term in Equation \ref{eq:full_deqn_phi} can be neglected. 
 
 \begin{equation}
-  \label{eq:krm_eff_final}
-  k_{r, m, eff} = 2k_{r, m, K_{+}} + \sum_{i \neq K+}^{}k_{r, m, i}
+  \label{eq:small_pert_diffeq}
+\frac{d\Delta n_{e}}{dt} = G_{NE} - k_{r,m,eff} \Delta n_{e}
 \end{equation}
 
-And simplify the form of Equation \ref{eq:full_deqn_phi} to
+Further, if we consider the case of $G_{NE} = 0$, corresponding to times after the laser pulse, Equation \ref{eq:full_deqn_phi} will simplify to that of an exponential decay. Therefore for small $\Delta n_e$ in the absence of the laser pulse: 
 
 \begin{equation}
-  \label{eq:final_deqn_Kp}
-\frac{d\Delta n_{e}}{dt} = G_{NE}   -   k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
+  \label{eq:ne_exp_decay}
+  \Delta n_e \propto e^{-\frac{t}{\tau}}
 \end{equation}
 
+Where $\tau$ is the exponential time constant. 
 
-
+For large $\Delta n_e$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will become important. We observe a super-exponential region in the $\Delta AS$ time data which is consistent with increased recombination from this term, though scattering of microwaves (in addition to absorption) could also contribute to the increased slope. We have attempted to fit the full $\Delta AS$ data with a fit method of numerically solving Equation \ref{eq:full_deqn_phi}, as described in Section \ref{sec:mws-diff-eq-fitting}. 
 
 \subsection{Photoionization Viability Assessment}
 
@@ -131,24 +119,13 @@ For the MHD Power density we use the equation
 P_{MHD} = \frac{1}{2} e \mu_e n_e u^2 B^2
 \end{equation}
 
-Where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength.  The determination of $\mu_e$ is discussed later. The derivative $\frac{dP_{MHD}}{dn_{e}}$ can be easily determined. 
+Where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength. For $\mu_e$ we use values calculated from from the chemical equilibrium model discussed in the next section.
 
-For the equation $\frac{dn_{e}}{dP_{in}}$, we can use the equation \ref{eq:final_deqn_Kp} derived previously. We now develop an expression for $n_{e}(P_{in})$ and then take the derivative with respect to $P_{in}$.
-
-We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$.  With this, \ref{eq:final_deqn_Kp} becomes
-
-\begin{equation}
-0 = G_{NE} - k_{r, m, eff}\Delta n_{e} - k_{r, b, K_{+}}\Delta n_{e}^2
-\end{equation}
-
-We now neglect the second term due to the fact that we are considering an infinitesimal power input, and therefore an infinitesimal $\Delta n_{e}$. For higher laser powers, the second term will increase the recombination rate. 
-
-This leads to a simple expression for $\Delta n_{e}$
+For the equation $\frac{dn_{e}}{dP_{in}}$, we now develop and expression for $n_e(P_{in})$ and then take the derivative with respect to $P_{in}$. We consider a gas subjected to a steady $G_{NE}$ and assuming the system is in quasi-equilibrium, $\frac{dn_{e}}{dt} = 0$.  Because this is a viability analysis, we assume the 'best-case' scenario of an infinitesimally small $P_{in}$ corresponding to an infinitesimally small $\Delta n_{e}$. For higher $P_{in}$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will contribute and increase the recombination rate. Under the above assumptions we can use Equation \ref{eq:small_pert_diffeq} which becomes
 
 \begin{equation}
 \Delta n_{e} = \frac{G_{NE}}{k_{r, m, eff}}
 \end{equation}
-
 
 We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a nonequilibrium generation rate \(G_{NE}\) . We can then define an ionization efficiency, \(\eta\) in the following way:
 
@@ -174,12 +151,20 @@ We can then take the derivative of $n_{e}(P_{in})$ with respect to $P_{in}$ to f
 Finally, we can combine these results to find $\gamma$
 
 \begin{equation}
+  \label{eq:gamma-final}
 \gamma = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}
 \end{equation}
 
-In the results presented in the main text we assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. $E_{IP}$ is the ionization potential of potassium, 4.34 eV. In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH (described later). For $k_{r, m, eff}$ we utilize equation \ref{eq:krm_eff_final}. The equilibrium species concentrations, $n_i$, and $\mu_e$ we use values calculated from from the chemical equilibrium model discussed in the next section. 
+In the results presented in the main text we assume a velocity of 1000 m/s and a magnetic field strength of 5 Tesla. $E_{IP}$ is the ionization potential of potassium, 4.34 eV. In this work, we consider $\eta =1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
 
+For $k_{r, m, eff}$ we utilize equation \ref{eq:krm_eff_def}. The equilibrium species concentrations, $n_i$, are calculated from from the chemical equilibrium model discussed in the next section.  The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (\ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$, for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. We therefore make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. 
 
+This allows us to write
+
+\begin{equation}
+  \label{eq:krm_eff_final}
+  k_{r, m, eff} = 2k_{r, m, K_{+}} + \sum_{i \neq K+}^{}k_{r, m, i}
+\end{equation}
 
 
 \subsubsection{Species concentration and mobility calculations}
@@ -200,17 +185,16 @@ We calculate $\mu_e$ of the gas mixture following the method outlined previously
 
 
 \hypertarget{photoionization}{%
-\subsubsection{UV Absorption}\label{photoionization}}
+\subsubsection{Viability with KOH Photofragmentation}\label{photoionization}}
 
-
-To apply our viability model to UV photoionization, We consider a fraction of the incident photons that are absorbed by potassium, hydroxide \(FA_{KOH}\). We assume a best case yield of KOH to electrons of 1. We define the efficiency $\eta{KOH}$ as the ratio of the absorbed energy per incident photon to the ionization potential of potassium.
+In the main text we determine that, for the seeded oxy-fuel combustion system of this work, KOH photofragmentation is likely the initial step in the UV photionization process. To apply our viability model to this process, we consider a fraction of the incident photons that are absorbed by potassium hydroxide \(FA_{KOH}\). We assume a best-case yield of KOH to electrons of 1 and define the efficiency $\eta_{KOH}$ as the ratio of the absorbed energy per incident photon to the ionization potential of potassium.
 
 
 \begin{equation}
-\eta_{PI} = \frac{E_{IP}}{E_{ph}}FA_{KOH} = \frac{E_{IP}}{E_{ph}}\frac{\delta}{\delta_{KOH}\ }FA\ \ 
+\eta_{KOH} = \frac{E_{IP}}{E_{ph}}FA_{KOH} = \frac{E_{IP}}{E_{ph}}\frac{\delta}{\delta_{KOH}\ }FA\ \ 
 \end{equation}
 
-Where \(FA_{KOH}\) has been expressed in terms of the optical attenuation length of each individual species \(\delta_{i}\) and the total optical attenuation length of the gas mixture, \(\delta\), and the fraction of incident light absorbed by the entire gas mixture, FA. To understand the fundamental limit of photoionization we assume FA = 1. The case of FA for a practical system of an optical cavity with finite reflectivity mirrors is explored in the appendix.
+Where \(FA_{KOH}\) has been expressed in terms of the optical attenuation length of each individual species \(\delta_{i}\) and the total optical attenuation length of the gas mixture, \(\delta\) through the relationship $FA_{KOH} = \frac{\delta}{\delta_{KOH}\ }$.  FA is the fraction of incident light absorbed by the entire gas mixture, and we consider the best-case scenario where FA = 1. 
 
 \(\delta\) is calculated with the following equation:
 
@@ -218,24 +202,24 @@ Where \(FA_{KOH}\) has been expressed in terms of the optical attenuation length
 \delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}}
 \end{equation}
 
-Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species. In this way \(\delta_{KOH} = n_{KOH}Q_{KOH}\)where the \(KOH\) stands for potassium. To calculate \(\frac{\delta}{\delta_{KOH}\ }\) we utilize the compiled UV absorption cross subsection data outlined in \ref{fig:SI_UV_abscs} on the UV optical absorption cross subsections for the major species in the calculated gas mixtures. \ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\)for various UV wavelengths and temperatures.
+Where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species ( \(\delta_{i} = n_{i}Q_{i}\)). To calculate \(\frac{\delta}{\delta_{KOH}\ }\) we utilize the compiled UV absorption cross subsection data for the major species in the calculated gas mixtures outlined in Figure \ref{fig:SI_UV_abscs}. Figure \ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\) for various UV wavelengths and temperatures. In the viability analaysis presented in the main text we downselect to the 248 nm light of the excimer laser used in this work.
 
 
 \begin{figure}[ht]
     \centering
     \includegraphics[]{\repodir/modeling/viability/figure_panels/output/atten_length.png}
-    \caption{Your caption goes here.}
+    \caption{Calculation of KOH light absorption for various wavelengths and temperatures.}
     \label{fig:SI_atten_length}
 \end{figure}
 
 
-In the following work we analyze these gasses excited by 248 nm light. This is primarily as that is the longest wavelength of an excimer laser (KrF) that can still ionize potassium. However, the fraction of light absorbed by potassium is not particularly dependent on the wavelength, as can be seen in Figure \ref{fig:SI_atten_length}. Although excimer lasers are pulsed we choose to analyze steady state illumination here. This is because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate of second order recombination. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
+Although the excimer laser used in this work is pulsed we choose to analyze steady state illumination in the modeling presented here. The viability model is still valid as a best-case analysis of pulsed lasers because for a given time-averaged laser intensity the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a correspond higher rate recombination from second order effects. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
 
 \subsubsection{UV Absorption Cross Sections}
 
-We compiled data on UV absorption cross sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-285 nm). The consolidated data is show in \ref{fig:SI_UV_abscs}.  
+We compiled data on UV absorption cross sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-285 nm). The consolidated data are shown in \ref{fig:SI_UV_abscs}.  
 
-For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross sections exist for CO2\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H2O,\cite{zuevUVABSORPTIONCROSS} and O2.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et all and extrapolate it in the range 190-200 nm.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963}
+For potassium we use compiled photoionization cross sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about 111 nm.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about 170 nm.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, $H_2O$,\cite{zuevUVABSORPTIONCROSS} and $O_2$.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the 200-300 nm range and consequently has a relatively large absorption cross section. We extract the KOH absorption cross section data from Weng et al. and extrapolate it in the range 190-200 nm.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross section for different flame conditions at 1400 and 1800 K so we do not include a temperature dependence to the KOH cross section. CO does absorb very weakly Cameron bands in the range of 170 -- 210 nm. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963}
 
 
 \begin{figure}[h]
@@ -248,7 +232,7 @@ For potassium we use compiled photoionization cross sections (Verner) for solar 
 \subsubsection{Contact targeting}
 
 
-This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD Generators. In this case, P\_in would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series that this can be encapsulated by multiplying α with an enhancement factor.
+This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD Generators. In this case, $P_{in}$ would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series and show that the effect of the boundary can be encapsulated by multiplying $\gamma$ of Equation \ref{eq:gamma-final} with an enhancement factor.
 
 
 
@@ -259,22 +243,20 @@ This work is motivated in part by targeting cold boundary layers near the electr
 \end{figure}
 
 
-To model both bulk and contact-targeted nonequilibrium generation we only include NEI in a fraction of the channel as shown in Figure 3. The system comprises a bulk channel region of width $w_{b}$ and conductivity $\sigma_{b}$, and a boundary layer region near the contact of width $w_{c}$ and conductivity $\sigma_{c}$. In this case the conductivity of the fluid in equation 1 can be replaced by an effective conductivity, $\sigma_{eff}$, 
+To model both bulk and contact-targeted nonequilibrium generation we only include NEI in a fraction of the channel as shown in Figure \ref{fig:SI_contact_targeting_schematic}. The system comprises a bulk channel region of width $w_{b}$ and conductivity $\sigma_{b}$, and a boundary layer region near the contact of width $w_{c}$ and conductivity $\sigma_{c}$. By considering the series resistance of this 1D channel, the channel can be considered to have an effective conductivity, $\sigma_{eff}$, which can be shown to be:  
 
 \[
 \sigma_{eff}=\frac{\sigma_{b} \sigma_{c}}{\sigma_{b}+l_{b}  (\sigma_{c}  -\sigma_{b})}
 \]
 
-This equation can be derived by considering the series resistance of the channel:
-
-Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b})$. The conductivities of the two regions are determined by setting two different gas temperatures and nonequilibrium generation conditions, as discussed below. In the limit of $l_{b}\rightarrow1$ and $l_{b}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{b}$ and $\sigma_{eff}= \sigma_{c}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{c}\rightarrow1$ so that $\sigma_{eff}= \sigma_{c}$ in equation 1. 
+Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b})$. The conductivities of the two regions are determined by setting two different gas temperatures and nonequilibrium generation conditions, as discussed below. In the limit of $l_{b}\rightarrow1$ and $l_{b}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{b}$ and $\sigma_{eff}= \sigma_{c}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{c}\rightarrow1$ so that $\sigma_{eff}= \sigma_{c}$.
 
 To calculate $\gamma$ we use the chain rule
 \[
 \gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} \tag{13}
 \]
 
-Where we have recognized that this expression is equivalent to $\gamma$ except for an 'enhancement' factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. We can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
+Where we have recognized that this expression is equivalent to $\gamma$  in Equation \ref{eq:gamma-final} except for an 'enhancement' factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. We can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
 \[
 \frac{d\sigma_{eff}}{d\sigma_{c}}=\frac{\sigma_{b}^2 (1-l_{b})}{[\sigma_{b}+l_{b} (\sigma_{c}-\sigma_{b})]^2} \tag{14}
 \]

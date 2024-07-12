@@ -70,8 +70,8 @@ das = []
 for species in gas_lam:
     if species != 'tot':
         F = gas_lam['tot']/gas_lam[species]
-        F.name = 'F_' + species
-        F.attrs = dict(long_name = '$f_' + species + '$')
+        F.name = 'f_' + species
+        F.attrs = dict(long_name = '$\delta/\delta_{' + species + '}$')
         das.append(F)
 #         gas_lam = gas_lam.assign(temp=F).rename(temp=species)
 
@@ -92,9 +92,9 @@ lns = ds_sel['KOH'].plot(hue = 'wl', yscale = 'log', ax  = axes[1])
 
 axes[1].get_legend().set_bbox_to_anchor((1.1, 1.05))
 
-lns = f_species['F_KOH'].sel(P = 1e5,  Kwt = 0.01, method = 'nearest').plot(hue = 'wl', yscale = 'log', ax=axes[2])
+lns = f_species['f_KOH'].sel(P = 1e5,  Kwt = 0.01, method = 'nearest').plot(hue = 'wl', yscale = 'log', ax=axes[2])
 axes[2].get_legend().remove()
-axes[2].set_ylabel('$f_{KOH}$')
+# axes[2].set_ylabel('$f_{KOH}$')
 # lns[0].axes.get_legend().set_bbox_to_anchor((1.1, 1.05))
 # fig.tight_layout()
 

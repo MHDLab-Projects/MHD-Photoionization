@@ -273,15 +273,12 @@ Figure \ref{fig:SI_krb_eff_53x} shows the calculation of the effective recombina
 \caption{Comparison of $\Delta AS_{max}$ with no torch, with the torch on and no seed (5x0), 1\% seed (5x6), and 0.1\% seed (5x3). All measurements are for equivalence ratio of 0. All measurements are for equivalence ratio of 0.8.}
 \end{figure}
 
+\label{sec:mws-diff-eq-fitting}
 \subsubsection{Differential equation fitting method }
 
-We attempted to fit the $\Delta AS$ time profiles by directly solving the differential equation 
-The data is either fit with an exponential or by solving the differential equation \ref{eq:final_deqn_Kp} with $G_{NE} =0$. Fitting is performed with the lmfit package in Python.
+We explored an alternative fitting method for the $\Delta AS$ time profiles by directly solving numerically the differential equation \ref{eq:full_deqn_phi} with $G_{NE} =0$. This method should in principle account for the bimolecular recombination term in equation \ref{eq:full_deqn_phi}. For simplicty and robust results, we limit ourselves to exponential fitting in the main text, but this numerical fitting procedure should be explored futher. 
 
-For the solution to the differential equation we assume a $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$ . The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized and normalized solution is fit to the normalized $\Delta AS$ curve with the lmfit package.
-
-
-Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. The full differential equation fitting method is more accurate, but the exponential fitting method is faster and more robust.  
+Fitting is performed with the lmfit package in Python. For the solution to the differential equation we assume a $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$ . The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized and normalized solution is fit to the normalized $\Delta AS$ curve with the lmfit package. Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. 
 
 \begin{figure}[]
 \centering
