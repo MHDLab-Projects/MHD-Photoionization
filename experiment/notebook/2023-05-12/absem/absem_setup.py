@@ -17,7 +17,7 @@ data_folder = gen_path_date('2023-05-12')
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
-ds_absem = load_absem(fp)
+ds_absem = load_absem(fp, convert_to_PT=False)
 
 # timewindow = slice(Timestamp('2023-05-12 17:43:22.650796288'), Timestamp('2023-05-12 19:37:37.855405824'), None)
 # ds_absem = ds_absem.sel(time=timewindow)

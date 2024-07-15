@@ -36,7 +36,7 @@ data_folder = os.path.join('munged',datestr)
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
-ds_absem = load_absem(fp)
+ds_absem = load_absem(fp, convert_to_PT=False)
 
 ds_absem = prep_absem_mp(ds_absem, dsst, has_multiplexer)
 

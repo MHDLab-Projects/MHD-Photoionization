@@ -31,7 +31,7 @@ ds
 # The Raw Data is divided by the integration time to give counts/ms. Other time-based metadata is dropped, but it is first checked that there is only one value. 
 
 # %%
-ds = mhdpy.fileio.spectral.load_absem(fp_1)
+ds = mhdpy.fileio.spectral.load_absem(fp_1, convert_to_PT=False)
 
 ds
 

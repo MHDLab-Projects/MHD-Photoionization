@@ -290,7 +290,6 @@ out.params['c'].stderr*np.sqrt(out.ndata)
 np.sqrt(out.covar)
 
 #%%
-out.uvars
 # %%
 np.mean(data)
 
@@ -350,7 +349,3 @@ print("average m value: ", np.mean(m_vals))
 print("std m value: ", np.std(m_vals))
 
 #%%
-
-# plt.hist(out.residual)
-
-out.uvars
