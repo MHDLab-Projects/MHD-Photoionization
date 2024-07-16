@@ -21,7 +21,8 @@ ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(kwt=1)
 
-ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
+# ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
+ds_cfd['nK_m3'] = ds_cfd['K'].pint.to('particle/m^3')
 
 
 #%%

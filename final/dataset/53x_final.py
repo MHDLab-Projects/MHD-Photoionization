@@ -59,7 +59,7 @@ ds_krb
 
 # Calculate expected tau for recombination with those species
 
-ds_species_cfd = ds_cfd[['Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K', 'all_K_Yeq', 'T', 'rho_number', 'N2', 'CO2']]
+ds_species_cfd = ds_cfd[['K', 'KOH',  'all_K', 'Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K', 'all_K_Yeq', 'T', 'rho_number', 'N2', 'CO2']]
 ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
 
 from pi_paper_utils.kinetics import calc_krm

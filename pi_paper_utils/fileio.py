@@ -135,6 +135,9 @@ def load_cfd_centerline(kwt_interp = None):
     all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
     ds_cfd['all_K_Yeq'] = sum([ds_cfd[field] for field in all_K_species])
 
+    all_K_species = ['K','Kp','K2CO3', 'KO','KOH']
+    ds_cfd['all_K'] = sum([ds_cfd[field] for field in all_K_species])
+
     ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
     return ds_cfd
 
@@ -170,10 +173,10 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'coarse_22March24')
+results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'medium_12July24')
 
-basename = 'sweepK' #sweepK for coarse run, sweep otherwise
-filename = 'frontCyl_chem1.vtk' # chem2 for medium, chem1 for coarse
+basename = 'sweep' #sweepK for coarse run, sweep otherwise
+filename = 'frontCyl_chem2.vtk' # chem2 for medium, chem1 for coarse
 
 cfd_fp_dict = {
     '0.8_0.0': pjoin(results_dir, f'{basename}00_mdot0131_phi0801_K0000', filename),
@@ -187,9 +190,9 @@ cfd_fp_dict = {
     '0.8_1.75': pjoin(results_dir, f'{basename}08_mdot0133_phi0759_K0175', filename),
 }
 
-soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for coarse
+# soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for coarse
 # soi = ['K', 'K+', 'e-', 'OH', 'OH-', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for 24Apr24_corr
-# soi = ['K',  'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] #?
+soi = ['K',  'Kp', 'K2CO3', 'KO', 'KOH', 'em', 'OH', 'OHm', 'O2', 'H2O', 'N2', 'CO2'] # works for july 12
 # soi = ['K',  'OH', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for june08
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
 additional = ['T', 'p', 'rho']

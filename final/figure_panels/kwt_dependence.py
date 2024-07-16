@@ -100,9 +100,9 @@ line_nK_mwhorns = axes[0].errorbar(
     )
 
 
-lineKOH = ds_species_cfd['Yeq_KOH'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: KOH')
-linenK = ds_species_cfd['Yeq_K'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: K')
-line_allK = ds_species_cfd['all_K_Yeq'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
+lineKOH = ds_species_cfd['KOH'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: KOH')
+linenK = ds_species_cfd['K'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: K')
+line_allK = ds_species_cfd['all_K'].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
 
 
 axes[0].set_ylabel("Species Concentration [$\#/m^3$]")
