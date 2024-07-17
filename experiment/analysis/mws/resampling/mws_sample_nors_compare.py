@@ -77,7 +77,7 @@ for ax in axes:
     ax.set_title('')
 
 axes[1].set_xlim(0.8,2.1)
-axes[1].set_ylim(0.03,0.1)
+axes[1].set_ylim(0.03,0.2)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mws_sample_nors_compare.png'))
 # %%

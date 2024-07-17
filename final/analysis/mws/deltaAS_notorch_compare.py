@@ -8,6 +8,9 @@ import pi_paper_utils as ppu
 
 ds_notorch = ppu.fileio.load_lecroy('NoTorch_pos', avg_mnum=True, AS_calc='absolute')
 
+# Phi is meaningless for no torch but still present. #TODO: downselect in proc_add_coord?
+ds_notorch = ds_notorch.mean('phi') 
+
 ds_5x0 = ppu.fileio.load_lecroy('5x0_pos', avg_mnum=True, AS_calc='absolute')
 
 ds_5x3 = ppu.fileio.load_lecroy('5x3_pos', avg_mnum=True, AS_calc='absolute')

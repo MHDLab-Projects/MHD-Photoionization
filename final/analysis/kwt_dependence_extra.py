@@ -334,7 +334,7 @@ for i, var in enumerate(vars):
 
 axes[0].set_ylabel("$\Delta AS$ Maximum")
 axes[1].set_ylabel("Delta PD1 [mV]")
-axes[0].set_ylim(5e-3,1.1e-1)
+axes[0].set_ylim(5e-3,2e-1)
 axes[1].set_ylim(3.5e-1,2.5e0)
 
 
