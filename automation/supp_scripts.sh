@@ -12,6 +12,11 @@ pushd $REPO_DIR/modeling/viability/dataset
 source calc_all.sh
 popd
 
+pushd $REPO_DIR/modeling/viability/analysis
+python bl_enhance.py
+popd
+
+
 pushd $REPO_DIR/modeling/viability/figure_panels
 source gen_figs.sh
 popd
@@ -25,6 +30,7 @@ popd
 
 pushd $REPO_DIR/experiment/analysis/auto
 python expt_overview.py
+python mws_1d.py
 popd 
 
 pushd $REPO_DIR/experiment/analysis/mws/resampling

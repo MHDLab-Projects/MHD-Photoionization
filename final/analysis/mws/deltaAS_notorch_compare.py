@@ -78,32 +78,32 @@ ds_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
 
 #%%
 
-from mhdpy.plot.common import xr_errorbar_axes
+# from mhdpy.plot.common import xr_errorbar_axes
 
-fig,axes = plt.subplots(1, figsize=(15,5), sharey=True)
+# fig,axes = plt.subplots(1, figsize=(15,5), sharey=True)
 
-da_mean = ds_notorch['dAS_abs'].mws._pulse_max().isel(run=0).mean('mnum')
-da_std = ds_notorch['dAS_abs'].mws._pulse_max().isel(run=0).std('mnum')
+# da_mean = ds_notorch['dAS_abs'].mws._pulse_max().isel(run=0).mean('mnum')
+# da_std = ds_notorch['dAS_abs'].mws._pulse_max().isel(run=0).std('mnum')
 
-xr_errorbar_axes(da_mean, da_std, label='No Torch', axes=axes)
+# xr_errorbar_axes(da_mean, da_std, label='No Torch', axes=axes)
 
-da_mean = ds_5x0['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').mean('mnum')
-da_std = ds_5x0['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').std('mnum')
+# da_mean = ds_5x0['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').mean('mnum')
+# da_std = ds_5x0['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').std('mnum')
 
-xr_errorbar_axes(da_mean, da_std, label='5x0', axes=axes)
+# xr_errorbar_axes(da_mean, da_std, label='5x0', axes=axes)
 
-da_mean = ds_5x3['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').mean('mnum')
-da_std = ds_5x3['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').std('mnum')
+# da_mean = ds_5x3['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').mean('mnum')
+# da_std = ds_5x3['dAS_abs'].mws._pulse_max().isel(run=0).sel(phi=0.8,method='nearest').std('mnum')
 
-xr_errorbar_axes(da_mean, da_std, label='5x3', axes=axes)
+# xr_errorbar_axes(da_mean, da_std, label='5x3', axes=axes)
 
-da_mean = ds_536['dAS_abs'].mws._pulse_max().mean('mnum').mean('run')
-da_std = ds_536['dAS_abs'].mws._pulse_max().std('mnum').mean('run')
+# da_mean = ds_536['dAS_abs'].mws._pulse_max().mean('mnum').mean('run')
+# da_std = ds_536['dAS_abs'].mws._pulse_max().std('mnum').mean('run')
 
-xr_errorbar_axes(da_mean, da_std, label='536', axes=axes)
+# xr_errorbar_axes(da_mean, da_std, label='536', axes=axes)
 
 
-plt.legend()
+# plt.legend()
 #%%
 
 # T_laser = ds_536['T_abs'].sel(time=slice(0,.1)).mean('time')

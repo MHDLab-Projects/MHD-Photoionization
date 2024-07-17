@@ -28,7 +28,7 @@ sigma_bl = ds_NE['sigma'].sel(phi=0.8, eta='perf', rxn='mm_sum', Kwt=0.01, P=1e5
 
 combos_l_b = {'l_b' :  np.linspace(0,1,100)}
 
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_bk' :sig_bk, 'sigma_bl': sigma_bl }, var_names = ['sigma_tot'])
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_b' :sig_bk, 'sigma_c': sigma_bl }, var_names = ['sigma_tot'])
 da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}

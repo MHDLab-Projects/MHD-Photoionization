@@ -56,7 +56,7 @@ combo_downsel = {
 
 }
 
-P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel, method='nearest')
 
 P_zero
 # %%
@@ -96,13 +96,13 @@ g = gamma_sel.plot(vmin=-1.2,vmax=1.2,xscale='log', col='rxn', cmap=cmap, figsiz
 
 
 ax_O2 = g.axes[0][1]
-line_O2 = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='O2')
+line_O2 = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='O2_exp_eff')
 line_O2.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_O2)
 
 ax_O2.set_title('O2')
 
 ax_Kp = g.axes[0][0]
-line_Kp = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='Kp')
+line_Kp = ds_P_zero['P_zero'].sel(combo_sel).sel(rxn='K+')
 line_Kp.plot(y='T', color='green', linewidth=2, linestyle='--', ax=ax_Kp)
 
 ax_Kp.set_title('K+')
@@ -129,3 +129,5 @@ colorbar.set_label('$1-\\beta$')
 # plt.savefig(pjoin(DIR_FIG_OUT, 'gamma_curve_demo_rxn.png'))
 # %%
 
+
+ds_P_zero

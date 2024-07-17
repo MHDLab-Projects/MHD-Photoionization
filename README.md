@@ -4,23 +4,17 @@ Modeling and experimental analysis of photoionization in MHD lab.
 
 ## Installation 
 
+Rename `.env_example` -> `.env`. Update values as needed.  #TODO: remove unused variables/clean up. 
 
-a `.env` file needs to be created in the root repository directory with the following info
-```
-REPO_DIR='C:/Path/to/this/folder'
-```
+create python virtual environment using one the requirement files in 'reqs'
 
-Initialize the mhdpy submodule
+Tested with Python 3.10.11 and git bash. 
 
-```
-git submodule init
-git submodule update
-```
+run `source install.sh` or run steps inside
 
-Also need to go in mhdpy and run these to the the 'readTrc' submodule for lecroy oscilloscope data. 
+copy in extra input data (folder of manual dataset files)
 
-create a python virtual environment, using a python 3.10 installation
+`cd automation`
+`source full_pipeline.sh`
 
-`python -m venv venv`
 
-Then activate this envrionment and run `install.sh`
