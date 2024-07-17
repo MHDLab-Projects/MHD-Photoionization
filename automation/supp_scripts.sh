@@ -29,8 +29,9 @@ popd
 ## SI Auxilliary datasets ##
 
 pushd $REPO_DIR/experiment/analysis/auto
-python expt_overview.py
-python mws_1d.py
+# python expt_overview.py
+# python mws_1d.py
+source run_all.sh
 popd 
 
 pushd $REPO_DIR/experiment/analysis/mws/resampling
