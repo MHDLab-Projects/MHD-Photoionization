@@ -16,6 +16,7 @@ echo "Collecting final documents"
 # cp main.pdf $output_dir/Photoionization.pdf
 # cp output/Photoionization.docx $output_dir/Photoionization.docx
 
+cp $REPO_DIR/final/figures/output $output_dir/figures -r
 
 cd $REPO_DIR/doc/SI_man
 cp SI_man.pdf $output_dir/Supporting\ Information.pdf
