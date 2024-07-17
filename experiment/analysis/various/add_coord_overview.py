@@ -15,7 +15,7 @@ from mhdpy.fileio.tdms import tdms2ds
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 
-coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
+coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'), convert_to_PT=False)
 
 
 ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
@@ -28,7 +28,6 @@ coords_orig = xr.merge([
     dsst['motor']['Motor C Relative'],
     dsst['hvof']['CC_equivalenceRatio']
 ])
-
 
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
 df_cuttimes = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
