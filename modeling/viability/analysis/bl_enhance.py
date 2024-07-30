@@ -39,11 +39,6 @@ da_dsigma_tot.attrs = {}
 # gamma_bl.name = 'gamma_bl'
 # gamma_bl.to_netcdf('output/gamma_bl.cdf')
 
-#%%
-
-sigma_bl.plot()
-# sig_bk
-# plt.yscale('log')
 
 #%%
 
@@ -55,6 +50,8 @@ da_plot.plot(hue='T')
 plt.gca().get_legend().set_bbox_to_anchor((1, 1))
 
 plt.yscale('log')
+
+plt.title('')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'bl_enhance.png'))
 # %%

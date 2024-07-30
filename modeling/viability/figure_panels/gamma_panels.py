@@ -83,7 +83,7 @@ plt.savefig('output/gamma_curve_demo.png')
 combo_downsel = {
     # 'P_in' : 0,
     # 'phi': [0.8],
-    'l_b': [0, 0.9],  
+    'l_b': [0, 0.99],  
     'eta': ['perf', 'KOH'],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
@@ -97,7 +97,7 @@ fig, axes = plt.subplots(2, 2, figsize=(4,3), sharex=True, sharey=True)
 
 
 for i, eta in enumerate(['perf', 'KOH']):
-    for j, l_b in enumerate([0, 0.9]):
+    for j, l_b in enumerate([0, 0.99]):
         ax = axes[j,i]
 
         da_sel = P_zero.sel(eta=eta, l_b=l_b)
@@ -130,7 +130,7 @@ axes[0,0].set_ylabel('T (K)')
 axes[1,0].set_ylabel('T (K)')
 
 axes[0,1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes[0,1].transAxes, rotation=-90, va='center')
-axes[1,1].text(1.05, 0.5, '$l_{bl} = 0.1$', transform=axes[1,1].transAxes, rotation=-90, va='center')
+axes[1,1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes[1,1].transAxes, rotation=-90, va='center')
 
 plt.tight_layout(pad=0.6)
 
