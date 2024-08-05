@@ -16,6 +16,8 @@ from mhdpy.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 
 
+# Taken from geometry.toml #TODO: read this file?
+CFD_EXIT_OFFSET = Quantity(20.911, 'cm')
 
 #%%
 tc = '536_pos'
@@ -50,10 +52,9 @@ def gen_beam_line(
     ta_offset: offset from the torch axis (z) 
     """
 
-    x_exit = Quantity(20.8, 'cm')
 
     #position of interseciton of line with z=0
-    x_beam = x_exit +  ta_position
+    x_beam = CFD_EXIT_OFFSET +  ta_position
 
     # make two points that intersect this point and are in the direction of the beam
     y_distance = Quantity(5, 'cm')
@@ -246,11 +247,11 @@ ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf
 
 #%%
 
-x_exit = Quantity(20.8, 'cm')
+CFD_EXIT_OFFSET = Quantity(20.8, 'cm')
 exit_offset = Quantity(5, 'mm') #TODO: measure
 
-a = [x_exit , Quantity(-5, 'cm') , Quantity(0, 'cm')]
-b = [x_exit , Quantity(5, 'cm'), Quantity(0, 'cm')]
+a = [CFD_EXIT_OFFSET , Quantity(-5, 'cm') , Quantity(0, 'cm')]
+b = [CFD_EXIT_OFFSET , Quantity(5, 'cm'), Quantity(0, 'cm')]
 
 line1 = extract_line_axi(mesh, a, b)
 
@@ -319,10 +320,10 @@ ds_out['Yeq_K'].plot(col='kwt', hue='phi')
 #%%
 
 
-x_exit = Quantity(20.8, 'cm')
+CFD_EXIT_OFFSET = Quantity(20.8, 'cm')
 
-a = [x_exit , Quantity(0, 'cm') , Quantity(0, 'cm')]
-b = [x_exit + Quantity(40, 'cm'), Quantity(0, 'cm'), Quantity(0, 'cm')]
+a = [CFD_EXIT_OFFSET , Quantity(0, 'cm') , Quantity(0, 'cm')]
+b = [CFD_EXIT_OFFSET + Quantity(40, 'cm'), Quantity(0, 'cm'), Quantity(0, 'cm')]
 
 line1 = extract_line_axi(mesh, a, b)
 
@@ -348,8 +349,8 @@ for key, fp in cfd_fp_dict.items():
     for offset in beam_offsets:
 
         #TODO: pint
-        a = [x_exit - Quantity(1, 'cm') , Quantity(0, 'cm'), offset]
-        b = [x_exit + Quantity(40, 'cm'), Quantity(0, 'cm'), offset]
+        a = [CFD_EXIT_OFFSET - Quantity(1, 'cm') , Quantity(0, 'cm'), offset]
+        b = [CFD_EXIT_OFFSET + Quantity(40, 'cm'), Quantity(0, 'cm'), offset]
 
         phi, kwt = key.split('_')
 
