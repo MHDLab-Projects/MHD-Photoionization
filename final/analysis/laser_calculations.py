@@ -6,6 +6,7 @@ Calcualtions of theoretical laser heating and ionization
 #%%
 
 from mhdpy.analysis.standard_import import *
+import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 
@@ -27,7 +28,7 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
-da_cfd = ds_cfd['Yeq_KOH']
+da_cfd = ds_cfd[ppu.CFD_KOH_SPECIES_NAME]
 
 goldi_pos = Quantity(180, 'mm')
 

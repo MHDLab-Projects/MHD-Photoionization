@@ -110,7 +110,7 @@ ds_cfd_beam = ds_cfd_beam.assign_coords(phi=ds_absem.coords['phi'].values)
 ds_cfd_beam = ds_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
 ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values) 
 
-da_cfd_beam = ds_cfd_beam['Yeq_K']
+da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME]
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
 da_cfd_beam

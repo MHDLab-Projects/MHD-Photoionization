@@ -2,6 +2,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
+from pi_paper_utils.constants import *
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -24,7 +25,7 @@ ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem_53x.coords['kwt'].val
 
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0)
 
-da_cfd_beam = ds_cfd_beam['Yeq_K']
+da_cfd_beam = ds_cfd_beam[CFD_K_SPECIES_NAME]
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
 da_cfd_beam

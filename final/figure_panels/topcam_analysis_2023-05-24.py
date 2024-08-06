@@ -1,6 +1,6 @@
 
 from mhdpy.analysis.standard_import import *
-import pi_paper_utils
+import pi_paper_utils as ppu
 create_standard_folders()
 
 
@@ -95,8 +95,6 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 ds_cfd
 #%%
 
-ds_cfd['Yeq_K']
-
 
 #%%
 
@@ -123,11 +121,11 @@ da_plot.plot(ax=ax, vmin=0)
 axes[1,1].set_title('ICCD During Laser [counts]')
 
 ax = axes[0,0]
-ds_cfd['Yeq_K'].plot(ax=ax, vmin=0, x='pos_x')
+ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x')
 axes[0,0].set_title('K [$particle/cm^3$]')
 
 ax = axes[1,0]
-ds_cfd['Yeq_KOH'].plot(ax=ax, vmin=0, x='pos_x')
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x')
 axes[1,0].set_title('KOH [$particle/cm^3$]')
 
 

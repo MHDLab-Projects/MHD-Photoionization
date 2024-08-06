@@ -196,7 +196,7 @@ ax = axes
 
 var = 'dAS_abs_max'
 ax.errorbar(
-    ds_species_cfd['Yeq_K'], 
+    ds_species_cfd[ppu.CFD_K_SPECIES_NAME], 
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
@@ -223,7 +223,7 @@ fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
 
 vars = ['dAS_abs_max', 'dpd1_max']
 
-xvar = 'Yeq_K'
+xvar = ppu.CFD_K_SPECIES_NAME
 
 for i, var in enumerate(vars):
     ax = axes[i]
@@ -287,7 +287,7 @@ fig, axes = plt.subplots(2, 1, figsize=(5,5), sharex=True)
 
 vars = ['dAS_abs_max', 'dpd1_max']
 
-xvar = 'Yeq_KOH'
+xvar = ppu.CFD_KOH_SPECIES_NAME
 
 for i, var in enumerate(vars):
     ax = axes[i]

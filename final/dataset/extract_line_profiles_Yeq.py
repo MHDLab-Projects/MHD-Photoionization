@@ -65,17 +65,20 @@ def gen_beam_line(
     return a, b
 
 
-def extract_line_axi(mesh, a: Quantity, b:Quantity):
+def extract_line_axi(mesh, a: Quantity, b:Quantity, resolution=1000):
+    """
+    Create a Line object from a mesh object along the line defined by a and b
+    """
 
     am = AxiMesh(mesh)
 
-
+    # remove 
     a = [e.to('m').magnitude for e in a]
     b = [e.to('m').magnitude for e in b]
 
-    line1 = am.sample_over_line(a, b, resolution=100)
+    line1 = am.sample_over_line(a, b, resolution=resolution)
 
-    line_cart  = pv.Line(a, b, 100)
+    line_cart  = pv.Line(a, b, resolution=resolution)
 
     line1.points = line_cart.points
 
@@ -84,6 +87,11 @@ def extract_line_axi(mesh, a: Quantity, b:Quantity):
     return line1
 
 def convert_line_df(line, fields):
+    """
+    Converts a pyvista Line object into a dataframe with index distance along the line
+
+
+    """
     dist = np.zeros(line.n_points)
 
     for i in range(1, line.n_points):
@@ -138,10 +146,6 @@ p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
 #%%
 
-mesh
-
-#%%
-
 df_lines = convert_line_df(line1, ['Yeq_K'])
 
 df_lines.plot()
@@ -153,11 +157,11 @@ plt.axvline(midpoint, color='gray', linestyle='--')
 
 #%%[markdown]
 
-# # Extract lines along beam axis
+# # Extract lines along beam axis for different beam positions and offsets
 
 # beam_positions = np.arange(1, 30, 5)
-dist_grid = np.arange(0, 0.1, 0.001)
-dist_grid = Quantity(dist_grid, 'm')
+beam_path_dist_grid = np.arange(0, 0.1, 0.001)
+beam_path_dist_grid = Quantity(beam_path_dist_grid, 'm')
 
 dss = []
 
@@ -176,7 +180,8 @@ for key, fp in cfd_fp_dict.items():
 
             df_lines = convert_line_df(line_out, cfd_all_fields)
 
-            df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
+            # Interpolation needed for consistent grid between beam paths. (a and b are changing) 
+            df_int = interp_df_to_new_index(df_lines, beam_path_dist_grid.to('m').magnitude)
 
             ds_out = xr.Dataset(df_int)
             ds_out = ds_out.rename({'dim_0':'dist'})
@@ -198,45 +203,18 @@ ds_lines = ds_lines.set_index(temp=['motor', 'kwt', 'phi', 'offset']).unstack('t
 
 #%%
 
+df_lines
+
+#%%
+
 ds_lines['motor'] = ds_lines['motor'].pint.quantify('m').pint.to('mm')
 ds_lines['offset'] = ds_lines['offset'].pint.quantify('m').pint.to('mm')
 ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
 
-#%%
-
-ds_lines['T'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
-
-#%%
-ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
 
 #%%
 
-ds_lines.sel(kwt=1, phi=0.8)['Yeq_K'].plot(row='motor', hue='offset')
-
-plt.yscale('log')
-
-plt.ylim(1e-10,)
-
-#%%
-
-
-ds_lines['T'].sel(kwt=1).plot(col='phi', hue='motor', row='offset')
-
-
-#%%
-
-ds_lines['Yeq_K'].sel(offset=0).plot(col='kwt', hue='motor', row='phi')
-
-plt.yscale('log')
-
-plt.ylim(1e-14, 1e-2)
-
-#%%
-
-ds_lines['Yeq_K'].sel(kwt=1).plot(col='phi', hue='motor', row='offset')
-plt.yscale('log')
-
-
+ds_lines['Yeq_K'].sel(phi=0.8,kwt=1).sel(motor=100,method='nearest').sel(offset=0).dropna('dist')
 #%%
 
 ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
@@ -247,7 +225,6 @@ ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf
 
 #%%
 
-CFD_EXIT_OFFSET = Quantity(20.8, 'cm')
 exit_offset = Quantity(5, 'mm') #TODO: measure
 
 a = [CFD_EXIT_OFFSET , Quantity(-5, 'cm') , Quantity(0, 'cm')]
@@ -272,8 +249,8 @@ df_lines = convert_line_df(line1, ['Yeq_K'])
 df_lines.plot()
 
 #%%
-dist_grid = np.arange(0, 0.1, 0.001)
-dist_grid = Quantity(dist_grid, 'm')
+
+# barrel exit profile
 
 dss = []
 
@@ -286,7 +263,9 @@ for key, fp in cfd_fp_dict.items():
     line_out = extract_line_axi(mesh, a, b)
 
     df_lines = convert_line_df(line_out, cfd_all_fields)
-    df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
+
+    # Needs to be on the same grid as position dependent beam profiles, two dataset are combined later in loading
+    df_int = interp_df_to_new_index(df_lines, beam_path_dist_grid.to('m').magnitude)
 
     ds_out = xr.Dataset(df_int)
     ds_out = ds_out.rename({'dim_0':'dist'})
@@ -319,18 +298,15 @@ ds_out['Yeq_K'].plot(col='kwt', hue='phi')
 
 #%%
 
-
-CFD_EXIT_OFFSET = Quantity(20.8, 'cm')
-
-a = [CFD_EXIT_OFFSET , Quantity(0, 'cm') , Quantity(0, 'cm')]
+a = [CFD_EXIT_OFFSET +Quantity(0, 'cm'), Quantity(0, 'cm') , Quantity(0, 'cm')]
 b = [CFD_EXIT_OFFSET + Quantity(40, 'cm'), Quantity(0, 'cm'), Quantity(0, 'cm')]
 
-line1 = extract_line_axi(mesh, a, b)
+line1 = extract_line_axi(mesh, a, b, resolution=1000)
 
 p = pv.Plotter()
 
 p.add_mesh(mesh, scalars='K')
-p.add_mesh(line1, color='red', line_width=5)
+p.add_mesh(line1, color='red', line_width=1)
 
 
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
@@ -348,22 +324,28 @@ dss = []
 for key, fp in cfd_fp_dict.items():
     for offset in beam_offsets:
 
+
+        x_start = 0        
+
         #TODO: pint
-        a = [CFD_EXIT_OFFSET - Quantity(1, 'cm') , Quantity(0, 'cm'), offset]
+        a = [CFD_EXIT_OFFSET + Quantity(x_start, 'cm') , Quantity(0, 'cm'), offset]
         b = [CFD_EXIT_OFFSET + Quantity(40, 'cm'), Quantity(0, 'cm'), offset]
 
         phi, kwt = key.split('_')
 
         mesh = pv.read(fp)
 
-        dist_grid = np.arange(0, 0.4, 0.001)
-        dist_grid = Quantity(dist_grid, 'm')
+        # dist_grid = np.arange(-0.01, 0.4, 0.0001)
+        # dist_grid = Quantity(dist_grid, 'm')
 
-        line_out = extract_line_axi(mesh, a, b)
+        line_out = extract_line_axi(mesh, a, b, resolution=1000)
 
         df_lines = convert_line_df(line_out, cfd_all_fields)
 
-        df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
+        # No interpolation needed here
+        
+        # df_int = interp_df_to_new_index(df_lines, dist_grid.to('m').magnitude)
+        df_int = df_lines
 
         ds_out = xr.Dataset(df_int)
         ds_out = ds_out.rename({'dim_0':'x'})
@@ -398,4 +380,4 @@ ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.
 df_lines
 # %%
 
-ds_out
+# ds_out.sel(offset=0, phi=0.8, kwt=1.0)['K'].plot()

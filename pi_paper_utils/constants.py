@@ -13,3 +13,11 @@ MOTOR_OFFSET = Quantity(1 + 3/16, 'inches')
 MAG_MWS_BLOCK = Quantity(0.006245581698287483, 'V')
 # MAG_MWS_BLOCK = Quantity(0, 'V')
 
+AES_BARREL_OFFSET = Quantity(1/8, 'inches')
+
+# species name used in fitting and plots
+CFD_K_SPECIES_NAME = 'K'
+CFD_KOH_SPECIES_NAME = 'KOH'
+CFD_Kp_SPECIES_NAME = 'Kp'
+CFD_allK_SPECIES_NAME = 'all_K'
+CFD_OH_SPECIES_NAME = 'OH'

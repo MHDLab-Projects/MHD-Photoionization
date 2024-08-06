@@ -2,6 +2,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
+from pi_paper_utils.constants import *
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
@@ -57,7 +58,7 @@ for ax in g.axes.flatten():
 #%%
 plt.figure()
 # show species densities on similar plot 
-da_plot = ds_cfd[['Yeq_K+', 'OH', 'O2', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
+da_plot = ds_cfd[[CFD_Kp_SPECIES_NAME, 'OH', 'O2', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
 
 
 g = da_plot.plot(hue='var', col='phi')

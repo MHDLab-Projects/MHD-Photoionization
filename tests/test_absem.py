@@ -6,6 +6,8 @@ from mhdpy.analysis.absem.fit_prep import interp_alpha
 from mhdpy.analysis import absem
 from mhdpy.xr_utils import fit_da_lmfit
 
+from pi_paper_utils.constants import *
+
 import pytest    
 
 @pytest.fixture
@@ -78,7 +80,7 @@ def test_pipe_fit_alpha_num_1(ds_absem):
 
     ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=180,method='nearest').sel(mp='barrel')
 
-    da_cfd_beam = ds_cfd_beam['Yeq_K']
+    da_cfd_beam = ds_cfd_beam[CFD_K_SPECIES_NAME]
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
     ds_fit_absem = ds_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do

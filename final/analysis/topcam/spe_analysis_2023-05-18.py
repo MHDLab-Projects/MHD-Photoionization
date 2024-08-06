@@ -4,6 +4,7 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 import pickle
+import pi_paper_utils as ppu
 from pi_paper_utils.spe_calib_utils import pipe_transform_projective, calibrate_da_pimax_simple
 
 datestr = '2023-05-18'
@@ -206,7 +207,7 @@ ds_cfd['pos_y'] = ds_cfd['pos_y'] * 1000
 
 #%%
 
-ds_cfd['Yeq_KOH'].plot(x = 'pos_x')
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x')
 
 
 #%%[markdown]
@@ -349,7 +350,7 @@ diff.plot()
 
 plt.figure()
 
-ds_cfd['Yeq_KOH'].plot(x = 'pos_x', cmap='winter')
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x', cmap='winter')
 diff.plot(alpha=0.5)
 
 plt.xlabel('x (mm)')
@@ -371,10 +372,10 @@ fig, axes = plt.subplots(2,2, figsize=(8,4), sharex=True, sharey=True)
 
 
 ds['las_off'].plot(ax=axes[0,0])
-ds_cfd['Yeq_K'].plot(x = 'pos_x', ax=axes[1,0])
+ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(x = 'pos_x', ax=axes[1,0])
 
 diff.plot(ax=axes[0,1])
-ds_cfd['Yeq_KOH'].plot(x = 'pos_x', ax=axes[1,1])
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x', ax=axes[1,1])
 
 for ax in axes.flatten():
     ax.set_xlabel('')

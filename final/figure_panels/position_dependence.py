@@ -21,8 +21,7 @@ ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(kwt=1)
 
-# ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
-ds_cfd['nK_m3'] = ds_cfd['K'].pint.to('particle/m^3')
+ds_cfd['nK_m3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 
 #%%
@@ -52,7 +51,7 @@ g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2'
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
 
-ax1.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm'), nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 
@@ -78,7 +77,7 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1'
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
-ax2.errorbar(0, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm'), nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 for ax in axes:

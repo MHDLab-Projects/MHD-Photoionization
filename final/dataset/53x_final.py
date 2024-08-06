@@ -12,7 +12,6 @@ import pi_paper_utils as ppu
 from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords.ct import downselect_acq_time
 
-
 #%%
 
 tc = '53x'
@@ -59,8 +58,8 @@ ds_krb
 
 # Calculate expected tau for recombination with those species
 
-ds_species_cfd = ds_cfd[['K', 'KOH',  'all_K', 'Yeq_K+', 'Yeq_OH', 'O2', 'H2O', 'Yeq_KOH', 'Yeq_K', 'all_K_Yeq', 'T', 'rho_number', 'N2', 'CO2']]
-ds_species_cfd = ds_species_cfd.rename({'Yeq_K+': 'K+', 'Yeq_OH': 'OH'})
+ds_species_cfd = ds_cfd[[ppu.CFD_K_SPECIES_NAME, ppu.CFD_KOH_SPECIES_NAME, ppu.CFD_Kp_SPECIES_NAME, ppu.CFD_allK_SPECIES_NAME, ppu.CFD_OH_SPECIES_NAME, 'O2', 'H2O', 'T', 'rho_number', 'N2', 'CO2']]
+ds_species_cfd = ds_species_cfd.rename({ppu.CFD_Kp_SPECIES_NAME: 'K+', ppu.CFD_OH_SPECIES_NAME: 'OH'})
 
 from pi_paper_utils.kinetics import calc_krm
 
@@ -101,7 +100,7 @@ ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem.coords['kwt'].values)
 
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=goldi_pos,method='nearest')
 
-da_cfd_beam = ds_cfd_beam['Yeq_K']
+da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME]
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
 da_cfd_beam
