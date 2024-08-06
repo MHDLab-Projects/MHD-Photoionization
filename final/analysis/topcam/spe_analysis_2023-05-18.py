@@ -291,7 +291,7 @@ diff.plot()
 
 # %%
 
-ds_cfd['Yeq_KOH'].plot(x = 'pos_x')
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x')
 diff.plot(alpha=0.5)
 
 plt.xlabel('x (mm)')

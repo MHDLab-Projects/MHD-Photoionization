@@ -251,7 +251,7 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 ds_cfd = ds_cfd.sel(kwt=1).sel(phi=0.8).sel(offset=0)
 
-ds_cfd['nK_m3'] = ds_cfd['Yeq_K'].pint.to('particle/m^3')
+ds_cfd['nK_m3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 ds_cfd_norm = ds_cfd/ds_cfd.max()
 
@@ -299,7 +299,7 @@ ax1.axvline(178, color='gold', linestyle='--')
 
 plt.twinx()
 
-ds_cfd_norm['Yeq_K'].plot(color='black', label ='CFD centerline')
+ds_cfd_norm[ppu.CFD_K_SPECIES_NAME].plot(color='black', label ='CFD centerline')
 # ds_cfd_beam_norm['K'].plot(color='grey', label = 'beam conv (TODO)', marker='o')
 
 ax2 = plt.gca()
@@ -381,8 +381,8 @@ plt.title('CFD KOH and MWS AS compare')
 
 plt.twinx()
 
-ds_cfd_norm['Yeq_KOH'].plot(color='black', label ='CFD centerline')
-# ds_cfd_beam_norm['Yeq_KOH'].plot(color='gray', label = 'beam conv (TODO)')
+ds_cfd_norm[ppu.CFD_KOH_SPECIES_NAME].plot(color='black', label ='CFD centerline')
+# ds_cfd_beam_norm[ppu.CFD_KOH_SPECIES_NAME].plot(color='gray', label = 'beam conv (TODO)')
 
 ax2 = plt.gca()
 ax2.legend(bbox_to_anchor=[0,0,1.5,0.3])

@@ -45,7 +45,7 @@ for ax in g.axes.flatten():
 
 # show species densities on similar plot 
 
-g = ds_cfd[['Yeq_K+', 'OH', 'O2', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+g = ds_cfd[[ppu.CFD_KOH_SPECIES_NAME, 'OH', 'O2', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
 
 plt.yscale('log')
 
@@ -101,7 +101,7 @@ g= da_plot.plot(hue='var', col='phi')
 
 plt.yscale('log')
 
-plt.ylim(0.1,1e3)
+plt.ylim(0.01,3e3)
 
 g.axes[0,0].set_ylabel("Tau [$\mu s$]")
 

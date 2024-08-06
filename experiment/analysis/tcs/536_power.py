@@ -90,7 +90,7 @@ for i, power in enumerate(powers):
 
 plt.yscale('log')
 plt.xlim(-1,50)
-plt.ylim(1e-5,1e-1)
+plt.ylim(1e-5,2e-1)
 
 plt.ylabel('AS_abs')
 plt.xlabel('Time [us]')

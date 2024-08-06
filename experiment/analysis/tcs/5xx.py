@@ -52,7 +52,7 @@ da_max.plot(hue='phi', marker='o')
 
 plt.twinx()
 
-da_cfd_sel = ds_cfd.sel(kwt=1)['Yeq_KOH']
+da_cfd_sel = ds_cfd.sel(kwt=1)[ppu.CFD_KOH_SPECIES_NAME]
 
 da_cfd_sel.plot(hue='phi', linestyle='--')
 
@@ -64,7 +64,7 @@ plt.gca().get_legend().set_bbox_to_anchor((1, 0.6))
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
 
-da_cfd_sel = ds_cfd.sel(kwt=1)['Yeq_KOH']
+da_cfd_sel = ds_cfd.sel(kwt=1)[ppu.CFD_KOH_SPECIES_NAME]
 
 lines = []
 labels = []
@@ -359,7 +359,7 @@ da_max
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6, 8), sharex=True)
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_KOH']
+da_cfd_sel = ds_cfd.sel(kwt=0.1)[ppu.CFD_KOH_SPECIES_NAME]
 
 lines = []
 labels = []
@@ -425,7 +425,7 @@ da_count.sel(mp='mw_horns').plot(hue='phi', marker='o')
 
 
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('particle/m^3')
+da_cfd_sel = ds_cfd.sel(kwt=0.1)[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
 
@@ -449,7 +449,7 @@ plt.figure(figsize=(6,4))
 
 import matplotlib.lines as mlines
 
-da_cfd_sel = ds_cfd.sel(kwt=0.1)['Yeq_K'].pint.to('particle/m^3')
+da_cfd_sel = ds_cfd.sel(kwt=0.1)[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 da = ds_p['nK_m3'].sel(mp='mw_horns').drop('run')
 

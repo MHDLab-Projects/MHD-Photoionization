@@ -13,25 +13,12 @@ from pv_axi_utils import AxiInterpolator
 
 sp_dir = gen_path('sharepoint')
 
-results_dir = pjoin(sp_dir, 'Team Member Files', 'DaveH', 'Results', 'axiJP8200_17Jul23')
-# results_dir = 'input'
-
-fps = {
-    '0.8_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi080_K010', 'frontCyl_chem1.vtk'),
-    '0.8_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi080_K100', 'frontCyl_chem1.vtk'),
-    '0.6_0.1': pjoin(results_dir, 'medium', 'mdot0130_phi060_K010', 'frontCyl_chem1.vtk'),
-    '0.6_1.0': pjoin(results_dir, 'medium', 'mdot0130_phi060_K100', 'frontCyl_chem1.vtk'),
-}
-
-soi = ['K', 'Kp', 'em', 'OH', 'OHm', 'KOH', 'O2', 'H2O', 'N2', 'CO2']
-soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3']
-additional = ['T', 'p', 'rho']
-all_fields = [*soi, *soi_Yeq, *additional]
+from pi_paper_utils.fileio import cfd_all_fields, cfd_fp_dict
 
 
 # %%
 
-mesh = pv.read(fps['0.8_1.0'])
+mesh = pv.read(cfd_fp_dict['0.8_1.0'])
 
 
 #%%

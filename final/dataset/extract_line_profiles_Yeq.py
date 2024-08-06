@@ -146,7 +146,7 @@ p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
 #%%
 
-df_lines = convert_line_df(line1, ['Yeq_K'])
+df_lines = convert_line_df(line1, [ppu.CFD_K_SPECIES_NAME])
 
 df_lines.plot()
 
@@ -214,7 +214,7 @@ ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
 
 #%%
 
-ds_lines['Yeq_K'].sel(phi=0.8,kwt=1).sel(motor=100,method='nearest').sel(offset=0).dropna('dist')
+ds_lines[ppu.CFD_K_SPECIES_NAME].sel(phi=0.8,kwt=1).sel(motor=100,method='nearest').sel(offset=0).dropna('dist')
 #%%
 
 ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
@@ -244,7 +244,7 @@ p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 
 #%%
 
-df_lines = convert_line_df(line1, ['Yeq_K'])
+df_lines = convert_line_df(line1, [ppu.CFD_K_SPECIES_NAME])
 
 df_lines.plot()
 
@@ -290,7 +290,7 @@ ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_barrelexi
 
 #%%
 
-ds_out['Yeq_K'].plot(col='kwt', hue='phi')
+ds_out[ppu.CFD_K_SPECIES_NAME].plot(col='kwt', hue='phi')
 
 #%%[markdown]
 
@@ -361,7 +361,7 @@ for key, fp in cfd_fp_dict.items():
         dss.append(ds_out)
 
         # ds_out = ds_out.drop_vars(['K', 'Kp'])
-        # ds_out = ds_out.rename({'Yeq_K':'K', 'Yeq_K+':'Kp'})
+        # ds_out = ds_out.rename({ppu.CFD_K_SPECIES_NAME:'K', ppu.CFD_KOH_SPECIES_NAME:'Kp'})
 
         # # 
 

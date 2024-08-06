@@ -31,10 +31,9 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 ds_cfd.coords['dist'] = ds_cfd.coords['dist'].pint.to('cm') # Fitting expects cm
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
 
-da_cfd = ds_cfd['Yeq_K']
+da_cfd = ds_cfd[ppu.CFD_K_SPECIES_NAME]
 
 da_cfd
-
 
 
 # %%
@@ -327,7 +326,7 @@ plt.xlim(763,775)
 #%%
 
 
-da_cfd_nK = ds_cfd['Yeq_K'].sel(kwt=1)
+da_cfd_nK = ds_cfd[ppu.CFD_K_SPECIES_NAME].sel(kwt=1)
 
 da_cfd_nK_norm = da_cfd_nK/da_cfd_nK.max('dist')
 
@@ -362,7 +361,7 @@ ds_cfd_cl = ds_cfd_cl.cfd.convert_all_rho_number()
 
 ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
-ds_cfd_cl['nK_m3'] = ds_cfd_cl['Yeq_K'].pint.to('particle/m^3')
+ds_cfd_cl['nK_m3'] = ds_cfd_cl[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 # %%.
 
