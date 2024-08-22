@@ -59,7 +59,7 @@ plt.yscale('log')
 #TODO: this is redundant with proc_add_coord.py, but for simlified case of individual tc. how should this be handled?
 
 from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords import assign_coords_multi
 
 coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))

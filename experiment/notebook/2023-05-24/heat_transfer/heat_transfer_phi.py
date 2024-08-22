@@ -23,13 +23,13 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(conv
 
 # %%
 
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general, get_region
 
 fp_cuttimes_phi = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes_phi)
 
-cuttimes = extract_cuttime_list(df_cuttimes)
+cuttimes = df_cuttimes.ct.extract_cuttime_list()
 
 cuttimes_new = []
 

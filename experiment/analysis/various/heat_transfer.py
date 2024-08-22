@@ -1,6 +1,6 @@
 #%%
 from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')

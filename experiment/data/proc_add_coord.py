@@ -5,7 +5,7 @@ create_standard_folders()
 import re
 from collections import defaultdict
 
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
 from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
 

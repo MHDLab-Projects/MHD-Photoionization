@@ -22,7 +22,7 @@ pow_pe = dsst['lasen_meter2']['Power']
 fw = dsst['filterwheel']['Filter Position']
 
 #%%
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_power_calibration.csv')
 

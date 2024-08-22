@@ -10,7 +10,7 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import re
 from collections import defaultdict
 
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.fileio.tdms import tdms2ds
 
 dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
@@ -32,7 +32,7 @@ coords_orig = xr.merge([
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
 df_cuttimes = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
 
-cuttimes = extract_cuttime_list(df_cuttimes)
+cuttimes = df_cuttimes.ct.extract_cuttime_list()
 
 #%%[markdown]
 

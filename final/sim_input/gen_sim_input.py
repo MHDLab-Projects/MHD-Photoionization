@@ -33,7 +33,7 @@ dsst['hvof']['CC_P'] = dsst['hvof']['CC_P'].sel(time=tw_CC_P_valid)
 
 # %%
 
-from mhdpy.fileio.ct import load_df_cuttimes, extract_cuttime_list
+from mhdpy.fileio.ct import load_df_cuttimes
 
 # Test case cuttimes
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
@@ -157,7 +157,7 @@ df_cuttimes['tc'] = df_cuttimes['kwt'].astype(str) + '_' + df_cuttimes['phi'].as
 df_cuttimes = df_cuttimes.set_index('tc')
 df_cuttimes = df_cuttimes.sort_index()
 
-cuttimes = extract_cuttime_list(df_cuttimes)
+cuttimes = df_cuttimes.ct.extract_cuttime_list()
 
 
 df_cuttimes
