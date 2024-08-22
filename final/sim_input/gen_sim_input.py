@@ -7,7 +7,6 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 plt.rcParams.update({'font.size': 8, 'timezone': 'America/Los_Angeles'})
 
-from mhdpy.coords.ct import filter_cuttimes
 from mhdpy.coords.ct import assign_tc_general
 from mhdpy.xr_utils import calc_stats
 
@@ -63,6 +62,37 @@ df_exptw = df_exptw.set_index('date').sort_index()
 #%%
 
 # Filter the cuttimes to only include the ones that are in the sequence timewindows
+
+
+def filter_cuttimes(df_ct_testcase, df_ct_sequence, mode='both'):
+    """
+    Filter the testcase cuttimes to only those that are within the sequence timewindows 
+    df_ct_testcase: dataframe of cuttimes for the test case
+    df_ct_sequence: dataframe of cuttimes for the sequences, should be longer than df_ct_testcase
+
+    mode: 'both' or 'either'
+    'both' will only include cuttimes that are entirely within the sequence timewindow
+    'either' will include cuttimes that are partially within the sequence timewindow
+    """
+
+
+    df_ct_testcase_filtered = pd.DataFrame()
+
+    for _, row in df_ct_sequence.iterrows():
+        start_time, stop_time = row['Start Time'], row['Stop Time']
+
+        if mode == 'both':
+            df_temp = df_ct_testcase[(df_ct_testcase['Start Time'] >= start_time) & (df_ct_testcase['Stop Time'] <= stop_time)]
+        elif mode == 'either':
+            df_temp = df_ct_testcase[((df_ct_testcase['Start Time'] >= start_time) & (df_ct_testcase['Start Time'] <= stop_time)) | 
+                                  ((df_ct_testcase['Stop Time'] >= start_time) & (df_ct_testcase['Stop Time'] <= stop_time))]
+        else:
+            raise ValueError("Invalid mode. Choose either 'both' or 'either'.")
+
+        df_ct_testcase_filtered = pd.concat([df_ct_testcase_filtered, df_temp])
+
+    return df_ct_testcase_filtered
+
 
 df_cuttimes = filter_cuttimes(df_cuttimes, df_sequence_tw, mode='either')
 df_cuttimes
