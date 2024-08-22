@@ -54,3 +54,6 @@ copy_files(modeling_data_folder, test_data_folder_modeling)
 
 final_data_folder = os.path.join(REPO_DIR, 'final', 'dataset', 'output')
 copy_files(final_data_folder, test_data_folder_final)
+
+sim_input_data_folder = os.path.join(REPO_DIR, 'final', 'sim_input', 'output')
+copy_files(sim_input_data_folder, test_data_folder_final)

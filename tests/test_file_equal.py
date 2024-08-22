@@ -41,6 +41,7 @@ cdf_files_modeling = [os.path.relpath(f, test_data_path_modeling) for f in cdf_f
 cdf_files_final = glob.glob(pjoin(test_data_path_final, '**/*.cdf'), recursive=True)
 cdf_files_final = [os.path.relpath(f, test_data_path_final) for f in cdf_files_final]
 
+
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 
@@ -132,6 +133,18 @@ params_final = [(cdf_file, input_data_folder_final, test_data_path_final) for cd
 @pytest.mark.parametrize('cdf_file,new_data_dir,test_dir', params_final)
 def test_equals_cdf_final(data_tuple_cdf):
     ds_new, ds_old = data_tuple_cdf
+
+    if not ds_new.equals(ds_old):
+        assertion_message = f'New and old datasets are not equal \n\n--New--\n{ds_new}\n\n--Old--{ds_old}'
+        raise AssertionError(assertion_message)
+
+sim_input_file = 'sim_input_mean.xlsx'
+sim_input_file_new = pjoin(REPO_DIR, 'final', 'sim_input', 'output', sim_input_file)
+sim_input_file_test = pjoin(test_data_path_final, sim_input_file)
+
+def test_sim_input_mean():
+    ds_new = pd.read_excel(sim_input_file_new)
+    ds_old = pd.read_excel(sim_input_file_test)
 
     if not ds_new.equals(ds_old):
         assertion_message = f'New and old datasets are not equal \n\n--New--\n{ds_new}\n\n--Old--{ds_old}'

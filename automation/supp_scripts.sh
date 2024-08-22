@@ -42,3 +42,7 @@ popd
 pushd $REPO_DIR/experiment/notebook/2023-05-18/mws
 python analysis_silicon_power.py
 popd
+
+pushd $REPO_DIR/final/sim_input
+python gen_sim_input.py
+popd
