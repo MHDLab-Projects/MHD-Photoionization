@@ -157,7 +157,7 @@ df_cuttimes['tc'] = df_cuttimes['kwt'].astype(str) + '_' + df_cuttimes['phi'].as
 df_cuttimes = df_cuttimes.set_index('tc')
 df_cuttimes = df_cuttimes.sort_index()
 
-cuttimes = df_cuttimes.ct.extract_cuttime_list()
+cuttimes = df_cuttimes.ct.slice_list()
 
 
 df_cuttimes

@@ -24,12 +24,12 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(conv
 # %%
 
 from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general, get_region
+from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general
 
 fp_cuttimes_phi = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes_phi)
 
-cuttimes = df_cuttimes.ct.extract_cuttime_list()
+cuttimes = df_cuttimes.ct.slice_list()
 
 cuttimes_new = []
 
@@ -62,7 +62,8 @@ da_ct.coords['phi'].attrs['long_name'] = 'Phi'
 
 da_ct
 
-region = get_region(da_ct, buffer=0.2)
+# region = get_region(da_ct, buffer=0.2)
+region = df_cuttimes.ct.timewindow(buffer=0.2)
 
 # %%
 
