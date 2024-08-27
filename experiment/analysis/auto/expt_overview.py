@@ -75,18 +75,12 @@ for date, df in df_ct.groupby('date'):
         )
 
     ds_plot = ds_orig.sel(time=timewindow)
-
-    # Generate da_ct from df_cuttimes with date column
-    
-    df['tw'] = df.apply(lambda x: slice(x['Start Time'], x['Stop Time']), axis=1)
-    da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
-
     # TODO: something in here is messing with the order of the values
-    fig = tc_plot(ds_plot, da_ct, legend_axes=1, figsize=(8,10))
+    fig = tc_plot(ds_plot, df, legend_axes=0, figsize=(8,10), legend_column='Event')
 
     # fig.axes[1].get_legend().set_bbox_to_anchor((1, 1))
     # fig.axes[1].get_legend.set(bbox_to_anchor=(0.5, 1.5), loc="lower center", bbox_transform=fig.transFigure)   
-    fig.axes[1].get_legend().set_bbox_to_anchor([0.95,1], transform=fig.transFigure)
+    fig.axes[0].get_legend().set_bbox_to_anchor([0.65,0.8], transform=fig.transFigure)
     fig.subplots_adjust(top=0.8, left=0.2)  # Adjust the top spacing
 
     fig.axes[0].set_yscale('log')
@@ -111,7 +105,6 @@ for date, df in df_ct.groupby('date'):
 # %%
 
 
-da_ct
 # %%
 
 output_dir = pjoin(DIR_FIG_OUT, 'other_signals')
@@ -154,13 +147,8 @@ for date, df in df_ct.groupby('date'):
 
     ds_plot = ds_orig.sel(time=timewindow).pint.dequantify()
 
-    # Generate da_ct from df_cuttimes with date column
-    
-    df['tw'] = df.apply(lambda x: slice(x['Start Time'], x['Stop Time']), axis=1)
-    da_ct = xr.DataArray(df.set_index(['Event'])['tw'])
-
     # TODO: something in here is messing with the order of the values
-    fig = tc_plot(ds_plot, da_ct, legend_axes=None, figsize=(8,12))
+    fig = tc_plot(ds_plot, df, legend_axes=None, figsize=(8,12), legend_column='Event')
 
     # fig.axes[0].set_yscale('log')
     # fig.axes[3].set_ylim(0.5,1.5)
