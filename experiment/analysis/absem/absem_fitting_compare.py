@@ -143,7 +143,7 @@ plt.yscale('log')
 
 #%%
 
-plot.common.xr_errorbar(ds_p['nK_m3'], ds_p_stderr['nK_m3'], huedim='method')
+plot.xr_errorbar(ds_p['nK_m3'], ds_p_stderr['nK_m3'], huedim='method')
 
 #%%
 

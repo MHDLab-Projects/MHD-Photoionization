@@ -66,7 +66,7 @@ plt.legend()
 
 #%%
 
-from mhdpy.plot.common import xr_errorbar
+from mhdpy.plot import xr_errorbar
 
 mean = ht['CC_heatTransfer'].mean('mnum')
 std = ht['CC_heatTransfer'].std('mnum')

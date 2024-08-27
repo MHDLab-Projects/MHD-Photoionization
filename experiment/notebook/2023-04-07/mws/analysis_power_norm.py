@@ -43,7 +43,7 @@ da_std = da.std('acq_time')
 
 #%%
 
-from mhdpy.plot.common import xr_errorbar
+from mhdpy.plot import xr_errorbar
 
 xr_errorbar(da_mean, da_std)
 plt.xlim(-10,10)

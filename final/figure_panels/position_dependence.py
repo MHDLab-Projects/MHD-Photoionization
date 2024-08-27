@@ -2,7 +2,7 @@
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
-from mhdpy.plot.common import xr_errorbar_axes
+from mhdpy.plot import xr_errorbar_axes
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 

@@ -81,7 +81,7 @@ ds_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
 
 #%%
 
-# from mhdpy.plot.common import xr_errorbar_axes
+# from mhdpy.plot import xr_errorbar_axes
 
 # fig,axes = plt.subplots(1, figsize=(15,5), sharey=True)
 

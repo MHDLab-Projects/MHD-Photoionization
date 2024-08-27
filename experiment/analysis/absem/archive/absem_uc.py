@@ -32,7 +32,7 @@ ds
 
 #%%
 
-from mhdpy.plot.common import xr_errorbar_axes
+from mhdpy.plot import xr_errorbar_axes
 
 
 fig, axes = plt.subplots(len(ds.coords['run']),2 , figsize=(5,10), sharex=True, sharey=True)
@@ -165,7 +165,7 @@ plt.yscale('log')
 #%%
 
 
-from mhdpy.plot.common import xr_errorbar_axes
+from mhdpy.plot import xr_errorbar_axes
 
 ds_sel = ds_nK.sel(mp='barrel').dropna('kwt',how='all').drop('mp')
 

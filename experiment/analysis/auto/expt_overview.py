@@ -57,7 +57,7 @@ ds_orig
 
 # %%
 
-from mhdpy.plot.common import simple_ds_plot, tc_plot
+from mhdpy.plot import simple_ds_plot, tc_plot
 
 simple_ds_plot(ds_orig)
 

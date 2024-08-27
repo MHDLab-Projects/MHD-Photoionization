@@ -190,7 +190,7 @@ for i, (method, ds) in enumerate(ds_p.groupby('run')):
 
 # %%
 
-from mhdpy.plot.common import xr_errorbar
+from mhdpy.plot import xr_errorbar
 
 ds_plot = ds_p.mean('run')
 

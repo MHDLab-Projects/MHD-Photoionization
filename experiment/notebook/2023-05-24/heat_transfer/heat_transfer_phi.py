@@ -9,7 +9,7 @@
 
 from mhdpy.analysis.standard_import import *
 create_standard_folders()
-from mhdpy.plot.common import xr_errorbar, xr_errorbar_axes
+from mhdpy.plot import xr_errorbar, xr_errorbar_axes
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
@@ -76,7 +76,7 @@ ds_plot = xr.merge([
     dsst['hvof'][['CC_total_flow_in', 'CC_K_massFrac_in', 'CC_equivalenceRatio']]
 ])
 
-from mhdpy.plot.common import simple_ds_plot, tc_plot
+from mhdpy.plot import simple_ds_plot, tc_plot
 
 df_cuttimes['plot_label'] = df_cuttimes['kwt'].astype(str) + ' kwt, ' + df_cuttimes['phi'].astype(str) + ' phi'
 fig =  tc_plot(ds_plot.sel(time=region), df_cuttimes, legend_axes=3, legend_column='plot_label')
