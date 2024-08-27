@@ -24,43 +24,47 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(conv
 # %%
 
 from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords.ct import gen_da_ct_data, assign_tc_general
 
 fp_cuttimes_phi = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes_phi)
 
-cuttimes = df_cuttimes.ct.slice_list()
-
-cuttimes_new = []
-
 start_shift = np.timedelta64(1, 'm')
 stop_shift = np.timedelta64(10, 's')
 
-for ct in cuttimes:
-    ct_new = slice(ct.start + start_shift, ct.stop - stop_shift)
-    cuttimes_new.append(ct_new)
+df_cuttimes['Start Time'] = df_cuttimes['Start Time'] + start_shift
+df_cuttimes['Stop Time'] = df_cuttimes['Stop Time'] - stop_shift
 
-cuttimes = cuttimes_new
-
-#%%
+cuttimes = df_cuttimes.ct.slice_list()
 
 #%%
 
-da_ct = gen_da_ct_data(cuttimes, dim_dict={
-    'phi': {'data': dsst['hvof']['CC_equivalenceRatio']},
-    'kwt': {'data' : dsst['hvof']['CC_K_massFrac_in']*100},
-    # 'tf': {'data': dsst['hvof']['CC_total_flow_in']},
-})
+df_cuttimes = df_cuttimes.ct.add_data_stat(dsst['hvof']['CC_K_massFrac_in']*100, round_value=2)
+df_cuttimes = df_cuttimes.ct.add_data_stat(dsst['hvof']['CC_equivalenceRatio'], round_value=1)
 
-da_ct.coords['kwt'] = da_ct.coords['kwt'].round(2)
-da_ct.coords['phi'] = da_ct.coords['phi'].round(1)
+df_cuttimes = df_cuttimes.rename({'CC_K_massFrac_in': 'kwt', 'CC_equivalenceRatio': 'phi'}, axis=1)
+df_cuttimes
 
-da_ct = da_ct.set_index(ct=['phi', 'kwt']).unstack('ct')
 
-da_ct.coords['kwt'].attrs['long_name'] = 'K wt%'
-da_ct.coords['phi'].attrs['long_name'] = 'Phi'
+#%%
 
-da_ct
+from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdpy.coords.ct import downselect_acq_time
+
+da_ht  = dsst['calorimetry', 'CC_heatTransfer']
+
+da_ht = downselect_acq_time(da_ht, df_cuttimes, 'time')
+
+da_signal = df_cuttimes.ct.column_to_coord_signal('kwt', da_ht.coords['time'])
+da_ht = assign_signal(da_ht, da_signal, 'time')
+
+da_signal = df_cuttimes.ct.column_to_coord_signal('phi', da_ht.coords['time'])
+da_ht = assign_signal(da_ht, da_signal, 'time')
+
+da_ht = unstack_multindexed_acq_dim(da_ht)['CC_heatTransfer']
+
+da_ht
+
+#%%
 
 # region = get_region(da_ct, buffer=0.2)
 region = df_cuttimes.ct.timewindow(buffer=0.2)
@@ -74,22 +78,17 @@ ds_plot = xr.merge([
 
 from mhdpy.plot.common import simple_ds_plot, tc_plot
 
-fig =  tc_plot(ds_plot.sel(time=region), da_ct.stack(ct=['kwt','phi']), legend_axes=3)
+df_cuttimes['plot_label'] = df_cuttimes['kwt'].astype(str) + ' kwt, ' + df_cuttimes['phi'].astype(str) + ' phi'
+fig =  tc_plot(ds_plot.sel(time=region), df_cuttimes, legend_axes=3, legend_column='plot_label')
 
-# fig.axes[0].get_legend().remove()
-# fig.axes[3].legend()
+# # fig.axes[0].get_legend().remove()
+# # fig.axes[3].legend()
 
 plt.savefig(pjoin(DIR_FIG_OUT,'phi_heattransfer_tcplot.png'))
 
 #%%
-
-ds = dsst['calorimetry']
-ds
-
-da_ht = assign_tc_general(ds['CC_heatTransfer'].dropna('time'), da_ct)
-
-da_ht_mean = da_ht.mean('time').pint.dequantify()
-da_ht_std = da_ht.std('time').pint.dequantify()
+da_ht_mean = da_ht.mean('mnum').pint.dequantify()
+da_ht_std = da_ht.std('mnum').pint.dequantify()
 
 g = da_ht_mean.plot(hue='kwt', marker='o')
 
@@ -140,9 +139,7 @@ sheet_names = {'hvof': "HVOF Process Inputs", 'calorimetry': "Calorimetry"}
 
 dsst_stats = {key: dsst[key] for key in key_sel}
 
-da_ct = xr.DataArray(cuttimes, coords = {'tc': df_cuttimes.index.values}, dims = ['tc'])
 
-from mhdpy.coords.ct import assign_tc_general
 from mhdpy.xr_utils import calc_stats
 
 #TODO: automate output name
@@ -151,10 +148,14 @@ dss_out = []
 with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_2023-05-24_phi.xlsx'), engine='xlsxwriter') as writer:
     for key in dsst_stats:
         ds = dsst_stats[key]
-        ds = assign_tc_general(ds, da_ct)
 
-        # ds_out = ds.mean('time', keep_attrs=True)#.to_dataframe()
-        ds_out = calc_stats(ds)
+        # Assign a time signal of the test case names, then calculate stats
+        tc_time_signal = df_cuttimes.reset_index().ct.column_to_coord_signal('index', ds.coords['time'])
+        ds = ds.sel(time=tc_time_signal.time)
+        ds = assign_signal(ds, tc_time_signal, 'time')
+        ds = unstack_multindexed_acq_dim(ds, )
+
+        ds_out = calc_stats(ds, stat_dim='mnum')
 
         df_out = ds_out.pint.dequantify().to_dataframe()
 

@@ -7,8 +7,8 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 plt.rcParams.update({'font.size': 8, 'timezone': 'America/Los_Angeles'})
 
-from mhdpy.coords.ct import assign_tc_general
 from mhdpy.xr_utils import calc_stats
+from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
@@ -300,11 +300,6 @@ for i, date in enumerate(df_exptw.index):
             # break
 
         
-#%%
-
-da_ct = xr.DataArray(cuttimes, dims='tc', coords={'tc': df_cuttimes.index})
-
-da_ct
 
 #%%
 
@@ -335,10 +330,14 @@ dss_out = []
 with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_all.xlsx'), engine='xlsxwriter') as writer:
     for key in dsst_stats:
         ds = dsst_stats[key]
-        ds = assign_tc_general(ds, da_ct)
 
-        # ds_out = ds.mean('time', keep_attrs=True)#.to_dataframe()
-        ds_out = calc_stats(ds)
+        # Assign a time signal of the test case names, then calculate stats
+        tc_time_signal = df_cuttimes.reset_index().ct.column_to_coord_signal('tc', ds.coords['time'])
+        ds = ds.sel(time=tc_time_signal.time)
+        ds = assign_signal(ds, tc_time_signal, 'time')
+        ds = unstack_multindexed_acq_dim(ds, )
+
+        ds_out = calc_stats(ds, stat_dim='mnum')
 
         df_out = ds_out.pint.dequantify().to_dataframe()
 
