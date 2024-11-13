@@ -17,42 +17,12 @@ ds = ds.sel(acq_time=tw)
 
 #%%
 
-import matplotlib.pyplot as plt
-import numpy as np
-from moviepy.editor import VideoClip
-from moviepy.video.io.bindings import mplfig_to_npimage
-
-da_plot = ds['mag'].isel(acq_time=slice(0,-1,10))
+da_plot = ds['mag'].isel(acq_time=slice(0,-1,100))
 da_plot = da_plot.sel(time=slice(-1,30))
 
-ts = da_plot.coords['acq_time'].values
-frames = len(ts)
-
-tw_grid = np.linspace(
-    pd.to_datetime(tw.start).timestamp(),
-    pd.to_datetime(tw.stop).timestamp(),
-    frames
-)
-
-tw_grid = pd.to_datetime(tw_grid, unit='s')
-
 duration = 132
-fps = frames/duration
+fp_out = 'output/mws_movie.mp4'
 
-fig, ax = plt.subplots(1,1, figsize = (10,5))
+from mhdpy.plot.anim.mws import gen_movie_mws
 
-def make_frame(t):
-    nearest_time = tw_grid[int(t*fps)]
-    da_sel = da_plot.sel(acq_time=nearest_time, method='nearest')
-
-    ax.clear()
-    da_sel.plot(ax=ax)
-
-    ax.set_ylim(0,0.1)
-
-    return mplfig_to_npimage(fig)
-
-animation = VideoClip(make_frame, duration=duration)
-animation.write_videofile('output/mws_movie.mp4', fps=fps)
-
-
+gen_movie_mws(da_plot, fp_out, tw, duration)
