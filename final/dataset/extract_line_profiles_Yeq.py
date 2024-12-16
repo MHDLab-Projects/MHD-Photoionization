@@ -14,6 +14,7 @@ import pint_pandas
 import pyvista as pv
 from mhdpy.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
+import pi_paper_utils as ppu
 
 
 # Taken from geometry.toml #TODO: read this file?
