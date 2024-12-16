@@ -84,6 +84,7 @@ matplotlib-inline==0.1.6
 matplotlib-scalebar==0.8.1
 mdit-py-plugins==0.4.0
 mdurl==0.1.2
+meep==1.0.6
 meshio==5.3.4
 mistune==3.0.1
 molmass==2023.8.30
