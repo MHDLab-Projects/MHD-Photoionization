@@ -76,32 +76,28 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_pos.png'))
 
 #%%
 
-from pi_paper_utils.kinetics import calc_krm
-
-ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Yeq_K+": "K+"}))
-
-ds_tau = (1/ds_krm).pint.to('us')
-
-g = ds_tau[['K+','O2_A', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+ds_cfd[['Kp','Yeq_K+']].to_array('var').plot(hue='var', col='phi', row='kwt')
 
 plt.yscale('log')
 
-plt.ylim(0.1,1e3)
+#%%
 
+from pi_paper_utils.kinetics import calc_krm
 
-for ax in g.axes[:,0]:
-    ax.set_ylabel("Tau [$\mu s$]")
-    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+# ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Yeq_K+": "K+"}))
+ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Kp": "K+"}))
+
+ds_tau = (1/ds_krm).pint.to('us')
 
 #%%
 
-da_plot = ds_tau[['K+','O2_A', 'OH', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
+da_plot = ds_tau[['K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
 
 g= da_plot.plot(hue='var', col='phi')
 
 plt.yscale('log')
 
-plt.ylim(0.01,3e3)
+plt.ylim(0.01,1e4)
 
 g.axes[0,0].set_ylabel("Tau [$\mu s$]")
 
@@ -110,6 +106,19 @@ for ax in g.axes.flatten():
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'krm_cfd_pos.png'))
+
+#%%
+
+g = ds_tau[['K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+
+plt.yscale('log')
+
+plt.ylim(0.1,1e4)
+
+
+for ax in g.axes[:,0]:
+    ax.set_ylabel("Tau [$\mu s$]")
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
 
 #%%
 
