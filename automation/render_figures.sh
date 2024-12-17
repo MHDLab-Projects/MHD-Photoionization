@@ -4,46 +4,23 @@
 
 source .env
 
-pushd $REPO_DIR/final/figures
+if [ -z "$1" ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
 
+# final/figures, final/figures/SI, final/figures/schematics
+TARGET_DIR=$1
+
+pushd $REPO_DIR/$TARGET_DIR
 
 mkdir -p output
 
-echo "Converting SVG to PNG for figures folder"
+echo "Converting SVG to PNG for $TARGET_DIR folder"
 
 for i in *.svg; do
   BN=$(basename $i .svg)
   inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
 done
-
-cd SI
-
-mkdir -p output
-
-echo "Converting SVG to PNG for SI folder"
-
-
-for i in *.svg; do
-  echo $i
-  BN=$(basename $i .svg)
-  inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
-done
-
-cd ..
-
-cd schematics
-
-mkdir -p output
-
-echo "Converting SVG to PNG for schematics folder"
-
-
-for i in *.svg; do
-  echo $i
-  BN=$(basename $i .svg)
-  inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
-done
-
-cd ..
 
 popd

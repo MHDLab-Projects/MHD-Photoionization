@@ -4,7 +4,7 @@ auto_dir=$(pwd)
 
 source ../.env
 
-source munge.sh
+# source munge.sh
 
 cd $auto_dir
 source process_munged.sh
@@ -15,6 +15,10 @@ source final_dataset.sh
 cd $auto_dir
 source gen_fig_panels.sh
 
+
 cd $auto_dir
-source render_figures.sh
+source render_figures.sh final/figures/schematics
+
+cd $auto_dir
+source render_figures.sh final/figures
 
