@@ -183,6 +183,8 @@ for tc_base, df_cuttimes_tc in df_ct_sequence.groupby('tc'):
     dss_lecroy[tc_base].append(ds_lecroy_sel)
 #%%
 
+import warnings
+
 output_dir = pjoin(DIR_PROC_DATA, 'absem')
 if not os.path.exists(output_dir): os.mkdir(output_dir)
 
@@ -193,7 +195,10 @@ for tc in dss_absem:
 
     ds = ds.unstack('run')
 
-    ds.to_netcdf(pjoin(output_dir, '{}.cdf'.format(tc)))
+    # TODO: supressing RuntimeWarning, SerializationWarning
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ds.to_netcdf(pjoin(output_dir, '{}.cdf'.format(tc)))
 
 # %%
 
@@ -204,4 +209,7 @@ for tc in dss_lecroy:
     ds = xr.concat(dss_lecroy[tc], 'run')
     ds = ds.unstack('run')
 
-    ds.to_netcdf(pjoin(output_dir, '{}.cdf'.format(tc)))
+    # TODO: supressing RuntimeWarning, SerializationWarning
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ds.to_netcdf(pjoin(output_dir, '{}.cdf'.format(tc)))

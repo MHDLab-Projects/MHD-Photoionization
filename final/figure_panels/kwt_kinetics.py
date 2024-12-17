@@ -29,7 +29,7 @@ ds_krb['O2_S'] = calc_krbO2_weighted(ds_species_cfd)
 fig, ax = plt.subplots(1, 1, figsize=(5,2))
 
 ln = k_eff_bm.plot(marker='x', ax=ax, label='Experiment')
-g = ds_krb[['O2_A', 'O2_G', 'O2_S']].to_array('rxn').plot(hue='rxn', marker='o')
+g = ds_krb[['O2_A', 'O2_G', 'O2_S']].to_array('rxn').pint.dequantify().plot(hue='rxn', marker='o')
 
 lns = ln + g
 labs = ['Experiment', 'O2_A', 'O2_G', 'O2_S']

@@ -13,7 +13,9 @@ Tested with Python 3.10.11 and git bash.
 run `source install.sh` or run steps inside
 
 copy in extra input data (folder of manual dataset files)
-    must happen after submodule cloning (for em-sim data files. )
+    EM simulation in 'modeling\em-sim' is a submodule. This uses meep FDTD package which does not have a pip install and simulations are run separately in a conda environment. 
+    must happen after submodule cloning
+    
 
 `cd automation`
 `source full_pipeline.sh`

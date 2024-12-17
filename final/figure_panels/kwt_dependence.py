@@ -55,7 +55,9 @@ std_err = std / np.sqrt(count)
 print("Number of acquisitions: {}".format(count.isel(time=0).values))
 
 # Get x values (assuming they are the same for mean and std)
-x = mean.coords[mean.dims[0]].values
+x = mean.coords[mean.dims[0]].pint.magnitude
+mean = mean.pint.magnitude
+std_err = std_err.pint.magnitude
 # Plot mean
 plt.plot(x, mean, label='AS')
 
@@ -99,10 +101,12 @@ line_nK_mwhorns = axes[0].errorbar(
     label='MW Horns'
     )
 
-
-lineKOH = ds_species_cfd[ppu.CFD_KOH_SPECIES_NAME].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: KOH')
-linenK = ds_species_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: K')
-line_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/m**3').plot(ax=axes[0], label='CFD: All K')
+da_KOH = ds_species_cfd[ppu.CFD_KOH_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+lineKOH = da_KOH.plot(ax=axes[0], label='CFD: KOH')
+da_nK = ds_species_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+linenK = da_nK.plot(ax=axes[0], label='CFD: K')
+da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 
 
 axes[0].set_ylabel("Species Concentration [$\#/m^3$]")

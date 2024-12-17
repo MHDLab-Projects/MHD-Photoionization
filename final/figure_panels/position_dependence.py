@@ -51,9 +51,10 @@ g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2'
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
 
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm'), nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
+#%%
 
 # Phi = 0.65
 
@@ -77,7 +78,7 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1'
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
 ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
-ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm'), nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
 ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 for ax in axes:
@@ -155,8 +156,8 @@ for i, motor in enumerate(motor_sel):
     motor_actual.append(motor_val)
     
     # Plot mean and shaded region for standard deviation
-    ax.plot(mean['time'].values, mean.values, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
-    ax.fill_between(mean['time'].values, (mean-std).values, (mean+std).values, color=colors[i % len(colors)], alpha=0.2)
+    ax.plot(mean['time'].pint.magnitude, mean.pint.magnitude, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
+    ax.fill_between(mean['time'].pint.magnitude, (mean-std).pint.magnitude, (mean+std).pint.magnitude, color=colors[i % len(colors)], alpha=0.2)
 
 ax.set_xlabel('Time [us]')
 ax.set_ylabel('AS [dimensionless]')
@@ -171,10 +172,10 @@ plt.figure()
 
 da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all')
 
-AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time')
-AS_pp_fluct = da_plot.sel(time=slice(-50,-1)).std('mnum').mean('time')
-AS_laser = da_plot.mws._pulse_max().mean('mnum')
-AS_laser_fluct = da_plot.mws._pulse_max().std('mnum')
+AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time').pint.dequantify()
+AS_pp_fluct = da_plot.sel(time=slice(-50,-1)).std('mnum').mean('time').pint.dequantify()
+AS_laser = da_plot.mws._pulse_max().mean('mnum').pint.dequantify()
+AS_laser_fluct = da_plot.mws._pulse_max().std('mnum').pint.dequantify()
 
 fig, ax = plt.subplots()
 

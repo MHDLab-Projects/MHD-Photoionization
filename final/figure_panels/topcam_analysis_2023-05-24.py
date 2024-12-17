@@ -1,4 +1,4 @@
-
+#%%
 from mhdpy.analysis.standard_import import *
 import pi_paper_utils as ppu
 create_standard_folders()
@@ -61,13 +61,13 @@ g = da_sel.plot(
     # vmax=1200
     )  
 
-for ax in g.axes[:,0]:
+for ax in g.axs[:,0]:
     ax.set_ylabel('y (mm)')
-for ax in g.axes[-1,:]:
+for ax in g.axs[-1,:]:
     ax.set_xlabel('x (mm)')
 
 # remove grid
-for ax in g.axes.flatten():
+for ax in g.axs.flatten():
     ax.grid(False)
     ax.xaxis.grid(False, which='both')
     ax.yaxis.grid(False, which='both')
