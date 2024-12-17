@@ -59,7 +59,7 @@ ds_absem = ds_absem.where(ds_absem['led_on'].isnull() == ds_absem['led_off'].isn
 from mhdpy.fileio import load_df_cuttimes
 fp_calib_ct = pjoin(REPO_DIR, 'experiment','metadata','ct_absem_calib.csv')
 
-df_cuttimes = load_df_cuttimes(fp_calib_ct, reduce_columns=False)
+df_cuttimes = load_df_cuttimes(fp_calib_ct)
 df_cuttimes = df_cuttimes.sort_values('Start Time').reset_index(drop=True)
 
 df_cuttimes['date'] = df_cuttimes['Start Time'].apply(lambda x: x.date())

@@ -67,7 +67,7 @@ coords_to_assign
 # %%
 
 # Cuttimes 
-df_cuttimes = load_df_cuttimes(pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_sequence.csv'), reduce_columns=False)
+df_cuttimes = load_df_cuttimes(pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_sequence.csv'))
 
 # add tc and run_num columns. tc is everything before the last underscore in 'Event' column
 df_cuttimes['tc'] = df_cuttimes['Event'].str.extract(r'(.*)_\d$')
