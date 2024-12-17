@@ -32,7 +32,8 @@ def pipe_transform_projective(ds_sel, tform, downsel_range={'x': slice(0, 1024),
     y_grid = np.arange(0, 1024, 1)
     ds_sel_int = ds_sel.interp(x=x_grid, y=y_grid)#.fillna(0)
 
-    da_tf = ds_sel_int.groupby('gatedelay').apply(lambda x: transform_projective(x, tform))
+    # Squeeze added to remove the gatedelay dimension. new to 2024 xarray. https://github.com/pydata/xarray/pull/9280
+    da_tf = ds_sel_int.groupby('gatedelay').apply(lambda x: transform_projective(x.squeeze(), tform))
 
     if downsel_range is not None:
         da_tf = da_tf.sel(downsel_range)
