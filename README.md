@@ -18,8 +18,11 @@ copy in extra input data (folder of manual dataset files)
     
 
 `cd automation`
-`source full_pipeline.sh`
+`source pipe_main.sh`
 
+for supplementary information and notebooks
+
+`source pipe_supplementary.sh`
 
 Then render doc\SI_man\SI_man.tex with Texlive in VSCode
     Debug errors (e.g. missing files) by searching for error in  `doc\SI_man\SI_man.log`

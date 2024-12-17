@@ -5,26 +5,6 @@
 
 
 source .env
-### Auxilliary datasets ###
-
-#TODO: move below into final dataset folder?
-pushd $REPO_DIR/modeling/viability/dataset
-source calc_all.sh
-popd
-
-pushd $REPO_DIR/modeling/viability/analysis
-python bl_enhance.py
-popd
-
-
-pushd $REPO_DIR/modeling/viability/figure_panels
-source gen_figs.sh
-popd
-
-pushd $REPO_DIR/experiment/notebook/2018-11-20
-python munge_spe.py
-python analysis_beam_timing.py
-popd
 
 ## SI Auxilliary datasets ##
 
