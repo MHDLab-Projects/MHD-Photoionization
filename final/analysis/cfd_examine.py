@@ -46,6 +46,7 @@ ds_cfd_beam = ppu.fileio.load_cfd_beam(convert_rho_number=True)
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0)
 
 da_cfd_beam = ds_cfd_beam[CFD_K_SPECIES_NAME]
+# da_cfd_beam = ds_cfd_beam['Yeq_K']  
 da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
 da_cfd_beam
@@ -53,8 +54,12 @@ da_cfd_beam.sel(motor=goldi_pos,method='nearest').plot(col='mp', hue='kwt')
 
 plt.yscale('log')
 
-plt.ylim(1e-7,)
+# plt.ylim(1e-7,)
+plt.ylim(1e-3,2)
 plt.xlim(3,8)
+
+for ax in plt.gcf().axes:
+    ax.set_xlabel('Beam Distance [cm]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_beam_goldi_pos_kwt.png'))
 
@@ -81,17 +86,22 @@ plt.ylim(1e-10,)
 
 #%%
 
-da_cfd_pos_plot = da_cfd_beam.sel(kwt=1, method='nearest')
+plt.figure(figsize=(6,3))
+
+da_cfd_pos_plot = da_cfd_beam.sel(kwt=1, method='nearest').sel(mp='mw_horns')
 da_cfd_pos_plot = da_cfd_pos_plot.sel(motor = [50, 100, 150,175,200,250], method='nearest')
 da_cfd_pos_plot = da_cfd_pos_plot.assign_coords(motor = da_cfd_pos_plot.coords['motor'].round(2))
 
-da_cfd_pos_plot.plot(col='mp', hue='motor')
-
+da_cfd_pos_plot.plot(hue='motor')
 
 plt.yscale('log')
 
 plt.ylim(1e-7,)
 plt.xlim(3,8)
+
+plt.gca().get_legend().set_bbox_to_anchor((1.05,0.5))
+
+plt.gca().set_xlabel('Beam Distance [cm]')
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_beam_pos_dep.png'))
