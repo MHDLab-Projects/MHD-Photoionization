@@ -14,7 +14,7 @@ import os
 import pyvista as pv
 import triangle
 
-from pv_axi_utils import pv_interpolator, AxiInterpolator
+from mhdpy.pyvista_utils.axi import pv_interpolator, AxiInterpolator
 import tri_mesh
 from scipy import interpolate
 

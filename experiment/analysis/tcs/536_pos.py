@@ -259,9 +259,6 @@ ds_cfd_norm = ds_cfd/ds_cfd.max()
 
 #%%
 
-#TODO: this is still for k=0.1
-fp_cfd_beam = pjoin(os.getenv('REPO_DIR'), 'modeling', 'cfd', 'output', 'beam_conv.cdf' )
-
 ds_cfd_beam = ppu.fileio.load_cfd_beam()
 
 ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1)

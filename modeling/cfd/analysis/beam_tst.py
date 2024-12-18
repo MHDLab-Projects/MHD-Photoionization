@@ -9,7 +9,7 @@ from mhdpy.pyvista_utils import AxiMesh
 
 
 sys.path.append(pjoin(REPO_DIR, 'modeling', 'cfd'))
-from pv_axi_utils import AxiInterpolator
+from mhdpy.pyvista_utils.axi import AxiInterpolator
 
 sp_dir = gen_path('sharepoint')
 

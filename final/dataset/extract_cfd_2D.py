@@ -10,10 +10,10 @@ import os
 import pint_pandas
 import pandas as pd
 
-from mhdpy.fileio import gen_path
 from mhdpy.analysis.standard_import import *
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
-from mhdpy.pyvista_utils import AxiMesh, pv_to_unstack_xr, downsel_arrays, pv_to_xr
+# from mhdpy.pyvista_utils import AxiMesh, pv_to_unstack_xr, downsel_arrays, pv_to_xr
+from mhdpy.pyvista_utils.axi import AxiInterpolator
 
 create_standard_folders()
 
@@ -48,9 +48,6 @@ grid.dimensions = (n_x, n_y, 1)
 
 #%%
 
-#TODO: add to mhdpy
-sys.path.append(pjoin(REPO_DIR, 'modeling', 'cfd'))
-from pv_axi_utils import AxiInterpolator
 
 #%%
 

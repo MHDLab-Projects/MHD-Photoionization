@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cantera as ct
 
-from pv_axi_utils import pv_interpolator, AxiInterpolator, line_interpolator
+from mhdpy.pyvista_utils.axi import pv_interpolator, AxiInterpolator, line_interpolator
 import cross_section
 
 try:
