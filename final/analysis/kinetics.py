@@ -76,22 +76,34 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_pos.png'))
 
 #%%
 
-ds_cfd[['Kp','Yeq_K+']].to_array('var').plot(hue='var', col='phi', row='kwt')
-
-plt.yscale('log')
 
 #%%
 
 from pi_paper_utils.kinetics import calc_krm
 
-# ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Yeq_K+": "K+"}))
-ds_krm = calc_krm(ds_krb, ds_cfd.rename({"Kp": "K+"}))
+#TODO: hack until consistent naming is implemented
+ds_krm_Yeq = calc_krm(ds_krb, ds_cfd.rename({"Yeq_K+": "K+"})).rename({"K+": "Yeq_K+"})
+ds_krm_base = calc_krm(ds_krb, ds_cfd.rename({"Kp": "K+"}))
+
+ds_krm = ds_krm_Yeq.combine_first(ds_krm_base)
 
 ds_tau = (1/ds_krm).pint.to('us')
 
+ds_tau
+
 #%%
 
-da_plot = ds_tau[['K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').sel(kwt=1, method='nearest')
+
+tau_species_list = ['K+', 'Yeq_K+', 'OH', 'H2O', 'O2_A', 'O2_G']
+cfd_species_list = ['Kp', 'Yeq_K+', 'OH', 'H2O', 'O2']
+
+ds_cfd[cfd_species_list].sel(kwt=1,method='nearest').to_array('var').plot(hue='var', col='phi')
+
+plt.yscale('log')
+
+#%%
+
+da_plot = ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest')
 
 g= da_plot.plot(hue='var', col='phi')
 
@@ -109,7 +121,39 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'krm_cfd_pos.png'))
 
 #%%
 
-g = ds_tau[['K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
+plt.figure(figsize=(6,3))
+
+ds_cfd[cfd_species_list].sel(kwt=1,method='nearest').sel(phi=0.8,method='nearest').to_array('var').plot(hue='var')
+
+plt.yscale('log')
+
+plt.gca().get_legend().set_bbox_to_anchor([0,0,1.3,1])
+
+plt.ylabel('Species Concentration [#/ml]')
+
+#%%
+
+plt.figure(figsize=(6,3))
+
+ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest').sel(phi=0.8, method='nearest').plot(hue='var')
+
+plt.yscale('log')
+
+plt.ylim(0.01,1e4)
+
+plt.ylabel('Tau [$\mu s$]')
+
+tau_observed = Quantity(10, 'us')
+
+plt.axhline(tau_observed.magnitude, color='gray', linestyle='--')
+plt.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+
+plt.gca().get_legend().set_bbox_to_anchor([0,0,1.3,1])
+
+
+#%%
+
+g = ds_tau[['K+','Yeq_K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
 
 plt.yscale('log')
 

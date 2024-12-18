@@ -38,7 +38,7 @@ plt.figure(figsize=(6,3))
 
 ds_sel = ds_TP_species.sel(P = 1e5, Kwt=0.01, phi = 0.8, method = 'nearest')
 
-ds_sel = ds_sel.drop(['KO','KOH'])
+ds_sel = ds_sel.drop_vars(['KO','KOH'])
 
 for var in ds_sel.data_vars:
     if not np.isnan(ds_sel[var].where(ds_sel[var] > 1e-4)).all():
