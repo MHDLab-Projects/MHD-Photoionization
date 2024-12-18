@@ -76,6 +76,7 @@ def test_pipe_fit_alpha_1(ds_absem):
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 import pi_paper_utils as ppu
 def test_pipe_fit_alpha_num_1(ds_absem):
+    ds_absem = ds_absem.drop(0, 'kwt')
     ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem.coords['kwt'].values)
 
     ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=180,method='nearest').sel(mp='barrel')
@@ -84,7 +85,7 @@ def test_pipe_fit_alpha_num_1(ds_absem):
     da_cfd_beam = da_cfd_beam/da_cfd_beam.max('dist')
 
     ds_fit_absem = ds_absem.sel(kwt= da_cfd_beam.kwt.values) #TODO: downselecting as we don't have cfd for all kwt. Remove once we do
-    da_cfd_beam = da_cfd_beam.dropna('dist') # Having to do this with coarse CFD data?
+    # da_cfd_beam = da_cfd_beam.dropna('dist', how='all') # Having to do this with coarse CFD data?
     ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit_absem, perform_fit_kwargs={'nK_profile':da_cfd_beam})
 
 

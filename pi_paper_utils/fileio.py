@@ -105,7 +105,7 @@ def load_mws_T0():
     """
     fp_nothing = pjoin(REPO_DIR,'final', 'dataset', 'output', 'mws_T0.csv')
 
-    df_nothing = pd.read_csv(fp_nothing, index_col=0)['0']
+    df_nothing = pd.read_csv(fp_nothing, index_col=0)['mag']
     da_nothing = xr.DataArray(df_nothing).pint.quantify('volt')
 
     return da_nothing
