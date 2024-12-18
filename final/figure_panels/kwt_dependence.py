@@ -71,7 +71,7 @@ plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
 plt.yscale('log')
 plt.xlim(-1,40)
 plt.ylim(1e-5,)
-plt.ylabel('$\Delta AS$ [dimensionless]')
+plt.ylabel(r'$\Delta AS$ [dimensionless]')
 
 plt.title('')
 plt.legend(['Data', 'Fit'])
@@ -109,7 +109,7 @@ da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/m**3').pin
 line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 
 
-axes[0].set_ylabel("Species Concentration [$\#/m^3$]")
+axes[0].set_ylabel(r"Species Concentration [$\#/m^3$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
     ['Expt. $n_K$ Barrel', 'Expt $n_K$ 180 mm', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
@@ -125,11 +125,11 @@ lineAS = axes[1].errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label='$\Delta AS$ Maximum',
+    label=r'$\Delta AS$ Maximum',
     color='darkgreen'
     )
 
-axes[1].set_ylabel("$\Delta AS$ Maximum")
+axes[1].set_ylabel(r"$\Delta AS$ Maximum")
 
 
 ta = axes[1].twinx()
@@ -173,7 +173,7 @@ ax.errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label='$\Delta AS$ Fit'
+    label=r'$\Delta AS$ Fit'
     )
 
 for species in ds_tau.data_vars:

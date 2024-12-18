@@ -13,20 +13,20 @@ from mws_1d import tc_dict
 import argparse
 import shutil
 
-# tc = '536_pos'
+tc = '536_pos'
 
 
-# Create the parser
-parser = argparse.ArgumentParser(description='Process some data.')
+# # Create the parser
+# parser = argparse.ArgumentParser(description='Process some data.')
 
-# Add a positional argument for tc
-parser.add_argument('tc', type=str, help='a required tc argument')
+# # Add a positional argument for tc
+# parser.add_argument('tc', type=str, help='a required tc argument')
 
-# Parse the arguments
-args = parser.parse_args()
+# # Parse the arguments
+# args = parser.parse_args()
 
-# Now you can use args.tc as your tc variable
-tc = args.tc
+# # Now you can use args.tc as your tc variable
+# tc = args.tc
 
 tc_dim_dict = {
     '53x': 'kwt',
@@ -50,7 +50,7 @@ ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=mag_0) # calculate before or after m
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sortby('time') # Needed otherwise pre pulse time cannot be selected
 
-ds_lecroy = ds_lecroy.drop('acq_time').drop('mag_0')
+ds_lecroy = ds_lecroy.drop_vars('acq_time').drop_vars('mag_0')
 ds_lecroy = ds_lecroy.dropna('run', how='all')
 
 # %%
@@ -176,7 +176,7 @@ from xhistogram.xarray import histogram
 def hist_plot_1(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist1'):
 
     # bins = np.linspace(-.2,.2)
-    bins = np.linspace(da_mag.min(),da_mag.max())
+    bins = np.linspace(da_mag.min().item(),da_mag.max().item())
     h = histogram(da_mag, bins=bins, dim=['mnum'])
 
     h.plot(col=tc_dim, col_wrap=3)
@@ -233,7 +233,7 @@ def hist_plot_2(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist2
 
     # da_mag = da.sel(run=('2023-05-18', 1)).dropna(tc_dim, how='all')
 
-    bins = np.linspace(da_mag.min(),da_mag.max())
+    bins = np.linspace(da_mag.min().item(),da_mag.max().item())
     h = histogram(da_mag, bins=bins, dim=['mnum'])
     h.attrs['long_name'] = 'Bin Count'
 
@@ -285,7 +285,7 @@ def hist_plot_3(da_mag, run_name, figsize=(8,11), savefig=True, plot_name='hist3
     # da_mag = da.sel(run=('2023-05-18', 1)).dropna(tc_dim, how='all')
     da_mag = da_mag.sel(time=slice(-50,1))
 
-    bins = np.linspace(da_mag.min(),da_mag.max())
+    bins = np.linspace(da_mag.min().item(),da_mag.max().item())
     h = histogram(da_mag, bins=bins, dim=['mnum'])
 
     h.attrs['long_name'] = 'Bin Count'
@@ -308,7 +308,7 @@ da.groupby('run').apply(lambda x: hist_plot_3(*groupby_run_processor(x), plot_na
 
 da_mag = da.sel(time=slice(-50,1))
 
-bins = np.linspace(da_mag.min(),da_mag.max())
+bins = np.linspace(da_mag.min().item(),da_mag.max().item())
 h = histogram(da_mag, bins=bins, dim=['mnum'])
 
 h.attrs['long_name'] = 'Bin Count'

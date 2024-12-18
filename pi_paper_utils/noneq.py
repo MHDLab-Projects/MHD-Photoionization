@@ -96,7 +96,7 @@ def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
 
     ne = calc_ne(G_th, G_NE, krb)
     ne.name = 'ne'
-    ne.attrs = dict(units = '$\#/cm^3$', long_name = 'Calculated electron density')
+    ne.attrs = dict(units = r'$\#/cm^3$', long_name = 'Calculated electron density')
 
     sig_NE = calc_sig(ne, mue_cant)
     sig_NE.name = 'sigma'

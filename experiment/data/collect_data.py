@@ -7,7 +7,7 @@ munged_dir = 'munged'
 
 import re
 
-regex = re.compile('^\d{4}-\d\d-\d\d$')
+regex = re.compile(r'^\d{4}-\d\d-\d\d$')
 
 
 dates = []

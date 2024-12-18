@@ -71,7 +71,7 @@ for species in gas_lam:
     if species != 'tot':
         F = gas_lam['tot']/gas_lam[species]
         F.name = 'f_' + species
-        F.attrs = dict(long_name = '$\delta/\delta_{' + species + '}$')
+        F.attrs = dict(long_name = r'$\delta/\delta_{' + species + '}$')
         das.append(F)
 #         gas_lam = gas_lam.assign(temp=F).rename(temp=species)
 

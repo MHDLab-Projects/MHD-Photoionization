@@ -53,7 +53,7 @@ if not os.path.exists(figure_out_dir): os.makedirs(figure_out_dir)
 
 ds_absem = ppu.fileio.load_absem(tc)
 
-ds_absem = ds_absem.drop('acq_time')
+ds_absem = ds_absem.drop_vars('acq_time')
 
 ds_absem
 

@@ -163,8 +163,8 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_absem_fit.png'))
 
 #%%
 
-nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop('mp')
-nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop('mp')
+nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop_vars('mp')
+nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop_vars('mp')
 
 ds = xr.merge([
     nK_mw_horns,

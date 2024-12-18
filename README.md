@@ -8,7 +8,7 @@ Rename `.env_example` -> `.env`. Update values as needed.  #TODO: remove unused 
 
 create python virtual environment using one the requirement files in 'reqs'
 
-Tested with Python 3.10.11 and git bash. 
+Tested with Python 3.12.1 and git bash. 
 
 run `source install.sh` or run steps inside
 

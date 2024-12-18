@@ -212,8 +212,8 @@ ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 ds_p_exp['krm'] = 1/ds_p_exp['decay']
 
 ds_params = xr.merge([
-    ds_p_absem['nK_m3'].sel(mp='barrel').drop('mp').rename('nK_m3_barrel'),
-    ds_p_absem['nK_m3'].sel(mp='mw_horns').drop('mp').rename('nK_m3_mw_horns'),
+    ds_p_absem['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel'),
+    ds_p_absem['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns'),
     ds_p_dnedt['decay'].rename('mws_fit_decay'),
     ds_p_exp['decay'].rename('mws_fit_decay_exp'),
     ds_p_exp['krm'].rename('mws_fit_krm'),

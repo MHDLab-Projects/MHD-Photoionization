@@ -284,7 +284,7 @@ ds_p_beer = ds_p.copy()
 # %%
 from lmfit import Model
 
-mod = Model(alpha_deq_solve, nK_profile=nK_profile)
+mod = Model(alpha_deq_solve, nK_profile=nK_profile, beam_x=nK_profile.index)
 
 params = mod.make_params(nK_max=1e-5, )
 

@@ -87,7 +87,7 @@ for date, df in df_ct.groupby('date'):
     fig.axes[1].set_yscale('log')
     fig.axes[3].set_ylim(0.5,1.5)
 
-    fig.suptitle(date, fontdict={'size': 16})
+    fig.suptitle(date, fontdict={'fontsize': 16})
 
     for ax in fig.axes:
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
@@ -155,7 +155,7 @@ for date, df in df_ct.groupby('date'):
 
     # fig.axes[-1].get_legend().remove()
 
-    fig.suptitle(date, fontdict={'size': 16})
+    fig.suptitle(date, fontdict={'fontsize': 16})
 
     for ax in fig.axes:
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))

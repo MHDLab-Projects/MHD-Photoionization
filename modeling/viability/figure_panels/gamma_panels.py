@@ -120,8 +120,8 @@ plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
 
 
-axes[0,0].set_title('$\eta$ = 1.0')
-axes[0,1].set_title('$\eta_{KOH}$')
+axes[0,0].set_title(r'$\eta$ = 1.0')
+axes[0,1].set_title(r'$\eta_{KOH}$')
 
 axes[1,0].set_xlabel('Pressure (Pa)')
 axes[1,1].set_xlabel('Pressure (Pa)')

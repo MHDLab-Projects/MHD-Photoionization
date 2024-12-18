@@ -32,10 +32,10 @@ def main(
 
     channel_list = list(channel_dict.keys())
 
-    middle_regex = '(?:IQ_)?\w+'
+    middle_regex = r'(?:IQ_)?\w+'
     channel_regex_str = "".join(channel_list)
 
-    full_regex = 'C([{}])--_({})_--(\d+).trc'.format(channel_regex_str, middle_regex)
+    full_regex = r'C([{}])--_({})_--(\d+).trc'.format(channel_regex_str, middle_regex)
 
 
     #TODO: Check for regex matching here (i.e. ignore C3 and C4)

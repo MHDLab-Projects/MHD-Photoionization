@@ -116,11 +116,11 @@ ds_TP_params, ds_TP_species, ds_TP_species_rho = ct_utils.process_ds_speciespara
 
 #%%
 
-ds_TP_species = ds_TP_species.drop('C12H26')
-ds_TP_species_rho = ds_TP_species_rho.drop('C12H26')
+ds_TP_species = ds_TP_species.drop_vars('C12H26')
+ds_TP_species_rho = ds_TP_species_rho.drop_vars('C12H26')
 
-ds_HP_species = ds_HP_species.drop('C12H26')
-ds_HP_species_rho = ds_HP_species_rho.drop('C12H26')
+ds_HP_species = ds_HP_species.drop_vars('C12H26')
+ds_HP_species_rho = ds_HP_species_rho.drop_vars('C12H26')
 
 # In[18]:
 

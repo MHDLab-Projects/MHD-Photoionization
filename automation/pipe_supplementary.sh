@@ -4,14 +4,14 @@ auto_dir=$(pwd)
 
 source ../.env
 
-# cd $auto_dir
-# source render_all_expt.sh
+cd $auto_dir
+source render_all_expt.sh
 
-# cd $auto_dir
-# source render_all_expt.sh final
+cd $auto_dir
+source render_all_expt.sh final
 
-# cd $auto_dir
-# source supp_scripts.sh
+cd $auto_dir
+source supp_scripts.sh
 
 cd $auto_dir
 source render_figures.sh final/figures/schematics
