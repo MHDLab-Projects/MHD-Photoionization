@@ -20,7 +20,7 @@
         {
             "label": "Clean Latex SI Directory",
             "type": "shell",
-            "command": "cd doc/SI_man && ./clean.sh"
+            "command": "cd doc/SI && ./clean.sh"
         },
         {
             "label": "Clean Both Latex Directories",

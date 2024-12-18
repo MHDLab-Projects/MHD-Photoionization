@@ -12,6 +12,6 @@ echo "Converting Main text to word document"
 source pandoc_convert.sh
 
 echo "Rendering SI"
-cd $REPO_DIR/doc/SI_man
+cd $REPO_DIR/doc/SI
 latexmk -synctex=1 -interaction=nonstopmode -file-line-error -pdf SI_man.tex
 source clean.sh
