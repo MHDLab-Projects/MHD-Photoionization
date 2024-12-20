@@ -93,7 +93,6 @@ matplotlib-scalebar==0.8.1
 mdit-py-plugins==0.4.2
 mdurl==0.1.2
 meshio==5.3.5
--e git+https://github.com/mhdLab/mhdpy@7c9af8369eb0e32b87bafa830829e8b679383578#egg=mhdpy&subdirectory=..\..\mhdpy
 mistune==3.0.2
 molmass==2024.10.25
 more-itertools==10.5.0
@@ -117,7 +116,6 @@ pandas==2.2.3
 pandocfilters==1.5.1
 parso==0.8.4
 partd==1.4.2
--e git+https://github.com/MHDLab-Projects/MHD-Photoionization.git@a87fc0141fb410afbec31596de101d5291c56b38#egg=pi_paper_utils
 pickleshare==0.7.5
 pillow==11.0.0
 Pint==0.24.4
