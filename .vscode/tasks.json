@@ -3,9 +3,9 @@
     "tasks": [
         // Documents and Figures
         {
-            "label": "Render Figures",
+            "label": "Render Final Figures",
             "type": "shell",
-            "command": "./automation/render_figures.sh",
+            "command": "./automation/render_figures.sh final/figures",
         },
         {
             "label": "Generate Documents",
