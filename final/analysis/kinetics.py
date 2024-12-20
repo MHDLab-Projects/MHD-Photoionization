@@ -101,6 +101,8 @@ ds_cfd[cfd_species_list].sel(kwt=1,method='nearest').to_array('var').plot(hue='v
 
 plt.yscale('log')
 
+plt.ylim(1e9,)
+
 #%%
 
 da_plot = ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest')
@@ -120,35 +122,27 @@ for ax in g.axes.flatten():
 plt.savefig(pjoin(DIR_FIG_OUT, 'krm_cfd_pos.png'))
 
 #%%
+fig, axes = plt.subplots(2, 1, figsize=(6, 6), sharex=True)
 
-plt.figure(figsize=(6,3))
+# First plot
+ds_cfd[cfd_species_list].sel(kwt=1, method='nearest').sel(phi=0.8, method='nearest').to_array('var').plot(ax=axes[0], hue='var')
+axes[0].set_yscale('log')
+axes[0].get_legend().set_bbox_to_anchor([0, 0, 1.3, 1])
+axes[0].set_ylabel('Species Concentration [#/ml]')
+axes[0].axvline(goldi_pos.magnitude, color='k', linestyle='--')
 
-ds_cfd[cfd_species_list].sel(kwt=1,method='nearest').sel(phi=0.8,method='nearest').to_array('var').plot(hue='var')
+# Second plot
+ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest').sel(phi=0.8, method='nearest').plot(ax=axes[1], hue='var')
+axes[1].set_yscale('log')
+axes[1].set_ylim(0.01, 1e4)
+axes[1].set_ylabel('Tau [$\mu s$]')
+# axes[1].axhline(tau_observed.magnitude, color='gray', linestyle='--')
+axes[1].axvline(goldi_pos.magnitude, color='k', linestyle='--')
+axes[1].get_legend().set_bbox_to_anchor([0, 0, 1.3, 1])
 
-plt.yscale('log')
+plt.tight_layout()
 
-plt.gca().get_legend().set_bbox_to_anchor([0,0,1.3,1])
-
-plt.ylabel('Species Concentration [#/ml]')
-
-#%%
-
-plt.figure(figsize=(6,3))
-
-ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest').sel(phi=0.8, method='nearest').plot(hue='var')
-
-plt.yscale('log')
-
-plt.ylim(0.01,1e4)
-
-plt.ylabel('Tau [$\mu s$]')
-
-tau_observed = Quantity(10, 'us')
-
-plt.axhline(tau_observed.magnitude, color='gray', linestyle='--')
-plt.axvline(goldi_pos.magnitude, color='k', linestyle='--')
-
-plt.gca().get_legend().set_bbox_to_anchor([0,0,1.3,1])
+plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_tau_pos.png'))
 
 
 #%%
