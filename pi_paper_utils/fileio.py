@@ -153,7 +153,9 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
     ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
 
-
+    # This creates a dataset where the barrel measurement is duplicated across the motor positions.
+    #TODO: this is inefficient, but is consistent with experimental absem. Not sure if it needs to be fixed. 
+    # Just select any motor positon (or take average) to get barrel measurement
     ds_cfd_beam = xr.concat([
                         ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
                         ds_cfd_beam_barrel.assign_coords(mp='barrel')

@@ -62,21 +62,38 @@ ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values)
 da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIES_NAME].max('dist')
 
 #%%
+
+#%%
+
+# Fit the position dependent mw horns data
+# 
+
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 
-ds_fit = ds_absem.mean('mnum')
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':da_cfd_beam})
+ds_fit = ds_absem.mean('mnum').sel(mp='mw_horns').dropna('run', how='all')
+nK_profile = da_cfd_beam.sel(mp='mw_horns')
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':nK_profile})
 
 ds_alpha_fit['alpha_full'] = ds_fit['alpha']
 ds = ds_alpha_fit[['alpha_red', 'alpha_fit', 'alpha_full']].rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha_full':'full'})
 ds_p.coords['motor'].attrs = dict(long_name="Stage Position", units='mm')
 ds_p.coords['run_plot'].attrs = dict(long_name="Run")
 
+
+ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))
+
+nK_mw_horns = ds_p['nK_m3'].rename('nK_mw_horns')
+# nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop_vars('mp')
+
+ds_stats_out = xr.merge([nK_mw_horns, ds_stats_lecroy]).sortby('motor').dropna('run', how='all')
+ds_stats_out.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_pos.cdf'))
+
+
 #%%
 da_plot = ds.to_array('var').sel(phi=0.6, method='nearest').mean('run').dropna('motor',how='all')
 motor_vals_06 = da_plot.coords['motor'].values
 da_plot.attrs['long_name'] = '$\\alpha$'
-da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+da_plot.plot(hue='var', row='motor', figsize=(8,12))
 plt.ylim(-0.1,1.1)
 plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi06_absem_fit.png'))
 
@@ -84,16 +101,63 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi06_absem_fit.png'))
 da_plot = ds.to_array('var').sel(phi=0.8, method='nearest').mean('run').dropna('motor',how='all')
 da_plot = da_plot.sel(motor=motor_vals_06)
 da_plot.attrs['long_name'] = '$\\alpha$'
-da_plot.plot(hue='var', col='mp', row='motor', figsize=(8,12))
+da_plot.plot(hue='var', row='motor', figsize=(8,12))
 plt.ylim(-0.1,1.1)
 plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_absem_fit.png'))
 
 #%%
-nK_mw_horns = ds_p['nK_m3'].sel(mp='mw_horns').rename('nK_mw_horns').drop_vars('mp')
-nK_barrel = ds_p['nK_m3'].sel(mp='barrel').rename('nK_barrel').drop_vars('mp')
 
-ds = xr.merge([nK_mw_horns, nK_barrel, ds_stats_lecroy]).sortby('motor').dropna('run', how='all')
-ds.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_stats_pos.cdf'))
+# Now fit the barrel data. Both datasets have it stored with 'motor' dimension.
+# Data is duplicated for cfd data  (see load_cfd_beam fn)
+# For absem, this corresponds to the times the stage was at this position...so we average over all motor
+
+
+ds_fit = ds_absem.mean('mnum').sel(mp='barrel').dropna('run', how='all')
+ds_fit = ds_fit.mean('motor', keep_attrs=True)
+
+nK_profile = da_cfd_beam.sel(mp='barrel').isel(motor=0)
+
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':nK_profile})
+
+ds_alpha_fit['alpha_full'] = ds_fit['alpha']
+ds = ds_alpha_fit[['alpha_red', 'alpha_fit', 'alpha_full']].rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha_full':'full'})
+ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
+ds_p_cfdprofile = ds_p['nK_m3'].rename('nK_barrel_cfdprofile')
 
 #%%
-ds_alpha_fit.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_alpha_fit.cdf'))
+
+# tophat 
+
+L = Quantity(1, 'cm')
+L_center = Quantity(5, 'cm')
+
+def tophat_profile(L, L_center, x):
+    nK = np.zeros_like(x)
+    nK[(x > L_center - L/2) & (x < L_center + L/2)] = 1
+    return nK
+
+x = da_cfd_beam.coords['dist'].values
+nK_profile = tophat_profile(L.magnitude, L_center.magnitude, x) 
+
+# plt.plot(x, nK_profile)
+
+# make a dataset with same strucutre as da_cfd_beam, but with nK_profile as data along the 'dist' dimension
+
+nK_profile_tophat = xr.DataArray(nK_profile, coords={'dist':x}, dims=['dist'])
+
+ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':nK_profile_tophat})
+
+ds_alpha_fit['alpha_full'] = ds_fit['alpha']
+ds = ds_alpha_fit[['alpha_red', 'alpha_fit', 'alpha_full']].rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha_full':'full'})
+ds_p.coords['run_plot'].attrs = dict(long_name="Run")
+
+ds_p_tophat = ds_p['nK_m3'].rename('nK_barrel_tophat')
+
+#%%
+
+ds_p_out = xr.merge([ds_p_cfdprofile, ds_p_tophat]).dropna('run', how='all')
+
+ds_p_out.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_barrel.cdf'))
+
+

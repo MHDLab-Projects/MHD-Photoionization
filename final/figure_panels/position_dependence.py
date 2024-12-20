@@ -6,8 +6,11 @@ from mhdpy.plot import xr_errorbar_axes
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
+# Position dependent AES and MWS
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
+# Non position dependent barrel AES
+ds_p_barrel = xr.open_dataset(pjoin(data_directory, 'ds_p_barrel.cdf')).xr_utils.stack_run()
 
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
 ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
@@ -26,7 +29,7 @@ ds_cfd['nK_m3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
 
 #%%
 
-fig, axes = plt.subplots(2, figsize=(5,4.5), sharex=True)
+fig, axes = plt.subplots(2, figsize=(5,5), sharex=True)
 
 
 # Phi =0.8
@@ -37,8 +40,6 @@ ds_cfd_sel = ds_cfd.sel(phi=0.8, method='nearest')
 
 phi_val_expt = ds_p_sel.coords['phi'].item()
 
-nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
-nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
 nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
@@ -49,12 +50,21 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-18 Run 1'
 g = nK_mw_horns.isel(run=1).plot(x='motor', marker='o', label='2023-05-18 Run 2', ax=ax1)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax1)
-ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
+# ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax1)
 
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+
+# Barrel exit
+nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
+nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit (CFD)', capsize=5, )
+
+nK_barrel_mean = ds_p_barrel['nK_barrel_tophat'].mean('run').sel(phi=0.8, method='nearest')
+nK_barrel_std = ds_p_barrel['nK_barrel_tophat'].std('run').sel(phi=0.8, method='nearest')
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Barrel Exit (TH)', capsize=5, )
+
+
 ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
-#%%
 
 # Phi = 0.65
 
@@ -65,8 +75,6 @@ ds_cfd_sel = ds_cfd.sel(phi=0.6, method='nearest')
 
 phi_val_expt = ds_p_sel.coords['phi'].item()
 
-nK_barrel_mean = ds_p_sel['nK_barrel'].mean('motor').mean('run')
-nK_barrel_std = ds_p_sel['nK_barrel'].mean('motor').std('run')
 
 nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
@@ -76,16 +84,24 @@ nK_mw_horns = nK_mw_horns.sel(motor = slice(50,200))
 g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1', ax=ax2)
 
 ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
-ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
+# ds_cfd_sel['nK_m3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
-ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='o', label='Barrel nK avg', capsize=5, )
+nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
+nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
+ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel nK (CFD)', capsize=5, )
+
+nK_barrel_mean = ds_p_barrel['nK_barrel_tophat'].mean('run').sel(phi=0.8, method='nearest')
+nK_barrel_std = ds_p_barrel['nK_barrel_tophat'].std('run').sel(phi=0.8, method='nearest')
+ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Barrel nK (TH)', capsize=5, )
+
+
 ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
 for ax in axes:
 
     ax.axvline(180, color='gold', linestyle='--')
-    ax.set_ylim(1e16,3e22)
-    ax.set_xlim(-10,250)
+    ax.set_ylim(1e16,1e23)
+    ax.set_xlim(-10,220)
     ax.set_yscale('log')
     ax.legend()
     ax.set_ylabel('$n_K [m^{-3}$]')
@@ -102,7 +118,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tigh
 
 plt.figure()
 
-ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(mp='mw_horns').sel(phi=0.8, method='nearest')
+ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(phi=0.8, method='nearest')
 
 # da_plot.plot(col='phi', hue='var', row='motor')
 motor_sel = [80, 130, 180]
@@ -161,7 +177,7 @@ for i, motor in enumerate(motor_sel):
 
 ax.set_xlabel('Time [us]')
 ax.set_ylabel('AS [dimensionless]')
-ax.legend(bbox_to_anchor=(0.5,0.8))
+ax.legend(bbox_to_anchor=(0.5,0.87))
 ax.set_ylim(-0.05,1.05)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
