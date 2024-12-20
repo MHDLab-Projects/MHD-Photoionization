@@ -39,48 +39,6 @@ ds_mws_fit = xr.concat([
 
 #%%
 
-run_sel = ('2023-05-12', 1)
-
-plt.figure(figsize=(5,2))
-
-da_plot = ds_lecroy['dAS_abs'].sel(run=run_sel).sel(kwt=1, method='nearest')
-da_plot
-
-# Calculate mean and standard deviation
-mean = da_plot.mean('mnum')
-std = da_plot.std('mnum')
-count = da_plot.count('mnum')
-std_err = std / np.sqrt(count)
-
-print("Number of acquisitions: {}".format(count.isel(time=0).values))
-
-# Get x values (assuming they are the same for mean and std)
-x = mean.coords[mean.dims[0]].pint.magnitude
-mean = mean.pint.magnitude
-std_err = std_err.pint.magnitude
-# Plot mean
-plt.plot(x, mean, label='AS')
-
-da_plot_fit = ds_mws_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
-da_plot_fit.plot(label='AS Fit')
-
-# Plot confidence interval
-plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
-
-
-plt.yscale('log')
-plt.xlim(-1,40)
-plt.ylim(1e-5,)
-plt.ylabel(r'$\Delta AS$ [dimensionless]')
-
-plt.title('')
-plt.legend(['Data', 'Fit'])
-
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
-
-
-#%%
-
 fig, axes = plt.subplots(2, 1, figsize=(5,8), sharex=True)
 
 var = 'nK_m3_barrel'
@@ -162,10 +120,51 @@ axes[-1].set_xlabel("K wt % nominal")
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization.png'), dpi=300, bbox_inches='tight')
 # %%
 
+run_sel = ('2023-05-12', 1)
+
+plt.figure(figsize=(2,2))
+
+da_plot = ds_lecroy['dAS_abs'].sel(run=run_sel).sel(kwt=1, method='nearest')
+da_plot
+
+# Calculate mean and standard deviation
+mean = da_plot.mean('mnum')
+std = da_plot.std('mnum')
+count = da_plot.count('mnum')
+std_err = std / np.sqrt(count)
+
+print("Number of acquisitions: {}".format(count.isel(time=0).values))
+
+# Get x values (assuming they are the same for mean and std)
+x = mean.coords[mean.dims[0]].pint.magnitude
+mean = mean.pint.magnitude
+std_err = std_err.pint.magnitude
+# Plot mean
+plt.plot(x, mean, label='AS')
+
+da_plot_fit = ds_mws_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
+da_plot_fit.plot(label='AS Fit')
+
+# Plot confidence interval
+plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
+
+
+plt.yscale('log')
+plt.xlim(-1,25)
+plt.ylim(1e-5,)
+plt.ylabel(r'$\Delta AS$ [dimensionless]')
+
+plt.title('')
+plt.legend(['Data', 'Fit'])
+
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
+
+
+
 # %%
 
 
-fig, ax = plt.subplots(figsize=(4.5,2.5))
+fig, ax = plt.subplots(figsize=(2,2))
 
 var = 'mws_fit_decay_exp'
 ax.errorbar(
@@ -177,12 +176,12 @@ ax.errorbar(
     )
 
 for species in ds_tau.data_vars:
-    ds_tau[species].plot(label="{}".format(species), ax=ax)
+    ds_tau[species].plot(label="{}".format(species), ax=ax, marker='x')
 
 ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
 ax.set_ylabel("Time Constant [us]")
 ax.set_title('')
-ax.set_ylim(1e-1, 1e4)
+ax.set_ylim(5e-2, 2e3)
 
 ax.set_xscale('log')
 ax.set_yscale('log')
