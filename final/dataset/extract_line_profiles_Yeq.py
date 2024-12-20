@@ -13,9 +13,8 @@ from mhdpy.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 import pi_paper_utils as ppu
 
+from pi_paper_utils.constants import CFD_EXIT_OFFSET
 
-# Taken from geometry.toml #TODO: read this file?
-CFD_EXIT_OFFSET = Quantity(20.911, 'cm')
 
 #%%
 tc = '536_pos'
