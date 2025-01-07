@@ -10,6 +10,7 @@ from mhdpy.analysis.absem.fitting import kappa_2peak
 
 # %%
 
+p0 = Quantity(1, 'atm')
 Ts = np.logspace(0,4,5)
 
 wls = np.arange(760,775,0.001)
@@ -17,7 +18,7 @@ wls = np.arange(760,775,0.001)
 
 for T in Ts:
     T = Quantity(T, 'K')
-    kappas = kappa_2peak(wls, T=T)
+    kappas = kappa_2peak(wls, T=T, p=p0)
     plt.plot(wls, kappas, label=T)
 
 
@@ -25,6 +26,25 @@ plt.legend()
 # plt.yscale('log')
 
 plt.xlim(766.4,766.6)
+
+#%%
+
+T = Quantity(2000, 'K')
+
+ps = [0.5, 1,2]
+
+for p in ps:
+    p = Quantity(p, 'atm')
+    kappas = kappa_2peak(wls, T=T, p=p)
+    plt.plot(wls, kappas, label=p)
+
+plt.legend()
+# plt.yscale('log')
+
+plt.xlim(766.4,766.6)
+
+
+
 # %%
 
 # Calculating collisional broadening from Alkemade II.231 and Table VII.9
@@ -60,3 +80,4 @@ vth.to('cm/s')
 #%%
 
 nx.to('1/m^3')
+# %%
