@@ -4,7 +4,7 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
-from mhdpy.analysis import mws, absem
+from mhdpy.analysis import mwt, absem
 from mhdpy.plot import dropna
 
 stack_dims = ['date','run_num','motor','phi']
@@ -38,13 +38,13 @@ ds_absem = ds_absem.absem.calc_alpha().sel(wavelength=slice(750,790))
 ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
 
 #%%
-da_mws_nothing = ppu.fileio.load_mws_T0()
+da_mwt_nothing = ppu.fileio.load_mwt_T0()
 ds_lecroy = xr.concat([ds_lecroy_536_pos, ds_lecroy_5x6, ds_lecroy_516], dim='temp').unstack('temp')
-ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_mws_nothing).mws.calc_dPD()
+ds_lecroy = ds_lecroy.mwt.calc_AS_abs(mag_0=da_mwt_nothing).mwt.calc_dPD()
 ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
 #%%
-ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
+ds_stats_lecroy = ds_lecroy.mwt.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
 ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 
 # Now that statistics are calculated we average over mnum and unstack.

@@ -7,7 +7,7 @@ nb_dir=$EXPT_NB_DIR
 
 dates=("2023-04-07" "2023-05-12" "2023-05-18" "2023-05-24")
 
-process_mws=true
+process_mwt=true
 process_absem=true
 
 purge_dirs=false
@@ -19,9 +19,9 @@ do
 
     date_dir=$nb_dir/$date
 
-    if $process_mws; then
+    if $process_mwt; then
 
-        cd $date_dir/mws
+        cd $date_dir/mwt
 
         if $purge_dirs; then
             rm -r output

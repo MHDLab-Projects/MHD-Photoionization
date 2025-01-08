@@ -1,7 +1,7 @@
 {
     "2023-04-07": {
         "has_multiplexer": false,
-        "mws_process_tcs": [
+        "mwt_process_tcs": [
             "530",
             "536_Motor",
             "536_Motor_Power",
@@ -13,7 +13,7 @@
     },
     "2023-05-12": {
         "has_multiplexer": false,
-        "mws_process_tcs": [
+        "mwt_process_tcs": [
             "Motor_1",
             "SeedRamp_2",
             "SeedRamp_3",
@@ -22,7 +22,7 @@
     },
     "2023-05-18": {
         "has_multiplexer": true,
-        "mws_process_tcs": [
+        "mwt_process_tcs": [
             "pos_1",
             "pos_2",
             "power",
@@ -31,7 +31,7 @@
     },
     "2023-05-24": {
         "has_multiplexer": true,
-        "mws_process_tcs": [
+        "mwt_process_tcs": [
             "5x0",
             "Nothing_Init",
             "516",

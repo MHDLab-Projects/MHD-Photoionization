@@ -14,7 +14,7 @@ datestr = parser.parse_args().date
 with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
 
-process_tcs = settings['mws_process_tcs']
+process_tcs = settings['mwt_process_tcs']
 
 # Start processing
 
@@ -64,8 +64,8 @@ ds.to_netcdf(pjoin(data_folder, 'ds_lecroy_time.cdf'))
 
 # %%
 
-ds = ds.mws.calc_AS_rel()
-ds = ds.mws.calc_time_stats()
+ds = ds.mwt.calc_AS_rel()
+ds = ds.mwt.calc_time_stats()
 
 ds_out = ds[['mag_pp', 'mag_fluct', 'dAS_rel_max', 'mag_peak']]
 
@@ -74,7 +74,7 @@ ds_out = ds_out.rename({'acq_time':'time'})
 from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
 
 with TdmsWriter(pjoin(data_folder, 'Processed_Data.tdms'), 'a') as tdms:
-    ds_to_tdms(ds_out, group_name='mws_time', tdms_writer=tdms)
+    ds_to_tdms(ds_out, group_name='mwt_time', tdms_writer=tdms)
 
 
 #%%

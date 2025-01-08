@@ -6,7 +6,7 @@ create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 from mhdpy.analysis import absem
 
 # %%
@@ -18,7 +18,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_lecroy = ds_lecroy['dAS_abs']
 
-ds_pd = ds_lecroy.mws.calc_time_stats()[['pd1','pd2', 'dpd1', 'dpd1_max']].mean('run')
+ds_pd = ds_lecroy.mwt.calc_time_stats()[['pd1','pd2', 'dpd1', 'dpd1_max']].mean('run')
 #%%
 
 from pi_paper_utils.constants import LASER_POWER, LASER_AREA
@@ -97,12 +97,12 @@ plt.xlabel('Time [us]')
 
 plt.legend(title='Fluence\n[mJ/cm^2]')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_time.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_time.png'))
 
 # %%
 
 # da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
-da_max = da_lecroy.mws._pulse_max()
+da_max = da_lecroy.mwt._pulse_max()
 
 da_max.attrs['long_name'] = 'Max AS'
 
@@ -127,7 +127,7 @@ plt.xlabel('Fluence [mJ/cm^2]')
 
 plt.ylim(5e-5,1e-1)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_max.png'))
 #%%
 
 da_max2 = da_max.mean('run')
@@ -201,7 +201,7 @@ plt.legend(loc='lower right')
 plt.xlabel('Fluence [mJ/cm^2]')
 plt.ylabel('$\Delta AS_{max}$')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'MWS_power_max_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_max_fit.png'))
 
 #%%
 
@@ -267,9 +267,9 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
 da_fit = da_lecroy.copy()
 
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_2 
+from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_2 
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_2(da_fit)
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_2(da_fit)
 
 #TODO: sterr is nan where ds_p is not?
 ds_p['krb'] = ds_p['krb'].where(~ds_p_stderr['krb'].isnull())
@@ -292,13 +292,13 @@ plt.ylim(1e0,)
 
 #%%
 
-ds_mws_fit.to_array('var').plot(hue='var', row='power', col='run', x='time')
+ds_mwt_fit.to_array('var').plot(hue='var', row='power', col='run', x='time')
 
 plt.yscale('log')
 
 #%%
 
-# ds_mws_fit.isel(time=0).count('mnum')['AS_all'].plot(hue='run_plot', x='power', marker='o')
+# ds_mwt_fit.isel(time=0).count('mnum')['AS_all'].plot(hue='run_plot', x='power', marker='o')
 
 # plt.yscale('log')
 
@@ -310,17 +310,17 @@ plt.yscale('log')
 
 #%%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
+from mhdpy.analysis.mwt.fitting import pipe_fit_exp
 
 # da_fit = da_lecroy.mean('mnum')
 da_fit = da_lecroy.copy()
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
-# ds_mws_fit = xr.merge([ds_mws_fit, da_fit.rename('AS_all')])
+# ds_mwt_fit = xr.merge([ds_mwt_fit, da_fit.rename('AS_all')])
 #%%
 
-ds_mws_fit.to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
+ds_mwt_fit.to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
 
 plt.yscale('log')
 
@@ -339,7 +339,7 @@ plt.xscale('log')
 plt.title('')
 plt.ylabel('Exponential time constant [us]')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_decay_power.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mwt_decay_power.png'))
 
 #%%
 
@@ -352,21 +352,21 @@ plt.ylim(1,10)
 
 da_fit = da_lecroy.copy()
 
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_3 
+from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3 
 
-pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
-pipe_fit_mws_3.fit_prep_kwargs['pre_norm_cutoff'] = None
+pipe_fit_mwt_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
+pipe_fit_mwt_3.fit_prep_kwargs['pre_norm_cutoff'] = None
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_3(da_fit)
 
 # %%
 
-da_fit.mws.fit_prep()
+da_fit.mwt.fit_prep()
 # %%
 
-ds_mws_fit#.sel(power=1)['AS_all'].plot(hue='run_plot', x='time')
+ds_mwt_fit#.sel(power=1)['AS_all'].plot(hue='run_plot', x='time')
 
-ds_mws_fit.to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
+ds_mwt_fit.to_array('var').plot(hue='var', row='power', col='run', x='time', yscale='log', sharey=False)
 
 plt.yscale('log')
 
@@ -401,7 +401,7 @@ axes[0].set_xlabel('')
 axes[1].set_xlabel('Fluence [mJ/cm^2]')
 axes[1].set_ylabel('$k_{r,m}$ [us^-1]')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mws_dnedt_power.png'), bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mwt_dnedt_power.png'), bbox_inches='tight')
 
 
 #%%

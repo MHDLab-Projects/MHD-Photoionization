@@ -9,7 +9,7 @@ from mhdpy.fileio.ct import load_df_cuttimes
 from mhdpy.coords.ct import downselect_acq_time
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm
 from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_3, pipe_fit_exp
+from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3, pipe_fit_exp
 
 #%%
 tc = '53x'
@@ -70,29 +70,29 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_absem_fit.png'))
 #%%
 ds_fit = ds_lecroy
 da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_mws_3(da_fit_lecroy)
-ds_p_mws['decay'] = 1 / ds_p_mws['krm']
-ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws_dnedt.cdf'))
-ds_p_dnedt = ds_p_mws.copy()
+ds_fit_mwt, ds_p_mwt, ds_p_stderr_mwt = pipe_fit_mwt_3(da_fit_lecroy)
+ds_p_mwt['decay'] = 1 / ds_p_mwt['krm']
+ds_fit_mwt.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mwt_dnedt.cdf'))
+ds_p_dnedt = ds_p_mwt.copy()
 
 #%%
 da_fit_lecroy.sel(kwt=[0.05, 0.99], method='nearest').plot(hue='run_plot', row='kwt', x='time')
 plt.xlim(-1, 1)
 
 #%%
-ds_fit_mws.mean('run')[['AS_sel', 'AS_fit', 'AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
+ds_fit_mwt.mean('run')[['AS_sel', 'AS_fit', 'AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
 plt.yscale('log')
 plt.xlim(-1, 40)
 plt.ylim(1e-3, 1.1)
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_dnedtv2.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mwt_fit_dnedtv2.png'))
 
 #%%
 ds_fit = ds_lecroy
 da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
-ds_fit_mws, ds_p_mws, ds_p_stderr_mws = pipe_fit_exp(da_fit_lecroy)
-ds_p_mws['decay'] = ds_p_mws['decay'].pint.quantify('us')
-ds_p_exp = ds_p_mws.copy()
-ds_fit_mws.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mws_exp.cdf'))
+ds_fit_mwt, ds_p_mwt, ds_p_stderr_mwt = pipe_fit_exp(da_fit_lecroy)
+ds_p_mwt['decay'] = ds_p_mwt['decay'].pint.quantify('us')
+ds_p_exp = ds_p_mwt.copy()
+ds_fit_mwt.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mwt_exp.cdf'))
 
 #%%
 da_sel = ds_lecroy['AS_abs'].mean('mnum').sel(kwt=0.05, method='nearest').dropna('run', how='all').isel(run=2)
@@ -105,14 +105,14 @@ plt.ylim(1e-3, 1e-2)
 plt.xlim(-1, 10)
 
 #%%
-ds_fit_mws.mean('run')[['AS_all', 'AS_fit', 'AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
+ds_fit_mwt.mean('run')[['AS_all', 'AS_fit', 'AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
 plt.yscale('log')
 plt.xlim(-1, 40)
 plt.ylim(1e-4, 1e-1)
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mwt_fit_exp.png'))
 
 #%%
-ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
+ds_stats_lecroy = ds_lecroy.mwt.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
 ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 
 #%%
@@ -120,10 +120,10 @@ ds_p_exp['krm'] = 1 / ds_p_exp['decay']
 ds_params = xr.merge([
     ds_p_absem['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel'),
     ds_p_absem['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns'),
-    ds_p_dnedt['decay'].rename('mws_fit_decay'),
-    ds_p_exp['decay'].rename('mws_fit_decay_exp'),
-    ds_p_exp['krm'].rename('mws_fit_krm'),
-    ds_p_dnedt['dne'].rename('mws_fit_dne'),
+    ds_p_dnedt['decay'].rename('mwt_fit_decay'),
+    ds_p_exp['decay'].rename('mwt_fit_decay_exp'),
+    ds_p_exp['krm'].rename('mwt_fit_krm'),
+    ds_p_dnedt['dne'].rename('mwt_fit_dne'),
     ds_stats_lecroy
 ])
 

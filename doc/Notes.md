@@ -169,9 +169,9 @@ Looking around for a simple python package for defining data processing/analysis
 TODO: 
 
 - [x] Improve handling of nans for global fit. 
-- [x] Then develop second mws fitting pipeline and revisit absem pipe 2. 
+- [x] Then develop second mwt fitting pipeline and revisit absem pipe 2. 
     * Had to drop all wavelength for absem, which leads to distorted spectrum for low kwt.
-    * different length t_eval error message is showing up for mws
+    * different length t_eval error message is showing up for mwt
 
 - [x]  Need to process multiple values for ne0 for cfd data. 
     * interpolate to kwt values of experiment. 

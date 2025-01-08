@@ -61,7 +61,7 @@ ds_calib.to_netcdf(pjoin('proc_data','ds_calib.cdf'))
 
 #%%
 
-## MWS
+## MWT
 
 
 dss = []
@@ -82,7 +82,7 @@ ds_lecroy.to_netcdf(pjoin('proc_data','ds_lecroy.cdf'))
 
 # Narrow down dsst groups and concatenate across dates
 
-keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel', 'lasen_meter1', 'lasen_meter2', 'o2', 'tc1', 'spectral_wlstats', 'mws_time']
+keep_keys = ['hvof', 'calorimetry', 'motor', 'filterwheel', 'lasen_meter1', 'lasen_meter2', 'o2', 'tc1', 'spectral_wlstats', 'mwt_time']
 
 dsst_date_dict = {}
 

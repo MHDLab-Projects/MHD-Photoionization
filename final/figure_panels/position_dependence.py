@@ -6,7 +6,7 @@ from mhdpy.plot import xr_errorbar_axes
 
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-# Position dependent AES and MWS
+# Position dependent AES and MWT
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 # Non position dependent barrel AES
@@ -16,7 +16,7 @@ ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils
 ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
 
 ds_lecroy_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
-ds_536 = ds_lecroy_536.mws.calc_time_stats()
+ds_536 = ds_lecroy_536.mwt.calc_time_stats()
 
 #%%
 
@@ -100,7 +100,7 @@ for ax in axes:
 ax2.set_xlabel('Stage Position [mm]')
 ax1.set_xlabel('')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
 # Phi =0.65
 # ax2 = axes[1]
@@ -171,7 +171,7 @@ ax.set_ylabel('AS [dimensionless]')
 ax.legend(bbox_to_anchor=(0.5,0.87))
 ax.set_ylim(-0.05,1.05)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mwt_AS_time_20230518.png'), dpi=300, bbox_inches='tight')
 # %%
 
 plt.figure()
@@ -181,8 +181,8 @@ da_plot = ds_536['AS_abs'].sel(run=('2023-05-18', 1)).dropna('motor', how='all')
 
 AS_pp = da_plot.sel(time=slice(-50,-1)).mean('mnum').mean('time').pint.dequantify()
 AS_pp_fluct = da_plot.sel(time=slice(-50,-1)).std('mnum').mean('time').pint.dequantify()
-AS_laser = da_plot.mws._pulse_max().mean('mnum').pint.dequantify()
-AS_laser_fluct = da_plot.mws._pulse_max().std('mnum').pint.dequantify()
+AS_laser = da_plot.mwt._pulse_max().mean('mnum').pint.dequantify()
+AS_laser_fluct = da_plot.mwt._pulse_max().std('mnum').pint.dequantify()
 
 fig, ax = plt.subplots()
 
@@ -200,7 +200,7 @@ plt.xlim(-5,270)
 plt.ylabel('AS [dimensionless]')
 plt.xlabel('Stage Position [mm]')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_stats_20230518.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mwt_AS_stats_20230518.png'))
 
 #%%
 #%%
@@ -222,7 +222,7 @@ plt.ylabel('SFR [dimensionless]')
 
 dropna(g)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pow_mws_sfr_dates.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'pow_mwt_sfr_dates.png'))
 
 
 # %%

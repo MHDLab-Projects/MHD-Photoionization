@@ -10,16 +10,16 @@ source .env
 
 pushd $REPO_DIR/experiment/analysis/auto
 # python expt_overview.py
-# python mws_1d.py
+# python mwt_1d.py
 source run_all.sh
 popd 
 
-pushd $REPO_DIR/experiment/analysis/mws/resampling
+pushd $REPO_DIR/experiment/analysis/mwt/resampling
 python process.py
-python mws_sample_nors_compare.py
+python mwt_sample_nors_compare.py
 popd
 
-pushd $REPO_DIR/experiment/notebook/2023-05-18/mws
+pushd $REPO_DIR/experiment/notebook/2023-05-18/mwt
 python analysis_silicon_power.py
 popd
 

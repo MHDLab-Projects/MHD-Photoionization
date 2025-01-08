@@ -6,7 +6,7 @@ create_standard_folders()
 import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 from mhdpy.analysis import absem
 from mhdpy.plot import dropna
 
@@ -85,14 +85,14 @@ plt.yscale('log')
 
 #%%[markdown]
 
-# # 516 MWS Analysis
+# # 516 MWT Analysis
 
 # only on 2023-05-24
 
 #%%
 
 
-da_max = ds_lecroy['AS_rel'].mws._pulse_max()
+da_max = ds_lecroy['AS_rel'].mwt._pulse_max()
 
 
 
@@ -108,21 +108,21 @@ plt.yscale('log')
 
 # %%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_mws_3
+from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
 
 da_fit = ds_lecroy['dAS_rel'].mean('mnum')
 
 
-pipe_fit_mws_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
+pipe_fit_mwt_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_mws_3(da_fit)
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_3(da_fit)
 
 ds_p['decay'] = 1/ds_p['krm']
 
 # %%
 
 
-ds_mws_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
+ds_mwt_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
 
 #%%
 
@@ -135,15 +135,15 @@ ds_p['decay'].plot(marker='o')
 plt.ylabel('Decay Time (us)')
 plt.ylim(0, 10)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '516_mws_decaytime.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '516_mwt_decaytime.png'))
 
 #%%
 
-ds_mws_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
+ds_mwt_fit[['AS_fit','AS_all']].to_array('var').plot(hue='var', col='motor', col_wrap=3)
 
 plt.yscale('log')
 
 plt.ylim(1e-4,)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '516_mws_AS_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '516_mwt_AS_fit.png'))
 # %%

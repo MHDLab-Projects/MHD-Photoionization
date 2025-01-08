@@ -8,7 +8,7 @@ from mhdpy.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 from mhdpy.plot import dropna
 from mhdpy.xr_utils import WeightedMeanAccessor
 from mhdpy.analysis import absem
@@ -103,7 +103,7 @@ ds_lecroy = ppu.fileio.load_lecroy('53x', df_ct_downselect=df_cuttimes_seedtcs, 
 # ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
 # ds_fit = ds_lecroy.mean('mnum')
-# da_fit = ds_fit.mws.calc_AS_rel()['AS']
+# da_fit = ds_fit.mwt.calc_AS_rel()['AS']
 
 da_fit = ds_lecroy['dAS_rel']
 
@@ -122,13 +122,13 @@ dropna(g)
 
 #%%
 
-from mhdpy.analysis.mws.fitting import pipe_fit_exp
+from mhdpy.analysis.mwt.fitting import pipe_fit_exp
 
-ds_mws_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_exp(da_fit)
 
 #%%
 
-ds_mws_fit[['AS_all','AS_fit']].to_array('var').plot(hue='var', row='kwt', col='run')
+ds_mwt_fit[['AS_all','AS_fit']].to_array('var').plot(hue='var', row='kwt', col='run')
 
 plt.yscale('log')
 

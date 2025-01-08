@@ -2,7 +2,7 @@
 from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 # %%[markdown]
 
 # Summary: 

@@ -24,7 +24,7 @@ ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']]
 
 ds_lecroy = xr.merge([ds_lecroy_5x6, ds_lecroy])
 
-ds_lecroy = ds_lecroy.mws.calc_time_stats()
+ds_lecroy = ds_lecroy.mwt.calc_time_stats()
 
 
 # ds_lecroy.to_array('var').mean('mnum').mean('motor').mean('run').sel(time=slice(-1,1)).plot(col='var', sharey=False)
@@ -117,7 +117,7 @@ for i, motor in enumerate(da_sel.coords['motor'].values):
 
 # da_sel.plot(row='motor', hue='run_plot', x='time', figsize=(8,25))
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_AS_sel.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mwt_AS_sel.png'), dpi=300, bbox_inches='tight')
 #%%
 
 da_sel = ds_lecroy['AS_abs'].sel(motor=motor_sel, method='nearest')
@@ -151,7 +151,7 @@ ds_lecroy
 nK = ds_p['nK_m3'].sel(mp='mw_horns')
 
 
-ds_stats_lecroy = ds_lecroy.mws.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
+ds_stats_lecroy = ds_lecroy.mwt.calc_time_stats()[['dAS_abs_max', 'mag_pp', 'mag_fluct', 'SFR_abs', 'dpd1_max']]
 
 #%%
 
@@ -229,7 +229,7 @@ for mp in motor_sel:
         axes[2].axvline(mp, color='gray', linestyle='--')
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mws_stats.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_mwt_stats.png'), dpi=300, bbox_inches='tight')
 
 
 #%%
@@ -307,7 +307,7 @@ ax2.set_title('')
 
 plt.xlim(0,310)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
 #%%
 
@@ -359,7 +359,7 @@ ax1.set_xlabel('Position [mm]')
 
 # plt.xlim(0,310)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mws_cfd.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
 
 
@@ -374,7 +374,7 @@ leg = plt.gca().get_legend()
 leg.set_title('Experiment (date, #)')
 leg.set_bbox_to_anchor([0,0,1.5,1])
 
-plt.title('CFD KOH and MWS AS compare')
+plt.title('CFD KOH and MWT AS compare')
 
 plt.twinx()
 

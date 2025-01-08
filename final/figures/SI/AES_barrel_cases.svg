@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="215.80685mm"
-   height="76.582222mm"
-   viewBox="0 0 215.80685 76.582222"
+   width="207.39758mm"
+   height="76.391106mm"
+   viewBox="0 0 207.39758 76.391106"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -28,26 +28,26 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.3843855"
-     inkscape:cx="420.7643"
-     inkscape:cy="146.99663"
+     inkscape:cx="388.98124"
+     inkscape:cy="146.27428"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
-     inkscape:window-y="91"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" /><defs
      id="defs1" /><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(5.682116,-108.10658)"><image
-       width="109.98199"
+     transform="translate(-2.7271504,-108.2977)"><image
+       width="102.616"
        height="76.199997"
        preserveAspectRatio="none"
        xlink:href="../../analysis/output/figures/cfd_centerline_p.png"
        id="image1"
-       x="-5.682116"
-       y="108.10658" /><image
+       x="2.7271504"
+       y="108.2977" /><image
        width="104.902"
        height="76.199997"
        preserveAspectRatio="none"

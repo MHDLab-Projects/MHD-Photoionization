@@ -8,8 +8,8 @@ pushd $REPO_DIR/final/dataset
 # Generates files needed by others
 echo "CFD Line profile extraction"
 python cfd_extract_line_profiles.py
-echo "MWS Nothing Transmission"
-python mws_nothing.py
+echo "MWT Nothing Transmission"
+python mwt_nothing.py
 echo "CFD 2D Images"
 python extract_cfd_2D.py
 

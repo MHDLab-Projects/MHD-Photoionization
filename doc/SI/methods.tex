@@ -21,7 +21,7 @@ Throughout the experimental campaign, we performed the following test case seque
 For each diagnostic, data is obtained continuously throughout the experiment and indexed in time. For each individual test case, there are a number of repeated acquisitions depending on the duration of the test case and acquisition rate of the diagnostic. In the data processing, these repeated acquisitions are averaged to obtain a single value for each test case before further analysis (e.g. fitting). For statistics across runs presented in the main text, the variation within repeat acquisitions is not considered. 
 
 The syringe pump limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. Furthermore, it was not possible to maintain consistent durations for the same test cases performed in different sequences.
-The time limitation on seeding duration limits the AES diagnostic more than the MWS diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWS diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (5-12 Hz).  Therefore for a given test case sequences, the MWS diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
+The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWT diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (5-12 Hz).  Therefore for a given test case sequences, the MWT diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
 
 
 
@@ -55,7 +55,7 @@ Below are overviews of the experiments performed. The independent variables that
 The results of this work are created from a set of codes located at \url{https://github.com/MHDLab-Projects/MHD-Photoionization}. The final results and figures are the output of a data pipeline.  The data pipeline starts from the raw experimental dataset, which consists of unprocessed data taken during the experiments. The data pipeline consists of a series of shell scripts that in turn primarily run python scripts. Therefore, the shell scripts in the repository can act as a map of the data processing methodology. The data pipeline has the following steps: 
 
 \begin{enumerate}
-    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), notably resampling from 1kHz data acquisition rate to a 1 sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWS oscilloscope data.  At this stage, each experiment date is processed separately.
+    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), notably resampling from 1kHz data acquisition rate to a 1 sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, each experiment date is processed separately.
     \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in xarray datasets.
     \item Create Final Dataset (\texttt{/automation/final\_dataset.sh}): The final dataset is created by applying various analysis steps (data extraction, fitting, etc.) to the processed data. 
     \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.)for the main manuscript. 
@@ -67,18 +67,18 @@ In addition to the above steps that lead to the final figures, the repository co
 The supplemental analysis scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks 'renders'. During this process many of the supplemental figures are created, though those figures could also be generated running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
 
 \clearpage
-\subsection{Microwave Scattering (MWS) }
+\subsection{Microwave Scattering (MWT) }
 
 
 \subsubsection{Setup Description}
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_Setup.png}
+\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWT_Setup.png}
 \caption{Microwave scattering setup. Left: An image of the setup. Right: A schematic of the setup. LO: local oscillator. I: In-phase Q: Quadrature.  }
-\label{fig:SI_MWS_Setup}
+\label{fig:SI_MWT_Setup}
 \end{figure}
 
-The microwave scattering setup is shown in Figure \ref{fig:SI_MWS_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
+The microwave scattering setup is shown in Figure \ref{fig:SI_MWT_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
 
 % Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
@@ -95,18 +95,18 @@ The distance between the horns is 85.725 mm. The mirror that sends the excimer b
 
 \subsubsection{Data Processing and Fitting}
 
-The raw MWS data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
+The raw MWT data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
 
-The MWS data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mws_resampling}
+The MWT data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mwt_resampling}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/resampling/output/figures/mws_sample_nors_compare.png}
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mwt/resampling/output/figures/mwt_sample_nors_compare.png}
 \caption{Comparison of the resampling methods. Both left and right panels show the same time trace, with the right panel being zoomed into the peak.}
-\label{fig:SI_mws_resampling}
+\label{fig:SI_mwt_resampling}
 \end{figure}
 
-\ref{fig:SI_mws_processing_overview} shows the following processing steps for the MWS data to determine the AS profiles as described in the text.
+\ref{fig:SI_mwt_processing_overview} shows the following processing steps for the MWT data to determine the AS profiles as described in the text.
 
 The fit preparation pipeline consists of the following steps:
 
@@ -124,46 +124,46 @@ For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/mws_processing_overview.png}
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mwt/output/figures/mwt_processing_overview.png}
 \caption{Microwave processing overview. From top to bottom: A) raw I and Q signals. B) the calculated magnitude C) The absolute Transmission. D) Absolute AS. See main text for formulas.  }
-\label{fig:SI_mws_processing_overview}
+\label{fig:SI_mwt_processing_overview}
 \end{figure}
 
 
 \subsubsection{No Torch Measurements}
 
-On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWS_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
+On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWT_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
 
 
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_time_trace_2023-05-18.png}
+\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mwt_nothing_time_trace_2023-05-18.png}
 \caption{Time trace from 2023-05-18 of the transmission measurement without any free jet.}
-\label{fig:SI_MWS_nothing_time_trace}
+\label{fig:SI_MWT_nothing_time_trace}
 \end{figure}
 
-On 2023-05-24 the transmission was measured as a function of position as shown in \ref{fig:SI_MWS_nothing_motor}. There is a slight increase in transmission when the stage is moved as close as possible to the barrel exit, possibly due to reflections from the barrel.
+On 2023-05-24 the transmission was measured as a function of position as shown in \ref{fig:SI_MWT_nothing_motor}. There is a slight increase in transmission when the stage is moved as close as possible to the barrel exit, possibly due to reflections from the barrel.
 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mws_nothing_motor_2023-05-24.png}
+\includegraphics[width=0.8\textwidth]{\repodir/final/dataset/output/figures/mwt_nothing_motor_2023-05-24.png}
 \caption{Motorized stage for position dependent transmission measurements.}
-\label{fig:SI_MWS_nothing_motor}
+\label{fig:SI_MWT_nothing_motor}
 \end{figure}
 
 
-The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWS_nothing_T0}A. Note that for 2023-05-12, the measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from figure \ref{fig:SI_MWS_nothing_motor}. On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased absolute transmission on 2023-05-18 and 2023-05-24.  
+The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. Note that for 2023-05-12, the measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from figure \ref{fig:SI_MWT_nothing_motor}. On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased absolute transmission on 2023-05-18 and 2023-05-24.  
 
-\ref{fig:SI_MWS_nothing_T0}B shows the absolute transmission of the magnitude before the laser pulse for the case 536\_pos, for different dates. The transmission is then measured with the sample in place. The transmission is then calculated as the ratio of the sample transmission to the transmission with nothing in place. An example of this is shown in \ref{fig:SI_MWS_nothing_T0}.  
+\ref{fig:SI_MWT_nothing_T0}B shows the absolute transmission of the magnitude before the laser pulse for the case 536\_pos, for different dates. The transmission is then measured with the sample in place. The transmission is then calculated as the ratio of the sample transmission to the transmission with nothing in place. An example of this is shown in \ref{fig:SI_MWT_nothing_T0}.  
 
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/analysis/mws/output/figures/mws_nothing_T0.png}
+\includegraphics[width=0.8\textwidth]{\repodir/final/analysis/mwt/output/figures/mwt_nothing_T0.png}
 \caption{A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described elsewhere in SI) B) position dependent transmission measurement.}
-\label{fig:SI_MWS_nothing_T0}
+\label{fig:SI_MWT_nothing_T0}
 \end{figure}
 
 \subsubsection{Silicon test sample}
@@ -191,13 +191,13 @@ Surface roughness & < 5A RMS \\
 \label{table:material_properties}
 \end{table}
 
-The silicon measurements are shown in \ref{fig:SI_MWS_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} 
+The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} 
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_Silicon.png}
-\caption{Measurements of the MWS system with a Silicon sample. A) Power dependent measurements of I, Q, and the calculated magnitude $U$. B) a picture of the silicon sample placed in the location of the torch. C) the $\Delta AS$ curve for the silicon sample with an exponential fit. }
-\label{fig:SI_MWS_Silicon}
+\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWT_Silicon.png}
+\caption{Measurements of the MWT system with a Silicon sample. A) Power dependent measurements of I, Q, and the calculated magnitude $U$. B) a picture of the silicon sample placed in the location of the torch. C) the $\Delta AS$ curve for the silicon sample with an exponential fit. }
+\label{fig:SI_MWT_Silicon}
 \end{figure}
 
 
@@ -214,7 +214,7 @@ The laser profile was measured by imaging the laser beam on a white beam block. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mws/output/figures/laser_profile.png}
+\includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mwt/output/figures/laser_profile.png}
 \caption{Laser profile measurement. A) The image of the laser profile. B) The cross sections of the laser profile. The width of the cross sections and calculated area are indicated in the figure.}
 \label{fig:SI_Laser_Profile}
 \end{figure}
@@ -249,14 +249,14 @@ In Figure \ref{fig:SI_Mie_Scattering}B, we perform a power-law fit of $Q_{ext}$ 
 \label{fig:SI_Mie_Scattering}
 \end{figure}
 
-In Figure \ref{fig:SI_MWS_lin_square_compare} we compare the transmission calculated from the microwave signal magnitude ($U$) squared , as done in the paper with the same expression but measuring the 'magnitude tramsission' $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
+In Figure \ref{fig:SI_MWT_lin_square_compare} we compare the transmission calculated from the microwave signal magnitude ($U$) squared , as done in the paper with the same expression but measuring the 'magnitude tramsission' $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWS_lin_square_compare.png}
+\includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWT_lin_square_compare.png}
 \caption{Comparison of the transmission calculated from the microwave magnitude ($U$) magnitude squared and not squared (linear)}
-\label{fig:SI_MWS_lin_square_compare}
+\label{fig:SI_MWT_lin_square_compare}
 \end{figure}
 
 
@@ -265,7 +265,7 @@ In Figure \ref{fig:SI_MWS_lin_square_compare} we compare the transmission calcul
 
 \subsubsection{Setup Description}
 
-The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWS measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. After collection of light with the collection lenses (described below), the light of both barrel exit and mobile setup is sent back to the multiplexer. Finally, the light passes from multiplexer to spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber.
+The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWT measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. After collection of light with the collection lenses (described below), the light of both barrel exit and mobile setup is sent back to the multiplexer. Finally, the light passes from multiplexer to spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber.
 
 Because both AES diagnostics were multiplexed to the same spectrometer, one AES measurement could be taken at a time. Throughout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements at the two AES locations are not simultaneous.
 
@@ -414,7 +414,7 @@ The $nK$ profile is also important for the fitting process. As shown in Figure \
 \clearpage
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) setup. \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
+Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) setup. \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWT  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
 
 
 

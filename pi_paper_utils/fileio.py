@@ -7,7 +7,7 @@ from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-from .constants import MAG_MWS_BLOCK
+from .constants import MAG_MWT_BLOCK
 
 
 def load_absem(
@@ -76,7 +76,7 @@ def load_lecroy(tc,
         ds_lecroy = downselect_acq_time(ds_lecroy, df_ct_downselect)
 
     # Calculate mnum dependent stats, which requires calculating mag.  
-    ds_lecroy = ds_lecroy.mws.calc_mag_phase()
+    ds_lecroy = ds_lecroy.mwt.calc_mag_phase()
 
     if avg_mnum:
         ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
@@ -87,23 +87,23 @@ def load_lecroy(tc,
     if AS_calc is not None:
         assert AS_calc in ['relative', 'absolute'], 'AS_calc must be "relative" or "absolute"'
         if AS_calc == 'absolute':
-            da_nothing = load_mws_T0()
-            ds_lecroy = ds_lecroy.mws.calc_AS_abs(mag_0=da_nothing, mag_block=MAG_MWS_BLOCK)
+            da_nothing = load_mwt_T0()
+            ds_lecroy = ds_lecroy.mwt.calc_AS_abs(mag_0=da_nothing, mag_block=MAG_MWT_BLOCK)
         else:
-            ds_lecroy = ds_lecroy.mws.calc_AS_rel() 
+            ds_lecroy = ds_lecroy.mwt.calc_AS_rel() 
 
     if 'pd1' in ds_lecroy:
-        ds_lecroy = ds_lecroy.mws.calc_dPD()
+        ds_lecroy = ds_lecroy.mwt.calc_dPD()
 
     ds_lecroy = ds_lecroy.xr_utils.stack_run()
 
     return ds_lecroy
 
-def load_mws_T0():
+def load_mwt_T0():
     """
-    pipeline for loading mws T0 data
+    pipeline for loading mwt T0 data
     """
-    fp_nothing = pjoin(REPO_DIR,'final', 'dataset', 'output', 'mws_T0.csv')
+    fp_nothing = pjoin(REPO_DIR,'final', 'dataset', 'output', 'mwt_T0.csv')
 
     df_nothing = pd.read_csv(fp_nothing, index_col=0)['mag']
     da_nothing = xr.DataArray(df_nothing).pint.quantify('volt')

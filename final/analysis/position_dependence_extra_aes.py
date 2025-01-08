@@ -8,7 +8,7 @@ from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-# Position dependent AES and MWS
+# Position dependent AES and MWT
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 # Non position dependent barrel AES

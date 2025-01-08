@@ -13,7 +13,7 @@ for datestr in datestrs:
     with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
         settings = json.load(f)[datestr]
 
-    process_tcs = settings['mws_process_tcs']
+    process_tcs = settings['mwt_process_tcs']
 
     # Start processing
 

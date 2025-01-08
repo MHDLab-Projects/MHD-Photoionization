@@ -8,10 +8,10 @@ source .env
 # Check the first argument
 if [ "$1" = "final" ]; then
     expt_analysis_dir=$REPO_DIR/final
-    render_dirs=( "analysis" "analysis/mws" "analysis/topcam")
+    render_dirs=( "analysis" "analysis/mwt" "analysis/topcam")
 else
     expt_analysis_dir=$REPO_DIR/experiment/analysis
-    render_dirs=( "mws" "absem" "tcs" "uncertainty" "various" )
+    render_dirs=( "mwt" "absem" "tcs" "uncertainty" "various" )
 fi
 
 purge_dirs=false

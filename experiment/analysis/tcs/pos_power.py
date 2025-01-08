@@ -4,7 +4,7 @@ from mhdpy.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 from mhdpy.analysis import absem
 
 # %%

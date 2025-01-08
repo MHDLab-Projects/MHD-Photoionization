@@ -10,8 +10,8 @@ ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.q
 ds_species_cfd = xr.open_dataset(pjoin(data_directory, '53x_ds_species_cfd.cdf')).pint.quantify()
 ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
 
-ds_mws_fit_exp = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_exp.cdf')).pint.quantify()
-ds_mws_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mws_dnedt.cdf')).pint.quantify()
+ds_mwt_fit_exp = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mwt_exp.cdf')).pint.quantify()
+ds_mwt_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mwt_dnedt.cdf')).pint.quantify()
 
 
 # Load in the raw lecroy data for confidence intervals. Doing this here to avoid having to save raw mnum acquisitions...Revisit. 
@@ -26,14 +26,14 @@ ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
 
 
 #TODO: the time grids are not the same for the two fitting methods. Why?
-ds_mws_fit_exp = ds_mws_fit_exp.interp(time=ds_mws_fit_dnedt.time, method='linear')
+ds_mwt_fit_exp = ds_mwt_fit_exp.interp(time=ds_mwt_fit_dnedt.time, method='linear')
 #TODO: realized 'method' cannot be used as a coordinate as it is a reserved word in xarray(i.e. method='nearest'). Need to change this in the fitting code.
-ds_mws_fit = xr.concat([
-    ds_mws_fit_exp.assign_coords(fit_method=['exp']),
-    ds_mws_fit_dnedt.assign_coords(fit_method=['dnedt'])
+ds_mwt_fit = xr.concat([
+    ds_mwt_fit_exp.assign_coords(fit_method=['exp']),
+    ds_mwt_fit_dnedt.assign_coords(fit_method=['dnedt'])
     ], 'fit_method')
 
-# ds_mws_fit = ds_mws_fit.assign_coords(method=[str(s) for s in ds_mws_fit.coords['method'].values])
+# ds_mwt_fit = ds_mwt_fit.assign_coords(method=[str(s) for s in ds_mwt_fit.coords['method'].values])
 
 #%%
 
@@ -142,7 +142,7 @@ std_err = std_err.pint.magnitude
 # Plot mean
 plt.plot(x, mean, label='AS')
 
-da_plot_fit = ds_mws_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
+da_plot_fit = ds_mwt_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
 da_plot_fit.plot(label='AS Fit')
 
 # Plot confidence interval
@@ -157,7 +157,7 @@ plt.ylabel(r'$\Delta AS$ [dimensionless]')
 plt.title('')
 plt.legend(['Data', 'Fit'])
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_mwt_fit_exp.png'), dpi=300, bbox_inches='tight')
 
 
 
@@ -166,7 +166,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_mws_fit_exp.png'), dpi=300, bbox_inches='tig
 
 fig, ax = plt.subplots(figsize=(2,2))
 
-var = 'mws_fit_decay_exp'
+var = 'mwt_fit_decay_exp'
 ax.errorbar(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 

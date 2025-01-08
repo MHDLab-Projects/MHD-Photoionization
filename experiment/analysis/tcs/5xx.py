@@ -3,7 +3,7 @@
 from mhdpy.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mws
+from mhdpy.analysis import mwt
 from mhdpy.analysis import absem
 
 from mhdpy.plot import dropna
@@ -33,7 +33,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 # ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='relative')
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute')
 
-ds_lecroy = ds_lecroy.mws.calc_time_stats()
+ds_lecroy = ds_lecroy.mwt.calc_time_stats()
 
 ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
 
@@ -91,7 +91,7 @@ ax2.set_ylim(0.4e16,)
 
 ax1.set_xlim(0,260)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_KOH.png'), dpi=300)
+plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mwt_KOH.png'), dpi=300)
 
 
 #%%
@@ -117,7 +117,7 @@ plt.yscale('log')
 plt.xlim(-1,)
 plt.ylim(1e-5,5e-1)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mws_AStime_phi.png'), dpi=300)
+plt.savefig(pjoin(DIR_FIG_OUT, '5x6_pos_mwt_AStime_phi.png'), dpi=300)
 
 
 #%%
@@ -215,7 +215,7 @@ ds_absem = ppu.fileio.load_absem(tc)
 
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute')
 
-ds_lecroy = ds_lecroy.mws.calc_time_stats()
+ds_lecroy = ds_lecroy.mwt.calc_time_stats()
 
 ds_lecroy = ds_lecroy.mean('mnum', keep_attrs=True)
 
@@ -387,7 +387,7 @@ ax2.set_ylabel("CFD KOH [#/cm^3]")
 ax1.set_xlim(0,260)
 ax2.set_ylim(0.4e15)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_mws_KOH.png'), dpi=300)
+plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_mwt_KOH.png'), dpi=300)
 
 
 

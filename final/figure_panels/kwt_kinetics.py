@@ -10,7 +10,7 @@ ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.q
 ds_species_cfd = xr.open_dataset(pjoin(data_directory, '53x_ds_species_cfd.cdf')).pint.quantify()
 ds_tau = xr.open_dataset(pjoin(data_directory, 'ds_tau.cdf')).pint.quantify()
 # %%
-tau_exp = ds_p_stats['mws_fit_decay_exp_mean'].pint.quantify('us')
+tau_exp = ds_p_stats['mwt_fit_decay_exp_mean'].pint.quantify('us')
 
 k_eff_bm = 1/(tau_exp*ds_species_cfd['O2'])
 
