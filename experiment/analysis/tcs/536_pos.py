@@ -243,7 +243,7 @@ plt.xscale('log')
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf' )
+fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'cfd_profiles_centerline.cdf' )
 
 ds_cfd = xr.load_dataset(fp_cfd)
 ds_cfd = ds_cfd.cfd.quantify_default()

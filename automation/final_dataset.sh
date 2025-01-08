@@ -7,7 +7,7 @@ pushd $REPO_DIR/final/dataset
 
 # Generates files needed by others
 echo "CFD Line profile extraction"
-python extract_line_profiles_Yeq.py
+python cfd_extract_line_profiles.py
 echo "MWS Nothing Transmission"
 python mws_nothing.py
 echo "CFD 2D Images"

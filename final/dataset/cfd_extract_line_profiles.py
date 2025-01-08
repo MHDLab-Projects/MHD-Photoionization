@@ -135,7 +135,7 @@ ds_lines['dist'] = ds_lines['dist'].pint.quantify('m').pint.to('mm')
 ds_lines[ppu.CFD_K_SPECIES_NAME].sel(phi=0.8, kwt=1).sel(motor=100, method='nearest').sel(offset=0).dropna('dist')
 
 #%%
-ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_Yeq.cdf'))
+ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'cfd_profiles_beam_mobile.cdf'))
 
 #%%[markdown]
 # Extract barrel exit profile
@@ -174,7 +174,7 @@ for key, fp in cfd_fp_dict.items():
 ds_out = xr.concat(dss, 'temp')
 ds_out = ds_out.set_index(temp=['kwt', 'phi']).unstack('temp')
 ds_out['dist'] = ds_out['dist'].pint.quantify('m').pint.to('mm')
-ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_beam_barrelexit_Yeq.cdf'))
+ds_out.pint.dequantify().to_netcdf(pjoin('output', 'cfd_profiles_beam_barrelexit.cdf'))
 
 #%%
 ds_out[ppu.CFD_K_SPECIES_NAME].plot(col='kwt', hue='phi')
@@ -224,7 +224,7 @@ ds_out = xr.concat(dss, 'temp')
 ds_out = ds_out.set_index(temp=['kwt', 'phi', 'offset']).unstack('temp')
 ds_out['x'] = ds_out['x'].pint.quantify('m').pint.to('mm')
 ds_out['offset'] = ds_out['offset'].pint.quantify('m').pint.to('mm')
-ds_out.pint.dequantify().to_netcdf(pjoin('output', 'line_profiles_torchaxis_Yeq.cdf'))
+ds_out.pint.dequantify().to_netcdf(pjoin('output', 'cfd_profiles_centerline.cdf'))
 
 #%%
 df_lines

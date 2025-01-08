@@ -120,7 +120,7 @@ def load_cfd_centerline(kwt_interp = None):
         if not None, interpolate the cfd data to the kwt values in this array
     """
 
-    fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_torchaxis_Yeq.cdf')
+    fp = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_centerline.cdf')
 
     ds_cfd = xr.load_dataset(fp)
 
@@ -147,10 +147,10 @@ from mhdpy.pyvista_utils import CFDDatasetAccessor
 def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
 
 
-    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
+    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_beam_mobile.cdf')
     ds_cfd_beam_mobile = xr.load_dataset(fp_cfd_profiles)
 
-    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_barrelexit_Yeq.cdf')
+    fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_beam_barrelexit.cdf')
     ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
 
     # This creates a dataset where the barrel measurement is duplicated across the motor positions.

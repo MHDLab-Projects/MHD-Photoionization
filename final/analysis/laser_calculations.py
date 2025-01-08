@@ -19,7 +19,7 @@ ds_lecroy['power']
 
 from mhdpy.pyvista_utils import CFDDatasetAccessor
 
-fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'line_profiles_beam_Yeq.cdf')
+fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_beam_mobile.cdf')
 
 ds_cfd = xr.load_dataset(fp_cfd_profiles)
 ds_cfd = ds_cfd.cfd.quantify_default()
