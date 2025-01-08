@@ -195,10 +195,10 @@ cfd_fp_dict = {
 
 # soi = ['K', 'K_p', 'e_m', 'OH', 'OH_m', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for coarse
 # soi = ['K', 'K+', 'e-', 'OH', 'OH-', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for 24Apr24_corr
-soi = ['K',  'Kp', 'K2CO3', 'KO', 'KOH', 'em', 'OH', 'OHm', 'O2', 'H2O', 'N2', 'CO2'] # works for july 12
+soi = ['K',  'Kp', 'K2CO3', 'KO', 'KOH', 'em', 'OH', 'OHm', 'O2', 'O2m', 'H2O', 'N2', 'CO2'] # works for july 12
 # soi = ['K',  'OH', 'KOH', 'O2', 'H2O', 'N2', 'CO2'] # works for june08
 soi_Yeq = ['Yeq_K', 'Yeq_K+', 'Yeq_e-', 'Yeq_OH', 'Yeq_OH-', 'Yeq_KOH', 'Yeq_K2CO3', 'Yeq_KO']
-additional = ['T', 'p', 'rho']
+additional = ['T', 'p', 'rho', 'sigma_e']
 cfd_all_fields = [*soi, *soi_Yeq, *additional]
 
 # sp_dir = gen_path('sharepoint')

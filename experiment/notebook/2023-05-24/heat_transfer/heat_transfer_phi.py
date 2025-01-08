@@ -105,7 +105,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'phi_heattransfer.png'))
 
 # %%
 
-#TODO: combine with 04-07 microwave scattering, move to mhdpy 
+#TODO: combine with 04-07 Microwave transmission, move to mhdpy 
 
 
 #TODO: Rename these in lab config

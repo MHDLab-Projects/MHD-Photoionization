@@ -128,3 +128,5 @@ plt.ylim(1e8,1e17)
 # plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_K_species.png'), dpi=300, bbox_inches='tight')
 
 
+
+# %%

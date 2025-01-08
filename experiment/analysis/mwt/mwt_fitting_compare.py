@@ -1,7 +1,7 @@
 
 #%%[markdown]
 
-# # Microwave Scattering fit comparison
+# # Microwave Transmission fit comparison
 
 #%%
 

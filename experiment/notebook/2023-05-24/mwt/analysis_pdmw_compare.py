@@ -198,7 +198,7 @@ ds
 
 
 # %% [markdown]
-# # Compare time series of 770 nm photodiode (pd) and microwave scattering (mw) 
+# # Compare time series of 770 nm photodiode (pd) and Microwave transmission (mw) 
 
 # %%
 

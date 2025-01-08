@@ -11,7 +11,7 @@ python cfd_extract_line_profiles.py
 echo "MWT Nothing Transmission"
 python mwt_nothing.py
 echo "CFD 2D Images"
-python extract_cfd_2D.py
+python cfd_extract_2D.py
 
 
 # Final scripts

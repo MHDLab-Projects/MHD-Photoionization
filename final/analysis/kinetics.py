@@ -144,6 +144,33 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_tau_pos.png'))
 
 #%%
 
+fig, axes = plt.subplots(2, 1, figsize=(6, 6), sharex=True)
+
+ds_plot = ds_cfd.sel(kwt=1, method='nearest').pint.dequantify()
+ds_plot = ds_plot.sel(phi=0.8, method='nearest')
+
+da_plot = ds_plot[['Kp', 'em','OHm', 'O2m']].to_array('var')
+
+g = da_plot.plot(hue='var', ax=axes[0])
+
+axes[0].set_yscale('log')
+
+da_plot = ds_plot['sigma_e']
+
+g = da_plot.plot(hue='var', ax=axes[1])
+
+axes[1].set_yscale('log')
+axes[1].set_ylim(1e-15,1e2)
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_charged_sigma_pos.png'))
+
+#%%
+
+ds_plot
+
+#%%
+
 g = ds_tau[['K+','Yeq_K+','O2_A','O2_G', 'OH', 'H2O']].to_array('var').plot(hue='var', col='phi', row='kwt')
 
 plt.yscale('log')
