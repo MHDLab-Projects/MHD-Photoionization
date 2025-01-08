@@ -127,36 +127,8 @@ ds_p_cfdprofile = ds_p['nK_m3'].rename('nK_barrel_cfdprofile')
 
 #%%
 
-# tophat 
-
-L = Quantity(1, 'cm')
-L_center = Quantity(5, 'cm')
-
-def tophat_profile(L, L_center, x):
-    nK = np.zeros_like(x)
-    nK[(x > L_center - L/2) & (x < L_center + L/2)] = 1
-    return nK
-
-x = da_cfd_beam.coords['dist'].values
-nK_profile = tophat_profile(L.magnitude, L_center.magnitude, x) 
-
-# plt.plot(x, nK_profile)
-
-# make a dataset with same strucutre as da_cfd_beam, but with nK_profile as data along the 'dist' dimension
-
-nK_profile_tophat = xr.DataArray(nK_profile, coords={'dist':x}, dims=['dist'])
-
-ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':nK_profile_tophat})
-
-ds_alpha_fit['alpha_full'] = ds_fit['alpha']
-ds = ds_alpha_fit[['alpha_red', 'alpha_fit', 'alpha_full']].rename({'alpha_red': 'fitted', 'alpha_fit':'fit', 'alpha_full':'full'})
-ds_p.coords['run_plot'].attrs = dict(long_name="Run")
-
-ds_p_tophat = ds_p['nK_m3'].rename('nK_barrel_tophat')
-
-#%%
-
-ds_p_out = xr.merge([ds_p_cfdprofile, ds_p_tophat]).dropna('run', how='all')
+# was originally combining with tophat profile, but removed now. see position_dependence_extra_aes.py
+ds_p_out = xr.merge([ds_p_cfdprofile]).dropna('run', how='all')
 
 ds_p_out.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_barrel.cdf'))
 

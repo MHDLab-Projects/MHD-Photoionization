@@ -347,7 +347,7 @@ $\kappa(\lambda)$ is modeled as a sum of two Voigt line profiles, following Bedi
     \kappa(\lambda) = \frac{e^2}{4 \epsilon_0 m_e c^2} \left[ \frac{4}{6} f_1 \lambda_{0,1}^2 V(\lambda_{0,1},\sigma,\gamma_1) + f_2 \lambda_{0,2}^2 V(\lambda_{0,2},\sigma,\gamma_2) \right]
 \end{equation}
 
-Where $f_i$ is the oscillator strength of the ith peak, $\lambda_{0,i}$ is the central wavelength of the ith peak, and $V(\lambda_{0,i},\sigma,\gamma_i)$ is the Voigt profile. The two parameters for the Voight profile are the gaussian width converted into a wavelength basis.  $\sigma_i = 2*\sqrt{2*ln(2)*k_b*T/m_K}*(\lambda_{0,i}/c)$ and the Lorentzian width $\gamma_i = (\lambda_i^2/c)*\Delta \nu{i,C}$, where $\Delta \nu_{i,C}$ is the collisional frequency width of the peak, $T$ is the temperature, $m_K$ is the atomic mass of potassium, $k_b$ is the Boltzmann constant, and $c$ is the speed of light.
+Where $f_i$ is the oscillator strength of the ith peak, $\lambda_{0,i}$ is the central wavelength of the ith peak, and $V(\lambda_{0,i},\sigma,\gamma_i)$ is the Voigt profile. The two parameters for the Voight profile are the gaussian width converted into a wavelength basis.  $\sigma_i = 2*\sqrt{2*ln(2)*k_b*T/m_K}*(\lambda_{0,i}/c)$ and the Lorentzian width $\gamma_i = (\lambda_i^2/c)*\Delta \nu_{i,C}$, where $\Delta \nu_{i,C}$ is the collisional broadening frequency width of the peak, $T$ is the temperature, $m_K$ is the atomic mass of potassium, $k_b$ is the Boltzmann constant, and $c$ is the speed of light.
 
 The parameters for each peak are shown in Table \ref{table:peak_parameters}. 
 
@@ -381,11 +381,37 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
+    \includegraphics[]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
     \caption{Euler method demonstration with a top hat absorption profile. The top hat profile has a constant potassium density for 1 cm and zero elsewhere. The calculated intensity found with the Euler method is also shown.}
     \label{fig:SI_euler_method_tophat_demo}
 \end{figure}
 
+
+There is a discrepancy between the barrel AES $nK_{max}$ measurements and the CFD centerline $nK_{m3}$ predictions. We investigated the possibility that this discrepancy is due to an incorrect spatial prediction of CFD pressure or $nK$ profile along the beam path in In Figure \ref{fig:SI_AES_barrel_cases}.  
+
+$\Delta \nu_{i,C}$ will be roughly proportional to the pressure which will affect the fitted $nK_{max}$ value (see \cite{alkemadeMetalVapoursFlames1982}, eq II.231). Figure \ref{fig:SI_AES_barrel_cases}A shows the CFD centerline pressure. It is possible the location of the shock structure pressure fluctuations is inaccurate (also see Figure \ref{fig:SI_iccd_cfd_comparison}). Therefore, as shown in Figure \ref{fig:SI_AES_barrel_cases}B, we examined the extreme cases where the pressure (assumed constant along the entire beam path) was the minimum and maximum CFD centerline pressure. 
+
+The $nK$ profile is also important for the fitting process. As shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt}, at the barrel exit the potassium is concentrated in the center portion of the free jet. In Figure \ref{fig:SI_cfd_barrel_beam_K_KOH_compare}, the comparison of the K and KOH number density profiles along the beam path at the barrel shows that the decrease in K away from the center of the free jet corresponds to an increase in KOH density. Therefore, the thin CFD K profile may be due to the KOH formation at the colder temperatures near the edge of the free jet. If this reduction in temperature is overpredicted, the profile could be thinner than in reality, while the centerline K density could still be accurate. To investigate the effect of the profile on the fitted $nK_{max}$, we performed a fit with a constant $nK$ profile along the beam path with the width of the profile set to the width of the barrel exit (called a top hat profile), as shown in Figure \ref{fig:SI_AES_barrel_cases}B.
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/AES_barrel_cases.png}
+    \caption{AES measurements at the barrel exit for alternative pressure and nK profile fitting assumptions. A) the CFD centerline pressure. B) The CFD centerline $nK_{m3}$ density along with barrel AES measurements for different assumptions about the beam $nK$ profile and pressure. }
+    \label{fig:SI_AES_barrel_cases}
+\end{figure}
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[]{\repodir/final/analysis/output/figures/cfd_barrel_beam_K_KOH_compare.png}
+    \caption{CFD data along the beam path at the barrel exit. From Top to bottom: K and KOH number densities, Temperature, Pressure, and overall number density. }
+    \label{fig:SI_cfd_barrel_beam_K_KOH_compare}
+\end{figure}
+
+
+
+\clearpage
 \subsection{Photodiode (PD) Setup}
 
 Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) setup. \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWS  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 

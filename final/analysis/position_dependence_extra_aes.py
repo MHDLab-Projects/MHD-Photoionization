@@ -21,10 +21,64 @@ ds_cfd_beam = ppu.fileio.load_cfd_beam()
 ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1).sel(phi=0.8)
 #%%
 
+fig, ax = plt.subplots(4, figsize=(4,8))  
 
-ds_cfd_cl['p'].sel(offset=0).plot()
+plt.sca(ax[0])
+
+ds_plot = ds_cfd_beam.sel(mp='barrel').isel(motor=0).drop('motor')
+
+ds_plot[ppu.CFD_K_SPECIES_NAME].plot(label='K')
+ds_plot[ppu.CFD_KOH_SPECIES_NAME].plot(label='KOH')
+
+# plt.yscale('log')
+plt.ylabel('Concentration\n(particle/ml)')
+plt.legend()
+
+plt.sca(ax[1])
+
+ds_plot['T'].plot(label='T')
+
+plt.ylabel('Temperature (K)')
+
+plt.sca(ax[2])
+
+ds_plot['p'].pint.to('atm').plot(label='p')
+
+plt.ylabel('Pressure (atm)')
+
+plt.sca(ax[3])
+
+
+rho_num = ds_plot.cfd.calc_rho_number()
+
+rho_num.plot(label='rho')
+
+plt.ylabel('Density (particle/ml)')
+
+# plt.yscale('log')
+
+for a in ax.flatten():
+    a.set_xlim(4,6)
+    a.set_title('')
+
+ax[-1].set_xlabel('Distance (cm)')
+plt.savefig(pjoin('output','figures','cfd_barrel_beam_K_KOH_compare.png'))   
+
+#%%
+
+
+
+#%%
+
+da_plot = ds_cfd_cl['p'].pint.to('atm').sel(offset=0)
+
+da_plot.plot()
 
 plt.xlim(0,200)
+
+plt.savefig(pjoin('output','figures','cfd_centerline_p.png'))
+
+#%%
 
 min_p = ds_cfd_cl['p'].min().item()
 max_p = ds_cfd_cl['p'].max().item()
@@ -102,6 +156,7 @@ ds_p_min_p = ds_p.copy()
 
 #%%
 
+# Tophat profile with 1 atm pressure
 
 pipe_fit_alpha_num_1.params['p'].value = 1
 # tophat 
@@ -167,4 +222,6 @@ plt.yscale('log')
 plt.ylim(5e21, 2e23)
 
 plt.xlim(0,10)
+
+plt.savefig(pjoin('output','figures','nK_barrel_cases.png'))
 # %%

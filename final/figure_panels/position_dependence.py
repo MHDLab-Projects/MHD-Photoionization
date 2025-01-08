@@ -56,12 +56,7 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 # Barrel exit
 nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit (CFD)', capsize=5, )
-
-nK_barrel_mean = ds_p_barrel['nK_barrel_tophat'].mean('run').sel(phi=0.8, method='nearest')
-nK_barrel_std = ds_p_barrel['nK_barrel_tophat'].std('run').sel(phi=0.8, method='nearest')
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Barrel Exit (TH)', capsize=5, )
-
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit AES', capsize=5, )
 
 ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
@@ -88,11 +83,7 @@ ds_cfd_sel['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', l
 
 nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
-ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel nK (CFD)', capsize=5, )
-
-nK_barrel_mean = ds_p_barrel['nK_barrel_tophat'].mean('run').sel(phi=0.8, method='nearest')
-nK_barrel_std = ds_p_barrel['nK_barrel_tophat'].std('run').sel(phi=0.8, method='nearest')
-ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Barrel nK (TH)', capsize=5, )
+ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit AES', capsize=5, )
 
 
 ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
