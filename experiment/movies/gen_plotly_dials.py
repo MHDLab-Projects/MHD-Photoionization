@@ -1,3 +1,5 @@
+# Note, kaleido needs to be 1.0.0rc0 for this to work.
+
 #%%
 from mhdpy.analysis.standard_import import *
 from params import duration_lookup, time_downselect_lookup
