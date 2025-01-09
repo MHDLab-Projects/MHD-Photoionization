@@ -29,26 +29,47 @@ ds_lecroy
 
 # %%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
+from mhdpy.analysis.mwt.fitting import pipe_fit_exp
 
 da_fit = ds_lecroy['dAS_abs']
 
-pipe_fit_mwt_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
+da_fit = da_fit.sel(run=[('2023-05-18',1),('2023-05-24',1)]).dropna('motor','all')
 
-ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_3(
+pipe_fit_exp.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(3, 'us'), Quantity(15, 'us'))
+
+ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_exp(
                                 da_fit, 
                                 )
 
-ds_p['decay'] = 1/ds_p['krm']
-
-# %%
 
 
-ds_mwt_fit[['AS_fit','AS_all']].mean('run').to_array('var').plot(hue='var', row='motor', col='phi')
+#%%
+
+da_plot = ds_mwt_fit[['AS_fit','AS_all']].mean('run')
+
+da_plot = da_plot.rename({'AS_fit':'Fit', 'AS_all':'Data'})
+
+da_plot = da_plot.to_array('Variable')
+
+g= da_plot.plot(hue='Variable', row='motor', col='phi', figsize=(3,9))
+
+for ax in g.axs[:,0]:
+    ax.set_ylabel(r'$\Delta AS (V)$')
+
+for ax in g.axs[:, 1]:
+    # get the existing right axis label
+    txt = ax.texts[0]
+    # remove 'motor = ' from the text
+    txt.set_text(txt.get_text().split('=')[1])
+
 
 plt.yscale('log')
 plt.xlim(-1, 40)
 plt.ylim(1e-3, 2)
+
+plt.tight_layout()
+
+plt.savefig(pjoin(DIR_FIG_OUT, '516_536_pos_fits.png'))
 
 #%%
 
@@ -58,7 +79,7 @@ ds_p
 
 # %%
 
-fig, axes= plt.subplots(2, figsize=(3,5), sharex=True)
+fig, axes= plt.subplots(2, figsize=(3,8), sharex=True)
 
 g = ds_lecroy['SFR_abs'].mean('run').plot(hue='phi', marker='o', ax=axes[0])
 dropna(g)
@@ -75,9 +96,9 @@ axes[1].set_ylabel('Decay Time (us)')
 axes[1].set_xlabel('Stage Position (mm)')
 
 plt.ylabel('Decay Time (us)')
-plt.ylim(0, 20)
+plt.ylim(0, 15)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '516_536_decay_compare.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '516_536_pos_decay_compare.png'))
 
 
 # %%
