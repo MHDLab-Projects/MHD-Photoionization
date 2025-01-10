@@ -15,6 +15,9 @@ import pi_paper_utils as ppu
 
 from pi_paper_utils.constants import CFD_EXIT_OFFSET
 
+BEAM_Y_DISTANCE = Quantity(5, 'cm')
+beam_path_dist_grid = np.arange(0, 0.1, 0.0005)
+beam_path_dist_grid = Quantity(beam_path_dist_grid, 'm')
 
 #%%
 tc = '536_pos'
@@ -38,9 +41,8 @@ def gen_beam_line(ta_position: Quantity, ta_offset: Quantity, xy_ratio=Quantity(
     ta_offset: offset from the torch axis (z)
     """
     x_beam = CFD_EXIT_OFFSET + ta_position
-    y_distance = Quantity(5, 'cm')
-    a = [x_beam - y_distance * xy_ratio, y_distance, ta_offset]
-    b = [x_beam + y_distance * xy_ratio, -y_distance, ta_offset]
+    a = [x_beam - BEAM_Y_DISTANCE * xy_ratio, BEAM_Y_DISTANCE, ta_offset]
+    b = [x_beam + BEAM_Y_DISTANCE * xy_ratio, -BEAM_Y_DISTANCE, ta_offset]
     return a, b
 
 def extract_line_axi(mesh, a: Quantity, b: Quantity, resolution=1000):
@@ -101,8 +103,7 @@ plt.axvline(midpoint, color='gray', linestyle='--')
 #%%[markdown]
 # Extract lines along beam axis for different beam positions and offsets
 
-beam_path_dist_grid = np.arange(0, 0.1, 0.001)
-beam_path_dist_grid = Quantity(beam_path_dist_grid, 'm')
+
 dss = []
 
 for key, fp in cfd_fp_dict.items():
