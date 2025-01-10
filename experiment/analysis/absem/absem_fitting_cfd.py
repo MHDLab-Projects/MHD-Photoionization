@@ -84,7 +84,10 @@ from mhdpy.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
 
 wl = Quantity(770, 'nm')
 
-kappa = kappa_2peak(wl)
+T = Quantity(2000, 'K')
+p = Quantity(1, 'atm')
+
+kappa = kappa_2peak(wl, T, p)
 nK = Quantity(1e21, '1/m^3')
 
 mu_atten_max = (kappa*nK).to('1/cm').magnitude
@@ -229,12 +232,14 @@ ds_test['alpha_red'].plot(marker='o')
 wls = ds_test.coords['wavelength'].values
 
 nK = Quantity(1e-5, '1/nm^3')
+T = Quantity(2000, 'K')
+p = Quantity(1, 'atm')
 
 x = np.linspace(0, 2, 100)
 nK_profile = tophat_profile(L.magnitude, 1, x)
 nK_profile = pd.Series(nK_profile, index=x)
 
-alpha = alpha_deq_solve(wls, nK_profile=nK_profile, nK_max=nK)
+alpha = alpha_deq_solve(wls,nK, T,p, nK_profile=nK_profile )
 ds_test['alpha'].plot(marker='o')
 plt.plot(wls, alpha)
 
@@ -286,7 +291,7 @@ from lmfit import Model
 
 mod = Model(alpha_deq_solve, nK_profile=nK_profile, beam_x=nK_profile.index)
 
-params = mod.make_params(nK_max=1e-5, )
+params = mod.make_params(nK_max=1e-5, T=2000, p=1)
 
 params.add('nK_m3', expr='nK_max*1e27')
 params['nK_m3'].vary = False
