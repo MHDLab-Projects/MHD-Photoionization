@@ -19,6 +19,8 @@ ds_cfd_cl = ds_cfd_cl.sel(kwt=1).sel(phi=0.8)
 
 ds_cfd_beam = ppu.fileio.load_cfd_beam()
 ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1).sel(phi=0.8)
+
+
 #%%
 
 fig, ax = plt.subplots(4, figsize=(4,8))  
@@ -29,6 +31,7 @@ ds_plot = ds_cfd_beam.sel(mp='barrel').isel(motor=0).drop('motor')
 
 ds_plot[ppu.CFD_K_SPECIES_NAME].plot(label='K')
 ds_plot[ppu.CFD_KOH_SPECIES_NAME].plot(label='KOH')
+ds_plot[ppu.CFD_allK_SPECIES_NAME].plot(label='All K')
 
 # plt.yscale('log')
 plt.ylabel('Concentration\n(particle/ml)')

@@ -110,6 +110,23 @@ def load_mwt_T0():
 
     return da_nothing
 
+def calc_all_K(ds_cfd):
+    """
+    Calculate the sum of all K species in a cfd dataset
+
+    Parameters
+    ----------
+    ds_cfd : xr.Dataset
+        cfd dataset
+    """
+    all_K_species = ['K','Kp','K2CO3', 'KO','KOH']
+    ds_cfd['all_K'] = sum([ds_cfd[field] for field in all_K_species])
+
+    all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
+    ds_cfd['all_K_Yeq'] = sum([ds_cfd[field] for field in all_K_species])
+
+    return ds_cfd
+
 def load_cfd_centerline(kwt_interp = None):
     """
     pipeline for loading cfd torch axis data
@@ -131,12 +148,7 @@ def load_cfd_centerline(kwt_interp = None):
     ds_cfd = ds_cfd.cfd.quantify_default()
     ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
-
-    all_K_species = ['Yeq_K','Yeq_K+','Yeq_K2CO3','Yeq_KO','Yeq_KOH']
-    ds_cfd['all_K_Yeq'] = sum([ds_cfd[field] for field in all_K_species])
-
-    all_K_species = ['K','Kp','K2CO3', 'KO','KOH']
-    ds_cfd['all_K'] = sum([ds_cfd[field] for field in all_K_species])
+    ds_cfd = calc_all_K(ds_cfd)
 
     ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
     return ds_cfd
@@ -171,6 +183,8 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
         ds_cfd_beam = ds_cfd_beam.cfd.convert_all_rho_number()
 
     ds_cfd_beam.coords['dist'] = ds_cfd_beam.coords['dist'].pint.to('cm') # Fitting expects cm
+
+    ds_cfd_beam = calc_all_K(ds_cfd_beam)
 
     return ds_cfd_beam
 
