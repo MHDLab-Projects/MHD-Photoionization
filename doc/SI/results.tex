@@ -81,11 +81,13 @@ This section contains additional measurements for the 516 test case. This test c
 
 Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measurements for the 516\_pos and 536\_pos test cases. Figure \ref{fig:SI_tau_cfd_pos_phi_compare} shows the position-dependent CFD-predicted electron lifetimes for K+ and O2\_A for both the 516 and 536 test cases. 
 
+in Figure \ref{fig:SI_tau_ratio_cfd_pos}, we calculate the ratio of $\tau_{pred}$ of the CFD data between the two equivalence ratios.
+
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/536_516_pos_mwt_fitting.png}
-\caption{516 and 536 MWT AS exponential time constant comparison. Left: raw data and exponential fits. The 0.6 equivalence ratio data is from 2024-05-24 and the 0.8 equivalence ratio data is from 2024-05-18 Run 1. The fit range is from 3 to 15 microseconds, which is not the same as in the main text but was chosen in this case to provide reasonable fits (visually)for all positions. The numbers on the right hand side indicate the stage position in mm. Right: position-dependent SFR and fitted exponential decay time.}
+\caption{516 and 536 MWT AS exponential time constant comparison. A) raw data and exponential fits. The 0.6 equivalence ratio data is from 2024-05-24 and the 0.8 equivalence ratio data is from 2024-05-18 Run 1. The fit range is from 3 to 15 microseconds, which is not the same as in the main text but was chosen in this case to provide reasonable fits (visually)for all positions. The numbers on the right hand side indicate the stage position in mm. B): position-dependent SFR C) position-dependent $\tau_{exp}$. The ratio of $\tau_{exp}$ for the 516 and 536 test cases at their respective SFR-maximized positions is shown.}
 \label{fig:SI_536_516_pos_mwt_fitting}
 \end{figure}
 
@@ -95,6 +97,14 @@ Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measure
 \includegraphics[]{\repodir/final/analysis/output/figures/tau_cfd_pos_phi_compare.png}
 \caption{Comparison of position-dependent $\tau_{pred}$ for K+ and O2\_A for both the 516 and 536 test cases. The lifetimes are calculated from centerline CFD species densities (See also \ref{fig:SI_cfd_species_tau_pos}).}
 \label{fig:SI_tau_cfd_pos_phi_compare}
+\end{figure}
+
+
+\begin{figure}[]
+\centering
+\includegraphics[]{\repodir/final/analysis/output/figures/tau_ratio_cfd_pos.png}
+\caption{Ratio of $\tau_{pred}$ for K+ and O2\_A between 0.6 and 0.8 equivalence ratio. For 0.6 equivalence ratio, the values are shifted downstream to match the SFR-maximized position of the 0.8 equivalence ratio. This allows for comparison to the experimental ratio calculated in Figure \ref{fig:SI_536_516_pos_mwt_fitting}.}
+\label{fig:SI_tau_ratio_cfd_pos}
 \end{figure}
 
 \clearpage

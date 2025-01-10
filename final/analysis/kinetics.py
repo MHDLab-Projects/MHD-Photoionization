@@ -136,6 +136,36 @@ g.axes[1,0].set_ylim(0,1)
 plt.savefig(pjoin(DIR_FIG_OUT, 'tau_cfd_pos_phi_compare.png'))
 
 #%%
+
+
+da_plot = ds_tau[['K+', 'O2_A']].to_array('var').sel(kwt=1, method='nearest')
+
+# Amount to shift 0.6 phi by. SFR 0.6 ~ 150 mm where SFR 0.8 ~ 180 mm
+xshift = 180 - 155
+
+da_08 = da_plot.sel(phi=0.8, method='nearest')
+da_06 = da_plot.sel(phi=0.6, method='nearest')
+da_06 = da_06.assign_coords(x=da_06.x + xshift)
+da_06 = da_06.interp(x=da_08.x)
+
+ratio = da_08/da_06
+
+g = ratio.plot(hue='var')
+
+plt.ylim(0,2)
+plt.xlim(100,200)
+
+plt.axvline(goldi_pos.magnitude, color='gray', linestyle='--')
+
+plt.ylabel('Tau Ratio (Phi=0.8/0.6)')
+plt.xlabel(f'Position (0.6 shifted {xshift} mm)')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'tau_ratio_cfd_pos.png'))
+
+
+
+
+#%%
 fig, axes = plt.subplots(2, 1, figsize=(6, 6), sharex=True)
 
 # First plot
