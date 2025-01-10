@@ -51,9 +51,14 @@ ds_orig['CC_K_massFrac_in'] = da.where((da >= 0) & (da <= 1)).dropna('time', how
 da = ds_orig['CC_equivalenceRatio']
 ds_orig['CC_equivalenceRatio'] = da.where((da >= 0.2) & (da <= 1.5)).dropna('time', how='all')
 
-
+# Needed to get the legend colors to line up correctly
+ds_orig['Power_Relative'] = ds_orig['Power_Relative'].ffill('time')
+ds_orig['Motor C Relative'] = ds_orig['Motor C Relative'].ffill('time')
 
 ds_orig
+
+#%%
+
 
 # %%
 
@@ -85,6 +90,7 @@ for date, df in df_ct.groupby('date'):
 
     fig.axes[0].set_yscale('log')
     fig.axes[1].set_yscale('log')
+    fig.axes[1].set_ylim(0.001,2)
     fig.axes[3].set_ylim(0.5,1.5)
 
     fig.suptitle(date, fontdict={'fontsize': 16})
