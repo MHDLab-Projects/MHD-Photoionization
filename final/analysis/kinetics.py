@@ -116,7 +116,24 @@ for ax in g.axes.flatten():
     ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'krm_cfd_pos.png'))
+
+#%%
+
+da_plot = ds_tau[['K+', 'O2_A']].to_array('var').sel(kwt=1, method='nearest')
+
+da_plot = da_plot.sel(x=slice(100,200))
+
+g= da_plot.plot(row='var', hue='phi', figsize=(3,5), sharey=False)
+
+for ax in g.axes.flatten():
+    # ax.set_yscale('log')
+    ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
+    ax.set_ylabel("Tau [$\mu s$]")
+
+g.axes[0,0].set_ylim(0,40)
+g.axes[1,0].set_ylim(0,1)
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'tau_cfd_pos_phi_compare.png'))
 
 #%%
 fig, axes = plt.subplots(2, 1, figsize=(6, 6), sharex=True)

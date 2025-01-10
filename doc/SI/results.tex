@@ -79,7 +79,7 @@ Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos te
 
 This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. The AES measurements associated with this test case are presented in the main text Figure 3C.
 
-Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measurements for the 516\_pos and 536\_pos test cases. 
+Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measurements for the 516\_pos and 536\_pos test cases. Figure \ref{fig:SI_tau_cfd_pos_phi_compare} shows the position-dependent CFD-predicted electron lifetimes for K+ and O2\_A for both the 516 and 536 test cases. 
 
 
 \begin{figure}[]
@@ -89,6 +89,13 @@ Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measure
 \label{fig:SI_536_516_pos_mwt_fitting}
 \end{figure}
 
+
+\begin{figure}[]
+\centering
+\includegraphics[]{\repodir/final/analysis/output/figures/tau_cfd_pos_phi_compare.png}
+\caption{Comparison of position-dependent $\tau_{pred}$ for K+ and O2\_A for both the 516 and 536 test cases. The lifetimes are calculated from centerline CFD species densities (See also \ref{fig:SI_cfd_species_tau_pos}).}
+\label{fig:SI_tau_cfd_pos_phi_compare}
+\end{figure}
 
 \clearpage
 \subsection{ICCD Camera Measurements}
@@ -165,7 +172,6 @@ For high laser powers, the AS decay exhibits a steeper slope within the first fe
 \clearpage
 
 \subsection{Supplemental CFD results}
-% final\analysis\output\figures\cfd_species_tau_pos.png
 
 \begin{figure}[h]
     \includegraphics[]{\repodir/final/analysis/output/figures/cfd_species_tau_pos.png} 
@@ -174,11 +180,6 @@ For high laser powers, the AS decay exhibits a steeper slope within the first fe
     \label{fig:SI_cfd_species_tau_pos}
 \end{figure}
 
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/krm_cfd_pos.png} 
-    \caption{electron lifetime predictions from CFD species concentrations for two equivalence ratios. The SFR-maximized position is indicated with a vertical line.}
-    \label{fig:SI_krm_cfd_pos}
-\end{figure}
 
 
 \begin{figure}[h]

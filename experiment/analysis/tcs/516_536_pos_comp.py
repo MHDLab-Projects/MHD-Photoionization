@@ -63,9 +63,13 @@ for ax in g.axs[:, 1]:
     txt.set_text(txt.get_text().split('=')[1])
 
 
+# get the legend
+leg = g.figlegend
+leg.set_bbox_to_anchor([0.5, 0.1])
+
 plt.yscale('log')
 plt.xlim(-1, 40)
-plt.ylim(1e-3, 2)
+plt.ylim(1e-4, 2)
 
 plt.tight_layout()
 
@@ -73,7 +77,6 @@ plt.savefig(pjoin(DIR_FIG_OUT, '516_536_pos_fits.png'))
 
 #%%
 
-ds_p
 
 #%%
 
