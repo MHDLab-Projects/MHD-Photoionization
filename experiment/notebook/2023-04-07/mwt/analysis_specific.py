@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import re
 
@@ -9,13 +9,13 @@ data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 # #%%
 
 
 tc = '536_power'
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 
 fp_in = pjoin(DIR_PROC_DATA, '{}.cdf'.format(tc))
@@ -36,7 +36,7 @@ ds_avg = ds.mean('mnum', keep_attrs=True)
 
 # %%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_1
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_1
 
 da_fit = ds_avg['AS'].copy()
 

@@ -1,9 +1,9 @@
 
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')

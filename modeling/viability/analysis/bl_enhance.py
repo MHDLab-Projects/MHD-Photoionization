@@ -1,6 +1,6 @@
 # %%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 from pi_paper_utils import abscs, noneq
 import xyzpy

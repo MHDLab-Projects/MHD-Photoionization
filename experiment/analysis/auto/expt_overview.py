@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
@@ -11,16 +11,16 @@ import matplotlib.dates as mdates
 # %%
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
+dst_coords = mhdlab.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
-df_ct = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
+df_ct = mhdlab.fileio.load_df_cuttimes(fp_cuttimes)
 
 fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+df_exptw = mhdlab.fileio.load_df_cuttimes(fp_expt_tws)
 # df_exptw = pd.read_csv(fp_expt_tws)
 
 df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
@@ -62,7 +62,7 @@ ds_orig
 
 # %%
 
-from mhdpy.plot import simple_ds_plot, tc_plot
+from mhdlab.plot import simple_ds_plot, tc_plot
 
 simple_ds_plot(ds_orig)
 

@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 from params import duration_lookup, time_downselect_lookup
 
 fp = pjoin(REPO_DIR, 'experiment', 'data', 'proc_data', 'ds_lecroy.cdf')
@@ -10,10 +10,10 @@ ds = ds[['i','q']]
 
 ds = ds.mwt.calc_mag_phase()
 
-from mhdpy.plot.anim.mwt import gen_movie_mwt
+from mhdlab.plot.anim.mwt import gen_movie_mwt
 
 fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws).set_index('Event')
+df_exptw = mhdlab.fileio.load_df_cuttimes(fp_expt_tws).set_index('Event')
 
 for date, tw in df_exptw.ct.iterslices():
 

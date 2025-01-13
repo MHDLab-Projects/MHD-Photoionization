@@ -7,12 +7,12 @@
 # The positino dependence doesn't appear to be reproducible, and is on the order of 1%. Just using calibration at the goldilocks position of 150mm for now. 
 
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdpy.fileio.tdms import TFxr
-from mhdpy.fileio.spectral import load_absem
+from mhdlab.fileio.tdms import TFxr
+from mhdlab.fileio.spectral import load_absem
 
 
 # datestr = '2023-05-24'
@@ -36,7 +36,7 @@ tws = {
 }
 
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 motor = dsst['motor']['Motor C Relative'].rename('motor')
 
 dss = []

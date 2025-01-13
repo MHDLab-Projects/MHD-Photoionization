@@ -6,11 +6,11 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.ct import load_df_cuttimes
 
 # %%
 

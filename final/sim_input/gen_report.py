@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import re
 
 output_dir = pjoin('output')

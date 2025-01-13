@@ -6,9 +6,9 @@ the PV power meter was used throughout the experiment, whereas the PE power mete
 
 #%%
 
-from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.tdms import TFxr
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.analysis.standard_import import *
+from mhdlab.fileio.tdms import TFxr
+from mhdlab.coords.ct import downselect_acq_time
 dir_dataset = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
 
 dsst = TFxr(pjoin(dir_dataset,'dsst.tdms')).as_dsst(convert_to_PT=False)
@@ -22,7 +22,7 @@ pow_pe = dsst['lasen_meter2']['Power']
 fw = dsst['filterwheel']['Filter Position']
 
 #%%
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.ct import load_df_cuttimes
 
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_power_calibration.csv')
 
@@ -73,7 +73,7 @@ pow_mean['date']
 
 #%%
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 df_sweep_times = df_cuttimes[df_cuttimes['Event'].str.contains('sweep')]
 

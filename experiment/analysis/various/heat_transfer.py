@@ -1,15 +1,15 @@
 #%%
-from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.analysis.standard_import import *
+from mhdlab.fileio.ct import load_df_cuttimes
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
+dst_coords = mhdlab.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 dst_coords
 
@@ -66,7 +66,7 @@ plt.legend()
 
 #%%
 
-from mhdpy.plot import xr_errorbar
+from mhdlab.plot import xr_errorbar
 
 mean = ht['CC_heatTransfer'].mean('mnum')
 std = ht['CC_heatTransfer'].std('mnum')

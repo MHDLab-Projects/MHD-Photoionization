@@ -3,19 +3,19 @@
 ## TODO: Writing disabled for now... incorporate in post processing?
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 datestr = '2023-04-07'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-# dsst = mhdpy.fileio.TFxr().as_dsst(convert_to_PT=False)
+# dsst = mhdlab.fileio.TFxr().as_dsst(convert_to_PT=False)
 
 lecroy_munged_folder = pjoin(data_folder, 'Lecroy')
 input_fns = [fn for fn in os.listdir(lecroy_munged_folder) if 'Silicon' not in fn]
 input_fns = [fn for fn in input_fns if 'Nothing' not in fn]
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 
 dss = []
@@ -84,7 +84,7 @@ ds_out['pulse_max'].plot()
 
 #%%
 
-# from mhdpy.fileio.tdms import ds_to_tdms
+# from mhdlab.fileio.tdms import ds_to_tdms
 # from nptdms import TdmsWriter
 
 # # fp_out = os.path.join(lecroy_munged_folder, 'test.tdms')

@@ -4,7 +4,7 @@ https://medium.com/@flcamarao/image-processing-using-python-homography-matrix-a5
 """
 
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 from skimage import transform

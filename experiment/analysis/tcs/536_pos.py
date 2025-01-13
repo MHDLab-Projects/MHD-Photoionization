@@ -1,7 +1,7 @@
 #%%
 
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
@@ -50,7 +50,7 @@ plt.xlim(760,780)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
 ds_fit = ds_absem.mean('mnum')
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
@@ -241,7 +241,7 @@ plt.xscale('log')
 
 # %%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd = pjoin(os.getenv('REPO_DIR'), 'final', 'dataset', 'output', 'cfd_profiles_centerline.cdf' )
 

@@ -3,16 +3,16 @@ The time offset is varied and the acquisition time standard deviation is examine
 """
 
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 datestr = '2023-04-07'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 # #%%
 
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 tc = 'ds_SeedRamp_Run2'
 
@@ -43,7 +43,7 @@ da_std = da.std('acq_time')
 
 #%%
 
-from mhdpy.plot import xr_errorbar
+from mhdlab.plot import xr_errorbar
 
 xr_errorbar(da_mean, da_std)
 plt.xlim(-10,10)

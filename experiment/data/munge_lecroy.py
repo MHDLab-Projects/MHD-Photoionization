@@ -3,11 +3,11 @@ Script to munge all relevant lecroy dates. This should probably be incorporated 
 """
 
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
-from mhdpy.fileio.lecroy import get_matching_filepath_mnums, load_trc_mnum_simple, setupfile_timeoffset
-from mhdpy.fileio.lecroy import NoMatchingFilesError, NotAllFilenameBaseMatchingError
+from mhdlab.fileio.lecroy import get_matching_filepath_mnums, load_trc_mnum_simple, setupfile_timeoffset
+from mhdlab.fileio.lecroy import NoMatchingFilesError, NotAllFilenameBaseMatchingError
 
 # # Setup File to calibrate time difference between lecroy and lab computer. 
 # https://stackoverflow.com/questions/312443/how-do-i-split-a-list-into-equally-sized-chunks

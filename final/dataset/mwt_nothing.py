@@ -2,8 +2,8 @@
 # # Investigating mwt data with no sample. Measurement of air transmission T0
 
 #%%
-from mhdpy.analysis.standard_import import *
-from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
+from mhdlab.analysis.standard_import import *
+from mhdlab.coords import gen_coords_to_assign_1, assign_coords_multi
 import pi_paper_utils as ppu
 
 plt.rcParams['timezone'] = 'US/Pacific'
@@ -11,7 +11,7 @@ plt.rcParams['timezone'] = 'US/Pacific'
 #%%
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 da_motor = dsst['motor']['Motor C Relative'].rename(time='acq_time')
 
@@ -91,7 +91,7 @@ for i, (temp, ds) in enumerate(ds_concat.groupby('temp')):
 
 # Drop test cases where motor was not at SFR-maximized position
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 ds_sel = ds_concat
 ds_2 = assign_signal(ds_sel, da_motor_coords.rename(acq_time='time'), 'acq_time')

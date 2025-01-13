@@ -3,7 +3,7 @@ Auto analysis script for mwt noise (taken from 2023-04-07/analysis_noise.py)
 Keeping separate from mwt_1d.py to use medthods in absem_1d.py that avoid for loops, eventually want to use these methods in mwt_1d.py
 """
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')

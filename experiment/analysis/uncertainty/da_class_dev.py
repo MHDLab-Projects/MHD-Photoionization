@@ -1,7 +1,7 @@
 #%%
 import numpy as np
 import xarray as xr
-from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdlab.xr_utils import WeightedMeanAccessor
 
 
 ds = xr.tutorial.open_dataset("air_temperature")

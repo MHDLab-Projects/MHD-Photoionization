@@ -1,12 +1,12 @@
 # %%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
-from mhdpy.fileio import TFxr
-from mhdpy.fileio.path import gen_path_date
-from mhdpy.fileio.spectral import load_absem
+from mhdlab.fileio import TFxr
+from mhdlab.fileio.path import gen_path_date
+from mhdlab.fileio.spectral import load_absem
 
-from mhdpy.xr_utils import interp_ds_to_var
-from mhdpy.analysis.absem import calc_alpha_simple
+from mhdlab.xr_utils import interp_ds_to_var
+from mhdlab.analysis.absem import calc_alpha_simple
 
 
 import json 

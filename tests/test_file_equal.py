@@ -3,8 +3,8 @@ from pprint import pprint
 import pytest
 import warnings
 
-from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.tdms import TFxr
+from mhdlab.analysis.standard_import import *
+from mhdlab.fileio.tdms import TFxr
 
 
 import logging
@@ -64,11 +64,11 @@ def data_tuple_tdms(request, tdms_file) -> (xr.Dataset, xr.Dataset):
 
 
 # This is to stop these tests themselves from being run (expecting 'data_tuple')
-from mhdpy.xr_utils.testing import test_same_groups as same_groups
-from mhdpy.xr_utils.testing import test_same_channels as same_channels
-from mhdpy.xr_utils.testing import test_rounded_values_equal as rounded_values_equal
-from mhdpy.xr_utils.testing import test_exact_values_equal as exact_values_equal
-from mhdpy.xr_utils.testing import test_output_equal as output_equal
+from mhdlab.xr_utils.testing import test_same_groups as same_groups
+from mhdlab.xr_utils.testing import test_same_channels as same_channels
+from mhdlab.xr_utils.testing import test_rounded_values_equal as rounded_values_equal
+from mhdlab.xr_utils.testing import test_exact_values_equal as exact_values_equal
+from mhdlab.xr_utils.testing import test_output_equal as output_equal
 
 @pytest.mark.parametrize('tdms_file', tdms_files)
 def test_same_groups_tdms(data_tuple_tdms):

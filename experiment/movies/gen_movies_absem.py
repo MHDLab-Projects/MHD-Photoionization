@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 from params import duration_lookup, time_downselect_lookup
 
 fp = pjoin(REPO_DIR, 'experiment', 'data', 'proc_data', 'ds_absem.cdf')
@@ -14,10 +14,10 @@ ds = ds.set_index(acq=['time','mp']).unstack('acq').rename(time='acq_time')
 ds
 
 #%%
-from mhdpy.plot.anim.absem import gen_movie_absem_mp
+from mhdlab.plot.anim.absem import gen_movie_absem_mp
 
 fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws).set_index('Event')
+df_exptw = mhdlab.fileio.load_df_cuttimes(fp_expt_tws).set_index('Event')
 
 for date, tw in df_exptw.ct.iterslices():
 

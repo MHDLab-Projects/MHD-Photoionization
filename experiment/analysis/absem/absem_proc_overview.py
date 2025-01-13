@@ -2,7 +2,7 @@
 # # Absorption Emission Data Processing Overview
 
 # %%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
@@ -23,7 +23,7 @@ datestr = '2023-05-18'
 # %%
 fp_1 = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr, 'Munged','Spectral','absem.tdms')
 
-ds = mhdpy.fileio.spectral.load_multindexed_spectral(fp_1)
+ds = mhdlab.fileio.spectral.load_multindexed_spectral(fp_1)
 
 ds
 
@@ -31,7 +31,7 @@ ds
 # The Raw Data is divided by the integration time to give counts/ms. Other time-based metadata is dropped, but it is first checked that there is only one value. 
 
 # %%
-ds = mhdpy.fileio.spectral.load_absem(fp_1, convert_to_PT=False)
+ds = mhdlab.fileio.spectral.load_absem(fp_1, convert_to_PT=False)
 
 ds
 
@@ -74,7 +74,7 @@ ds_sel['led'].plot(ax=axes[1], marker='o')
 #%%
 
 import json
-from mhdpy.fileio import TFxr
+from mhdlab.fileio import TFxr
 
 with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
     settings = json.load(f)[datestr]
@@ -84,9 +84,9 @@ has_multiplexer = settings['has_multiplexer']
 ds_absem = ds
 
 # Start processing 
-from mhdpy.analysis.absem import calc_alpha_simple
-from mhdpy.coords import reduce_acq_group, get_value_switches, downselect_num_acq
-from mhdpy.coords.spectral import assign_multiplexer_coord
+from mhdlab.analysis.absem import calc_alpha_simple
+from mhdlab.coords import reduce_acq_group, get_value_switches, downselect_num_acq
+from mhdlab.coords.spectral import assign_multiplexer_coord
 
 data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'munged',datestr)
 
@@ -136,7 +136,7 @@ ds_sel['led_switch_num'].plot(ax=axes[3], marker='o')
 
 #%%
 
-from mhdpy.xr_utils import interp_ds_to_var
+from mhdlab.xr_utils import interp_ds_to_var
 
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
@@ -175,7 +175,7 @@ ds_absem = ppu.fileio.load_absem('53x')
 #%%
 
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
 
 ds_fit = ds_absem.mean('mnum')
 
@@ -183,7 +183,7 @@ ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
-from mhdpy.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+from mhdlab.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
 
 ds_fit_beta_off = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
 

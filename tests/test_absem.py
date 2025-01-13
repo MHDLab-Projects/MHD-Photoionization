@@ -1,10 +1,10 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1, pipe_fit_alpha_2
-from mhdpy.analysis.absem.fit_prep import interp_alpha
-from mhdpy.analysis import absem
-from mhdpy.xr_utils import fit_da_lmfit
+from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1, pipe_fit_alpha_2
+from mhdlab.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis import absem
+from mhdlab.xr_utils import fit_da_lmfit
 
 from pi_paper_utils.constants import *
 
@@ -73,7 +73,7 @@ def test_pipe_fit_alpha_1(ds_absem):
 
     assert ds_p['nK_m3'].item() == pytest.approx(1.17677e+22, rel=1e-4)
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
 import pi_paper_utils as ppu
 def test_pipe_fit_alpha_num_1(ds_absem):
     ds_absem = ds_absem.drop(0, 'kwt')
@@ -97,7 +97,7 @@ def test_wing_cut(ds_absem):
     ds_absem = ds_absem.sel(kwt=1,method='nearest') # Wing cut needs just wavelength dim
     ds_absem = ds_absem.absem.reduce_keep_wings()
 
-from mhdpy.xr_utils import fit_da_lmfit_global
+from mhdlab.xr_utils import fit_da_lmfit_global
 def test_absem_fit_global(ds_absem_all_mnum):
     """Tests a fit of a single absorption emssision spectrum and compares the fitted nK value to a previously obtained value"""
 

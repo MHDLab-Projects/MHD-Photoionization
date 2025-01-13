@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
@@ -13,7 +13,7 @@ goldi_pos = Quantity(180, 'mm')
 #%%
 
 
-from mhdpy.analysis.mwt.fitting import MWTFitPipeline3, MWTFitPipelineExp
+from mhdlab.analysis.mwt.fitting import MWTFitPipeline3, MWTFitPipelineExp
 
 def perform_fit_sequence(ds_fit):
     pipe_fit_exp = MWTFitPipelineExp()

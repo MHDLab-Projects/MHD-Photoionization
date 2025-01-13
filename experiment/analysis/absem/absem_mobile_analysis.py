@@ -2,14 +2,14 @@
 
 
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis import absem
-from mhdpy.plot import dropna
+from mhdlab.analysis import mwt
+from mhdlab.analysis import absem
+from mhdlab.plot import dropna
 
 # plt.rcParams.update({'font.size': 16})
 

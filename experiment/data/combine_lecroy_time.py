@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 import json
 import argparse
@@ -71,7 +71,7 @@ ds_out = ds[['mag_pp', 'mag_fluct', 'dAS_rel_max', 'mag_peak']]
 
 ds_out = ds_out.rename({'acq_time':'time'})
 
-from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
+from mhdlab.fileio.tdms import ds_to_tdms, TdmsWriter
 
 with TdmsWriter(pjoin(data_folder, 'Processed_Data.tdms'), 'a') as tdms:
     ds_to_tdms(ds_out, group_name='mwt_time', tdms_writer=tdms)

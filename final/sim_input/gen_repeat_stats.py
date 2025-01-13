@@ -4,7 +4,7 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 
 # load and excel file

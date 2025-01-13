@@ -1,6 +1,6 @@
-[submodule "mhdpy"]
-	path = mhdpy
-	url = https://github.com/mhdLab/mhdpy
+[submodule "mhdlab"]
+	path = mhdlab
+	url = https://github.com/mhdLab/mhdlab
 [submodule "PostProcessor"]
 	path = PostProcessor
 	url = https://github.com/MHDLab/PostProcessor

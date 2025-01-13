@@ -1,11 +1,11 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis import absem
+from mhdlab.analysis import mwt
+from mhdlab.analysis import absem
 
 # %%
 
@@ -20,7 +20,7 @@ da_lecroy = ds_lecroy['AS_abs']
 
 da_max = da_lecroy.sel(time=slice(-1,1)).max('time')
 #%%
-from mhdpy.plot import dropna
+from mhdlab.plot import dropna
 
 g = da_max.plot(col='motor',hue ='run_plot', x='power', col_wrap=3, marker='o')
 

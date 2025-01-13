@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 REPO_DIR = os.getenv('REPO_DIR')
 
-from mhdpy.fileio.path import chdir_if_nb_render; chdir_if_nb_render()
+from mhdlab.fileio.path import chdir_if_nb_render; chdir_if_nb_render()
 from pi_paper_utils import abscs, noneq
 
 cantera_data_dir = os.path.join(REPO_DIR, 'modeling', 'viability', 'dataset', 'output')

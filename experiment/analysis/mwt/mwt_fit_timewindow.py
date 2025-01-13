@@ -5,11 +5,11 @@
 # Examining the time window for the Lecroy data.
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu    
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 # %%
 
@@ -54,7 +54,7 @@ plt.xlim(-1,50)
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_2 
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_2 
 
 dss_p = []
 

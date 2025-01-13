@@ -4,12 +4,12 @@ TODO: replace old extract_line_profiles.py with this script. Waiting on K=1% dat
 """
 
 #%%
-from mhdpy.fileio import gen_path
-from mhdpy.analysis.standard_import import *
+from mhdlab.fileio import gen_path
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pint_pandas
 import pyvista as pv
-from mhdpy.pyvista_utils import AxiMesh
+from mhdlab.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 import pi_paper_utils as ppu
 

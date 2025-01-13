@@ -10,10 +10,10 @@ import os
 import pint_pandas
 import pandas as pd
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
-# from mhdpy.pyvista_utils import AxiMesh, pv_to_unstack_xr, downsel_arrays, pv_to_xr
-from mhdpy.pyvista_utils.axi import AxiInterpolator
+# from mhdlab.pyvista_utils import AxiMesh, pv_to_unstack_xr, downsel_arrays, pv_to_xr
+from mhdlab.pyvista_utils.axi import AxiInterpolator
 
 create_standard_folders()
 

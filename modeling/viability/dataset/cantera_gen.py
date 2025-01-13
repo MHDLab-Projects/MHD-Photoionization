@@ -24,7 +24,7 @@ from pint import Quantity
 import pint_pandas
 import pint_xarray
 
-import mhdpy.cantera_utils.util as ct_utils 
+import mhdlab.cantera_utils.util as ct_utils 
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl

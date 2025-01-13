@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 
 ds = xr.load_dataset(pjoin('output', 'ds_beam_timing.cdf'))

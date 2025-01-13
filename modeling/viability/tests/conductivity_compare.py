@@ -6,16 +6,16 @@ This is not really a test at this point because the values are slightly differen
 
 # %%
 
-import mhdpy
+import mhdlab
 
 defaults = {
     'phi': 0.7,
     'Kwt': 0.001
 }
 
-from mhdpy.load import load_dataset_defaults
+from mhdlab.load import load_dataset_defaults
 
-canterapath = mhdpy.fp.gen_path('sharepoint', 'lee', 'Data', 'Cantera Gasses')
+canterapath = mhdlab.fp.gen_path('sharepoint', 'lee', 'Data', 'Cantera Gasses')
 
 ds_TP_params = load_dataset_defaults(os.path.join(canterapath, 'ds_TP_params.cdf'), defaults)
 ds_TP_species_rho = load_dataset_defaults(os.path.join(canterapath, 'ds_TP_species_rho.cdf'), defaults)

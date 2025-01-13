@@ -7,14 +7,14 @@
 
 # %%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
-from mhdpy.plot import xr_errorbar, xr_errorbar_axes
+from mhdlab.plot import xr_errorbar, xr_errorbar_axes
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 # %% [markdown]
 # # Test Case analysis
@@ -23,7 +23,7 @@ dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(conv
 
 # %%
 
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.ct import load_df_cuttimes
 
 fp_cuttimes_phi = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_phi.csv')
 df_cuttimes = load_df_cuttimes(fp_cuttimes_phi)
@@ -47,8 +47,8 @@ df_cuttimes
 
 #%%
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.coords.ct import downselect_acq_time
 
 da_ht  = dsst['calorimetry', 'CC_heatTransfer']
 
@@ -76,7 +76,7 @@ ds_plot = xr.merge([
     dsst['hvof'][['CC_total_flow_in', 'CC_K_massFrac_in', 'CC_equivalenceRatio']]
 ])
 
-from mhdpy.plot import simple_ds_plot, tc_plot
+from mhdlab.plot import simple_ds_plot, tc_plot
 
 df_cuttimes['plot_label'] = df_cuttimes['kwt'].astype(str) + ' kwt, ' + df_cuttimes['phi'].astype(str) + ' phi'
 fig =  tc_plot(ds_plot.sel(time=region), df_cuttimes, legend_axes=3, legend_column='plot_label')
@@ -105,7 +105,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'phi_heattransfer.png'))
 
 # %%
 
-#TODO: combine with 04-07 Microwave transmission, move to mhdpy 
+#TODO: combine with 04-07 Microwave transmission, move to mhdlab 
 
 
 #TODO: Rename these in lab config
@@ -140,7 +140,7 @@ sheet_names = {'hvof': "HVOF Process Inputs", 'calorimetry': "Calorimetry"}
 dsst_stats = {key: dsst[key] for key in key_sel}
 
 
-from mhdpy.xr_utils import calc_stats
+from mhdlab.xr_utils import calc_stats
 
 #TODO: automate output name
 

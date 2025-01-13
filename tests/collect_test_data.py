@@ -5,7 +5,7 @@ Script to setup test data for specified dates. This script will replace the spec
 import os
 import shutil
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 CHECK_FOR_EXISTING = False
 

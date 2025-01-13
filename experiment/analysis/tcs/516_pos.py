@@ -1,14 +1,14 @@
 #%%
 
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis import absem
-from mhdpy.plot import dropna
+from mhdlab.analysis import mwt
+from mhdlab.analysis import absem
+from mhdlab.plot import dropna
 
 # plt.rcParams.update({'font.size': 16})
 
@@ -51,7 +51,7 @@ plt.ylim(-0.1,0.1)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
 
 
 ds_fit = ds_absem.mean('mnum')
@@ -108,7 +108,7 @@ plt.yscale('log')
 
 # %%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3
 
 da_fit = ds_lecroy['dAS_rel'].mean('mnum')
 

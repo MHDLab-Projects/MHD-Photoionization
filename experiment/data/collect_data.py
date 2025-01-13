@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 munged_dir = 'munged'
@@ -88,7 +88,7 @@ dsst_date_dict = {}
 
 for date in dates:
     data_folder = pjoin('munged',date) 
-    dsst_date = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+    dsst_date = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
     dsst_date_dict[date] = dsst_date
 
@@ -113,7 +113,7 @@ for key in keep_keys:
     dsst[key] = xr.concat(dss, 'time', combine_attrs='drop_conflicts')
 
 # %%
-from mhdpy.fileio.tdms import dsst_to_tdms
+from mhdlab.fileio.tdms import dsst_to_tdms
 
 dsst['motor']['Motor C Relative'].attrs.update(dict(long_name='Stage Position', units='mm'))
 dsst['hvof']['CC_K_massFrac_in'].attrs.update(dict(long_name='Nominal K Mass Fraction', units='') )

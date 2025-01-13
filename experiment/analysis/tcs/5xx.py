@@ -1,21 +1,21 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis import absem
+from mhdlab.analysis import mwt
+from mhdlab.analysis import absem
 
-from mhdpy.plot import dropna
+from mhdlab.plot import dropna
 
 #%%
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
+dst_coords = mhdlab.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 #%%
 
@@ -153,7 +153,7 @@ ds_absem_time = ds_absem_time['alpha']
 ds_absem_time
 
 #%%
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 
 # tw = slice(Timestamp('2023-05-24 19:45:01.091800832'), Timestamp('2023-05-24 20:39:19.309871616'), None)
 tw = slice(Timestamp('2023-05-24 20:12:07.301042944'), Timestamp('2023-05-24 20:12:46.490260736'), None)
@@ -179,7 +179,7 @@ dst_coords['phi'].sel(time=tw).plot(marker='o')
 #%%
 
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_1
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
@@ -393,7 +393,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '5x3_pos_mwt_KOH.png'), dpi=300)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
 
 ds_fit = ds_absem.isel(run=0) #only one run
 ds_fit = ds_fit.sel(wavelength=slice(750,790)).mean('mnum')

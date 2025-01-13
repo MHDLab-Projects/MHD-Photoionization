@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 datestr = '2023-05-18'
@@ -8,7 +8,7 @@ datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 fp = pjoin(data_folder, 'Lecroy', 'ds_silicon_power_init_12kV.cdf')
 
@@ -19,7 +19,7 @@ ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
 
 # %%
 
-from mhdpy.analysis.mwt import MwsAccessor
+from mhdlab.analysis.mwt import MwsAccessor
 
 ds = ds.mwt.calc_AS_rel()
 
@@ -49,7 +49,7 @@ ds['i'].mean('time').plot(marker='o')
 
 #%%
 
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 from pi_paper_utils import convert_fw_pos_relpower
 
@@ -113,7 +113,7 @@ plt.ylim(1e-5,)
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_exp
+from mhdlab.analysis.mwt.fitting import pipe_fit_exp
 
 
 # da_fit = da_sel.mean('mnum')

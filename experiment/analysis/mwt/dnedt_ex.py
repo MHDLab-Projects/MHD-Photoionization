@@ -4,11 +4,11 @@
 # exploring dnedt calculation manual parameters
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.analysis.mwt.fitting import calc_dnedt_v2
+from mhdlab.analysis.mwt.fitting import calc_dnedt_v2
 from scipy.integrate import solve_ivp
 
 ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
@@ -63,7 +63,7 @@ plt.title('')
 
 da_fit = da_sel.copy().mean('mnum')
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3
 
 pipe_fit_mwt_3.params['A'].vary = True
 
@@ -126,7 +126,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mwt_dnedt.png'), bbox_inches='tight')
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_exp
+from mhdlab.analysis.mwt.fitting import pipe_fit_exp
 
 da_fit = da_sel.copy().mean('mnum')
 
@@ -166,7 +166,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'fit_mwt_exp.png'))
 
 # %%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3
 
 pipe_fit_mwt_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0,'us'),Quantity(30,'us'))
 

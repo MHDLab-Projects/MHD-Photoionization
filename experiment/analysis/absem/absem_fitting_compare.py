@@ -5,16 +5,16 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdpy.analysis.absem.fit_prep import interp_alpha
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
-from mhdpy.analysis import absem
+from mhdlab.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred 
+from mhdlab.analysis import absem
 
-from mhdpy.analysis.absem.fitting import alpha_2peak
-from mhdpy.xr_utils import fit_da_lmfit_global
-from mhdpy.xr_utils import fit_da_lmfit
+from mhdlab.analysis.absem.fitting import alpha_2peak
+from mhdlab.xr_utils import fit_da_lmfit_global
+from mhdlab.xr_utils import fit_da_lmfit
 
 dss_p = []
 dss_p_stderr = []

@@ -1,12 +1,12 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
 # raw_folder = r"C:\Users\ASPITARL\OneDrive - National Energy Technology Laboratory\Documents - MHD Lab Team\Data Share\MHD Lab\Instrumentation Room\2024-03-27"
 raw_folder = pjoin(REPO_DIR, 'experiment', 'data','manual', 'MWT_InstRoom_20240327')
 
-from mhdpy.fileio.lecroy import get_matching_filepath_mnums, load_trc_mnum_simple, setupfile_timeoffset
+from mhdlab.fileio.lecroy import get_matching_filepath_mnums, load_trc_mnum_simple, setupfile_timeoffset
 
 filenames = os.listdir(raw_folder)
 

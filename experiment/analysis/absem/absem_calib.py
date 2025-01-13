@@ -1,10 +1,10 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import absem
+from mhdlab.analysis import absem
 
 #%%
 
@@ -195,8 +195,8 @@ for ax in g.axes.flatten():
 
 
 # %%
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred
-from mhdpy import analysis
+from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred
+from mhdlab import analysis
 final_model, pars = gen_model_alpha_blurred()
 
 

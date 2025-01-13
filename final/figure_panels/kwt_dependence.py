@@ -1,6 +1,6 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu #Sets matplotlib style
 
@@ -15,8 +15,8 @@ ds_mwt_fit_dnedt = xr.open_dataset(pjoin(data_directory, '53x_ds_fit_mwt_dnedt.c
 
 
 # Load in the raw lecroy data for confidence intervals. Doing this here to avoid having to save raw mnum acquisitions...Revisit. 
-from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.fileio.ct import load_df_cuttimes
+from mhdlab.coords.ct import downselect_acq_time
 ds_lecroy = ppu.fileio.load_lecroy('53x', AS_calc='absolute')
 # Downselect times to those in the CFD input kwt cases 
 fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')

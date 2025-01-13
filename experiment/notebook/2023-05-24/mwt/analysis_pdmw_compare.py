@@ -1,10 +1,10 @@
 # %%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 datestr = '2023-05-24'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 munged_dir = pjoin(REPO_DIR, 'experiment','data','munged')
 
@@ -16,9 +16,9 @@ Keeping them in caused the lecry dataset to double in size and caused some sort 
 This was pulled from add_coord_overview.py
 """
 
-from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.coords import assign_coords_multi
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.tdms import tdms2ds
+from mhdlab.coords import assign_coords_multi
+from mhdlab.fileio.ct import load_df_cuttimes
 from datetime import datetime
 
 DIR_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data')
@@ -35,7 +35,7 @@ df_cuttimes = df_cuttimes.set_index('Event')
 df_cuttimes
 
 #%%
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 fp = pjoin(munged_dir, datestr, 'ds_lecroy_time.cdf')
 ds_lecroy = xr.load_dataset(fp)

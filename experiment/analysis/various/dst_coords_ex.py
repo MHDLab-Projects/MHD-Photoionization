@@ -8,12 +8,12 @@ Going to downselect to test case sequences and rebin the data.
 """
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import re
 from collections import defaultdict
 
-from mhdpy.coords import gen_coords_to_assign_1
+from mhdlab.coords import gen_coords_to_assign_1
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
@@ -24,7 +24,7 @@ ds_absem = ds_absem.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_lecroy.cdf'))
 
 
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 # Generate binned coordinates to assign along time dimension
 
 dst = xr.merge([
@@ -49,10 +49,10 @@ ds_coords = xr.merge(dss)
 # %%
 
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
-df_ct = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
+df_ct = mhdlab.fileio.load_df_cuttimes(fp_cuttimes)
 
 fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+df_exptw = mhdlab.fileio.load_df_cuttimes(fp_expt_tws)
 # df_exptw = pd.read_csv(fp_expt_tws)
 
 df_ct['date'] = df_ct['Start Time'].apply(lambda x: x.date())
@@ -99,7 +99,7 @@ dst_coord_plot(dst, ds_coords, tw)
 
 #%%
 
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.coords.ct import downselect_acq_time
 ds_hvof_tcs = downselect_acq_time(dsst['hvof'], df_ct, 'time')
 ds_motor = downselect_acq_time(dsst['motor'], df_ct, 'time')
 

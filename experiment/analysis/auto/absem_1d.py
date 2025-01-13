@@ -8,17 +8,17 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
 figsize = (10, 8)
 # plt.rcParams.update({'figure.figsize':(3,3), 'figure.dpi':100})
 
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred 
-from mhdpy.analysis import absem
+from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred 
+from mhdlab.analysis import absem
 
-from mhdpy.xr_utils import XarrayUtilsAccessorCommon
+from mhdlab.xr_utils import XarrayUtilsAccessorCommon
 
 # %%
 

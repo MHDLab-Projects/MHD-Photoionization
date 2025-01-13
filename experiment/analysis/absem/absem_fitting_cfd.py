@@ -6,7 +6,7 @@
 
 # %%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
@@ -20,7 +20,7 @@ ds_absem
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_beam_mobile.cdf')
 
@@ -76,10 +76,10 @@ plt.plot(x, nK_profile)
 # %%
 
 from scipy.integrate import solve_ivp
-from mhdpy.analysis.absem.fitting import kappa_2peak
+from mhdlab.analysis.absem.fitting import kappa_2peak
 from pint import Quantity
 
-from mhdpy.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
+from mhdlab.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
 
 
 wl = Quantity(770, 'nm')
@@ -214,7 +214,7 @@ plt.xlabel('Stage position [mm]')
 
 # %%
 
-from mhdpy.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis.absem.fit_prep import interp_alpha
 
 ds_test = ds_absem.mean('mnum').mean('run').sel(mp='barrel')
 
@@ -275,8 +275,8 @@ plt.ylim(-0.1,1.1)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_2
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix)
 
@@ -298,7 +298,7 @@ params['nK_m3'].vary = False
 
 
 
-from mhdpy.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+from mhdlab.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
 
 da_fit = pipe_fit_prep_alpha_2(ds_fix)
 

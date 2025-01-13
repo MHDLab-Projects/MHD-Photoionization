@@ -1,10 +1,10 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
-from mhdpy.plot import dropna
+from mhdlab.analysis.standard_import import *
+from mhdlab.plot import dropna
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import absem
+from mhdlab.analysis import absem
 
 datestr = '2023-05-18'
 
@@ -12,7 +12,7 @@ datestr = '2023-05-18'
 data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
 data_folder = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
 
@@ -58,9 +58,9 @@ plt.yscale('log')
 # Assign coordinates to ds
 #TODO: this is redundant with proc_add_coord.py, but for simlified case of individual tc. how should this be handled?
 
-from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords import assign_coords_multi
+from mhdlab.fileio.tdms import tdms2ds
+from mhdlab.fileio.ct import load_df_cuttimes
+from mhdlab.coords import assign_coords_multi
 
 coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'))
 coords_to_assign

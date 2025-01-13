@@ -2,10 +2,10 @@
 Standard pipelines for importing processed datasets
 """
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 
 from .constants import MAG_MWT_BLOCK
 
@@ -46,7 +46,7 @@ def load_absem(
 
     return ds_absem
 
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.coords.ct import downselect_acq_time
 
 def load_lecroy(tc, 
                 avg_mnum = False, 
@@ -154,7 +154,7 @@ def load_cfd_centerline(kwt_interp = None):
     return ds_cfd
 
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 
 def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
 

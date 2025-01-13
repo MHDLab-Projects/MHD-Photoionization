@@ -2,7 +2,7 @@
 #%%
 
 import os
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 munged_dir = pjoin(REPO_DIR, 'experiment', 'data', 'munged')
 

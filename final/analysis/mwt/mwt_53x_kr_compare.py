@@ -8,7 +8,7 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils #Sets matplotlib style
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm

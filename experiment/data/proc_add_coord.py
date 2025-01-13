@@ -1,13 +1,13 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import re
 from collections import defaultdict
 
-from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.fileio.tdms import ds_to_tdms, TdmsWriter
-from mhdpy.coords import gen_coords_to_assign_1, assign_coords_multi
+from mhdlab.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.tdms import ds_to_tdms, TdmsWriter
+from mhdlab.coords import gen_coords_to_assign_1, assign_coords_multi
 
 DIR_EXP_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
@@ -18,14 +18,14 @@ ds_absem = ds_absem.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_lecroy.cdf'))
 
 
-dsst = mhdpy.fileio.TFxr(pjoin(DIR_EXP_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(DIR_EXP_PROC_DATA, 'dsst.tdms')).as_dsst(convert_to_PT=False)
 # Generate binned coordinates to assign along time dimension
 
 # Downselect to only sequence timewindows, see experiment/analysis/various/dst_coords_ex.py
 fp_cuttimes = pjoin(REPO_DIR,'experiment','metadata', 'ct_sequence.csv')
-df_ct_sequence = mhdpy.fileio.load_df_cuttimes(fp_cuttimes)
+df_ct_sequence = mhdlab.fileio.load_df_cuttimes(fp_cuttimes)
 
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.coords.ct import downselect_acq_time
 ds_hvof_tcs = downselect_acq_time(dsst['hvof'].sortby('time'), df_ct_sequence, 'time')
 ds_motor_tcs = downselect_acq_time(dsst['motor'].sortby('time'), df_ct_sequence, 'time')
 

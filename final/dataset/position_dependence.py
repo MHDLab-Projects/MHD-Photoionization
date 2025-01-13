@@ -1,11 +1,11 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
-from mhdpy.analysis import mwt, absem
-from mhdpy.plot import dropna
+from mhdlab.analysis import mwt, absem
+from mhdlab.plot import dropna
 
 stack_dims = ['date','run_num','motor','phi']
 
@@ -68,7 +68,7 @@ da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIE
 # Fit the position dependent mw horns data
 # 
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
 
 ds_fit = ds_absem.mean('mnum').sel(mp='mw_horns').dropna('run', how='all')
 nK_profile = da_cfd_beam.sel(mp='mw_horns')

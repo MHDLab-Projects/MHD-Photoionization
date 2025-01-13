@@ -1,8 +1,8 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 # %%[markdown]
 
 # Summary: 
@@ -51,7 +51,7 @@ ds_sel['led_on'].plot.line(x='wavelength', hue='mnum')
 
 #%%
 
-from mhdpy.analysis.absem import calc_alpha_scipp
+from mhdlab.analysis.absem import calc_alpha_scipp
 
 ds_absem_in = ds_absem2.unstack('run')
 
@@ -113,7 +113,7 @@ plt.xlim(765,772)
 
 
 #%%
-from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdlab.xr_utils import WeightedMeanAccessor
 
 ds_alpha_2 = ds_alpha.wma.calc_weighted_mean('run')
 

@@ -2,8 +2,8 @@ python setup.py develop # For pi_paper_utils package
 
 git submodule update --init
 
-cd mhdpy
+cd mhdlab
 pip install -e .
 
-cd mhdpy/fileio
+cd mhdlab/fileio
 git submodule update --init

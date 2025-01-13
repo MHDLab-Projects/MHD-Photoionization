@@ -1,13 +1,13 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis import absem
+from mhdlab.analysis import mwt
+from mhdlab.analysis import absem
 
 # %%
 
@@ -53,7 +53,7 @@ plt.xlim(-1,40)
 plt.ylim(1e-5,1e-1)
 
 #%%
-from mhdpy.xr_utils.stats import WeightedMeanAccessor
+from mhdlab.xr_utils.stats import WeightedMeanAccessor
 
 #TODO: add weighted mean dataarray acessor and tests
 
@@ -108,7 +108,7 @@ da_max.attrs['long_name'] = 'Max AS'
 
 da_max
 #%%
-from mhdpy.plot import dropna
+from mhdlab.plot import dropna
 
 g = da_max.plot(hue ='run_plot', x='power', marker='o')
 plt.yscale('log')
@@ -267,7 +267,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
 da_fit = da_lecroy.copy()
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_2 
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_2 
 
 ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_2(da_fit)
 
@@ -310,7 +310,7 @@ plt.yscale('log')
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_exp
+from mhdlab.analysis.mwt.fitting import pipe_fit_exp
 
 # da_fit = da_lecroy.mean('mnum')
 da_fit = da_lecroy.copy()
@@ -352,7 +352,7 @@ plt.ylim(1,10)
 
 da_fit = da_lecroy.copy()
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3 
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3 
 
 pipe_fit_mwt_3.perform_fit_kwargs['fit_timewindow'] = slice(Quantity(0, 'us'), Quantity(25, 'us'))
 pipe_fit_mwt_3.fit_prep_kwargs['pre_norm_cutoff'] = None

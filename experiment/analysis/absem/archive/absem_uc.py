@@ -1,10 +1,10 @@
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdpy.analysis import mwt
-from mhdpy.xr_utils import WeightedMeanAccessor
+from mhdlab.analysis import mwt
+from mhdlab.xr_utils import WeightedMeanAccessor
 
 # %%
 
@@ -22,7 +22,7 @@ ds_absem
 
 #%%
 
-from mhdpy.analysis.absem import calc_alpha_scipp
+from mhdlab.analysis.absem import calc_alpha_scipp
 
 ds = calc_alpha_scipp(ds_absem)
 
@@ -32,7 +32,7 @@ ds
 
 #%%
 
-from mhdpy.plot import xr_errorbar_axes
+from mhdlab.plot import xr_errorbar_axes
 
 
 fig, axes = plt.subplots(len(ds.coords['run']),2 , figsize=(5,10), sharex=True, sharey=True)
@@ -133,7 +133,7 @@ plt.xlim(765,772)
 
 #%%
 
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_1 
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_1 
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
@@ -165,7 +165,7 @@ plt.yscale('log')
 #%%
 
 
-from mhdpy.plot import xr_errorbar_axes
+from mhdlab.plot import xr_errorbar_axes
 
 ds_sel = ds_nK.sel(mp='barrel').dropna('kwt',how='all').drop('mp')
 

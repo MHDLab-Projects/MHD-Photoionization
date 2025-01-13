@@ -1,6 +1,6 @@
 #%%
-from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.spe import spe2ds_img, _get_gatedelays, spe2ds_spect
+from mhdlab.analysis.standard_import import *
+from mhdlab.fileio.spe import spe2ds_img, _get_gatedelays, spe2ds_spect
 from tqdm import tqdm
 from collections import defaultdict
 

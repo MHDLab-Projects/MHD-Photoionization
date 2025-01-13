@@ -1,4 +1,4 @@
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 from skimage import transform

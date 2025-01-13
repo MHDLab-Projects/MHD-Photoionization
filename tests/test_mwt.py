@@ -1,10 +1,10 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
-from mhdpy.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1
-from mhdpy.analysis.absem.fit_prep import interp_alpha
-from mhdpy.analysis import mwt
-from mhdpy.xr_utils import fit_da_lmfit
+from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1
+from mhdlab.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis import mwt
+from mhdlab.xr_utils import fit_da_lmfit
 from pint import Quantity
 
 import pytest    
@@ -24,7 +24,7 @@ def ds_mwt():
 
     return ds_lecroy
 
-from mhdpy import xr_utils
+from mhdlab import xr_utils
 
 @pytest.fixture
 def ds_mwt_all_mnum():
@@ -102,8 +102,8 @@ def test_pipe_fit_mwt_3(ds_mwt):
 
     ds_mwt_fit, ds_p, ds_p_stderr = mwt.fitting.pipe_fit_mwt_3(ds_mwt['dAS_rel'])
 
-# from mhdpy.analysis.mwt.fitting import gen_model_dnedt
-# from mhdpy.xr_utils import fit_da_lmfit_global
+# from mhdlab.analysis.mwt.fitting import gen_model_dnedt
+# from mhdlab.xr_utils import fit_da_lmfit_global
 # def test_mwt_fit_global_ne0(ds_mwt_all_mnum):
 
 #     da_fit = ds_mwt_all_mnum['dAS_rel']

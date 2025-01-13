@@ -1,7 +1,7 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 import seaborn as sns
 import pi_paper_utils as ppu
 # sns.set_theme(style="darkgrid")
@@ -13,7 +13,7 @@ def main(datestr):
     data_folder = pjoin(REPO_DIR, 'experiment','data','munged', datestr)
     DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy')
 
-    dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+    dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
     figure_out_dir = pjoin(DIR_DATA_OUT, 'mwt_1d', datestr)
 
@@ -207,7 +207,7 @@ def main(datestr):
 
     # %%
 
-    from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_1 
+    from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_1 
 
     das_fit_input = {}
     dss_fits = {}

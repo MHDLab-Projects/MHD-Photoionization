@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 create_standard_folders()
 
@@ -78,7 +78,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_img_gatedelay.png'))
 
 
 #%%
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 fp_cfd_2d = pjoin(REPO_DIR, 'final','dataset','output', 'mdot0130_phi080_K100.csv')
 
 df_cfd = pd.read_csv(fp_cfd_2d, index_col=[0,1])

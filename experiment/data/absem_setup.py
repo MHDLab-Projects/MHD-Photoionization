@@ -1,15 +1,15 @@
 # %%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
-from mhdpy.fileio import TFxr
-from mhdpy.fileio.path import gen_path_date
-from mhdpy.fileio.spectral import load_absem
-from mhdpy.analysis.absem import calc_alpha_simple
-from mhdpy.coords import reduce_acq_group, get_value_switches, downselect_num_acq
-from mhdpy.coords.spectral import prep_absem_mp
+from mhdlab.fileio import TFxr
+from mhdlab.fileio.path import gen_path_date
+from mhdlab.fileio.spectral import load_absem
+from mhdlab.analysis.absem import calc_alpha_simple
+from mhdlab.coords import reduce_acq_group, get_value_switches, downselect_num_acq
+from mhdlab.coords.spectral import prep_absem_mp
 
 
-from mhdpy.xr_utils import interp_ds_to_var
+from mhdlab.xr_utils import interp_ds_to_var
 
 import json
 import argparse
@@ -56,7 +56,7 @@ ds_absem = ds_absem.where(ds_absem['led_on'].isnull() == ds_absem['led_off'].isn
 # Add clalibration based on interpolation of before and after (and mid-experiment shutdown) calibration timewindows
 #TODO: the time windows are now just selected for motor=150mm (goldilocks) for mw_horns multiplexer, the data exists for 05-24 for different motor positions and shows a slight decrease in transmission near the barrel. Need to eventaully make the calibration for mw_horns mp dependent. 
 
-from mhdpy.fileio import load_df_cuttimes
+from mhdlab.fileio import load_df_cuttimes
 fp_calib_ct = pjoin(REPO_DIR, 'experiment','metadata','ct_absem_calib.csv')
 
 df_cuttimes = load_df_cuttimes(fp_calib_ct)

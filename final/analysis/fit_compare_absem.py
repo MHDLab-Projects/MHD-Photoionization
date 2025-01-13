@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 from pi_paper_utils.constants import *
@@ -34,7 +34,7 @@ da_cfd_beam
 
 #%%
 
-from mhdpy.analysis.absem.fitting import AlphaFitPipeline2, AlphaFitPipelineNum1
+from mhdlab.analysis.absem.fitting import AlphaFitPipeline2, AlphaFitPipelineNum1
 
 def perform_fit_sequence(ds_fit):
     pipe_fit_alpha_2 = AlphaFitPipeline2()

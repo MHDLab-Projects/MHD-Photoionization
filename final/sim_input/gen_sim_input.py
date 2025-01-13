@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 
 #TODO: move plotting to a separate file
@@ -7,16 +7,16 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 plt.rcParams.update({'font.size': 8, 'timezone': 'America/Los_Angeles'})
 
-from mhdpy.xr_utils import calc_stats
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.xr_utils import calc_stats
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
-dsst = mhdpy.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
+dst_coords = mhdlab.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 dst_coords
 #%%
@@ -33,7 +33,7 @@ dsst['hvof']['CC_P'] = dsst['hvof']['CC_P'].sel(time=tw_CC_P_valid)
 
 # %%
 
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.ct import load_df_cuttimes
 
 # Test case cuttimes
 fp_cuttimes = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
@@ -55,7 +55,7 @@ df_sequence_tw = df_sequence_tw.where(df_sequence_tw['tc'].isin(['53x', '516_pos
 # Experiment timewindows
 
 fp_expt_tws = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_experiment.csv')
-df_exptw = mhdpy.fileio.load_df_cuttimes(fp_expt_tws)
+df_exptw = mhdlab.fileio.load_df_cuttimes(fp_expt_tws)
 df_exptw = df_exptw.set_index('date').sort_index()
 
 
@@ -376,11 +376,11 @@ commit_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().deco
 
 
 
-from mhdpy.fileio.tdms import tdms2ds
-from mhdpy.coords import assign_signal, unstack_multindexed_acq_dim
+from mhdlab.fileio.tdms import tdms2ds
+from mhdlab.coords import assign_signal, unstack_multindexed_acq_dim
 
 fp_dst_coords = pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms')
-dst_coords = mhdpy.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
+dst_coords = mhdlab.fileio.TFxr(fp_dst_coords).as_dsst(convert_to_PT=False)['coords']
 
 dss_out = []
 with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwriter') as writer:

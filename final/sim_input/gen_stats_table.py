@@ -11,7 +11,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 
 fp = pjoin('output', 'sim_input_mean.xlsx')

@@ -8,8 +8,8 @@ TODO: read file attributes to categorize
 
 #%%
 
-from mhdpy.analysis.standard_import import *
-from mhdpy.fileio.spe import spe2ds_img, _get_gatedelays
+from mhdlab.analysis.standard_import import *
+from mhdlab.fileio.spe import spe2ds_img, _get_gatedelays
 from tqdm import tqdm
 from collections import defaultdict
 

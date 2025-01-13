@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
@@ -29,7 +29,7 @@ ds_lecroy
 
 # %%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_exp
+from mhdlab.analysis.mwt.fitting import pipe_fit_exp
 
 da_fit = ds_lecroy['dAS_abs']
 

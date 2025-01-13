@@ -2,14 +2,14 @@
 # # 53x (seedramp) Final Dataset
 
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
-from mhdpy.fileio.ct import load_df_cuttimes
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.fileio.ct import load_df_cuttimes
+from mhdlab.coords.ct import downselect_acq_time
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm
-from mhdpy.analysis.absem.fitting import pipe_fit_alpha_num_1
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3, pipe_fit_exp
+from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3, pipe_fit_exp
 
 #%%
 tc = '53x'

@@ -5,12 +5,12 @@
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mwt
-from mhdpy.analysis.mwt.fitting import gen_model_dnedt
+from mhdlab.analysis import mwt
+from mhdlab.analysis.mwt.fitting import gen_model_dnedt
 
 dss_p = []
 
@@ -35,7 +35,7 @@ da_fit.plot(hue='run_plot', x='time', row='kwt')
 # # pipe3
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_3
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3
 
 pipe_fit_mwt_3.fit_prep_kwargs.update({'interpolate_time':Quantity(0.01, 'us'), 'coarsen_amount':10})
 
@@ -89,7 +89,7 @@ dne.mean('run').pint.magnitude
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_2
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_2
 
 ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_2(da_fit)
 
@@ -123,7 +123,7 @@ dss_p.append(ds_p2.assign_coords(method='pipe_2'))
 
 #%%
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_exp
+from mhdlab.analysis.mwt.fitting import pipe_fit_exp
 
 
 da_fit = da_sel
@@ -190,7 +190,7 @@ for i, (method, ds) in enumerate(ds_p.groupby('run')):
 
 # %%
 
-from mhdpy.plot import xr_errorbar
+from mhdlab.plot import xr_errorbar
 
 ds_plot = ds_p.mean('run')
 

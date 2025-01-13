@@ -1,18 +1,18 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.analysis import mwt
-from mhdpy.plot import dropna
-from mhdpy.xr_utils import WeightedMeanAccessor
-from mhdpy.analysis import absem
-from mhdpy.coords.ct import downselect_acq_time
+from mhdlab.analysis import mwt
+from mhdlab.plot import dropna
+from mhdlab.xr_utils import WeightedMeanAccessor
+from mhdlab.analysis import absem
+from mhdlab.coords.ct import downselect_acq_time
 
 #%%
 
 
-from mhdpy.fileio.ct import load_df_cuttimes
+from mhdlab.fileio.ct import load_df_cuttimes
 
 fp_ct_seedramp = pjoin(REPO_DIR, 'experiment','metadata','ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
@@ -33,7 +33,7 @@ da_fit
 #%%
 
 
-from mhdpy.analysis.mwt.fitting import pipe_fit_mwt_2
+from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_2
 
 dnes = [1, 100, 10000, 1000000]
 

@@ -1,5 +1,5 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 
 fp = pjoin(REPO_DIR, 'experiment','data','munged','2023-05-24','Munged','Spectral','ds_absem_mp.cdf')
 # fp = pjoin(REPO_DIR, 'experiment','data','proc_data','ds_absem.cdf')

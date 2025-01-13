@@ -1,14 +1,14 @@
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
-from mhdpy.analysis.mwt.fitting import calc_dnedt
+from mhdlab.analysis.mwt.fitting import calc_dnedt
 from scipy.integrate import solve_ivp
 
 tw_goldi = slice(Timestamp('2023-05-18 22:28:40.081841408'), Timestamp('2023-05-18 22:29:19.447003648'), None)
 
-# from mhdpy.fileio.path import gen_path
+# from mhdlab.fileio.path import gen_path
 # from dotenv import load_dotenv
 # load_dotenv()
 repo_dir = os.getenv('REPO_DIR')

@@ -1,6 +1,6 @@
 Utilities specific to MHD Photoionization paper
 
-Cross project utilities are in mhdpy
+Cross project utilities are in mhdlab
 
 
 ## Matplotlib stylesheet

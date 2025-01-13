@@ -5,7 +5,7 @@ Calcualtions of theoretical laser heating and ionization
 
 #%%
 
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
@@ -17,7 +17,7 @@ ds_lecroy['power']
 
 #%%
 
-from mhdpy.pyvista_utils import CFDDatasetAccessor
+from mhdlab.pyvista_utils import CFDDatasetAccessor
 
 fp_cfd_profiles = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'cfd_profiles_beam_mobile.cdf')
 

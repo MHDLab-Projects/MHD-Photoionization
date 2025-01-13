@@ -4,7 +4,7 @@ Analysis of 2D parameter sweeps
 #TODO: Add other dates/2d sweeps, improve plots, and convert to use main function like analsis_1d.py
 """
 #%%
-from mhdpy.analysis.standard_import import *
+from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
 
@@ -14,7 +14,7 @@ DIR_LECROY_PROC_DATA = pjoin(REPO_DIR, 'experiment','data', 'proc_data', 'lecroy
 
 figure_out_dir = pjoin(DIR_DATA_OUT, 'mwt_2d', datestr)
 
-dsst = mhdpy.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
+dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 # #%%
 
 tc_dict = {
@@ -36,7 +36,7 @@ huedim = hudim_dict[datestr]
 
 coldim = 'motor'
 
-from mhdpy.analysis import mwt
+from mhdlab.analysis import mwt
 
 mag_0 = ppu.fileio.load_mwt_T0()
 
