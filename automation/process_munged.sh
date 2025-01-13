@@ -1,6 +1,6 @@
 # Processes munged data to form intermediate processed dataset for analysis, and then conversion to final dataset
 
-source .env
+source ../.env
 
 expt_data_dir=$REPO_DIR/experiment/data
 

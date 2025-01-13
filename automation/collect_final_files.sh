@@ -1,6 +1,6 @@
 # This script collects final files from various locations and places them in the output directory.
 
-source .env
+source ../.env
 
 output_dir=$REPO_DIR/output
 mkdir -p $output_dir
@@ -14,7 +14,7 @@ cp -r $REPO_DIR/final/dataset/output $output_dir/input_data/final/dataset/
 
 # This data should be the same as the final dataset, but addding here in case wanting to just drag only this in and test the pipeline...
 mkdir -p $output_dir/input_data/tests/test_data_final 
-cp -r $REPO_DIR/tests/test_data_final $output_dir/input_data/tests/test_data_final -r
+cp -r $REPO_DIR/tests/test_data_final $output_dir/input_data/tests -r
 
 
 # Collect final documents 

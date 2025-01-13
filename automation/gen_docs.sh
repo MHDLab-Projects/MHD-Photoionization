@@ -1,4 +1,4 @@
-source .env
+source ../.env
 
 source $REPO_DIR/venv/bin/activate
 

@@ -5,12 +5,12 @@
         {
             "label": "Render Final Figures",
             "type": "shell",
-            "command": "./automation/render_figures.sh final/figures",
+            "command": "cd automation && ./render_figures.sh final/figures",
         },
         {
             "label": "Generate Documents",
             "type": "shell",
-            "command": "./automation/gen_docs.sh latex",
+            "command": "cd automation && ./gen_docs.sh latex",
         },
         {
             "label": "Clean Latex Paper Directory",
@@ -31,33 +31,33 @@
         {
             "label": "Render Exp. Analysis Notebooks",
             "type": "shell",
-            "command": "./automation/render_all_expt.sh",
+            "command": "cd automation && ./render_all_expt.sh",
         },
         {
             "label": "Render Final Analysis Notebooks",
             "type": "shell",
-            "command": "./automation/render_all_expt.sh final",
+            "command": "cd automation && ./render_all_expt.sh final",
         },
         // Data Pipeline #TODO: add munging
         {
             "label": "Process Munged Data",
             "type": "shell",
-            "command": "./automation/process_munged.sh",
+            "command": "cd automation && ./process_munged.sh",
         },
         {
             "label": "Final Dataset",
             "type": "shell",
-            "command": "./automation/final_dataset.sh",
+            "command": "cd automation && ./final_dataset.sh",
         },
         {
             "label": "Supplementary Dataset Scripts",
             "type": "shell",
-            "command": "./automation/supp_scripts.sh",
+            "command": "cd automation && ./supp_scripts.sh",
         },
         {
             "label": "Generate Final Panels",
             "type": "shell",
-            "command": "./automation/gen_fig_panels.sh"
+            "command": "cd automation && ./gen_fig_panels.sh"
         },
         // Data Collection
         {
@@ -68,7 +68,7 @@
         {
             "label": "Collect Final Files",
             "type": "shell",
-            "command": "./automation/collect_final_files.sh"
+            "command": "cd automation && ./collect_final_files.sh"
         },
     ]
 }

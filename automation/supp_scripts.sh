@@ -4,7 +4,7 @@
 # a large part of the supplementary figure generation happens during the rendering of analysis scripts into notebooks. This catches anything that is not in a rendered notebook.
 
 
-source .env
+source ../.env
 
 ## SI Auxilliary datasets ##
 

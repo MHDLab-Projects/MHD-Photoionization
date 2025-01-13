@@ -1,5 +1,5 @@
 
-source .env
+source ../.env
 
 pushd $REPO_DIR/final/figure_panels
 

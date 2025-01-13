@@ -1,7 +1,7 @@
 # Runs the sequence of scripts in order to generate final datasets
 # 'final' data is used in main manuscript. 
 
-source .env
+source ../.env
 
 pushd $REPO_DIR/final/dataset
 

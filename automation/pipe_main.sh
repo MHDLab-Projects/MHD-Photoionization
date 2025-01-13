@@ -1,7 +1,6 @@
 # Pipeline for main paper data and figures
 
 auto_dir=$(pwd)
-
 source ../.env
 
 # source munge.sh

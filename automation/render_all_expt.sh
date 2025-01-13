@@ -2,8 +2,7 @@
 script to call render_scripts.sh in all subdirectories
 '
 
-source .env
-# source ../.env
+source ../.env
 
 # Check the first argument
 if [ "$1" = "final" ]; then

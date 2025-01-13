@@ -2,7 +2,7 @@
 # Requires Inkscape and ImageMagick 6.8 (doesn't work with 6.6.9).
 # From matsen: https://gist.github.com/matsen/4263955
 
-source .env
+source ../.env
 
 if [ -z "$1" ]; then
   echo "Usage: $0 <directory>"
