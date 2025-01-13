@@ -189,8 +189,8 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     return ds_cfd_beam
 
 
-# results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'fine2_kL_13Dec24')
-results_dir = pjoin(os.getenv('CFD_RAW_FOLDER'), 'fine2_RSM_6Dec24')
+# results_dir = pjoin(os.getenv('CFD_RESULTS_DIR'), 'fine2_kL_13Dec24')
+results_dir = pjoin(os.getenv('CFD_RESULTS_DIR'), 'fine2_RSM_6Dec24')
 
 basename = 'sweep' #sweepK for coarse run, sweep otherwise
 filename = 'frontCyl_chem2.vtk' # chem2 for medium, chem1 for coarse

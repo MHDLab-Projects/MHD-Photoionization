@@ -4,7 +4,7 @@ Modeling and experimental analysis of photoionization in MHD lab.
 
 ## Installation 
 
-Rename `.env_example` -> `.env`. Update values as needed.  #TODO: remove unused variables/clean up. 
+Rename `.env_example` -> `.env`. Update values as needed.  
 
 create python virtual environment using one the requirement files in 'reqs'
 
