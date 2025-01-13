@@ -2,8 +2,20 @@
 
 source .env
 
-output_dir=$REPO_DIR/final/output
+output_dir=$REPO_DIR/output
 mkdir -p $output_dir
+
+# collect datasets for processed input data (reproducible from raw data, but can be added to repo to reproduce results to avoid reprocessing time)
+
+# Not adding experiment\data\munged as the files are very large. Manually copy that folder if needed.
+
+mkdir -p $output_dir/input_data/final/dataset
+cp -r $REPO_DIR/final/dataset/output $output_dir/input_data/final/dataset/
+
+# This data should be the same as the final dataset, but addding here in case wanting to just drag only this in and test the pipeline...
+mkdir -p $output_dir/input_data/tests/test_data_final 
+cp -r $REPO_DIR/tests/test_data_final $output_dir/input_data/tests/test_data_final -r
+
 
 # Collect final documents 
 
@@ -37,4 +49,4 @@ find "$REPO_DIR" -type d -name 'nb_render' -print0 | while IFS= read -r -d '' di
 done
 
 # Convert notebooks to PDF
-find "${output_dir}/nb_renders" -name '*.ipynb' -exec jupyter nbconvert --to pdf {} \;
+# find "${output_dir}/nb_renders" -name '*.ipynb' -exec jupyter nbconvert --to pdf {} \;
