@@ -3,7 +3,7 @@
     "tasks": [
         // Documents and Figures
         {
-            "label": "Render Final Figures",
+            "label": "Render Paper Figures",
             "type": "shell",
             "command": "cd automation && ./render_figures.sh final/figures",
         },
@@ -45,28 +45,28 @@
             "command": "cd automation && ./process_munged.sh",
         },
         {
-            "label": "Final Dataset",
+            "label": "Generate Final Dataset",
             "type": "shell",
             "command": "cd automation && ./final_dataset.sh",
         },
         {
-            "label": "Supplementary Dataset Scripts",
+            "label": "Supplementary Pipeline",
             "type": "shell",
-            "command": "cd automation && ./supp_scripts.sh",
+            "command": "cd automation && ./pipe_supplementary.sh",
         },
         {
-            "label": "Generate Final Panels",
+            "label": "Generate Paper Figure Panels",
             "type": "shell",
             "command": "cd automation && ./gen_fig_panels.sh"
         },
         // Data Collection
         {
-            "label": "collect test data",
+            "label": "Collect test data",
             "type": "shell",
             "command": "cd tests && python collect_test_data.py",
         },
         {
-            "label": "Collect Final Files",
+            "label": "Output Final Files",
             "type": "shell",
             "command": "cd automation && ./collect_final_files.sh"
         },

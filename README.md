@@ -4,25 +4,50 @@ Modeling and experimental analysis of photoionization in MHD lab.
 
 ## Installation 
 
-Rename `.env_example` -> `.env`. Update values as needed.  
+This repository is tested to work with 
+* VS Code on windows. 
+    * Need VS Code python extension installed
+* Python 3.12 through a virtual environment
+* Terminal using Git Bash (Git for windows)
+    * Select `Terminal: Select Default Profile` in VS Code command palette to switch terminal to git bash.
+    * Git Bash Side Notes:
+        * As of 01-2025 there is currently a bug with the python extension that the directory will not show correctly in Git Bash. The directory is actually correct and you can run scripts fine, but you can also type `cd .` to fix the display. https://github.com/microsoft/vscode-python/issues/23382
+        * It is also possible to use Windows Subsystem for Linux (or linux directly), but by default this can run into memory issues during data munging whereas Git Bash seems to do fine (presumably caching excess memory to disk). 
+        * In general A linux shell is needed for various `.sh` automation scripts, but perhaps these could be converted to powershell scripts. 
 
-create python virtual environment using one the requirement files in 'reqs'
+### Procedure:
 
-Tested with Python 3.12.1 and git bash. 
+`CP: VS Code Command Palette (Ctrl+Shift+P)`
 
-run `source install.sh` or run steps inside
 
-copy in extra input data (folder of manual dataset files)
-    EM simulation in 'modeling\em-sim' is a submodule. This uses meep FDTD package which does not have a pip install and simulations are run separately in a conda environment. 
-    must happen after submodule cloning
-    
+* Clone the repository: `(CP) Git: Clone`
 
-`cd automation`
-`source pipe_main.sh`
+* copy and rename `.env_example` -> `.env`. Update values as needed (in particular the repository path on your local machine).  
 
-for supplementary information and notebooks
+* create python virtual environment `(CP) Python: Create Environment`. Use `requirements_gitbash.txt`. After installing `(CP) Python: Select Interpreter` and select .venv
 
-`source pipe_supplementary.sh`
+* Select a python script (e.g. `setup.py`) to activate the vscode python extension. Open a terminal `ctrl + ~` and ensure the python .venv is activated. 
+    * type `which python` to make sure it is point at the python located within the repository. 
+
+* run `source install.sh` in the terminal (or run steps inside manually)
+
+
+* Add in extra input data: The repository requires some external files to fully reproduce the final results. How this is being handled is in flux but for now there is a 'Input Files' folder that contains two directories. The data are categorized based on whether they are currently reproduced by the repository from the original raw lab data. Go within these directories, and copy the contents into the base level of the directory. 
+    * Folder 1: `Extra (Not Reproduced)`: This folder contains a few various data files that were manually created. 
+        * these should be revisited and added to the repository pipelines where possible, but some can't (e.g. pictures)
+        * There is some data that is placed in `modeling/em-sim`. This data uses the FDTD package which doesn't have a pip install currently. But this data can be reproduced by separately creating a conda environment (see `modeling\em-sim\environment.yml`)
+    * Folder 2: `Processed (Reproduced)`. This folder contains datasets that are produced by the repository (with access to Raw Data). These datasets are included here to avoid the long processing time, file size, etc. In particular the `experiment/data/munged` folder is large and takes a while to reproduce. Data munging is commented out in the main data pipeline (`automation/pipe_main.sh`) by default. 
+
+Now the repository should be setup. The default data pipeline starts from the munged dataset and generates the final paper figures. 
+
+There are various VS Code tasks (defined in `.vscode/tasks.json`,  `(CP) Tasks: Run Task -> continue without scanning output`). These mainly run shell scripts in the `automation` directory, which can also be done manually with e.g. `source script_name.sh`
+
+Run the `Generate Final Dataset` task
+
+
+### Supplementary data
+
+for supplementary information and notebooks run the `Supplementary Pipeline` task. 
 
 Then render doc\SI_man\SI_man.tex with Texlive in VSCode
     Debug errors (e.g. missing files) by searching for error in  `doc\SI_man\SI_man.log`
