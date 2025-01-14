@@ -71,7 +71,7 @@
             "command": "cd tests && python collect_test_data.py",
         },
         {
-            "label": "Output Final Files",
+            "label": "Collect Final Files",
             "type": "shell",
             "command": "cd automation && ./collect_final_files.sh"
         },

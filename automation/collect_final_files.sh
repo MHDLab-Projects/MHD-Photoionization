@@ -31,7 +31,7 @@ echo "Collecting final documents"
 cp $REPO_DIR/final/figures/output $output_dir/figures -r
 
 cd $REPO_DIR/doc/SI
-cp SI_man.pdf $output_dir/Supporting\ Information.pdf
+cp SI.pdf $output_dir/Supporting\ Information.pdf
 
 # Remove the output_dir/nb_renders directory
 rm -rf "${output_dir}/nb_renders"

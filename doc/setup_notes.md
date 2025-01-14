@@ -51,7 +51,7 @@ install inkscape and pandoc and put both in system path (TODO: move earlier)
 Latex documents 
 
 13. Run `doc/setup_repodir.py` (todo add to install.sh)
-14. Build SI_man.tex
+14. Build SI.tex
 15. Build main.tex
 16. Run Clean latex dirs to clean up files
 

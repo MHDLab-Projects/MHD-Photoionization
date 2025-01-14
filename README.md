@@ -55,6 +55,6 @@ Final figures are output in `final\figures\output`
 
 for supplementary information and notebooks run the `Supplementary Pipeline` task. 
 
-Then render doc\SI_man\SI_man.tex with Texlive in VSCode
-    Debug errors (e.g. missing files) by searching for error in  `doc\SI_man\SI_man.log`
+Then render doc\SI\SI.tex with Texlive in VSCode
+    Debug errors (e.g. missing files) by searching for error in  `doc\SI\SI.log`
 
