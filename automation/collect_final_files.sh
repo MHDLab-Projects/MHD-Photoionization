@@ -2,31 +2,28 @@
 
 source ../.env
 
-output_dir=$REPO_DIR/output
+# collect datasets for processed input data (reproducible from raw data, but can be added to repo to reproduce results to avoid reprocessing time)
+# Not adding experiment\data\munged as the files are very large. Manually copy that folder if needed. Maybe have a separate script to copy all datasets together (to external drive)
+
+echo "Collecting datasets"
+
+output_dir=$REPO_DIR/output/datasets
 mkdir -p $output_dir
 
-# collect datasets for processed input data (reproducible from raw data, but can be added to repo to reproduce results to avoid reprocessing time)
-
-# Not adding experiment\data\munged as the files are very large. Manually copy that folder if needed.
-
-mkdir -p $output_dir/input_data/final/dataset
-cp -r $REPO_DIR/final/dataset/output $output_dir/input_data/final/dataset/
+mkdir -p $output_dir/final/dataset
+cp -r $REPO_DIR/final/dataset/output $output_dir/final/dataset/
 
 # This data should be the same as the final dataset, but addding here in case wanting to just drag only this in and test the pipeline...
-mkdir -p $output_dir/input_data/tests/test_data_final 
-cp -r $REPO_DIR/tests/test_data_final $output_dir/input_data/tests -r
+mkdir -p $output_dir/tests/test_data_final 
+cp -r $REPO_DIR/tests/test_data_final $output_dir/tests -r
 
 
 # Collect final documents 
 
-echo "Collecting final documents"
+echo "Collecting documents"
 
-
-# mkdir -p output
-# source pandoc_convert.sh
-
-# cp main.pdf $output_dir/Photoionization.pdf
-# cp output/Photoionization.docx $output_dir/Photoionization.docx
+output_dir=$REPO_DIR/output/docs
+mkdir -p $output_dir
 
 cp $REPO_DIR/final/figures/output $output_dir/figures -r
 

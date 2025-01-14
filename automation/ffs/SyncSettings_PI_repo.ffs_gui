@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FreeFileSync XmlType="GUI" XmlFormat="23">
+    <Notes/>
+    <Compare>
+        <Variant>Content</Variant>
+        <Symlinks>Exclude</Symlinks>
+        <IgnoreTimeShift/>
+    </Compare>
+    <Synchronize>
+        <Changes>
+            <Left Create="right" Update="right" Delete="none"/>
+            <Right Create="none" Update="none" Delete="none"/>
+        </Changes>
+        <DeletionPolicy>RecycleBin</DeletionPolicy>
+        <VersioningFolder Style="Replace"/>
+    </Synchronize>
+    <Filter>
+        <Include>
+            <Item>*</Item>
+        </Include>
+        <Exclude>
+            <Item>\System Volume Information\</Item>
+            <Item>\$Recycle.Bin\</Item>
+            <Item>\RECYCLE?\</Item>
+            <Item>\Recovery\</Item>
+            <Item>*\thumbs.db</Item>
+            <Item>*.log</Item>
+        </Exclude>
+        <SizeMin Unit="None">0</SizeMin>
+        <SizeMax Unit="None">0</SizeMax>
+        <TimeSpan Type="None">0</TimeSpan>
+    </Filter>
+    <FolderPairs>
+        <Pair>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\docs</Left>
+            <Right>D:\Photoionization\Repo Output Docs\</Right>
+        </Pair>
+        <Pair>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\datasets\final</Left>
+            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\final</Right>
+        </Pair>
+        <Pair>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\datasets\tests</Left>
+            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\tests</Right>
+        </Pair>
+        <Pair>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\experiment\data\munged</Left>
+            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\experiment\data\munged</Right>
+        </Pair>
+    </FolderPairs>
+    <Errors Ignore="false" Retry="0" Delay="5"/>
+    <PostSyncCommand Condition="Completion"/>
+    <LogFolder/>
+    <EmailNotification Condition="Always"/>
+    <GridViewType>Difference</GridViewType>
+</FreeFileSync>
