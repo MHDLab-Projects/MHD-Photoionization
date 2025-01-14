@@ -50,14 +50,9 @@ Ts = xr.DataArray(ds_TP_params['T']).pint.quantify("K")
 krb_all = gen_ds_krb(Ts, ds_TP_params['rhocm3'].pint.quantify("particle/ml"))
 
 
-# Add experimental effective krb for O2. This assumes all recombinatin is due to O2. IF we do this should be do a separate case without adding the other species?
-krb_all['O2_exp_eff'] = Quantity(2.66e-13, 'ml/particle/s') 
-
-#TODO: add a case for O2_A with the sum? 
-
 krm = calc_krm(krb_all, ds_TP_species_rho)
 
-krm_sum = krm['O2_A'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
+krm_sum = krm['O2_exp_eff'] + 2*krm['K+'] + krm['H2O'] + krm['OH']
 krm_sum = krm_sum.pint.to('1/s')
 krm['mm_sum'] = krm_sum
 

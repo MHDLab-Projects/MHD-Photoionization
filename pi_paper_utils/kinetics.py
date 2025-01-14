@@ -44,6 +44,7 @@ def gen_ds_krb(da_Ts, da_rho_number):
         'OH': Quantity(3e-31, 'ml^2/particle^2/s')*da_rho_number,
         'O2_A': Quantity(5e-31, 'ml^2/particle^2/s')*da_rho_number,
         'O2_G': Quantity(6e-34, 'ml^2/particle^2/s')*da_rho_number,
+        'O2_exp_eff': Quantity(2.97e-32, 'ml^2/particle^2/s')*da_rho_number, # This comes from effective termolecular rate calculated from experimental data (fig:SI_krb_eff_53x)
         'H2O': Quantity(1.6e-6, 'ml/particle/s')*np.exp(-(Quantity(36060, 'K')/da_Ts)),
     }
 
