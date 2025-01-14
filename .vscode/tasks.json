@@ -3,6 +3,11 @@
     "tasks": [
         // Documents and Figures
         {
+            "label": "Main Paper Pipeline",
+            "type": "shell",
+            "command": "cd automation && ./pipe_main.sh",
+        },
+        {
             "label": "Render Paper Figures",
             "type": "shell",
             "command": "cd automation && ./render_figures.sh final/figures",

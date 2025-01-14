@@ -38,12 +38,18 @@ This repository is tested to work with
         * There is some data that is placed in `modeling/em-sim`. This data uses the FDTD package which doesn't have a pip install currently. But this data can be reproduced by separately creating a conda environment (see `modeling\em-sim\environment.yml`)
     * Folder 2: `Processed (Reproduced)`. This folder contains datasets that are produced by the repository (with access to Raw Data). These datasets are included here to avoid the long processing time, file size, etc. In particular the `experiment/data/munged` folder is large and takes a while to reproduce. Data munging is commented out in the main data pipeline (`automation/pipe_main.sh`) by default. 
 
-Now the repository should be setup. The default data pipeline starts from the munged dataset and generates the final paper figures. 
+Now the repository should be setup. 
 
-There are various VS Code tasks (defined in `.vscode/tasks.json`,  `(CP) Tasks: Run Task -> continue without scanning output`). These mainly run shell scripts in the `automation` directory, which can also be done manually with e.g. `source script_name.sh`
+There are various VS Code tasks that can be used to run the data processing (defined in `.vscode/tasks.json`,  `(CP) Tasks: Run Task -> continue without scanning output`). These mainly run shell scripts in the `automation` directory, which can also be done manually with e.g. `source script_name.sh`
 
-Run the `Generate Final Dataset` task
+### Generate Main Paper Data/Figures
 
+
+The main paper data pipeline starts from the munged dataset and generates the final paper figures. 
+
+Run the `Main Paper Pipeline` task
+
+Final figures are output in `final\figures\output`
 
 ### Supplementary data
 
