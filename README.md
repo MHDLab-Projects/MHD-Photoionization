@@ -27,7 +27,7 @@ This repository is tested to work with
 * create python virtual environment `(CP) Python: Create Environment`. Use `requirements_gitbash.txt`. After installing `(CP) Python: Select Interpreter` and select .venv
 
 * Select a python script (e.g. `setup.py`) to activate the vscode python extension. Open a terminal `ctrl + ~` and ensure the python .venv is activated. 
-    * type `which python` to make sure it is point at the python located within the repository. 
+    * type `which python` to make sure it points to the path in which you cloned the repository.
 
 * run `source install.sh` in the terminal (or run steps inside manually)
 
