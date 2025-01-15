@@ -247,21 +247,21 @@ This work is motivated in part by targeting cold boundary layers near the electr
 
 To model both bulk and contact-targeted nonequilibrium generation we only include NEI in a fraction of the channel as shown in Figure \ref{fig:SI_contact_targeting_schematic}. The system comprises a bulk channel region of width $w_{b}$ and conductivity $\sigma_{b}$, and a boundary layer region near the contact of width $w_{c}$ and conductivity $\sigma_{c}$. By considering the series resistance of this 1D channel, the channel can be considered to have an effective conductivity, $\sigma_{eff}$, which can be shown to be:  
 
-\[
+\begin{equation}
 \sigma_{eff}=\frac{\sigma_{b} \sigma_{c}}{\sigma_{b}+l_{b}  (\sigma_{c}  -\sigma_{b})}
-\]
+\end{equation}
 
 Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b})$. The conductivities of the two regions are determined by setting two different gas temperatures and nonequilibrium generation conditions, as discussed below. In the limit of $l_{b}\rightarrow1$ and $l_{b}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{b}$ and $\sigma_{eff}= \sigma_{c}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{c}\rightarrow1$ so that $\sigma_{eff}= \sigma_{c}$.
 
 To calculate $\gamma$ we use the chain rule
-\[
-\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} \tag{13}
-\]
+\begin{equation}
+\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} 
+\end{equation}
 
 Where we have recognized that this expression is equivalent to $\gamma$  in Equation \ref{eq:gamma-final} except for an 'enhancement' factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. We can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
-\[
-\frac{d\sigma_{eff}}{d\sigma_{c}}=\frac{\sigma_{b}^2 (1-l_{b})}{[\sigma_{b}+l_{b} (\sigma_{c}-\sigma_{b})]^2} \tag{14}
-\]
+\begin{equation}
+\frac{d\sigma_{eff}}{d\sigma_{c}}=\frac{\sigma_{b}^2 (1-l_{b})}{[\sigma_{b}+l_{b} (\sigma_{c}-\sigma_{b})]^2} 
+\end{equation}
 
 %https://www.wolframgamma.com/input?i=derivative+of+%28b*c%29%2F%28b%2B+l+%28c++-b%29%29+with+respect+to+c
 
