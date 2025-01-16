@@ -48,8 +48,9 @@ ds = ds.sortby('acq_time')
 
 # Time processing #TODO: integrate with lecroy munging or move there. 
 
-time_offset = 0.88
-ds = ds.assign_coords(time=ds.coords['time']*1e6 - time_offset)
+from pi_paper_utils.constants import MWT_TIME_OFFSET
+
+ds = ds.assign_coords(time=ds.coords['time']*1e6 - MWT_TIME_OFFSET.to('us').magnitude)
 ds.coords['time'].attrs['units'] = 'us'
 ds.coords['time'].attrs['long_name'] = 'Time'
 
