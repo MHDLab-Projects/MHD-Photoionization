@@ -6,7 +6,10 @@
 \subsubsection{Test Case Sequences}
 
 
-Throughout the experimental campaign, we performed the following test case sequences. The test cases are presented below with our internal naming scheme that begins with a three digit number that represent the nominal values for the HVOF process inputs. The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). A 'x' indicates that the nominal value was varied during that sequence. The sequence is then appended with 'pos' or 'pow' to indicate a position or power sweep, respectively. The absence of 'pos' or 'pow' indicates that the SFR-maximized position of 180mm downstream of the barrel exit and full laser power (7 mJ) were used. A given test case sequence is appended with a 'run number' to indicate repeats of the sequence performed on the same day. 
+%Probably should define acronyms again in SI the first time they are used.
+%MWT, SFW, 
+
+Throughout the experimental campaign, we performed numerous test case sequences. Test case sequences which are relevant to this work are presented below, identified with our internal naming scheme. Our naming scheme begins with a three-digit number that represents the nominal values for the HVOF process inputs, as follows: The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). An 'x' indicates that the nominal value was varied during that sequence. Then, the sequence is appended with 'pos' or 'pow' to indicate a position or power sweep, respectively. The absence of 'pos' or 'pow' indicates that the SFR-maximized position of 180 mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally, a given test case sequence is appended with a 'run number' to indicate repeats of the sequence performed on the same day. 
 
 
 \begin{itemize}
@@ -18,18 +21,29 @@ Throughout the experimental campaign, we performed the following test case seque
     \item 5x6\_pos/5x3\_pos: Varying motorized stage position and equivalence ratio. Full laser power. Kwt = 0.1\% or 1\%. Performed on 2023-05-24.
 \end{itemize}
 
-For each diagnostic, data is obtained continuously throughout the experiment and indexed in time. For each individual test case, there are a number of repeated acquisitions depending on the duration of the test case and acquisition rate of the diagnostic. In the data processing, these repeated acquisitions are averaged to obtain a single value for each test case before further analysis (e.g. fitting). For statistics across runs presented in the main text, the variation within repeat acquisitions is not considered. 
+% What does "diagnostic" mean here? Is it equivalent to "measurement"? Or is it 
+For each diagnostic, data is obtained continuously throughout the experiment and indexed in time. For each individual test case, there are a number of repeated acquisitions depending on the duration of the test case and acquisition rate of the diagnostic. During data processing, these repeated acquisitions are averaged to obtain a single value for each test case before further analysis (e.g. fitting). For statistics across runs presented in the main text, the variation within repeat acquisitions is not considered.
 
-The syringe pump limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. Furthermore, it was not possible to maintain consistent durations for the same test cases performed in different sequences.
-The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore a minimum of at least 20 s is needed for a nK measurement at both location, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWT diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (5-12 Hz).  Therefore for a given test case sequences, the MWT diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
+%Check that my added detail about what "both locations" are is correct.
+%"Therefore, for a given test case sequence, the MWT diagnostic acquires more data than the AES diagnostic." 
+The volume of the syringe pump limits the duration of a given test case sequence, as a higher potassium mass fraction necessitates a higher volume flow of liquid seed. Furthermore, it was not possible to maintain consistent durations for identical test cases performed in different sequences. %Why? It'd be a pain in the ass but couldn't it have been done? Though, I don't see how it makes a difference, which we should probably mention here.
+The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore, a minimum of at least 20 s is needed for an $n_K$ measurement at both the exit of the barrel and the center of the microwave horns. Ideally, multiple measurements are taken at each location to ensure reproducibility. %Were you able to take multiple AES measurements at each location for all test cases discussed in the main text?
+Conversely to the AES diagonstic, the MWT diagnostic is continuously acquiring data at the repetition rate of the laser (5-12 Hz). Therefore, for a given test case sequence, the MWT diagnostic acquires more data than the AES diagnostic. %Why is this important to mention?
+For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics. %Why 1 minute? because there's enough seed to do 1 minute at all higher K mass fraction?
 
 
 
 
 \subsubsection{Experiment Overviews}
 
-Below are overviews of the experiments performed. The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences that were performed were analyzed in the main text. 
+Below are overviews of the experiments performed. %Sequences? Also, not just the ones discussed in the main text, so is this every campaign you did?
+The independent variables that were varied throughout the experiments are shown and the colored regions are test case sequences. Times are in PST. Note that not all test case sequences that were performed were analyzed in the main text. 
 
+%See rewrite below
+Figures \ref{fig:SI_expt_overview_2023-04-07}-\ref{fig:SI_expt_overview_2023-05-24} show all test case sequences performed for this work. Each test case sequence is color-coded by the independent variables that were varied throughout that sequence (see each figure's legend). The independent variables are potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, and acquisition number. To illustrate which variable is being varied during each test case sequence, each subplot corresponds to one of these independent variables listed above. The test case sequences are shown in the context of the entire experiment.
+
+
+%Figure S2 is missing a legend.
 
 \foreach \date in {2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24}{
     \begin{figure}[h]
@@ -52,52 +66,52 @@ Below are overviews of the experiments performed. The independent variables that
 
 \subsection{Data Pipeline}
 
-The results of this work are created from a set of codes located at \url{https://github.com/MHDLab-Projects/MHD-Photoionization}. The final results and figures are the output of a data pipeline.  The data pipeline starts from the raw experimental dataset, which consists of unprocessed data taken during the experiments. The data pipeline consists of a series of shell scripts that in turn primarily run python scripts. Therefore, the shell scripts in the repository can act as a map of the data processing methodology. The data pipeline has the following steps: 
+The results of this work are created from a set of codes located at \url{https://github.com/MHDLab-Projects/MHD-Photoionization}. The final results and figures are the output of a data pipeline. The data pipeline starts from the raw experimental dataset, which consists of unprocessed data taken during the experiments. The data pipeline consists of a series of shell scripts that primarily run python scripts. Therefore, the shell scripts in the repository can act as a map of the data processing methodology. The data pipeline has the following steps: 
 
 \begin{enumerate}
-    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), notably resampling from 1kHz data acquisition rate to a 1 sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, each experiment date is processed separately.
-    \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in xarray datasets.
+    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), which most notably includes resampling from the 1 kHz data acquisition rate to one sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, the data collected during each experiment is processed separately.
+    \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used to create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in xarray datasets.
     \item Create Final Dataset (\texttt{/automation/final\_dataset.sh}): The final dataset is created by applying various analysis steps (data extraction, fitting, etc.) to the processed data. 
     \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.)for the main manuscript. 
     \item Render Figures (\texttt{/automation/render\_figures.sh}): The figure panels are combined into the final figures for the manuscript. The figures panels are laid out in SVG files, and the SVG file is rendered with Inkscape to create the final figure PNG file. 
 \end{enumerate}
 
-In addition to the above steps that lead to the final figures, the repository contains a variety of analysis scripts that contains supplemental/exploratory figures that were generated throughout the data analysis process. These scripts are rendered as jupyter notebooks in a subfolder called 'nb\_render', relative to the analysis script. These notebooks are collected and rendered to PDFs in final/output/nb\_renders. 
+In addition to the above steps that lead to the final figures, the repository contains a variety of analysis scripts that contain supplemental/exploratory figures that were generated throughout the data analysis process. These scripts are rendered as jupyter notebooks in a subfolder called 'nb\_render', relative to the analysis script. These notebooks are collected and rendered to PDFs in final/output/nb\_renders. 
 
-The supplemental analysis scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks 'renders'. During this process many of the supplemental figures are created, though those figures could also be generated running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
+The supplemental analysis scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks 'renders'. During this process many of the supplemental figures are created, though those figures could also be generated by running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
 
 \clearpage
-\subsection{Microwave Transmission (MWT) }
+\subsection{Microwave Transmission (MWT)}
 
 
 \subsubsection{Setup Description}
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/MWT_Setup.png}
-\caption{Microwave transmission setup. Left: An image of the setup. Right: A schematic of the setup. LO: local oscillator. I: In-phase Q: Quadrature.  }
+\caption{Microwave transmission setup. Left: An image of the setup. Right: A schematic of the setup. LO: local oscillator. I: In-phase. Q: Quadrature.  }
 \label{fig:SI_MWT_Setup}
 \end{figure}
 
-The Microwave transmission setup is shown in Figure \ref{fig:SI_MWT_Setup}. The parts were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB, in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One power of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves after the sample are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
+The microwave transmission setup (MWT) is shown in Figure \ref{fig:SI_MWT_Setup}. The parts used to construct this setup were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One leg of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves, which have passed through the sample, are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
 
 % Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
 The I and Q signals from the oscilloscope are fed directly into a Teledyne Leroy WavePro 404HD-MS Oscilloscope.  The oscilloscope is triggered from the excimer laser. 
 
-The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the I/Q signals, and 50 ohm input impedance for the photodiode signals. The vertical coupling was 20mV per division on 2023-04-07 and 2023-05-12, and 50mV per division on 2023-05-18 and 2023-05-24 for the IQ signals. There is was an increased signal intensity on the second two dates, which we suspect was due to cleaning of residue from the microwave horns, as discussed below. The vertical coupling of the photodiode signals was 20 mV/division for on-peak, and 10mV per division off-peak. The horizontal coupling was 10 $\mu s$ per division. 
+The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the I/Q signals, and 50 ohm input impedance for the photodiode signals. The vertical coupling was 20 mV per division on 2023-04-07 and 2023-05-12, and 50 mV per division on 2023-05-18 and 2023-05-24 for the IQ signals. There is was an increased signal intensity on the second two dates, which we attribute to cleaning of residue from the microwave horns, as discussed in Sec.\ \ref{sec:no_torch_measurements}. The vertical coupling of the photodiode signals was 20 mV/division for on-peak, and 10mV per division off-peak. The horizontal coupling was 10 $\mu s$ per division. 
 
 The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 5Hz, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
 
-The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
+The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm\ 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
 
 The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
 
 
 \subsubsection{Data Processing and Fitting}
 
-The raw MWT data consists of individual files containing channel time traces and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12,  the reptation rate was maximized to 5 Hz to minimize this effect. 
+The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the reptation rate was maximized to 5 Hz to minimize this effect. 
 
-The MWT data is first munged by combining all individual acquisitions files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset the data is resampled. Within the region 0f 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 averaging. Outside of this region the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in \ref{fig:SI_mwt_resampling}
+The MWT data is first munged by combining all individual 'acquisitions' files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the data is resampled. Within the region of 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 and averaging. Outside of this region, the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in Fig.\ \ref{fig:SI_mwt_resampling}
 
 \begin{figure}
 \centering
@@ -106,16 +120,16 @@ The MWT data is first munged by combining all individual acquisitions files into
 \label{fig:SI_mwt_resampling}
 \end{figure}
 
-\ref{fig:SI_mwt_processing_overview} shows the following processing steps for the MWT data to determine the AS profiles as described in the text.
+Figure \ref{fig:SI_mwt_processing_overview} shows the following processing steps performed on the MWT data, which we use to determine the AS profiles, as described in the main text.
 
 The fit preparation pipeline consists of the following steps:
 
 \begin{enumerate}
     \item The data is interpolated to a grid with 0.01 $\mu s$ spacing.
-    \item the data is resampled, averaging groups of 10 datapoints to a grid with 0.1 $\mu s$ spacing.
-    \item  All AS data with a maximum AS value less than $5e-4$ are removed.
-    \item the AS data is normalized to the maximum AS value.
-    \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occurs in the absence of a laser. 
+    \item The data is resampled, averaging groups of 10 datapoints to a grid with 0.1 $\mu s$ spacing. %Consider using the siunitx package for units. I can convert what's here to the correct syntax if you want to go that route.
+    \item All AS data with a maximum AS value less than $5e-4$ are removed.
+    \item The AS data is normalized to the maximum AS value.
+    \item Any data with an absolute value of the AS in either of the time windows 40 to 50 $\mu s$ after the laser pulse or 20 to 50 $\mu s$ after the laser pulse is removed. This is to remove acquisitions with large AS spike that occur in the absence of a laser.
 \end{enumerate}
 
 
@@ -130,9 +144,12 @@ For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$
 \end{figure}
 
 
-\subsubsection{No Torch Measurements}
+\subsubsection{No-Torch Measurements} %"Sans-Torch measurements"?
+\label{sec:no_torch_measurements}
 
-On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements all other settings the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. An example measurement of $U_{nothing}$ is shown in \ref{fig:SI_MWT_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
+On each date, the microwave transmission magnitude with nothing in between the horns, $U_{nothing}$, was measured. During these measurements, all other settings are the same (excimer laser, oscilloscope, etc.) compared to the main experimental measurements, except that the oscilloscope time window may be 250 $\mu s$ used for the Silicon measurements may have been used. %The oscilloscope time window may be 250 us for the Silicon measurements? Not sure what this means exactly
+
+An example measurement of $U_{nothing}$ is shown in Fig.\ \ref{fig:SI_MWT_nothing_time_trace}. For approximately 1 $\mu s$ there is electronic interference from the laser pulsing, which also appears in the main experimental transmission measurements. 
 
 
 
@@ -143,7 +160,7 @@ On each date, the microwave transmission magnitude with nothing in between the h
 \label{fig:SI_MWT_nothing_time_trace}
 \end{figure}
 
-On 2023-05-24 the transmission was measured as a function of position as shown in \ref{fig:SI_MWT_nothing_motor}. There is a slight increase in transmission when the stage is moved as close as possible to the barrel exit, possibly due to reflections from the barrel.
+On 2023-05-24 the transmission was measured as a function of position as shown in Fig.\ \ref{fig:SI_MWT_nothing_motor}. There is a slight increase in transmission when the stage is moved as close as possible to the barrel exit, possibly due to reflections from the barrel.
 
 
 \begin{figure}
@@ -154,21 +171,25 @@ On 2023-05-24 the transmission was measured as a function of position as shown i
 \end{figure}
 
 
-The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. Note that for 2023-05-12, the measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from figure \ref{fig:SI_MWT_nothing_motor}. On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased absolute transmission on 2023-05-18 and 2023-05-24.  
+The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. %The what measured at the nominal position?
 
-\ref{fig:SI_MWT_nothing_T0}B shows the absolute transmission of the magnitude before the laser pulse for the case 536\_pos, for different dates. The transmission is then measured with the sample in place. The transmission is then calculated as the ratio of the sample transmission to the transmission with nothing in place. An example of this is shown in \ref{fig:SI_MWT_nothing_T0}.  
+Note that for 2023-05-12, the MWT measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from Fig.\ \ref{fig:SI_MWT_nothing_motor}. On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased absolute transmission on 2023-05-18 and 2023-05-24.
+
+Figure \ref{fig:SI_MWT_nothing_T0}B shows the magnitude of absolute transmission before the laser pulse for the case 536\_pos, taken on multiple dates. The transmission is measured with the sample in place. %I thought this measurement was with nothing between the horns?
+
+The transmission is then calculated as the ratio of the sample transmission to the transmission with nothing in place. An example of this is shown in Fig.\ \ref{fig:SI_MWT_nothing_T0}. 
 
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.6\textwidth]{\repodir/final/analysis/mwt/output/figures/mwt_nothing_T0.png}
-\caption{A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described elsewhere in SI) B) position dependent transmission measurement.}
+\includegraphics[width=0.8\textwidth]{\repodir/final/analysis/mwt/output/figures/mwt_nothing_T0.png}
+\caption{A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described above) B) position dependent transmission measurement.}
 \label{fig:SI_MWT_nothing_T0}
 \end{figure}
 
 \subsubsection{Silicon test sample}
 
-Before each experiment we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. 
+Before each experiment, we performed measurements with a silicon sample in the location of the torch to ensure the system was functioning properly. 
 
 The silicon wafer was ordered from MTI corporation (Item Number: SIUa50D05C1R1000) and has the properties shown in Table \ref{table:material_properties}.
 
@@ -191,7 +212,7 @@ Surface roughness & < 5A RMS \\
 \label{table:material_properties}
 \end{table}
 
-The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} 
+The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} %missing citation
 
 \begin{figure}[]
 \centering
@@ -210,7 +231,9 @@ The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exp
 \clearpage
 \subsubsection{Laser Profile and Power}
 
-The laser profile was measured by imaging the laser beam on a white beam block. The images were taken with a Thorlabs DCC1240C-HQ camera, and are shown in \ref{fig:SI_Laser_Profile}A. Cross sections of this image are taken to obtain the full width at half maximum (FWHM) of the laser profile and calculate the area of the beam.  
+The laser profile was measured by terminating the laser beam on a white beam block and imaging with a Thorlabs DCC1240C-HQ camera. %beam block = Just a white piece of paper or something specific from ThorLabs?
+
+The images were taken with a Thorlabs DCC1240C-HQ camera, and are shown in Fig.\ \ref{fig:SI_Laser_Profile}A. Cross-sections of this image are taken to obtain the full width at half maximum (FWHM) of the laser profile and calculate the area of the beam. 
 
 \begin{figure}[H]
 \centering
@@ -219,7 +242,9 @@ The laser profile was measured by imaging the laser beam on a white beam block. 
 \label{fig:SI_Laser_Profile}
 \end{figure}
 
-The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter before and after the experiments as shown in \ref{fig:SI_Laser_Energy} 
+%above figure has no A or B label
+
+The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter before and after the experiments as shown in Fig.\ \ref{fig:SI_Laser_Energy} 
 
 
 
