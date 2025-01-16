@@ -17,14 +17,19 @@ This repository is tested to work with
 
 ### Procedure:
 
-`CP: VS Code Command Palette (Ctrl+Shift+P)`
+`"CP" refers to the VS Code Command Palette shortcut (Ctrl+Shift+P)`
 
+* Clone the repository. Do `(CP) Git: Clone` and enter the `web-url.git` for this repository, which can be found at the top of this page: ![repo-link](/doc/media/web-url.png). Then, select the directory in which to clone this repository; for example, `C:/Users/USERNAME/code`.
 
-* Clone the repository: `(CP) Git: Clone`
+* Copy and rename the `.env_example` to `.env`. The directories in `.env` need to be updated to match your local filepaths. 
+    * Change `REPO_DIR` to the directory in which you cloned this repository (for example, `C:/Users/USERNAME/code/MHD-Photoionization`). 
+    * Change `CFD_RESULTS_DIR` to the directory in which you copied the simulation data. For example, `C:/Users/USERNAME/data/Photoionization/Simulations`
+    * TODO: Finalize and explain how extra input data will be downloaded and imported
 
-* copy and rename `.env_example` -> `.env`. Update values as needed (in particular the repository path on your local machine).  
+* Create python virtual environment `(CP) Python: Create Environment`. Select your Python 3 interpereter. If no interpereters appear, click the refresh icon in the top right.
+![doc image](/doc/media/interpereter_select.png)
 
-* create python virtual environment `(CP) Python: Create Environment`. Use `requirements_gitbash.txt`. After installing `(CP) Python: Select Interpreter` and select .venv
+* For dependencies to install, select `requirements_gitbash.txt`. After installing `(CP) Python: Select Interpreter` and select .venv
 
 * Select a python script (e.g. `setup.py`) to activate the vscode python extension. Open a terminal `ctrl + ~` and ensure the python .venv is activated. 
     * type `which python` to make sure it points to the path in which you cloned the repository.
