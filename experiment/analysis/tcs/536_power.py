@@ -76,7 +76,7 @@ for i, power in enumerate(powers):
     # plot with confidence interval
 
     ds_stat_sel = ds_stat.sel(power=power)
-    ds_stat_sel['mean'].plot(label=power)
+    ds_stat_sel['mean'].plot(label=f"{power:.1f}")
 
     ax.fill_between(ds_stat_sel.coords['time'], ds_stat_sel['mean'] - ds_stat_sel['std'], ds_stat_sel['mean'] + ds_stat_sel['std'], alpha=0.2)
 
@@ -92,7 +92,7 @@ plt.yscale('log')
 plt.xlim(-1,50)
 plt.ylim(1e-5,2e-1)
 
-plt.ylabel('AS_abs')
+plt.ylabel('$\Delta AS$')
 plt.xlabel('Time [us]')
 
 plt.legend(title='Fluence\n[mJ/cm^2]')
@@ -153,7 +153,8 @@ params
 
 #%%
 
-da_fit = da_max2.sel(power=slice(1,100))
+# da_fit = da_max2.sel(power=slice(1,100))
+da_fit = da_max2.sel(power=slice(0.01,100))
 
 da_max2
 
@@ -164,13 +165,17 @@ params = result.params
 
 #%%
 
-vals  = model.eval(params, x=da_fit['power'].values)
+x_vals = da_fit['power'].values
+x_eval = np.linspace(x_vals.min(), x_vals.max(), 100)
 
-plt.plot(da_fit['power'], vals)
+y_eval  = model.eval(params, x=x_eval)
+
+plt.plot(x_eval, y_eval, label='Fit')
 
 plt.plot(da_fit['power'], da_fit.values)
 
 
+plt.legend()
 plt.yscale('log')
 plt.xscale('log')
 
@@ -179,9 +184,9 @@ plt.xscale('log')
 da_mean = da_max.mean('run')
 da_std = da_max.std('run')
 
-plt.errorbar(da_mean['power'], da_mean, yerr=da_std, marker='o', capsize=5, label='Data')
+plt.errorbar(da_mean['power'], da_mean, yerr=da_std, fmt='o', capsize=5, label='Data')
 
-plt.plot(da_fit['power'], vals, label='Fit')
+plt.plot(x_eval, y_eval, label='Fit')
 
 # add fit params as text
 
@@ -196,7 +201,7 @@ plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].
 plt.yscale('log')
 plt.xscale('log')
 
-plt.legend(loc='lower right')
+plt.legend()
 
 plt.xlabel('Fluence [mJ/cm^2]')
 plt.ylabel('$\Delta AS_{max}$')
@@ -205,13 +210,66 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_max_fit.png'))
 
 #%%
 
+# look at power dependence after the second order effects
 
-ds_pd['pd1'].plot(hue='power')
-plt.xlim(-1,20)
+da_exp = da_lecroy.sel(time=slice(3, 5)).mean('time').mean('run')
+
+da_exp.plot()
+
+#%%
+
+model = PowerLawModel()
+
+params = model.make_params()
+
+da_fit = da_exp.sel(power=slice(0.01,100))
+
+result = model.fit(da_fit.values, x=da_fit['power'].values)
+
+result
+
+#%%
+
+# Plot both exp and max on the same plot
+
+fig, ax = plt.subplots()
+
+da_max2.plot(marker='o', ax=ax, label='Max AS')
+da_exp.plot(marker='o', ax=ax, label='exp region')
+
+plt.yscale('log')
+plt.xscale('log')
+
+plt.legend()
+
+# fig, axes = plt.subplots(2,1, figsize=(5,8))
+
+# da_max2.plot(marker='o', ax=axes[0])
+# axes[0].set_yscale('log')
+# axes[0].set_xscale('log')
+# axes[0].set_title('Max AS')
+
+# da_exp.plot(marker='o', ax=axes[1])
+# axes[1].set_yscale('log')
+# axes[1].set_xscale('log')
+# axes[1].set_title('5-10 us')
+
+
+#%%
+
+da_plot = ds_pd['pd1'].copy()
+
+da_plot = da_plot.drop(0,'power')
+
+da_plot = da_plot.assign_coords(power=[float(f'{p:.1f}') for p in da_plot.coords['power'].values])
+da_plot.coords['power'].attrs = ds_pd['power'].attrs
+
+da_plot.plot(hue='power')
+plt.xlim(-1,50)
 plt.yscale('log')
 plt.ylim(1e-4,)
 plt.title('')
-plt.ylabel('PD on-peak [V]')
+plt.ylabel('PD [V]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pd1_power_trace.png'))
 
@@ -225,7 +283,7 @@ ds_pd['dpd1_max']
 
 #%%
 
-da_fit = ds_pd['dpd1_max'].sel(power=slice(1,100))
+da_fit = ds_pd['dpd1_max'].sel(power=slice(0.01,100))
 
 model = PowerLawModel()
 
@@ -254,6 +312,9 @@ plt.ylabel('Delta PD1 [V]')
 
 plt.legend(loc='lower right')
 
+plt.yscale('log')
+plt.xscale('log')
+
 plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
 plt.text(0.1, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
 plt.text(0.1, 0.7, f'A: {result.params["amplitude"].value:.2e} ± {result.params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
@@ -264,45 +325,6 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
 
 #%%
-
-da_fit = da_lecroy.copy()
-
-from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_2 
-
-ds_mwt_fit, ds_p, ds_p_stderr = pipe_fit_mwt_2(da_fit)
-
-#TODO: sterr is nan where ds_p is not?
-ds_p['krb'] = ds_p['krb'].where(~ds_p_stderr['krb'].isnull())
-
-
-#%%
-
-ds_p['krb'].plot(hue='run_plot', x='power', marker='o')
-
-plt.yscale('log')
-
-#%%
-
-ds_p['dne'].plot(hue='run_plot', x='power', marker='o')
-
-plt.yscale('log')
-plt.xscale('log')
-
-plt.ylim(1e0,)
-
-#%%
-
-ds_mwt_fit.to_array('var').plot(hue='var', row='power', col='run', x='time')
-
-plt.yscale('log')
-
-#%%
-
-# ds_mwt_fit.isel(time=0).count('mnum')['AS_all'].plot(hue='run_plot', x='power', marker='o')
-
-# plt.yscale('log')
-
-# plt.ylabel("mnum count")
 
 #%%[markdown]
 
@@ -332,7 +354,7 @@ ds_p['decay'].plot(hue='run_plot', x='power', marker='o')
 
 plt.yscale('log')
 
-plt.ylim(0.1,50)
+plt.ylim(0.05,100)
 
 plt.xscale('log')
 
