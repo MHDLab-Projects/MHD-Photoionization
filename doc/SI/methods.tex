@@ -9,7 +9,9 @@
 %Probably should define acronyms again in SI the first time they are used.
 %MWT, SFW, 
 
-Throughout the experimental campaign, we performed numerous test case sequences. Test case sequences which are relevant to this work are presented below, identified with our internal naming scheme. Our naming scheme begins with a three-digit number that represents the nominal values for the HVOF process inputs, as follows: The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). An 'x' indicates that the nominal value was varied during that sequence. Then, the sequence is appended with 'pos' or 'pow' to indicate a position or power sweep, respectively. The absence of 'pos' or 'pow' indicates that the SFR-maximized position of 180 mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally, a given test case sequence is appended with a 'run number' to indicate repeats of the sequence performed on the same day. 
+Throughout the experimental campaign, we performed numerous test case sequences. Test case sequences which are relevant to this work are presented below, identified with our internal naming scheme. Our naming scheme begins with a three-digit number that represents the nominal values for the HVOF process inputs, as follows: The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). An "x" indicates that the nominal value was varied during that sequence. Then, the sequence is appended with "pos" or "pow" to indicate a position or power sweep, respectively. The absence of "pos" or "pow" indicates that the SFR-maximized position of 180 mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally, a given test case sequence is appended with a "run number" to indicate repeats of the sequence performed on the same day. 
+
+"test"
 
 
 \begin{itemize}
@@ -69,16 +71,16 @@ Figures \ref{fig:SI_expt_overview_2023-04-07}-\ref{fig:SI_expt_overview_2023-05-
 The results of this work are created from a set of codes located at \url{https://github.com/MHDLab-Projects/MHD-Photoionization}. The final results and figures are the output of a data pipeline. The data pipeline starts from the raw experimental dataset, which consists of unprocessed data taken during the experiments. The data pipeline consists of a series of shell scripts that primarily run python scripts. Therefore, the shell scripts in the repository can act as a map of the data processing methodology. The data pipeline has the following steps: 
 
 \begin{enumerate}
-    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either 'tdms' (National Instruments) or 'cdf' (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), which most notably includes resampling from the 1 kHz data acquisition rate to one sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, the data collected during each experiment is processed separately.
+    \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either "tdms" (National Instruments) or "cdf" (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), which most notably includes resampling from the 1 kHz data acquisition rate to one sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, the data collected during each experiment is processed separately.
     \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used to create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in xarray datasets.
     \item Create Final Dataset (\texttt{/automation/final\_dataset.sh}): The final dataset is created by applying various analysis steps (data extraction, fitting, etc.) to the processed data. 
     \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.)for the main manuscript. 
     \item Render Figures (\texttt{/automation/render\_figures.sh}): The figure panels are combined into the final figures for the manuscript. The figures panels are laid out in SVG files, and the SVG file is rendered with Inkscape to create the final figure PNG file. 
 \end{enumerate}
 
-In addition to the above steps that lead to the final figures, the repository contains a variety of analysis scripts that contain supplemental/exploratory figures that were generated throughout the data analysis process. These scripts are rendered as jupyter notebooks in a subfolder called 'nb\_render', relative to the analysis script. These notebooks are collected and rendered to PDFs in final/output/nb\_renders. 
+In addition to the above steps that lead to the final figures, the repository contains a variety of analysis scripts that contain supplemental/exploratory figures that were generated throughout the data analysis process. These scripts are rendered as jupyter notebooks in a subfolder called "nb\_render', relative to the analysis script. These notebooks are collected and rendered to PDFs in final/output/nb\_renders. 
 
-The supplemental analysis scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks 'renders'. During this process many of the supplemental figures are created, though those figures could also be generated by running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
+The supplemental analysis scripts need to be run to generate the supplemental figures. The shell commands \texttt{automation/render\_all\_expt.sh} and \texttt{automation/render\_all\_expt.sh final} will render these scripts to Jupyter notebooks "renders'. During this process many of the supplemental figures are created, though those figures could also be generated by running the scripts directly. Finally, there are scripts not automated in the above process that contain some supplemental figures, which are outlined in \texttt{automation/supp\_scripts.sh}. 
 
 \clearpage
 \subsection{Microwave Transmission (MWT)}
@@ -102,16 +104,16 @@ The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the
 
 The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 5Hz, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
 
-The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm\ 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis.  
+The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm\ 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis. 
 
 The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
 
 
 \subsubsection{Data Processing and Fitting}
 
-The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the reptation rate was maximized to 5 Hz to minimize this effect. 
+The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the pulse rate was limited to 5 Hz to minimize this effect. 
 
-The MWT data is first munged by combining all individual 'acquisitions' files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the data is resampled. Within the region of 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 and averaging. Outside of this region, the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in Fig.\ \ref{fig:SI_mwt_resampling}
+The MWT data is first munged by combining all individual "acquisitions" files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the data is resampled. Within the region of 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 and averaging. Outside of this region, the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in Fig.\ \ref{fig:SI_mwt_resampling}
 
 \begin{figure}
 \centering
@@ -202,10 +204,10 @@ Property & Value \\
 Single crystal & Si \\
 Conductive type & N type, undoped \\
 Resistivity & > 1000 ohm-cm \\
-Size & 2" diameter x 0.5 mm \\
+Size & 2\" diameter x 0.5 mm \\
 Orientation & (100) \\
 Polish & one side polished \\
-Surface roughness & < 5A RMS \\
+Surface roughness & < 5 \r{A} \ RMS \\
 \hline
 \end{tabular}
 \caption{Properties of the test silicon wafer}
@@ -258,9 +260,9 @@ The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter bef
 
 \subsubsection{Mie Scattering Analysis}
 
-To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.\cite{bohrenAbsorptionScatteringLight2007} We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is 10 mm and the radiation wavelength is 3 mm, which are approximately the diameter of our laser beam and wavelength of our 90 Ghz microwave source source, respectively.  %broken citation
+To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.\cite{bohrenAbsorptionScatteringLight2007} We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is 10 mm and the radiation wavelength is 3 mm, which are approximately the diameter of our laser beam and wavelength of our 90 GHz microwave source source, respectively.  %broken citation
 
-$Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$ where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=abs$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively.\cite{bohrenAbsorptionScatteringLight2007}  The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. %broken citation
+$Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$, where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=abs$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively.\cite{bohrenAbsorptionScatteringLight2007}  The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. %broken citation
 
 %preference on using "Fig." or "Figure" when it appears in the middle of a sentence?
 %Define acronym FTDT
@@ -279,7 +281,7 @@ In Figure \ref{fig:SI_Mie_Scattering}B, we perform a power-law fit of $Q_{ext}$ 
 %Reference equation in the main paper?
 %This sentence is awkward but I'm not sure exactly how to clarify what's being said
 %OK to include package csquotes to fix backwards ’ ’ quotes?
-In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calculated from the microwave signal magnitude ($U$) squared, as done in the paper with the same expression but measuring the 'magnitude tramsission' $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
+In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calculated from the microwave signal magnitude ($U$) squared, as done in the paper with the same expression but measuring the "magnitude tramsission" $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
 
 
 \begin{figure}[H]
@@ -295,31 +297,32 @@ In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calcu
 
 \subsubsection{Setup Description}
 
-The LED is a Thorlabs M780F2 780 nm LED. The LED is driven by a Thorlabs T-Cube LED Driver. With input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a  Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer.  The multiplexer can send light to either of the AES diagnostics (barrel exit and MWT measurement location). The multiplexer continuously switches between the locations every 10 seconds throughout the duration of the measurement. After collection of light with the collection lenses (described below), the light of both barrel exit and mobile setup is sent back to the multiplexer. Finally, the light passes from multiplexer to spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber.
+The LED used for AES is a Thorlabs M780F2 780 nm LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AES locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AES locations every 10 seconds throughout the duration of an AES measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AES locations are multiplexed to the same spectrometer, the measurements at the two AES locations are not simultaneous.
 
-Because both AES diagnostics were multiplexed to the same spectrometer, one AES measurement could be taken at a time. Throughout the measurement the multiplexer switched continuously between the two AES diagnostics, so the measurements at the two AES locations are not simultaneous.
+For the barrel exit measurement, the light from the LED is collimated with a RC02SMA-P01 reflective parabolic mirror and directed at a 90 degree angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then de-collimated with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 200um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 600 um 0.5NA fiber. On both sides of the torch, light passes through an iris of appproximately 1 mm and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. %DN: What is the part called that terminates the fiber before it passes through the collimating mirror
 
-For the barrel exit measurement, the light is collimated with a RC02SMA-P01 reflective parabolic mirror. The light is directed at a 90 degree angle with a MRA05-E3 dielectric mirror. The light passes through a glass slide which is used to protect the optics from the torch. The collecting side uses the same glass slide and parabolic mirror. The light is collected with a RC04-SMA-P01 parabolic mirror. There are irises of approximately 1 mm on the sending and collecting sides. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 200um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 600 um 0.5NA fiber. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
+For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400 um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
-For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses.  On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400 um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
-
-The LED is continuously turned on and off throughout the experiment to obtain LED on and LED off measurements. The LED is triggered by the spectrometer. The when switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements and fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. 
+The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. Furthermore, fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. In the future, we plan to modify the liquid seeding system to improve the consistency of liquid seeding over time. %DN: Should we point to fig. S20 as an example of negative absorption at some wavelengths? Does this not matter because it is far outside the wavelengths of interest?
 
 \subsubsection{Data processing and Fitting}
 
 Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.
 
+%DN: TODO: Many figures in here reference A, B, C where there aren't any labels for subplots
 \begin{figure}[]
     \centering
     \includegraphics[height=0.6\textheight]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
-    \caption{AES processing overview: from top to bottom: A) LED on and off measurements. B) Difference (LED on - LED off) compared to the interpolated calibration measurement. C) Absorption calculation (raw) and absorption after offset removal. D) Fitted absorption profile (Data) and fit.}
+    \caption{AES processing overview: A) LED on and off measurements. B) Difference (LED on - LED off) compared to the interpolated calibration measurement. C) Absorption calculation (raw) and absorption after offset removal. D) Fitted absorption profile (Data) and fit.}
     \label{fig:SI_AES_proc_overview}
 \end{figure}
 
 
-Before and after the experiment, calibration spectra are taken with no free jet in place. The calibration is required to determine $\alpha(\lambda)$ as described in the main text. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is not reliable.  
+Before and after each experiment, calibration spectra are taken with no free jet in place. The calibration is required to determine the absorption $\alpha(\lambda)$, as described in the main text. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is unreliable, so we elect to run the torch continuously through each experiment.
 
-In this work we develop a method to correct the calibration spectra using the LED on and off measurements. Figure \ref{fig:SI_absem_calib_dates} shows the calibration spectrum for for each date. The calibration spectra are taken similar to the normal absorption data, by taking the difference of the LED on and LED off measurements. For the position dependent measurements, the calibration spectra are taken at the nominal position. We observe changes in the calibration spectra throughout the experiment, which cause offsets in the absorption spectra. Further work to measure calibration during an experiment by vertically translating the AES diagnostic is planned. For the current work, we interpolate the calibration spectra shown in figure \ref{fig:SI_absem_calib_dates} to the time of any given measurement to determine the calibration spectrum for that measurement. 
+In this work, we develop a method to correct the calibration spectra using the "LED on" and "LED off" measurements. Figure \ref{fig:SI_absem_calib_dates} shows the calibration spectrum for each date. The calibration spectra are derived from the difference between the "LED on" and "LED off" measurements (similarly to the absorption data). For the position dependent measurements, the calibration spectra are taken at the nominal position. %DN: Is the nominal position always 180 mm, as mentioned previously? If so, for clarity we should say "nominal position (180 mm from the barrel exit)" every time "nominal position" is used
+
+We observe changes in the calibration spectra throughout the experiment which cause offsets in the absorption spectra $\alpha(\lambda)$. For the current work, we interpolate the calibration spectra shown in figure \ref{fig:SI_absem_calib_dates} to the time of any given measurement to determine the calibration spectrum for that measurement. In future work, we plan to measure calibration during an experiment by vertically translating the AES diagnostic location.
 
 \begin{figure}[]
     \centering
@@ -328,15 +331,17 @@ In this work we develop a method to correct the calibration spectra using the LE
     \label{fig:SI_absem_calib_dates}
 \end{figure}
 
-Even with the interpolation, slight differences between the calibration spectrum and off-peak free-jet absorption measurements are observed. For some measurements, this offset is different on different sides of the absorption peak (see \ref{fig:SI_5x3_pos_alpha}). The cause of this asymmetric offset is unknown and we have not developed a method to correct for it. For constant offsets, we we perform an offset procedure that maintains the overall shape of the absorption spectrum and the high absorption data (i.e. the offset removal does not affect absorption values near 1). The offset procedure is as follows:
+%DN: Ideally, wouldn't switch between saying "absorption" and $\alpha(\lambda)$. But I'm not certain whether "absorption" can always be replaced with \alpha, and if "absorption spectrum" can always be replaced with $\alpha(\lambda)$. 
+
+Even with interpolation, slight differences between the calibration spectrum and off-peak free-jet $\alpha(\lambda)$ measurements are observed. For some measurements, this offset is different on different sides of the peak in $\alpha(\lambda)$ (see Fig. \ref{fig:SI_5x3_pos_alpha}). The cause of this asymmetric offsets is unknown and we have not developed a method to correct for asymmetric offsets. For constant offsets, we we perform an offset procedure that maintains the overall shape of $\alpha(\lambda)$ near the high limit of the absorption data (i.e. the offset removal does not affect absorption values near 1). The offset procedure is as follows:
 
 \begin{enumerate}
-    \item calculate $\beta = -\ln(1 - \alpha)$, which represents the exponential component of the beer-lamert law. 
-    \item subtract off $\beta$ in a in a region of 750 to 755 nm where the absorption is expected to be zero.
-    \item recalculate $\alpha = 1 - e^{- (\beta - \beta_{off})}$ 
+    \item Calculate $\beta = -\ln(1 - \alpha)$, which represents the exponential component of the Beer-Lambert law. 
+    \item Subtract $\beta$ in a in a region of 750 to 755 nm where the absorption is expected to be zero. %DN: Subtract beta "from $\alpha$"?
+    \item Recalculate $\alpha = 1 - e^{- (\beta - \beta_{off})}$ 
 \end{enumerate}
 
-The effect of the offset procedure is shown in \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
+The effect of the offset procedure is shown in Fig.\ \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
 
 \begin{enumerate}
     \item Individual acquisitions with a negative absorption in the 765 to 772 nm range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and off measurements.
@@ -367,7 +372,7 @@ The fitting procedure is as follows
     \item The potassium atom density profile is converted to $\mu_{atten} (s, \lambda) = n_{K, cl}* f_{K, CFD} (s) \kappa(\lambda)$. $n_{K, cl}$ is the single fit parameter corresponding to the centerline (maximum) potassium atom density in the profile.
     \item For each wavelength, the intensity profile $I(s)$ is calculated along the beam path with the Euler method: $I(s + \Delta s) = I(s) + \mu_{atten}(s, \lambda) I(s) \Delta s$. The initial condition is $I(0) = 1$. If the intensity becomes negative, the calculation is stopped and the absorption is set to 1. An example of the Euler method is shown in \ref{fig:SI_euler_method_tophat_demo}.
     \item The absorption is calculated as $\alpha(\lambda) = 1 - I(s_{max})$, where $s_{max}$ is the maximum distance along the beam path. 
-    \item The spectrometer has a finite resolution that 'blurs' the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of 0.026 nm. The data is first interpolated to a grid with 0.026 nm spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
+    \item The spectrometer has a finite resolution that "blurs" the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of 0.026 nm. The data is first interpolated to a grid with 0.026 nm spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
 \end{enumerate}
 
 $\kappa(\lambda)$ is modeled as a sum of two Voigt line profiles, following Bedick et al.\cite{bedickDeterminationElectricalConductivity2019} and is converted to a wavelength basis with the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. $\kappa(\lambda)$ is given by
