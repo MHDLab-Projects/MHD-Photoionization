@@ -28,6 +28,7 @@
 \renewcommand{\showlabelsetlabel}[1]
 {\begin{turn}{90}\showlabelfont #1\end{turn}}
 \usepackage[a4paper, margin=1in]{geometry}
+\usepackage[autostyle, english = american]{csquotes}
 
 % Night mode 
 % \pagecolor[rgb]{0,0,0} %black 
@@ -42,6 +43,10 @@
 
 
 \setlength{\parskip}{1em}
+
+% csquotes package + these lines fix backwards opening quotes
+\MakeOuterQuote{"}
+
 
 \begin{document}
 
