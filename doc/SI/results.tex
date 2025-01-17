@@ -161,22 +161,11 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 
 \subsection{Laser power dependence}
 
-Figure \ref{fig:SI_power_dependence_AS} shows the MWT signal as a function of the laser power. We observe that the AS signal increases super-linearly with the laser power. The $\Delta AS_{max}$ as a function of laser fluence is fit to a power law of the form $\Delta AS_{max} = A * P^k$. The fit parameters are shown in Figure \ref{fig:SI_power_dependence_AS}C.
-
-For high laser powers, the AS decay exhibits a steeper slope within the first few $\mu s$ after the laser pulse, indicating second-order effects. The exponential exponential time constant of each power is similar, indicating a relatively power-independent first-order recombination process (SI).
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_MWT.png} 
-    \caption{Power dependence of $\Delta AS$ A) $\Delta AS$ time traces B) $\Delta AS_{max}$ as a function of laser power. }
-    \label{fig:SI_power_dependence_AS}
-\end{figure}
-
-
-
-\begin{figure}[h]
-    \includegraphics[width=0.8\linewidth]{\repodir/final/figures/SI/output/Power_PD.png} 
-    \caption{Power dependence of the on-peak photodiode signal. A) Photodiode time traces B) $\Delta$ Photodiode signal as a function of laser power. The $\Delta$ Photodiode signal is the difference between the maximum photodiode signal in the 1 to 2 $\mu s$ window before the laser pulse}
-    \label{fig:SI_power_dependence_PD}
+\begin{figure}
+    \centering
+    \includegraphics[]{\repodir/experiment/analysis/tcs/output/figures/fit_mwt_decay_power.png} 
+    \caption{Exponential time constant of the MWT signal as a function of laser power. The time constant is calculated from the monomolecular regime of the MWT signal.}
+    \label{fig:SI_fit_mwt_decay_power}
 \end{figure}
 
 \clearpage

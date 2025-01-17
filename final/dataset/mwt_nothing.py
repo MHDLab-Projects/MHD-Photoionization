@@ -36,12 +36,17 @@ fig, axes = plt.subplots(2)
 fn = dates['2023-05-18'][1]
 fp = pjoin(dir, '2023-05-18', 'Lecroy', fn)
 ds = xr.load_dataset(fp)
-ds.coords['time'] = ds.coords['time'].pint.quantify('s').pint.to('us')
+
+from pi_paper_utils.constants import MWT_TIME_OFFSET
+ds = ds.assign_coords(time=ds.coords['time']*1e6 - MWT_TIME_OFFSET.to('us').magnitude)
+
+ds.coords['time'] = ds.coords['time'].pint.quantify('us')
+
 ds = ds.mwt.calc_AS_rel()
 
 ds['mag'].mean('acq_time').plot(ax=axes[0])
 ds['mag'].mean('acq_time').plot(ax=axes[1])
-axes[1].set_xlim(0,2)
+axes[1].set_xlim(-1,1)
 
 for ax in axes:
     ax.set_ylabel("$U_{nothing} (V)$")
