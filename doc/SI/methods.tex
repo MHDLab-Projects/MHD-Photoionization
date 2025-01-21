@@ -333,58 +333,55 @@ We observe changes in the calibration spectra throughout the experiment which ca
 
 %DN: Ideally, wouldn't switch between saying "absorption" and $\alpha(\lambda)$. But I'm not certain whether "absorption" can always be replaced with \alpha, and if "absorption spectrum" can always be replaced with $\alpha(\lambda)$. 
 
-Even with interpolation, slight differences between the calibration spectrum and off-peak free-jet $\alpha(\lambda)$ measurements are observed. For some measurements, this offset is different on different sides of the peak in $\alpha(\lambda)$ (see Fig. \ref{fig:SI_5x3_pos_alpha}). The cause of this asymmetric offsets is unknown and we have not developed a method to correct for asymmetric offsets. For constant offsets, we we perform an offset procedure that maintains the overall shape of $\alpha(\lambda)$ near the high limit of the absorption data (i.e. the offset removal does not affect absorption values near 1). The offset procedure is as follows:
+Even with interpolation, slight differences between the calibration spectrum and off-peak free-jet $\alpha(\lambda)$ measurements are observed. For some measurements, this offset is different on either side of the peak in $\alpha(\lambda)$ (see Fig. \ref{fig:SI_5x3_pos_alpha}). The cause of this asymmetric offset is unknown, and we have not developed a method to correct for asymmetric offsets. For constant offsets, we perform an offset procedure that maintains the overall shape of $\alpha(\lambda)$ near the high limit of the absorption data (i.e. the offset removal does not affect absorption values near 1). The offset procedure is as follows:
 
 \begin{enumerate}
     \item Calculate $\beta = -\ln(1 - \alpha)$, which represents the exponential component of the Beer-Lambert law. 
-    \item Subtract $\beta$ in a in a region of 750 to 755 nm where the absorption is expected to be zero. %DN: Subtract beta "from $\alpha$"?
+    % \item Subtract $\beta$ in a region of 750 to 755 nm where the absorption is expected to be zero. %DN: Subtract beta "from $\alpha$"?
     \item Recalculate $\alpha = 1 - e^{- (\beta - \beta_{off})}$ 
 \end{enumerate}
 
 The effect of the offset procedure is shown in Fig.\ \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
 
 \begin{enumerate}
-    \item Individual acquisitions with a negative absorption in the 765 to 772 nm range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and off measurements.
+    \item Individual acquisitions with a negative absorption in the 765 to 772 nm range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and LED off measurements.
     \item The data is reduced to the wings of the absorption profile. From the left and right of the spectrum, the data is kept until a point where the absorption is 0.8. This avoids fitting where the absorption is near 1. 
     \item All individual acquisitions for a given test case are averaged.
 \end{enumerate}
 
-We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K, cl}$, by numerically integrating the Beer-Lambert law along the path of the beam (s) for the wavelength-dependent intensity, $I(\lambda)$
+We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K, cl}$, by numerically integrating the Beer-Lambert law along the path $s$ of the beam for the wavelength-dependent intensity, $I(\lambda)$
 
 \begin{equation}
     \frac{dI}{dx}(\lambda) = -\mu_{atten}(\lambda, s) I(\lambda)
 \end{equation}
 
-Where, $\mu_{atten} (\lambda, s)$ [1/cm] is the attenuation coefficient, which is given by 
+Where $\mu_{atten} (\lambda, s)$ [1/cm] is the attenuation coefficient, which is given by 
 
 \begin{equation}
-    \mu_{atten}(\lambda, s) = -\kappa(\lambda) n_{K,cl} f_{K, CFD}(s)
+    \mu_{atten}(\lambda, s) = -\kappa(\lambda) n_{K,cl} f_{K, CFD}(s),
 \end{equation}
+where $\kappa(\lambda) [cm^2]$ is the absorption cross-section, $n_{K,cl}$ is the maximum potassium number density, and $f_{K, CFD}(s)$ is the profile of the potassium number density along the beam path determined by CFD. The $f_{K, CFD}(s)$ profiles are extracted along a line perpendicular to the torch axis for the barrel exit measurements, and along the beam path (ratio of 1.875:4.25 parallel and perpendicular to the torch axis, respectively) for the mobile measurements. The CFD profiles are shown in Fig. \ref{fig:SI_cfd_beam_goldi_pos_kwt} and Fig.\ \ref{fig:SI_cfd_beam_pos_dep}.
 
-$\kappa(\lambda) [cm^2]$ is the absorption cross section, $n_{K,cl}$ is the maximum potassium number density, and $f_{K, CFD}(s)$ is the profile of the potassium number density along the beam path determined by CFD. The $f_{K, CFD}(s)$ profiles are extracted along a line perpindicular to the torch axis for the barrel exit measurements, and along the beam path (ratio of 1.875 to 4.25 parallel and perpindicular to the torch axis, respectively) for the mobile measurements. The CFD profiles are shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt} and Figure \ref{fig:SI_cfd_beam_pos_dep}.
-
-The fitting procedure is as follows
+The fitting procedure is as follows:
 
 
 \begin{enumerate}
-    \item A profile of the potassium atom density from the CFD data along the beam path is obtained as shown in Figures \ref{fig:SI_cfd_beam_goldi_pos_kwt} and \ref{fig:SI_cfd_beam_pos_dep}. This profile is normalized to the maximum value to give $f_{K, CFD} (s)$. s represents the distance along the beam path.
-
-    \item The potassium atom density profile is converted to $\mu_{atten} (s, \lambda) = n_{K, cl}* f_{K, CFD} (s) \kappa(\lambda)$. $n_{K, cl}$ is the single fit parameter corresponding to the centerline (maximum) potassium atom density in the profile.
-    \item For each wavelength, the intensity profile $I(s)$ is calculated along the beam path with the Euler method: $I(s + \Delta s) = I(s) + \mu_{atten}(s, \lambda) I(s) \Delta s$. The initial condition is $I(0) = 1$. If the intensity becomes negative, the calculation is stopped and the absorption is set to 1. An example of the Euler method is shown in \ref{fig:SI_euler_method_tophat_demo}.
+    \item A profile of the potassium atom density from the CFD data along the beam path is obtained, as shown in Figures \ref{fig:SI_cfd_beam_goldi_pos_kwt} and \ref{fig:SI_cfd_beam_pos_dep}. This profile is normalized to the maximum value to give $f_{K, CFD} (s)$. $s$ represents the distance along the beam path.
+    \item The potassium atom density profile is converted to $\mu_{atten} (s, \lambda) = n_{K, cl}* f_{K, CFD} (s) \kappa(\lambda)$. $n_{K, cl}$ is the fit parameter corresponding to the centerline (maximum) potassium atom density in the profile.
+    \item For each $\lambda$, the intensity profile $I(s)$ is calculated along the beam path with the Euler method: $I(s + \Delta s) = I(s) + \mu_{atten}(s, \lambda) I(s) \Delta s$. The initial condition is $I(0) = 1$. If the intensity becomes negative, the calculation is stopped and the absorption is set to 1. An example of the Euler method is shown in Fig.\ \ref{fig:SI_euler_method_tophat_demo}.
     \item The absorption is calculated as $\alpha(\lambda) = 1 - I(s_{max})$, where $s_{max}$ is the maximum distance along the beam path. 
     \item The spectrometer has a finite resolution that "blurs" the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of 0.026 nm. The data is first interpolated to a grid with 0.026 nm spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
 \end{enumerate}
 
-$\kappa(\lambda)$ is modeled as a sum of two Voigt line profiles, following Bedick et al.\cite{bedickDeterminationElectricalConductivity2019} and is converted to a wavelength basis with the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. $\kappa(\lambda)$ is given by
+$\kappa(\lambda)$ is modeled as a sum of two Voigt line profiles, following Bedick et al.\cite{bedickDeterminationElectricalConductivity2019} and is converted to a wavelength basis with the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. $\kappa(\lambda)$ is given by %DN: Broken citation
 
 \begin{equation}
     \label{eq:cross_section_alpha_fit}
-    \kappa(\lambda) = \frac{e^2}{4 \epsilon_0 m_e c^2} \left[ \frac{4}{6} f_1 \lambda_{0,1}^2 V(\lambda_{0,1},\sigma,\gamma_1) + f_2 \lambda_{0,2}^2 V(\lambda_{0,2},\sigma,\gamma_2) \right]
+    \kappa(\lambda) = \frac{e^2}{4 \epsilon_0 m_e c^2} \left[ \frac{4}{6} f_1 \lambda_{0,1}^2 V(\lambda_{0,1},\sigma,\gamma_1) + f_2 \lambda_{0,2}^2 V(\lambda_{0,2},\sigma,\gamma_2) \right],
 \end{equation}
 
-Where $f_i$ is the oscillator strength of the ith peak, $\lambda_{0,i}$ is the central wavelength of the ith peak, and $V(\lambda_{0,i},\sigma,\gamma_i)$ is the Voigt profile. The two parameters for the Voight profile are the gaussian width converted into a wavelength basis.  $\sigma_i = 2*\sqrt{2*ln(2)*k_b*T/m_K}*(\lambda_{0,i}/c)$ and the Lorentzian width $\gamma_i = (\lambda_i^2/c)*\Delta \nu_{i,C}$, where $\Delta \nu_{i,C}$ is the collisional broadening frequency width of the peak, $T$ is the temperature, $m_K$ is the atomic mass of potassium, $k_b$ is the Boltzmann constant, and $c$ is the speed of light.
-
-The parameters for each peak are shown in Table \ref{table:peak_parameters}. 
+%TODO: Check all mentions of Gaussian to make sure they are capitalized
+where $f_i$ is the oscillator strength of the i\textsuperscript{th} peak, $\lambda_{0,i}$ is the central wavelength of the i\textsuperscript{th} peak, and $V(\lambda_{0,i},\sigma,\gamma_i)$ is the Voigt profile. The two parameters for the Voigt profile are the Gaussian width converted into a wavelength basis, $\sigma_i = 2*\sqrt{2*ln(2)*k_b*T/m_K}*(\lambda_{0,i}/c)$, and the Lorentzian width $\gamma_i = (\lambda_i^2/c)*\Delta \nu_{i,C}$, where $\Delta \nu_{i,C}$ is the collisional broadening frequency width of the peak, $T$ is the temperature, $m_K$ is the atomic mass of potassium, $k_b$ is the Boltzmann constant, and $c$ is the speed of light. The parameters used for each peak are shown in Table \ref{table:peak_parameters}. 
 
 \begin{table}[H]
 \centering
@@ -392,12 +389,12 @@ The parameters for each peak are shown in Table \ref{table:peak_parameters}.
 \hline
 Parameter & Peak 1 & Peak 2 \\
 \hline
-Oscillator Strength ($f_i$) & 0.7 & 0.35 \\
-Central Wavelength ($\lambda_{0,i}$) & 766.504 nm & 769.913 nm \\
-Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
+Oscillator strength ($f_i$) & 0.7 & 0.35 \\
+Central wavelength ($\lambda_{0,i}$) & 766.504 nm & 769.913 nm \\
+Collisional frequency width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 \hline
 \end{tabular}
-\caption{Parameters for each peak used in the absorption cross section equation \ref{eq:cross_section_alpha_fit}}
+\caption{Parameters for each peak used in Eq.\ \ref{eq:cross_section_alpha_fit}}
 \label{table:peak_parameters}
 \end{table}
 
@@ -405,7 +402,7 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_goldi_pos_kwt.png}
-    \caption{CFD beam profiles used for numerical fitting for the 53x test case sequence.  }
+    \caption{CFD beam profiles used for numerical fitting for the 53x test case sequence.  } %DN: mp = "motor position"?
     \label{fig:SI_cfd_beam_goldi_pos_kwt}
 
     \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/output/figures/cfd_beam_pos_dep.png}
@@ -417,7 +414,7 @@ Collisional Frequency Width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
 \begin{figure}[]
     \centering
     \includegraphics[]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
-    \caption{Euler method demonstration with a top hat absorption profile. The top hat profile has a constant potassium density for 1 cm and zero elsewhere. The calculated intensity found with the Euler method is also shown.}
+    \caption{Euler method demonstration with a "top hat" absorption profile. The top hat profile has a constant potassium density across a length of 1 cm and zero elsewhere. The calculated intensity found with the Euler method is also shown.}
     \label{fig:SI_euler_method_tophat_demo}
 \end{figure}
 
@@ -426,15 +423,15 @@ There is a discrepancy between the barrel AES $nK_{max}$ measurements and the CF
 
 $\Delta \nu_{i,C}$ will be roughly proportional to the pressure which will affect the fitted $nK_{max}$ value (see \cite{alkemadeMetalVapoursFlames1982}, eq II.231). Figure \ref{fig:SI_AES_barrel_cases}A shows the CFD centerline pressure. It is possible the location of the shock structure pressure fluctuations is inaccurate (also see Figure \ref{fig:SI_iccd_cfd_comparison}). Therefore, as shown in Figure \ref{fig:SI_AES_barrel_cases}B, we examined the extreme cases where the pressure (assumed constant along the entire beam path) was the minimum and maximum CFD centerline pressure. 
 
-The $nK$ profile is also important for the fitting process. As shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt}, at the barrel exit the potassium is concentrated in the center portion of the free jet. In Figure \ref{fig:SI_cfd_barrel_beam_K_KOH_compare}, the comparison of the K and KOH number density profiles along the beam path at the barrel shows that the decrease in K away from the center of the free jet corresponds to an increase in KOH density. Therefore, the thin CFD K profile may be due to the KOH formation at the colder temperatures near the edge of the free jet. If this reduction in temperature is overpredicted, the profile could be thinner than in reality, while the centerline K density could still be accurate. To investigate the effect of the profile on the fitted $nK_{max}$, we performed a fit with a constant $nK$ profile along the beam path with the width of the profile set to the width of the barrel exit (called a top hat profile), as shown in Figure \ref{fig:SI_AES_barrel_cases}B.
+The $nK$ profile is also important for the fitting process. As shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt}, at the barrel exit the potassium is concentrated in the center of the free jet. In Fig.\ \ref{fig:SI_cfd_barrel_beam_K_KOH_compare}, the comparison of the K and KOH number density profiles along the beam path at the barrel shows that the decrease in K away from the center of the free jet corresponds to an increase in KOH density. Therefore, the thin CFD K profile may be due to the KOH formation at the colder temperatures near the edge of the free jet. If this reduction in temperature is overpredicted, the profile could be thinner than in reality, while the centerline K density could still be accurate. To investigate the effect of the profile on the fitted $nK_{max}$, we performed a fit with a constant $nK$ profile along the beam path with the width of the profile set to the width of the barrel exit (called a top hat profile), as shown in Figure \ref{fig:SI_AES_barrel_cases}B.
 
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=0.8\textwidth]{\repodir/final/figures/SI/output/AES_barrel_cases.png}
-    \caption{AES measurements at the barrel exit for alternative pressure and nK profile fitting assumptions. A) the CFD centerline pressure. B) The CFD centerline $nK_{m3}$ density along with barrel AES measurements for different assumptions about the beam $nK$ profile and pressure. }
+    \includegraphics[width=0.9\textwidth]{\repodir/final/figures/SI/output/AES_barrel_cases.png}
+    \caption{AES measurements at the barrel exit for alternative pressure and $nK$ profile fitting assumptions. Left: the CFD centerline pressure. Right: The CFD centerline $nK_{m3}$ density along with barrel AES measurements for different assumptions about the beam $nK$ profile and pressure. }%DN: Should nK_{m3} be nK/m^3?
     \label{fig:SI_AES_barrel_cases}
-\end{figure}
+\end{figure}%DN: Broken citation
 
 
 \begin{figure}[]
@@ -449,7 +446,7 @@ The $nK$ profile is also important for the fitting process. As shown in Figure \
 \clearpage
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) setup. \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens in to a M29 L02 600 um 0.39 NA fiber. The collection lens is located with respect to the measurement position approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is  then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak as well as the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A Cathode Grounded Silicon Photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased.   The photodiode signals are amplified with AMP101 Transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWT  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
+Figure \ref{fig:SI_PD_setup_schematic} shows a schematic of the photodiode (PD) setup. Fig.\ \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens (FCL) into an M29 L02 600 um 0.39 NA fiber. The collection lens is located (with respect to the measurement position) approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak and the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A cathode grounded silicon photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased. The photodiode signals are amplified with AMP101 transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWT  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
 
 
 
@@ -477,54 +474,45 @@ Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) set
 \clearpage
 \subsection{Emulsion Preparation and Delivery}
 
-Potassium was introduced into the HVOF system by creating a potassium carbonate (K2CO3) brine and kerosene emulsion. The emulsion was delivered into the HVOF fuel flow via a tee. The tee run carried the fuel flow while the tee branch accepted emulsion through a PTFE feed line which was served by a high-pressure syringe pump. The emulsion was loaded into three syringes in the Syringe pump with the syringe outputs manifolded together. A switching valve allowed syringes to withdraw emulsion from the stirred reservoir or to infuse emulsion into the HVOF fuel line. Before, igniting the torch, the 4.8 m emulsion line was filled. At the tee, fuel flow momentum was used to mix the emulsion with the fuel flow over the 15cm distance between the tee and combustion chamber nozzle. 
+Potassium was introduced into the HVOF system using an emulsion of potassium carbonate (K2CO3) brine and kerosene (hereafter referred to as the "emulsion"). The emulsion was delivered into the HVOF fuel flow via a tee. The tee run carried the fuel flow while the tee branch accepted emulsion through a PTFE feed line which was served by a high-pressure syringe pump. The emulsion was loaded into three syringes in the syringe pump with the syringe outputs manifolded together. A switching valve allowed syringes to withdraw emulsion from the stirred reservoir or to infuse emulsion into the HVOF fuel line. Before igniting the torch, the 4.8 m emulsion line was filled to the tee to eliminate delay between initiating emulsion pumping and emulsion reaching the torch. At the tee, fuel flow momentum was used to mix the emulsion with the fuel flow over the 15cm distance between the tee and combustion chamber nozzle. 
 
-Literature was reviewed for an emulsion specifically designed to work with brine – especially water-in-oil (W/O) emulsions.  Developing emulsions for use in oilfields, Mohamed et al.\cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (~20\% by mass).  
+Literature was reviewed for an emulsion specifically designed to work with brine — especially water-in-oil (W/O) emulsions. Developing emulsions for use in oilfields, Mohamed et al.\cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (~20\% by mass).  
 
-We noted the most stable result in \cite{mohamedInfluenceSurfactantStructure2017a} “reproduced” it using a potassium carbonate brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended Hydrophilic-lipophilic balance (HLB) of 6.8. The concentration of the surfactant was 0.5\% of the emulsion by volume - the minimum necessary found in \cite{mohamedInfluenceSurfactantStructure2017a} to obtain a stable emulsion. (Mohamed et al. measured ~5\% of liquid came out of emulsion in 100 minutes at 120 °C).  
+We noted the most stable result in \cite{mohamedInfluenceSurfactantStructure2017a} and reproduced it using a K2CO3 brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended hydrophilic-lipophilic balance (HLB) of 6.8. The concentration of the surfactant was 0.5\% of the emulsion by volume - the minimum necessary found in \cite{mohamedInfluenceSurfactantStructure2017a} to obtain a stable emulsion. (Mohamed et al. measured that ~5\% of liquid came out of emulsion in 100 minutes at 120 °C).  
 
 To generate the initial brine droplets, we used a spray nozzle. Spraying to create an emulsion is a standard practice \cite{atkinsonKeroseneEmulsionHow1890} used in this work because it avoids the temperature-rise associated with higher energy processes. These spray-generated droplets were then passed through an ultrasonic process to break them up further. This continuous process also minimized temperature rise because the material exited seconds after entering the ultrasonic field. 
 
-The emulsion preparation process is given below. 
+%Broken citations above
 
-1 . Prepare liquid components ahead of time 
-  \begin{itemize}
-  \item 100g supply of surfactant blend with HLB=6.8 by mixing 77g of Span 80 and 23g of Tween 80 on a magnetic stir plate 
+\begin{enumerate}
+    \item Prepare liquid components ahead of time, as follows:
+    \begin{itemize}
+        \item 100g supply of surfactant blend with HLB=6.8 by mixing 77g of Span 80 and 23g of Tween 80 on a magnetic stir plate 
+        \item Eight aliquots of K2CO3 brine by mixing 847.7g of K2CO3 powder into 350mL of deionized water on a magnetic stirrer 
+        \item Eight aliquots of prepared kerosene by mixing 5g of the surfactant blend into 106.5g of kerosene  
+        \item Each Brine/Kerosene aliquot pair will produce 500mL of emulsion. 
+    \end{itemize}
 
-  \item Eight aliquots of K2CO3 brine by mixing 847.7g of K2CO3 powder into 350mL of deionized water on a magnetic stirrer 
+    \item Create a pre-emulsion:
+    \begin{itemize}
+        \item Decant an aliquot of prepared kerosene into a beaker and begin stirring on a magnetic stir plate. 
+        \item Using a peristaltic pump, pump the aliquot of K2CO3 brine through a spray nozzle, producing a mist of droplets to fall into the prepared kerosene. Droplet/kerosene interfaces adsorb the surfactant to make a relatively fine pre-emulsion. 
+    \end{itemize}
 
-  \item Eight aliquots of prepared kerosene by mixing 5g of the surfactant blend into 106.5g of kerosene  
-
-  \item Each Brine/Kerosene aliquot pair will produce 500mL of emulsion. 
-  \end{itemize}
-
-
-2. Create a pre-emulsion 
-
-  \begin{itemize}
-    
-  \item Decant an aliquot of prepared kerosene into a beaker and begin stirring on a magnetic stir plate. 
-
-  \item Pump (peristaltic)the aliquot of K2CO3 brine through a spray nozzle, producing a mist of droplets to fall into the prepared kerosene. Droplet/kerosene interfaces adsorb the surfactant to make a relatively fine pre-emulsion. 
-
-  \end{itemize}
-
-3. Sonicate the pre-emulsion to create the final emulsion. 
-
-  \begin{itemize}
-
-  \item While continuing to magnetically stir, pump the pre-emulsion through an ultrasonic continuous flow cell to further break up the dispersed brine droplets. 
-
-  \item Batches were stored overnight and combined in magnetically stirred reservoir at the beginning of the photoionization experiment. 
-  \end{itemize}
+    \item Sonicate the pre-emulsion to create the final emulsion:
+    \begin{itemize}
+        \item While continuing to magnetically stir, pump the pre-emulsion through an ultrasonic continuous flow cell to further break up the dispersed brine droplets. 
+        \item Batches were stored overnight and combined in magnetically stirred reservoir at the beginning of the photoionization experiment. 
+    \end{itemize}
+\end{enumerate}
 
 Figure \ref{fig:SI_Emulsion_Process} shows a schematic of the emulsion preparation process outlined above. 
 
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.8\textwidth]{\repodir/final/figures/schematics/output/Emulsion_Process.png}
-\caption{Schematic of the emulsion preparation process. A) Overview of the emulsion preparation setup. B -D) Steps 1-3 of the emulsion preparation process.}
+\includegraphics[width=0.9\textwidth]{\repodir/final/figures/schematics/output/Emulsion_Process.png}
+\caption{Schematic of the emulsion preparation process. A) Overview of the emulsion preparation setup. B-D) Steps 1-3 of the emulsion preparation process.}
 \label{fig:SI_Emulsion_Process}
 \end{figure}
 
@@ -549,7 +537,7 @@ $f_{fuel}$ & 0.19865 dimensionless & 0.19498 dimensionless \\
 $f_{K2CO3}$ & 0.15436 dimensionless & 0.15507 dimensionless \\
 \hline
 \end{tabular}
-\caption{Emulsion Recipe. M = mass. $rho_m$ is the measured mass density. $M_{total}$ is the calculated total mass. $f_{fuel}$ and $f_{K2CO3}$ are the calculated mass fraction of fuel and $K_2CO_3$, respectively. The mass density ($\rho_m$) was measured by withdrawing a sample (about 10 ml) of emulsion and weighing it.  }
+\caption{Emulsion Recipe. M = mass, $rho_m$ is the measured mass density, $M_{total}$ is the calculated total mass, and $f_{fuel}$ and $f_{K2CO3}$ are the calculated mass fraction of fuel and $K_2CO_3$, respectively. The mass density ($\rho_m$) was measured by withdrawing a sample (about 10 ml) of emulsion and weighing it.  }
 
 
 \label{tab:emulsion_parameters}
@@ -564,7 +552,7 @@ A representative picture of an emulsion batch is shown in \ref{fig:SI_Emulsion_P
 \end{figure}
 
 \clearpage
-\subsection{Additional Experiment Pictures}
+\subsection{Additional pictures of experiment}
 
 \begin{figure}[]
 \centering
