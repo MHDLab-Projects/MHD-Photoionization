@@ -1,0 +1,7 @@
+Voigt
+Eq
+collimated
+bandpass
+transimpedance
+HVOF
+aliquot

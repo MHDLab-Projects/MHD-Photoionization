@@ -1,0 +1,4 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qwhere \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the oscillator strength of the ith peak, \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the central wavelength of the ith peak, and \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the Voigt profile.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QA) the CFD centerline pressure.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QB) The CFD centerline \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q density along with barrel AES measurements for different assumptions about the beam \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q profile and pressure.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QA) Overview of the emulsion preparation setup.\\E$"}
