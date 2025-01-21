@@ -5,3 +5,7 @@ bandpass
 transimpedance
 HVOF
 aliquot
+ICCD
+lmfit
+scipy
+solveivp
