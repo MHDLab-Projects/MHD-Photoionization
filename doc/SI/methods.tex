@@ -1,3 +1,4 @@
+
 \section{Methods Supplemental Information}
 
 
@@ -5,21 +6,18 @@
 
 \subsubsection{Test Case Sequences}
 
-
 %Probably should define acronyms again in SI the first time they are used.
-%MWT, SFW, 
+%MWT, SFW, SFR
 
-Throughout the experimental campaign, we performed numerous test case sequences. Test case sequences which are relevant to this work are presented below, identified with our internal naming scheme. Our naming scheme begins with a three-digit number that represents the nominal values for the HVOF process inputs, as follows: The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). An "x" indicates that the nominal value was varied during that sequence. Then, the sequence is appended with "pos" or "pow" to indicate a position or power sweep, respectively. The absence of "pos" or "pow" indicates that the SFR-maximized position of 180 mm downstream of the barrel exit and full laser power (7 mJ) were used. Finally, a given test case sequence is appended with a "run number" to indicate repeats of the sequence performed on the same day. 
+Throughout the experimental campaign, we performed numerous test case sequences. Test case sequences which are relevant to this work are presented below, identified with our internal naming scheme. Our naming scheme begins with a three-digit number that represents the nominal values for the HVOF process inputs, as follows: The first digit represents the total mass flow (5 = \SI{13.0}{\gram\per\second}), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). An "x" indicates that the nominal value was varied during that sequence. Then, the sequence is appended with "pos" or "pow" to indicate a position or power sweep, respectively. The absence of "pos" or "pow" indicates that the SFR-maximized position of \SI{180}{\milli\meter} downstream of the barrel exit and full laser power (\SI{7}{\milli\joule}) were used. Finally, a given test case sequence is appended with a "run number" to indicate repeats of the sequence performed on the same day. 
 
-"test"
-
-
+%Define Kwt here? Is it defined differently in main text?
 \begin{itemize}
     \item 536 Position: Varying motorized stage position. Full laser power. Kwt = 1\%, phi = 0.8 (presented in main text). Performed on 2023-04-07, 2023-05-12, 2023-05-18.
     \item 516 Position: Varying motorized stage position. Full laser power. Kwt = 1\%, phi = 0.6 (presented in main text). Performed on 2023-05-24.
-    \item 53x: Varying potassium mass fraction. motorized stage at nominal position. Full laser power. (presented in main text). Performed on each date. 
-    \item 536 Power: Varying laser power. motorized stage at nominal position. Kwt = 1\%. Performed on each date. 
-    \item 5xx: Varying potassium mass fraction and equivalence ratio. motorized stage at nominal position. Full laser power. Performed on 2023-05-24.
+    \item 53x: Varying potassium mass fraction. Motorized stage at nominal position. Full laser power. (presented in main text). Performed on each date. 
+    \item 536 Power: Varying laser power. Motorized stage at nominal position. Kwt = 1\%. Performed on each date. 
+    \item 5xx: Varying potassium mass fraction and equivalence ratio. Motorized stage at nominal position. Full laser power. Performed on 2023-05-24.
     \item 5x6\_pos/5x3\_pos: Varying motorized stage position and equivalence ratio. Full laser power. Kwt = 0.1\% or 1\%. Performed on 2023-05-24.
 \end{itemize}
 
@@ -29,9 +27,9 @@ For each diagnostic, data is obtained continuously throughout the experiment and
 %Check that my added detail about what "both locations" are is correct.
 %"Therefore, for a given test case sequence, the MWT diagnostic acquires more data than the AES diagnostic." 
 The volume of the syringe pump limits the duration of a given test case sequence, as a higher potassium mass fraction necessitates a higher volume flow of liquid seed. Furthermore, it was not possible to maintain consistent durations for identical test cases performed in different sequences. %Why? It'd be a pain in the ass but couldn't it have been done? Though, I don't see how it makes a difference, which we should probably mention here.
-The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait 1 second between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10s. Therefore, a minimum of at least 20 s is needed for an $n_K$ measurement at both the exit of the barrel and the center of the microwave horns. Ideally, multiple measurements are taken at each location to ensure reproducibility. %Were you able to take multiple AES measurements at each location for all test cases discussed in the main text?
-Conversely to the AES diagonstic, the MWT diagnostic is continuously acquiring data at the repetition rate of the laser (5-12 Hz). Therefore, for a given test case sequence, the MWT diagnostic acquires more data than the AES diagnostic. %Why is this important to mention?
-For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics. %Why 1 minute? because there's enough seed to do 1 minute at all higher K mass fraction?
+The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait \SI{1}{\second} between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every \SI{10}{\second}. Therefore, a minimum of at least \SI{20}{\second} is needed for an $n_K$ measurement at both the exit of the barrel and the center of the microwave horns. Ideally, multiple measurements are taken at each location to ensure reproducibility. %Were you able to take multiple AES measurements at each location for all test cases discussed in the main text?
+Conversely to the AES diagnostic, the MWT diagnostic is continuously acquiring data at the repetition rate of the laser 5-(\SI{12}{\hertz}). Therefore, for a given test case sequence, the MWT diagnostic acquires more data than the AES diagnostic. %Why is this important to mention?
+For the standard test case sequences outlined above, approximately \SI{1}{\minute} was used for each test case and data is presented for both diagnostics. %Why 1 minute? because there's enough seed to do 1 minute at all higher K mass fraction?
 
 
 
@@ -94,26 +92,26 @@ The supplemental analysis scripts need to be run to generate the supplemental fi
 \label{fig:SI_MWT_Setup}
 \end{figure}
 
-The microwave transmission setup (MWT) is shown in Figure \ref{fig:SI_MWT_Setup}. The parts used to construct this setup were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a 90 GHz Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, +15 dBm P1dB in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One leg of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves, which have passed through the sample, are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
+The microwave transmission setup (MWT) is shown in Figure \ref{fig:SI_MWT_Setup}. The parts used to construct this setup were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a \SI{90}{\giga\hertz} Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, 15 dBm P1dB in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One leg of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves, which have passed through the sample, are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
 
 % Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
 The I and Q signals from the oscilloscope are fed directly into a Teledyne Lecroy WavePro 404HD-MS Oscilloscope.  The oscilloscope is triggered from the excimer laser. 
 
-The oscilloscope was used with a 1 MOhm input impedance with DC coupling for the I/Q signals, and 50 ohm input impedance for the photodiode signals. The vertical coupling was 20 mV per division on 2023-04-07 and 2023-05-12, and 50 mV per division on 2023-05-18 and 2023-05-24 for the IQ signals. There is was an increased signal intensity on the second two dates, which we attribute to cleaning of residue from the microwave horns, as discussed in Sec.\ \ref{sec:no_torch_measurements}. The vertical coupling of the photodiode signals was 20 mV/division for on-peak, and 10mV per division off-peak. The horizontal coupling was 10 $\mu s$ per division. 
+The oscilloscope was used with a \SI{1}{\mega\ohm} input impedance with DC coupling for the I/Q signals, and \SI{50}{\ohm} input impedance for the photodiode signals. The vertical coupling was \SI{20}{\milli\volt/div} on 2023-04-07 and 2023-05-12, and \SI{50}{\milli\volt/div} on 2023-05-18 and 2023-05-24 for the IQ signals. There was an increased signal intensity on the second two dates, which we attribute to cleaning of residue from the microwave horns, as discussed in Sec.\ \ref{sec:no_torch_measurements}. The vertical coupling of the photodiode signals was \SI{20}{\milli\volt/div} for on-peak, and \SI{10}{\milli\volt/div} off-peak. The horizontal coupling was \SI{10}{\micro\second/div}.
 
 The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 5Hz, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
 
 The excimer laser is sent through a 90/10 UV beam splitter with the 10 \% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a 2.7 \pm\ 0.05 mm opening before a UV enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C Filter Wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before an after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis. 
 
-The distance between the horns is 85.725 mm. The mirror that sends the excimer beam to the measurement location is located 247 mm downstream along the torch axis, 397 mm horizontally (along the table) perpendicular from the torch axis, and 65 mm vertically above the torch axis. 
+The distance between the horns is \SI{85.725}{\milli\meter}. The mirror that sends the excimer beam to the measurement location is located \SI{247}{\milli\meter} downstream along the torch axis, \SI{397}{\milli\meter} horizontally (along the table) perpendicular from the torch axis, and \SI{65}{\milli\meter} vertically above the torch axis. 
 
 
 \subsubsection{Data Processing and Fitting}
 
-The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the pulse rate was limited to 5 Hz to minimize this effect. 
+The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the pulse rate was limited to \SI{5}{\hertz} to minimize this effect. 
 
-The MWT data is first munged by combining all individual "acquisitions" files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the data is resampled. Within the region of 700 to 1500 ns (the laser pulse is at approximately 800 ns, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 and averaging. Outside of this region, the data is grouped into 1000 datapoints and averaged. The effect of this resampling can be seen in Fig.\ \ref{fig:SI_mwt_resampling}
+The MWT data is first munged by combining all individual "acquisitions" files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the data is resampled. Within the region of \SI{700}{\nano\second} to \SI{1500}{\nano\second} (the laser pulse is at approximately \SI{800}{\nano\second}, see Figure 2 in the main text) the data is resampled by grouping datapoints into groups of 10 and averaging. Outside of this region, the data is grouped into \SI{1000}{\nano\second} datapoints and averaged. The effect of this resampling can be seen in Fig.\ \ref{fig:SI_mwt_resampling}
 
 \begin{figure}
 \centering
@@ -135,7 +133,7 @@ The fit preparation pipeline consists of the following steps:
 \end{enumerate}
 
 
-For the exponential fit the data is down selected to a window of 5 to 15 $\mu s$ after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) $.
+For the exponential fit the data is down selected to a window of \SI{5}{\micro\second} to \SI{15}{\micro\second} after the laser pulse and fit with an exponential fit model $y = A \exp(-t/\tau) $.
 
 
 \begin{figure}[]
@@ -173,7 +171,7 @@ On 2023-05-24 the transmission was measured as a function of position as shown i
 \end{figure}
 
 
-The  measured at the nominal position (180 mm) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. %The what measured at the nominal position?
+The  measured at the nominal position (\SI{180}{\milli\meter}) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. %The what measured at the nominal position?
 
 Note that for 2023-05-12, the MWT measurement was only taken at the barrel exit, which is corrected by a factor of 0.95 to estimate the transmission at the nominal position. This factor is determined from the ratio of the transmission at the nominal position to the transmission at the barrel exit from Fig.\ \ref{fig:SI_MWT_nothing_motor}. On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased absolute transmission on 2023-05-18 and 2023-05-24.
 
@@ -203,11 +201,11 @@ Property & Value \\
 \hline
 Single crystal & Si \\
 Conductive type & N type, undoped \\
-Resistivity & > 1000 ohm-cm \\
-Size & 2\" diameter x 0.5 mm \\
+Resistivity & > \SI{1000}{\ohm\centi\meter} \\
+Size & 2 inch diameter x \SI{0.5}{\milli\meter} \\
 Orientation & (100) \\
 Polish & one side polished \\
-Surface roughness & < 5 \r{A} \ RMS \\
+Surface roughness & < \SI{5}{\angstrom} RMS \\
 \hline
 \end{tabular}
 \caption{Properties of the test silicon wafer}
@@ -222,13 +220,6 @@ The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exp
 \caption{Measurements of the MWT system with a Silicon sample. A) Power dependent measurements of I, Q, and the calculated magnitude $U$. B) a picture of the silicon sample placed in the location of the torch. C) the $\Delta AS$ curve for the silicon sample with an exponential fit. }
 \label{fig:SI_MWT_Silicon}
 \end{figure}
-
-
-
-
-
-
-
 
 \clearpage
 \subsubsection{Laser Profile and Power}
@@ -260,7 +251,7 @@ The laser power was measured with an Ophir PE25BG-C Pyroelectric power meter bef
 
 \subsubsection{Mie Scattering Analysis}
 
-To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.\cite{bohrenAbsorptionScatteringLight2007} We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is 10 mm and the radiation wavelength is 3 mm, which are approximately the diameter of our laser beam and wavelength of our 90 GHz microwave source source, respectively.  %broken citation
+To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation.\cite{bohrenAbsorptionScatteringLight2007} We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is \SI{10}{\milli\meter} and the radiation wavelength is \SI{3}{\milli\meter}, which are approximately the diameter of our laser beam and wavelength of our \SI{90}{\giga\hertz} microwave source source, respectively.  %broken citation
 
 $Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$, where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=abs$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively.\cite{bohrenAbsorptionScatteringLight2007}  The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. %broken citation
 
@@ -283,6 +274,7 @@ In Figure \ref{fig:SI_Mie_Scattering}B, we perform a power-law fit of $Q_{ext}$ 
 %OK to include package csquotes to fix backwards ’ ’ quotes?
 In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calculated from the microwave signal magnitude ($U$) squared, as done in the paper with the same expression but measuring the "magnitude tramsission" $T  = \frac{U - U_{block}}{U_0 - U_{block}}$, where $U_0$ and $U_{block}$ are the magnitude with no object and with blocked reciever, as discussed in the main text. The exponential decay time of $\Delta AS$ can be seen to be invariant to whether power or maginutde transmission is used for calculation. 
 
+%TODO: Spell check throughout 
 
 \begin{figure}[H]
 \centering
@@ -297,13 +289,13 @@ In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calcu
 
 \subsubsection{Setup Description}
 
-The LED used for AES is a Thorlabs M780F2 780 nm LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately 0.6 A. The LED is fed into a Thorlabs M28L02 fiber with 400 $\mu m$ diameter and 0.39 NA. The fiber is then connected to the input of a Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AES locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AES locations every 10 seconds throughout the duration of an AES measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AES locations are multiplexed to the same spectrometer, the measurements at the two AES locations are not simultaneous.
+The LED used for AES is a Thorlabs M780F2 \SI{780}{\nano\meter} LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately \SI{0.6}{\ampere}. The LED is fed into a Thorlabs M28L02 fiber with \SI{400}{\micro\meter} diameter and 0.39 NA. The fiber is then connected to the input of a Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AES locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AES locations every \SI{10}{\second} throughout the duration of an AES measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AES locations are multiplexed to the same spectrometer, the measurements at the two AES locations are not simultaneous.
 
-For the barrel exit measurement, the light from the LED is collimated with a RC02SMA-P01 reflective parabolic mirror and directed at a 90 degree angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then de-collimated with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 200um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 600 um 0.5NA fiber. On both sides of the torch, light passes through an iris of appproximately 1 mm and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. %DN: What is the part called that terminates the fiber before it passes through the collimating mirror
+For the barrel exit measurement, the light from the LED is collimated with a RC02SMA-P01 reflective parabolic mirror and directed at a \SI{90}{\degree} angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then de-collimated with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 \SI{200}{\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 \SI{600}{\micro\meter} 0.5NA fiber. On both sides of the torch, light passes through an iris of appproximately \SI{1}{\milli\meter} and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. %DN: What is the part called that terminates the fiber before it passes through the collimating mirror
 
-For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400 um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
+For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
-The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a 1 second delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. Furthermore, fluctuations in the free jet seed level between the LED on and off measurements can cause unphysical results, such as negative absorption. In the future, we plan to modify the liquid seeding system to improve the consistency of liquid seeding over time. %DN: Should we point to fig. S20 as an example of negative absorption at some wavelengths? Does this not matter because it is far outside the wavelengths of interest?
+The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a \SI{1}{\second} delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. Furthermore, fluctuations in the free jet seed level between the LED on and off measurements can cause nonphysical results, such as negative absorption. In the future, we plan to modify the liquid seeding system to improve the consistency of liquid seeding over time. %DN: Should we point to fig. S20 as an example of negative absorption at some wavelengths? Does this not matter because it is far outside the wavelengths of interest?
 
 \subsubsection{Data processing and Fitting}
 
@@ -370,7 +362,7 @@ The fitting procedure is as follows:
     \item The potassium atom density profile is converted to $\mu_{atten} (s, \lambda) = n_{K, cl}* f_{K, CFD} (s) \kappa(\lambda)$. $n_{K, cl}$ is the fit parameter corresponding to the centerline (maximum) potassium atom density in the profile.
     \item For each $\lambda$, the intensity profile $I(s)$ is calculated along the beam path with the Euler method: $I(s + \Delta s) = I(s) + \mu_{atten}(s, \lambda) I(s) \Delta s$. The initial condition is $I(0) = 1$. If the intensity becomes negative, the calculation is stopped and the absorption is set to 1. An example of the Euler method is shown in Fig.\ \ref{fig:SI_euler_method_tophat_demo}.
     \item The absorption is calculated as $\alpha(\lambda) = 1 - I(s_{max})$, where $s_{max}$ is the maximum distance along the beam path. 
-    \item The spectrometer has a finite resolution that "blurs" the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of 0.026 nm. The data is first interpolated to a grid with 0.026 nm spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
+    \item The spectrometer has a finite resolution that "blurs" the input light spectrum across the spectrometer CCD pixels. We model this effect by applying a gaussian filter to the the final absorption profile $\alpha(\lambda)$ with a gaussian width of \SI{0.026}{\nano\meter}. The data is first interpolated to a grid with \SI{0.026}{\nano\meter} spacing before the gaussian filter is applied, then the data is interpolated back to the original grid.
 \end{enumerate}
 
 $\kappa(\lambda)$ is modeled as a sum of two Voigt line profiles, following Bedick et al.\cite{bedickDeterminationElectricalConductivity2019} and is converted to a wavelength basis with the relationship $\Delta \lambda/\lambda_0 = \Delta \nu/\nu_0$, where $\Delta \lambda$ is the width of the line in wavelength space, $\Delta \nu$ is the width of the line in frequency space, $\lambda_0$ is the central wavelength of the line, and $\nu_0$ is the central frequency of the line. $\kappa(\lambda)$ is given by %DN: Broken citation
@@ -390,8 +382,8 @@ where $f_i$ is the oscillator strength of the i\textsuperscript{th} peak, $\lamb
 Parameter & Peak 1 & Peak 2 \\
 \hline
 Oscillator strength ($f_i$) & 0.7 & 0.35 \\
-Central wavelength ($\lambda_{0,i}$) & 766.504 nm & 769.913 nm \\
-Collisional frequency width ($\Delta \nu_{i,C}$) & 3.19 GHz & 3.04 GHz \\
+Central wavelength ($\lambda_{0,i}$) & \SI{766.504}{\nano\meter} & \SI{769.913}{\nano\meter} \\
+Collisional frequency width ($\Delta \nu_{i,C}$) & \SI{3.19}{\giga\hertz} & \SI{3.04}{\giga\hertz} \\
 \hline
 \end{tabular}
 \caption{Parameters for each peak used in Eq.\ \ref{eq:cross_section_alpha_fit}}
@@ -446,7 +438,7 @@ The $nK$ profile is also important for the fitting process. As shown in Figure \
 \clearpage
 \subsection{Photodiode (PD) Setup}
 
-Figure \ref{fig:SI_PD_setup_schematic} shows a schematic of the photodiode (PD) setup. Fig.\ \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens (FCL) into an M29 L02 600 um 0.39 NA fiber. The collection lens is located (with respect to the measurement position) approximately 6.5 inches above the torch, 1 inch to the left (along the flow axis), and 7/8 of an inch upstream along the torch axis. The light from this fiber is then collimated into the beam splitter with F110SMA-780 fiber coupled lens with 780 nm f = 6.24 mm and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 600 um 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak and the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A cathode grounded silicon photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased. The photodiode signals are amplified with AMP101 transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWT  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
+Figure \ref{fig:SI_PD_setup_schematic} shows a schematic of the photodiode (PD) setup. Fig.\ \ref{fig:SI_PD_setup_image} shows an image taken of the setup. All parts were ordered from Thorlabs. The light is collected above the torch with a F240SMA-B fiber coupled lens (FCL) into an M29 L02 \SI{600}{\micro\meter} 0.39 NA fiber. The collection lens is located (with respect to the measurement position) approximately 6.5 inch above the torch, 1 inch to the left (along the flow axis), and 7/8 inch upstream along the torch axis. The light from this fiber is then collimated into the beam splitter with F110SMA-780 fiber coupled lens with \SI{780}{\nano\meter} f = \SI{6.24}{\milli\meter} and NA = 0.37 SMA. The fiber coupled lenses are connected to a Thorlabs M29L02 \SI{600}{\micro\meter} 0.39 NA optical fiber. The light is split with a CCM1-BS014 50-50 beam splitter (BS) into two separate photodiode pathways that are intended to collect the potassium emission peak and the emission off-peak for comparison. Each pathway consists of a bandpass filter and placed before a SM05PD1A cathode grounded silicon photodiode. There is a P2000HK 2 mm fixed size iris before the photodiode. The photodiode is unbiased. The photodiode signals are amplified with AMP101 transimpedance amplifiers set to an amplification of 100 kV/A. This signal is then sent to channels 3 and 4 of the oscilloscope, where channels 1 and 2 are used for the MWT  I and Q measurements.  FB770-10 (770 $\pm$ 10 nm) and FB840-10 (840 $\pm$ 10 nm) bandpass filters are placed before the on-peak and off-peak measurements, respectively. 
 
 
 
@@ -465,11 +457,6 @@ Figure \ref{fig:SI_PD_setup_schematic} shows a schematic of the photodiode (PD) 
     \caption{Image of the photodiode setup. Taken on 2023-05-24. }
     \label{fig:SI_PD_setup_image}
 \end{figure}
-
-
-
-
-
 
 \clearpage
 \subsection{Emulsion Preparation and Delivery}
