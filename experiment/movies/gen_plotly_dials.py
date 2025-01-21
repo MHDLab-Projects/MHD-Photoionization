@@ -9,9 +9,16 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 fp_dsst = pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 dsst = mhdlab.fileio.TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
-# var = 'CC_K_massFrac_in'
-var = 'CC_total_flow_in'
+# var = 'CC_total_flow_in'
+# da = dsst['hvof'][var]
+# axis_range=None
+
+
+var = 'CC_K_massFrac_in'
 da = dsst['hvof'][var]
+
+da = da.pint.to('%')
+axis_range = [0,2]
 
 from mhdlab.plot.anim.plotly_dial import gen_movie_da
 
@@ -28,4 +35,4 @@ for date, tw in df_exptw.ct.iterslices():
         da_plot = da_plot.isel(time=slice(0,-1,time_downselect))
     duration = duration_lookup[date]
 
-    gen_movie_da(da_plot, fp_out, tw, duration)
+    gen_movie_da(da_plot, fp_out, tw, duration, axis_range=axis_range)
