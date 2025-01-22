@@ -2,6 +2,8 @@
 
 Parameters used in the processing of data 
 
+TODO: convert times to PT, and remove convert_to_PT=False keyword from data loading. see issue #13
+
 ## cut times (ct)
 
 * testcase - a window of time where the system process is brought to a fixed combination of setpoints
