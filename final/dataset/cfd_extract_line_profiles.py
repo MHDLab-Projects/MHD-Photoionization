@@ -13,7 +13,7 @@ from mhdlab.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 import pi_paper_utils as ppu
 
-from pi_paper_utils.constants import CFD_EXIT_OFFSET
+from pi_paper_utils.constants import CFD_EXIT_OFFSET, AES_BARREL_OFFSET
 
 BEAM_Y_DISTANCE = Quantity(5, 'cm')
 beam_path_dist_grid = np.arange(0, 0.1, 0.0005)
@@ -85,13 +85,16 @@ def interp_df_to_new_index(df_out, new_index):
 #%%
 fp = cfd_fp_dict['0.8_1.0']
 mesh = pv.read(fp)
-a, b = gen_beam_line(Quantity(3, 'cm'), Quantity(0, 'cm'), xy_ratio=Quantity(1.875/4.25, 'cm/cm'))
+a, b = gen_beam_line(beam_positions[0], ta_offset=Quantity(0, 'cm'))
 line1 = extract_line_axi(mesh, a, b)
 
 p = pv.Plotter()
 p.add_mesh(mesh, scalars='T')
 p.add_mesh(line1, color='red')
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
+
+# Cant figure out how to save this figure without a popup window, uncomment and use in jupyter...
+# p.save_graphic(pjoin(DIR_FIG_OUT, 'pv_beam_demo.pdf'), )
 # p.show()
 
 #%%
@@ -99,6 +102,8 @@ df_lines = convert_line_df(line1, [ppu.CFD_K_SPECIES_NAME])
 df_lines.plot()
 midpoint = max(df_lines.index) / 2
 plt.axvline(midpoint, color='gray', linestyle='--')
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pv_beam_demo_K_profile.png'))
 
 #%%[markdown]
 # Extract lines along beam axis for different beam positions and offsets
@@ -143,26 +148,31 @@ ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'cfd_profiles_beam_mobile.c
 
 #%%
 exit_offset = Quantity(5, 'mm')
-a = [CFD_EXIT_OFFSET, Quantity(-5, 'cm'), Quantity(0, 'cm')]
-b = [CFD_EXIT_OFFSET, Quantity(5, 'cm'), Quantity(0, 'cm')]
-line1 = extract_line_axi(mesh, a, b)
+a_barrel = [CFD_EXIT_OFFSET + AES_BARREL_OFFSET, Quantity(-5, 'cm'), Quantity(0, 'cm')]
+b_barrel = [CFD_EXIT_OFFSET + AES_BARREL_OFFSET, Quantity(5, 'cm'), Quantity(0, 'cm')]
+line_barrel = extract_line_axi(mesh, a_barrel, b_barrel)
 
 p = pv.Plotter()
 p.add_mesh(mesh, scalars='K')
-p.add_mesh(line1, color='red', line_width=5)
+p.add_mesh(line_barrel, color='red', line_width=5)
 p.camera_position = [(0, 0, 1), (0.1, 0, 0), (0, 0, 0)]
 # p.show()
 
+# Cant figure out how to save this figure without a popup window, uncomment and use in jupyter...
+# p.save_graphic(pjoin(DIR_FIG_OUT, 'pv_beam_demo_barrelexit.pdf'))
 #%%
-df_lines = convert_line_df(line1, [ppu.CFD_K_SPECIES_NAME])
+df_lines = convert_line_df(line_barrel, [ppu.CFD_K_SPECIES_NAME])
 df_lines.plot()
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'pv_beam_demo_barrelexit_Kprofile.png'))
 
 #%%
 dss = []
 for key, fp in cfd_fp_dict.items():
     phi, kwt = key.split('_')
     mesh = pv.read(fp)
-    line_out = extract_line_axi(mesh, a, b)
+    line_out = extract_line_axi(mesh, a_barrel, b_barrel)
     df_lines = convert_line_df(line_out, cfd_all_fields)
     df_int = interp_df_to_new_index(df_lines, beam_path_dist_grid.to('m').magnitude)
     ds_out = xr.Dataset(df_int)
