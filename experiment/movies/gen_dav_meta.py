@@ -22,8 +22,8 @@ df_dav_meta
 #%%
 # Quick fix for this specific file, which seem t obe the only that throws above error with no start time...
 
-# df_dav_meta.loc['DNR708_ch5_main_20230524104412_20230524110000.dav', 'ffprobe_start'] = df_dav_meta.loc['DNR708_ch6_main_20230524104412_20230524110000.dav', 'ffprobe_start']
-# df_dav_meta.loc['DNR708_ch5_main_20230524104412_20230524110000.dav', 'ffprobe_stop'] = df_dav_meta.loc['DNR708_ch6_main_20230524104412_20230524110000.dav', 'ffprobe_stop']
+df_dav_meta.loc['DNR708_ch5_main_20230524104412_20230524110000.dav', 'ffprobe_start'] = df_dav_meta.loc['DNR708_ch6_main_20230524104412_20230524110000.dav', 'ffprobe_start']
+df_dav_meta.loc['DNR708_ch5_main_20230524104412_20230524110000.dav', 'ffprobe_stop'] = df_dav_meta.loc['DNR708_ch6_main_20230524104412_20230524110000.dav', 'ffprobe_stop']
 
 #%%
 df_dav_meta = df_dav_meta.dropna(how='any')
