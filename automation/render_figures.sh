@@ -4,23 +4,20 @@
 
 source ../.env
 
-if [ -z "$1" ]; then
-  echo "Usage: $0 <directory>"
-  exit 1
-fi
-
 # final/figures, final/figures/SI, final/figures/schematics
-TARGET_DIR=$1
+TARGET_DIRS=("final/figures" "final/figures/SI" "final/figures/schematics")
 
-pushd $REPO_DIR/$TARGET_DIR
+for TARGET_DIR in "${TARGET_DIRS[@]}"; do
+  pushd $REPO_DIR/$TARGET_DIR
 
-mkdir -p output
+  mkdir -p output
 
-echo "Converting SVG to PNG for $TARGET_DIR folder"
+  echo "Converting SVG to PNG for $TARGET_DIR folder"
 
-for i in *.svg; do
-  BN=$(basename $i .svg)
-  inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
+  for i in *.svg; do
+    BN=$(basename $i .svg)
+    inkscape --export-filename="output/$BN.png" --export-dpi 300 $i
+  done
+
+  popd
 done
-
-popd

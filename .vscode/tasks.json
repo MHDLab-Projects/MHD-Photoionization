@@ -8,9 +8,9 @@
             "command": "cd automation && ./pipe_main.sh",
         },
         {
-            "label": "Render Paper Figures",
+            "label": "Render Figures",
             "type": "shell",
-            "command": "cd automation && ./render_figures.sh final/figures",
+            "command": "cd automation && ./render_figures.sh",
         },
         {
             "label": "Generate Documents",
