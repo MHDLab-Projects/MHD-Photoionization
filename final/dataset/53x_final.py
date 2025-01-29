@@ -29,6 +29,8 @@ ds_cfd = ds_cfd.sel(x=goldi_pos, method='nearest')
 #%%
 ds_cfd['rho_number'] = ds_cfd.cfd.calc_rho_number()
 ds_krb = gen_ds_krb(ds_cfd['T'], ds_cfd['rho_number'])
+
+
 ds_krb['O2_S'] = calc_krbO2_weighted(ds_cfd)
 
 #%%

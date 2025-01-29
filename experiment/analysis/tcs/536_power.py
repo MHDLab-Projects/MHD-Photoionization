@@ -29,11 +29,11 @@ fluence = fluence.to('mJ/cm^2')
 fluence = fluence.round(3)
 
 da_lecroy = da_lecroy.assign_coords(power=da_lecroy['power']*fluence)
-da_lecroy.coords['power'].attrs['units'] = 'mJ/cm^2'
+da_lecroy.coords['power'].attrs['units'] = '$mJ/cm^2$'
 da_lecroy.coords['power'].attrs['long_name'] = 'Fluence'
 
 ds_pd = ds_pd.assign_coords(power=ds_pd['power']*fluence)
-ds_pd.coords['power'].attrs['units'] = 'mJ/cm^2'
+ds_pd.coords['power'].attrs['units'] = '$mJ/cm^2$'
 ds_pd.coords['power'].attrs['long_name'] = 'Fluence'
 
 #%%
@@ -92,10 +92,10 @@ plt.yscale('log')
 plt.xlim(-1,50)
 plt.ylim(1e-5,2e-1)
 
-plt.ylabel('$\Delta AS$')
-plt.xlabel('Time [us]')
+plt.ylabel('$\\Delta AS$')
+plt.xlabel('Time [$\\mu s$]')
 
-plt.legend(title='Fluence\n[mJ/cm^2]')
+plt.legend(title='Fluence\n$[mJ/cm^2]$')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_time.png'))
 
@@ -194,7 +194,7 @@ plt.plot(x_eval, y_eval, label='Fit')
 # plt.text(0.1, 0.8, f'b: {params["exponent"].value:.2f}', transform=plt.gca().transAxes)
 # plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e}', transform=plt.gca().transAxes)
 
-plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
+plt.text(0.1, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
 plt.text(0.1, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
 plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
 
@@ -203,8 +203,8 @@ plt.xscale('log')
 
 plt.legend()
 
-plt.xlabel('Fluence [mJ/cm^2]')
-plt.ylabel('$\Delta AS_{max}$')
+plt.xlabel('Fluence [$mJ/cm^2$]')
+plt.ylabel('$\\Delta AS_{max}$')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_max_fit.png'))
 
@@ -269,6 +269,7 @@ plt.xlim(-1,50)
 plt.yscale('log')
 plt.ylim(1e-4,)
 plt.title('')
+plt.xlabel('Time [$\\mu s$]')
 plt.ylabel('PD [V]')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'pd1_power_trace.png'))
@@ -307,15 +308,15 @@ plt.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
 
 # plt.yscale('log') plt.xscale('log')
 
-plt.xlabel('Fluence [mJ/cm^2]')
-plt.ylabel('Delta PD1 [V]')
+plt.xlabel('Fluence [$mJ/cm^2$]')
+plt.ylabel('Delta PD1 [mV]')
 
 plt.legend(loc='lower right')
 
 plt.yscale('log')
 plt.xscale('log')
 
-plt.text(0.1, 0.9, "Model: Ax^b", transform=plt.gca().transAxes)
+plt.text(0.1, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
 plt.text(0.1, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
 plt.text(0.1, 0.7, f'A: {result.params["amplitude"].value:.2e} ± {result.params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
 

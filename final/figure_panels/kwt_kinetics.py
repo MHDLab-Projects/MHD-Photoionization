@@ -38,7 +38,7 @@ leg = plt.legend(lns, labs)
 leg.set_bbox_to_anchor((1,0.8))
 
 plt.ylabel('$k_{r,b}$\n(ml/particle/s)')
-plt.xlabel('Nominal K wt%')
+plt.xlabel('$K_{wt,nominal} [\\%]$')
 
 plt.xscale('log')
 plt.yscale('log')

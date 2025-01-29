@@ -37,8 +37,6 @@ ds_mwt_fit = xr.concat([
 
 #%%
 
-#%%
-
 fig, axes = plt.subplots(2, 1, figsize=(5,8), sharex=True)
 
 var = 'nK_m3_barrel'
@@ -70,8 +68,8 @@ line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 axes[0].set_ylabel(r"Species Concentration [$\#/m^3$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
-    ['Expt. $n_K$ Barrel', 'Expt $n_K$ 180 mm', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
-    bbox_to_anchor=(0.75, 0.85), loc='upper left', framealpha=1
+    ['Expt. $n_K$ (Barrel)', 'Expt. $n_K$ (180 mm)', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
+    bbox_to_anchor=(0.65, 0.75), loc='upper left', framealpha=1
     )
 
 axes[0].set_title('')
@@ -115,7 +113,7 @@ for ax in axes:
     ax.set_xscale('log')
     ax.set_yscale('log')
 
-axes[-1].set_xlabel("K wt % nominal")
+axes[-1].set_xlabel("$K_{wt,nominal} [\\%]$")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization.png'), dpi=300, bbox_inches='tight')
 # %%
@@ -152,7 +150,8 @@ plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
 plt.yscale('log')
 plt.xlim(-1,25)
 plt.ylim(1e-5,)
-plt.ylabel(r'$\Delta AS$ [dimensionless]')
+plt.ylabel(r'$\Delta AS$')
+plt.xlabel('Time [$\\mu s$]')
 
 plt.title('')
 plt.legend(['Data', 'Fit'])
@@ -175,18 +174,42 @@ ax.errorbar(
     label=r'$\Delta AS$ Fit'
     )
 
-for species in ds_tau.data_vars:
-    ds_tau[species].plot(label="{}".format(species), ax=ax, marker='x')
+ds_tau_plot = ds_tau.drop_vars('O2_exp_eff') # This is included for the viability analyis, is calculated from experimental data so is redundant with the lifetime that these data are eventually compared to. 
+
+print(f"Removing H2O from 53x_params_recomb_exp plot for clarity. Average lifetime: {ds_tau_plot['H2O'].mean().values} us")
+ds_tau_plot = ds_tau_plot.drop_vars('H2O') # Value is ~ 10^5, not including in plot for clarity.
+
+label_map = {
+    'O2_A': 'O_{2,A}',
+    'O2_G': 'O_{2,G}',
+    'O2_S': 'O_{2,S}',
+    'K+': 'K^+',
+}
+
+for species in ds_tau_plot.data_vars:
+    if species.startswith('O2'):
+        marker = 'x'
+    elif species.startswith('OH'):
+        marker = '.'
+    elif species.startswith('K'):
+        marker = 's'
+
+    if species in label_map:
+        label = label_map[species]
+    else:
+        label = species
+
+    ds_tau_plot[species].plot(label="${}$".format(label), ax=ax, marker=marker)
 
 ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
-ax.set_ylabel("Time Constant [us]")
+ax.set_ylabel("Time Constant [$\\mu s$]")
 ax.set_title('')
 ax.set_ylim(5e-2, 2e3)
 
 ax.set_xscale('log')
 ax.set_yscale('log')
 
-plt.xlabel("K wt % nominal")
+plt.xlabel("$K_{wt,nominal} [\\%]$")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_exp.png'), dpi=300, bbox_inches='tight')
 # %%

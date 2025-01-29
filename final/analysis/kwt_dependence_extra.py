@@ -57,7 +57,7 @@ ds_plot = ds_mwt_fit.sel(date='2023-05-12').sel(run_num=1).sel(fit_method='exp')
 ds_plot['AS_all'].plot(hue='kwt')
 
 
-plt.gca().get_legend().set_title('K wt %')
+plt.gca().get_legend().set_title('$K_{wt,nominal} [\\%]$')
 
 for kwt in ds_plot.coords['kwt']:
     ds_plot['AS_fit'].sel(kwt=kwt).plot(color='black', linestyle='-', alpha=0.5)
@@ -165,7 +165,7 @@ ax.errorbar(
 plt.yscale('log')
 
 plt.ylabel("$\Delta n_e$ [um$^{-3}$]")
-plt.xlabel("K wt % nominal")
+plt.xlabel("$K_{wt,nominal} [\\%]$")
 
 plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_both.png'), dpi=300, bbox_inches='tight')
 
@@ -260,7 +260,7 @@ for i, var in enumerate(vars):
 
     # Add a colorbar
     cbar = fig.colorbar(sc, ax=ax)
-    cbar.set_label("Nominal K wt %")
+    cbar.set_label("$K_{wt,nominal} [\\%]$")
 
 
     ax.set_yscale('log')
@@ -324,7 +324,7 @@ for i, var in enumerate(vars):
 
     # Add a colorbar
     cbar = fig.colorbar(sc, ax=ax)
-    cbar.set_label("Nominal K wt %")
+    cbar.set_label("$K_{wt,nominal} [\\%]$")
 
 
     ax.set_yscale('log')

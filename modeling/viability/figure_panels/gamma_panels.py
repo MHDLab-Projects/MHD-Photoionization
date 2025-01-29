@@ -69,8 +69,8 @@ ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, lines
 
 plt.gca().set_title('')
 
-plt.ylabel('Temperature (K)')
-plt.xlabel('Pressure (Pa)')
+plt.ylabel('Temperature [K]')
+plt.xlabel('Pressure [Pa]')
 
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
@@ -114,7 +114,7 @@ for i, eta in enumerate(['perf', 'KOH']):
 labs = [0.8, 0.9, 1.0]
 
 leg = fig.legend(lns, labs, title='Equiv.\nRatio')
-leg.set_bbox_to_anchor((1.18, 0.7))  # coordinates are in figure units
+leg.set_bbox_to_anchor((1.19, 0.7))  # coordinates are in figure units
 
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
@@ -123,11 +123,11 @@ plt.ylim(1200,3500)
 axes[0,0].set_title(r'$\eta$ = 1.0')
 axes[0,1].set_title(r'$\eta_{KOH}$')
 
-axes[1,0].set_xlabel('Pressure (Pa)')
-axes[1,1].set_xlabel('Pressure (Pa)')
+axes[1,0].set_xlabel('Pressure [Pa]')
+axes[1,1].set_xlabel('Pressure [Pa]')
 
-axes[0,0].set_ylabel('T (K)')
-axes[1,0].set_ylabel('T (K)')
+axes[0,0].set_ylabel('T [K]')
+axes[1,0].set_ylabel('T [K]')
 
 axes[0,1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes[0,1].transAxes, rotation=-90, va='center')
 axes[1,1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes[1,1].transAxes, rotation=-90, va='center')

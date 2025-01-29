@@ -170,7 +170,7 @@ axes[3].text(0.0, 0.85, 'Average: {:.3e}'.format(k_eff_avg), transform=axes[3].t
 
 plt.xscale('log')
 
-plt.xlabel('Nominal K wt%')
+plt.xlabel('$K_{wt,nominal} [\\%]$')
 plt.savefig(pjoin(DIR_FIG_OUT, 'krb_eff_53x.png'))
 
 plt.yscale('log')

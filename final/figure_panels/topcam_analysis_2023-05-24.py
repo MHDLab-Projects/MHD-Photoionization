@@ -62,9 +62,9 @@ g = da_sel.plot(
     )  
 
 for ax in g.axs[:,0]:
-    ax.set_ylabel('y (mm)')
+    ax.set_ylabel('y [mm]')
 for ax in g.axs[-1,:]:
-    ax.set_xlabel('x (mm)')
+    ax.set_xlabel('x [mm]')
 
 # remove grid
 for ax in g.axs.flatten():
@@ -122,15 +122,15 @@ axes[1,1].set_title('ICCD During Laser [counts]')
 
 ax = axes[0,0]
 ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x')
-axes[0,0].set_title('K [$particle/cm^3$]')
+axes[0,0].set_title('K [$\\#/cm^3$]')
 
 ax = axes[1,0]
-ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x')
-axes[1,0].set_title('KOH [$particle/cm^3$]')
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x', vmax=2e16)
+axes[1,0].set_title('KOH [$\\#/cm^3$]')
 
 
 ax = axes[2,0]
-ds_cfd['T'].plot(ax=ax, x='pos_x')
+ds_cfd['T'].plot(ax=ax, x='pos_x', vmax=3200)
 axes[2,0].set_title('T [K]')
 
 
@@ -154,10 +154,10 @@ axes[0,0].set_xticks([])
 axes[0,1].set_xticks([])
 axes[1,0].set_xticks([])
 
-axes[0,0].set_ylabel('y (mm)')
-axes[1,0].set_ylabel('y (mm)')
-axes[2,0].set_ylabel('y (mm)')
-axes[2,0].set_xlabel('x (mm)')
+axes[0,0].set_ylabel('y [mm]')
+axes[1,0].set_ylabel('y [mm]')
+axes[2,0].set_ylabel('y [mm]')
+axes[2,0].set_xlabel('x [mm]')
 
 # draw beam slice box on axes [1,1]
 
@@ -212,9 +212,9 @@ lns = ln_cam + ln_laser
 labs = ['Top Cam', 'Laser Profile']
 ax.legend(lns, labs, loc=0)
 
-plt.xlabel('Gate Delay (ns)')
-ax.set_ylabel('Counts (ICCD)')
-ta.set_ylabel('Counts \n(Laser Profile)')
+plt.xlabel('Gate Delay [ns]')
+ax.set_ylabel('ICCD [counts]')
+ta.set_ylabel('Laser Profile \n[counts]')
 
 plt.xlim(780,830)
 
