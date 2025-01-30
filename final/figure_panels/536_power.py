@@ -42,7 +42,7 @@ ds_pd.coords['power'].attrs['long_name'] = 'Fluence'
 
 ds_stat = da_lecroy.to_dataset().wma.initialize_stat_dataset('dAS_abs', 'run')
 
-ds_stat = ds_stat.drop(0,'power')
+ds_stat = ds_stat.drop_sel(power=0)
 
 ds_stat
 
@@ -141,7 +141,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'MWT_power_max_fit.png'))
 # Photodiode 
 
 plt.figure()
-da_plot = ds_pd['pd1'].copy()
+da_plot = ds_pd['dpd1'].copy()
 
 da_plot = da_plot.drop(0,'power')
 
@@ -154,9 +154,11 @@ plt.yscale('log')
 plt.ylim(1e-4,)
 plt.title('')
 plt.xlabel('Time [$\\mu s$]')
-plt.ylabel('PD [V]')
+plt.ylabel('$\\Delta PD$ [mV]')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'pd1_power_trace.png'))
+plt.gca().get_legend().remove()
+
+plt.savefig(pjoin(DIR_FIG_OUT, 'dpd1_power_trace.png'))
 
 
 #%%
@@ -177,14 +179,15 @@ result
 plt.figure()
 vals  = model.eval(result.params, x=da_fit['power'].values)
 
+plt.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
+
 plt.plot(da_fit['power'].values, vals, label='Fit')
 
-plt.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
 
 # plt.yscale('log') plt.xscale('log')
 
 plt.xlabel('Fluence [$mJ/cm^2$]')
-plt.ylabel('Delta PD1 [mV]')
+plt.ylabel('$\\Delta PD_{max}$ [mV]')
 
 plt.legend(loc='lower right')
 
@@ -198,3 +201,5 @@ plt.text(0.1, 0.7, f'A: {result.params["amplitude"].value:.2e} ± {result.params
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
+
+# %%
