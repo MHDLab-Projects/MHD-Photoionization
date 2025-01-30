@@ -28,6 +28,11 @@ ds_p_barrel['nK_barrel_cfdprofile'] = ds_p_barrel['nK_barrel_cfdprofile'].pint.t
 
 #%%
 
+# This shows the dates of barrel exit data for 0.8 phi
+ds_p_barrel.sel(phi=0.8, method='nearest').dropna('run', how='all').coords['run']
+
+#%%
+
 ds_cfd = ppu.fileio.load_cfd_centerline()
 
 ds_cfd = ds_cfd.sel(kwt=1)
@@ -64,7 +69,7 @@ ds_cfd_sel['nK_cm3'].sel(offset=0).plot(color='black', label ='CFD centerline', 
 # Barrel exit
 nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit AES', capsize=5, )
+ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
 
 ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
 
@@ -89,9 +94,13 @@ g = nK_mw_horns.isel(run=0).plot(x='motor', marker='o', label='2023-05-24 Run 1'
 ds_cfd_sel['nK_cm3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.', ax=ax2)
 # ds_cfd_sel['nK_cm3'].sel(offset=3).plot(color='black', label ='CFD 3mm offset', linestyle='--', ax=ax2)
 
-nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
-nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
-ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit AES', capsize=5, )
+nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.6, method='nearest')
+nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.6, method='nearest')
+
+assert nK_barrel_std.item().magnitude ==0 # there is only one run for phi=0.6
+
+# ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
+ax2.scatter(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, color='green', marker='o', label='Barrel Exit')
 
 
 ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
