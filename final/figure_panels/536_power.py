@@ -8,6 +8,9 @@ import pi_paper_utils as ppu
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
+# update the dpi to 300 for final figures (see note in mpl.style)
+plt.rcParams['figure.dpi'] = 300
+
 from mhdlab.xr_utils.stats import WeightedMeanAccessor
 from lmfit.models import PowerLawModel
 # %%

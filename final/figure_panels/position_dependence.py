@@ -4,6 +4,9 @@ create_standard_folders()
 import pi_paper_utils as ppu
 from mhdlab.plot import xr_errorbar_axes
 
+# update the dpi to 300 for final figures (see note in mpl.style)
+plt.rcParams['figure.dpi'] = 300
+
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 

@@ -4,6 +4,9 @@ from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu #Sets matplotlib style
 
+# update the dpi to 300 for final figures (see note in mpl.style)
+plt.rcParams['figure.dpi'] = 300
+
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()

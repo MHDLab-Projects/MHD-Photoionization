@@ -4,6 +4,9 @@ create_standard_folders()
 import pi_paper_utils #Sets matplotlib style
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm
 
+# update the dpi to 300 for final figures (see note in mpl.style)
+plt.rcParams['figure.dpi'] = 300
+
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_p_stats = xr.open_dataset(pjoin(data_directory, '53x_ds_p_stats.cdf')).pint.quantify()

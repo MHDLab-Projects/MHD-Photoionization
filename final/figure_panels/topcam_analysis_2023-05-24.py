@@ -3,6 +3,8 @@ from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 create_standard_folders()
 
+# update the dpi to 300 for final figures (see note in mpl.style)
+plt.rcParams['figure.dpi'] = 300
 
 # da_sel_tf.to_netcdf(pjoin(DIR_DATA_OUT, 'spe_20230524_84_tfm.cdf'))
 
