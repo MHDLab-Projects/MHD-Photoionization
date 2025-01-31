@@ -43,32 +43,36 @@ ds_mwt_fit = xr.concat([
 fig, axes = plt.subplots(2, 1, figsize=(5,8), sharex=True)
 
 var = 'nK_m3_barrel'
+data=ds_p_stats['{}_mean'.format(var)].pint.to('particle/cm^3').pint.dequantify()
+yerr=ds_p_stats['{}_stderr'.format(var)].pint.to('particle/cm^3').pint.dequantify()
 line_nK_barrel = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
-    ds_p_stats['{}_mean'.format(var)], 
-    yerr=ds_p_stats['{}_stderr'.format(var)], 
+    data,
+    yerr=yerr,
     marker='o', capsize=5,
     label='Barrel'
     )
 
 var = 'nK_m3_mw_horns'
+data=ds_p_stats['{}_mean'.format(var)].pint.to('particle/cm^3').pint.dequantify()
+yerr=ds_p_stats['{}_stderr'.format(var)].pint.to('particle/cm^3').pint.dequantify()
 line_nK_mwhorns = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
-    ds_p_stats['{}_mean'.format(var)], 
-    yerr=ds_p_stats['{}_stderr'.format(var)], 
+    data,
+    yerr=yerr,
     marker='o', capsize=5,
     label='MW Horns'
     )
 
-da_KOH = ds_species_cfd[ppu.CFD_KOH_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+da_KOH = ds_species_cfd[ppu.CFD_KOH_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
 lineKOH = da_KOH.plot(ax=axes[0], label='CFD: KOH')
-da_nK = ds_species_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+da_nK = ds_species_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
 linenK = da_nK.plot(ax=axes[0], label='CFD: K')
-da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/m**3').pint.dequantify()
+da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
 line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 
 
-axes[0].set_ylabel(r"Species Concentration [$\#/m^3$]")
+axes[0].set_ylabel(r"Species Concentration [$\#/cm^3$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
     ['Expt. $n_K$ (Barrel)', 'Expt. $n_K$ (180 mm)', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
@@ -84,11 +88,11 @@ lineAS = axes[1].errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label=r'$\Delta AS$ Maximum',
+    label=r'$\Delta AS_{max}$',
     color='darkgreen'
     )
 
-axes[1].set_ylabel(r"$\Delta AS$ Maximum")
+axes[1].set_ylabel(r"$\Delta AS_{max}$")
 
 
 ta = axes[1].twinx()
@@ -98,14 +102,14 @@ linePD = ta.plot(
     ds_p_stats.coords['kwt'], 
     ds_p_stats['{}_mean'.format(var)], 
     marker='x',
-    label='Delta PD1',
+    label='$\\Delta PD_{max}$',
     color='darkblue'
     )
 
 axes[1].set_ylim(1e-2,2e-1)
-axes[1].legend([lineAS, linePD[0]], ['AS Maximum', 'Delta PD1'])
+axes[1].legend([lineAS, linePD[0]], ['$\\Delta AS_{max}$', '$\\Delta PD_{max}$'])
 
-ta.set_ylabel("Delta PD1 [mV]")
+ta.set_ylabel("$\\Delta PD_{max}$ [mV]")
 
 ta.set_yscale('log')
 ta.set_ylim(3.5e-1,2.5e0)

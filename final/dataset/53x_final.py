@@ -136,6 +136,7 @@ for var in ds_params.data_vars:
     mean = ds_params[var].mean('run', keep_attrs=True)
     std = ds_params[var].std('run', keep_attrs=True)
     stderr = std / np.sqrt(count)
+    stderr.attrs = std.attrs
     ds_p_stats["{}_mean".format(var)] = mean
     ds_p_stats["{}_std".format(var)] = std
     ds_p_stats["{}_stderr".format(var)] = stderr
