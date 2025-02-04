@@ -10,6 +10,7 @@ from mhdlab.video import load_df_dav_meta, ffmpeg_davs_to_mp4
 import dotenv; dotenv.load_dotenv(override=True)
 #%%
 
+#Run gen_dav_meta.py first
 fp_df_dav_meta = os.path.join('output', 'flir', 'df_dav_meta.csv')
 
 fp_timewindows = os.path.join(os.getenv('repo_dir'), 'experiment', 'metadata', 'ct_experiment.csv')

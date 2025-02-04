@@ -1,5 +1,11 @@
 # Note, kaleido needs to be 1.0.0rc0 for this to work.
 
+# This script is currently not working. 
+# https://github.com/plotly/Kaleido/issues/241
+
+# "Hi friends, there's very very imminently the actual Kaleido v1 (ie not a release candidate) coming out, and this issue may go away with its improvements."
+# https://github.com/plotly/Kaleido/issues/242
+
 #%%
 from mhdlab.analysis.standard_import import *
 from params import duration_lookup, time_downselect_lookup
