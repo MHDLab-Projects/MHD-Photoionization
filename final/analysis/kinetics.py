@@ -130,7 +130,7 @@ for ax in g.axes.flatten():
     ax.axvline(goldi_pos.magnitude, color='k', linestyle='--')
     ax.set_ylabel("Tau [$\mu s$]")
 
-g.axes[0,0].set_ylim(0,40)
+g.axes[0,0].set_ylim(0,60)
 g.axes[1,0].set_ylim(0,1)
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'tau_cfd_pos_phi_compare.png'))

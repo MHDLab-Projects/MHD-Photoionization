@@ -107,7 +107,9 @@ plt.ylim(1e-3, 1e-2)
 plt.xlim(-1, 10)
 
 #%%
-ds_fit_mwt.mean('run')[['AS_all', 'AS_fit', 'AS_all']].to_array('var').plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
+da_plot = ds_fit_mwt.mean('run')[['AS_all', 'AS_fit', 'AS_all']].to_array('var')
+da_plot.attrs['long_name'] = 'AS'
+da_plot.plot(col='kwt', col_wrap=2, hue='var', figsize=(5, 10))
 plt.yscale('log')
 plt.xlim(-1, 40)
 plt.ylim(1e-4, 1e-1)

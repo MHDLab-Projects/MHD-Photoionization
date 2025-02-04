@@ -231,9 +231,11 @@ ds_sel2['alpha_red'].plot(ax=axes[3], label='Data')
 ds_sel2['alpha_fit'].plot(ax=axes[3], label='Fit')
 
 plt.text
+labels = ['A)', 'B)', 'C)', 'D)']
 
-for ax in axes:
+for ax, label in zip(axes, labels):
     ax.set_title('')
+    ax.text(-0.2, 1.1, label, transform=ax.transAxes, va='top', ha='right')
 
 axes[0].set_ylabel('Counts')
 axes[0].set_xlabel('')
@@ -251,7 +253,6 @@ axes[3].legend()
 axes[3].text(750,0.5, '$n_K$ = {:.2e}'.format(nK_sel.values), fontsize=10)
 
 axes[-1].set_xlabel('Wavelength (nm)')
-
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'absem_proc_overview.png'), bbox_inches='tight')
 

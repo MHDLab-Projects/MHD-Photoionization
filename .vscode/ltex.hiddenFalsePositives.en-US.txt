@@ -1,0 +1,13 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qwhere \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the oscillator strength of the ith peak, \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the central wavelength of the ith peak, and \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q is the Voigt profile.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QA) the CFD centerline pressure.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QB) The CFD centerline \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q density along with barrel AES measurements for different assumptions about the beam \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q profile and pressure.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QA) Overview of the emulsion preparation setup.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qin 2023-04-07, 2023-05-12, 2023-05-18, 2023-05-24 Experiment Overview for .\\E$"}
+{"rule":"A_WINDOWS","sentence":"^\\QAny data with an absolute value of the AS in either of the time windows 40 to 50 \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q after the laser pulse or 20 to 50 \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q after the laser pulse is removed.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe acronyms are FCL: fiber coupled lens, BS: beam splitter, PB: bandpass filter, PD: photodiode, AMP: transimpedance amplifier, Osc.: Oscilloscope\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QAccording to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.”\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE_2","sentence":"^\\QThe microwave horns were cleaned and other waveguide parts were replaced.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QWe noted the most stable result in \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-)[0-9]+\\Q and reproduced it using a K2CO3 brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended hydrophilic-lipophilic balance (HLB) of 6.8.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q\"Yeq\" denotes thermal equilibrium species concentrations calculated through a Gibbs free energy minimization (using the Cantera Python package) at the CFD-predicted temperature.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qphotoionization Viability with KOH Photofragmentation.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qphotoionization Viability with KOH Photofragmentation.\\E$"}
