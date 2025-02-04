@@ -348,10 +348,12 @@ diff.plot()
 
 #%%
 
-plt.figure()
+plt.figure(figsize=(5,3))
 
-ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x', cmap='winter')
-diff.plot(alpha=0.5)
+ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(x = 'pos_x', cmap='winter', robust=True)
+
+diff_plot = diff#.where(diff > 0)
+diff_plot.plot(alpha=0.5)
 
 plt.xlabel('x (mm)')
 plt.ylabel('y (mm)')

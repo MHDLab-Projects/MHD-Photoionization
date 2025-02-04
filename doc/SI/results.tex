@@ -6,15 +6,15 @@ On 2023-05-24, we performed measurements with a varying equivalence ratio.
 
 \begin{itemize}
     \item 516 - a position sweep at a fixed equivalence ratio of 0.6
-    \item 5x3\_pos - a position and equivalence ratio sweep at five equivalence ratios and 0.1\% potassium mass fraction. The lower potassium mass fraction allowed for longer times on each test case and therefore AES $nK$ measurements. 
-    \item 5x6\_pos - a position and equivalence ratio sweep at five equivalence ratios and 1\% potassium mass fraction. The high potassium mass uses up seed quickly, leaving only enough time for MWT measurements. 
+    \item 5x3\_pos - a position and equivalence ratio sweep at five equivalence ratios and 0.1\% potassium mass fraction. The lower potassium mass fraction allowed for longer times on each test case allowed for both AES $n_{K}$ and MWT measurements. 
+    \item 5x6\_pos - a position and equivalence ratio sweep at five equivalence ratios and 1\% potassium mass fraction. The high potassium mass uses up seed quickly, leaving enough time for only MWT measurements. 
 \end{itemize}
  
 \subsubsection{5x3 and 5x6 Position Dependence Test Case Sequences}
 
-This section contains additional measurements for the 5x3 and 5x6 test case sequences. These were two-dimensional parameter sweeps of both stage position and equivalence ratio. See Fig.\ \ref{fig:SI_expt_overview_2023-05-24} for how the sequence was performed. 
+This section contains additional measurements for the 5x3 and 5x6 test case sequences. These were two-dimensional parameter sweeps of both stage position and equivalence ratio. See Figure \ref{fig:SI_expt_overview_2023-05-24} for how the sequence was performed. 
 
-Fig.\ \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos test case. Note the calibration of the AES signal for this test case exhibited significant calibration drift (see Fig.\ \ref{fig:SI_5x3_pos_alpha}), and systematic error may be present in the $nK$ values. 
+Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos test case. Note the calibration of the AES signal for this test case exhibited significant calibration drift (see Figure \ref{fig:SI_5x3_pos_alpha}), and systematic error may be present in the $nK$ values. 
 
 %TODO: Make sure every mention of nk is formatted as $nk$
 
@@ -68,23 +68,19 @@ Fig.\ \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos tes
 \begin{figure}[]
 \centering
 \includegraphics[width=0.9\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x6_pos_mwt_AStime_phi.png}
-\caption{$\Delta AS$ time profiles for 5x6\_pos, at two stage positions. Left: $\Delta AS$ time profile at stage position of 55.13 mm. Right: $\Delta AS$ time profile at stage position of 55.13 mm.}
-\label{fig:SI_5x6_pos_mwt_AStime_phi}%DN: Are units of stage position here mm?
+\caption{$\Delta AS$ time profiles for 5x6\_pos, at two stage positions. Left: $\Delta AS$ time profile at stage position of 55.13 mm. Right: $\Delta AS$ time profile at stage position of 180.1 mm (SFR-maximized position).}
+\label{fig:SI_5x6_pos_mwt_AStime_phi}
 \end{figure}
 
 
 \clearpage
 \subsubsection{516 Position Dependence Test Case Sequence}
 
-This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. The AES measurements associated with this test case are presented in the main text Fig.\ 3C. 
-
-%DN: I know you are changing up the figures in the main text, so double check that this figure number is correct
+This section contains additional measurements for the 516 test case. This test case was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. The AES measurements associated with this test case are presented in the main text Figure 3C. 
 
 Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measurements for the 516\_pos and 536\_pos test cases. Figure \ref{fig:SI_tau_cfd_pos_phi_compare} shows the position-dependent CFD-predicted electron lifetimes for K+ and O2\_A for both the 516 and 536 test cases. 
 
-In Figure \ref{fig:SI_tau_ratio_cfd_pos}, we calculate the ratio of $\tau_{pred}$ of the CFD data between the two equivalence ratios.
-
-%DN: I can't decode what the above sentence means.
+In Figure \ref{fig:SI_536_516_pos_mwt_fitting}B, position dependent SFR is shown. For phi = 0.59, the SFR is maximized at 155 mm downstream (compared to 180 mm for phi=0.79). We therefore compare lifetime measurements for 0.59 equvalence ratio with positions 25 mm upstream compared to measurements at 0.8 equivalence ratio. In Figure \ref{fig:SI_536_516_pos_mwt_fitting}B, we calculate the ratio of $\tau_{exp}$ at the respective SFR-maximized positions for the two equivalence ratios. In Figure \ref{fig:SI_tau_ratio_cfd_pos}, we calculate the ratio of $\tau_{pred}$ of the CFD data between the two equivalence ratios, but with the 0.6 equivalence ratio data shifted 25 mm downstream. The ratio of $\tau_{pred}$ is similar for both K+ and O2 and is consistent with the experimental measurements.
 
 \begin{figure}[]
 \centering
@@ -93,16 +89,15 @@ In Figure \ref{fig:SI_tau_ratio_cfd_pos}, we calculate the ratio of $\tau_{pred}
 \label{fig:SI_536_516_pos_mwt_fitting}
 \end{figure}
 
-%DN: Throughout this section, you refer to $\Delta AS$ as MWT AS. Are they the same thing?
+%DN: Throughout this section, you refer to $\Delta AS$ as MWT AS. Are they the same thing? %LA: AS and $\Delta AS$ are different but both MWT measurements. 
 
 \begin{figure}[]
 \centering
 \includegraphics[]{\repodir/final/analysis/output/figures/tau_cfd_pos_phi_compare.png}
-\caption{Comparison of position-dependent $\tau_{pred}$ for K+ and O2\_A for both the 516 and 536 test cases. The lifetimes are calculated from centerline CFD species densities (See also Fig.\ \ref{fig:SI_cfd_species_tau_pos}).}
+\caption{Comparison of position-dependent $\tau_{pred}$ for K+ and O2\_A for both the 516 and 536 test cases. The lifetimes are calculated from centerline CFD species densities (See also Figure \ref{fig:SI_cfd_species_tau_pos}).}
 \label{fig:SI_tau_cfd_pos_phi_compare}
 \end{figure}
 
-%TODO: Check that all references to a figure have "fig" or "figure" before them.
 
 
 \begin{figure}[]
@@ -145,8 +140,8 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/topcam/output/figures/spe_cfd_comparison_2023-05-18.png}
-\caption{Comparison of ICCD images and CFD predictions. This figure is similar to Fig.\ 2 in the main text, but for the camera intensity, the data is averaged over all gate delays and time throughout a position sweep, which has the effect of showing all positions at once, as well as reducing the noise for the sans-laser image.}
-\label{fig:SI_iccd_cfd_comparison}%DN: Double-check that reference to main text figure has the correct number
+\caption{Comparison of ICCD images and CFD predictions. This figure is similar to Figure 2 in the main text, but for the camera intensity, the data is averaged over all gate delays and time throughout a position sweep, which has the effect of showing all positions at once, as well as reducing the noise for the sans-laser image.}
+\label{fig:SI_iccd_cfd_comparison}
 \end{figure}
 
 
@@ -160,7 +155,7 @@ The ICCD camera is calibrated using a projective transformation. The calibration
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/topcam/output/figures/spe_cfd_comparison_2023-05-18_shockdiamonds.png} 
-    \caption{Examining shock diamonds from ICCD Images and CFD. A) Centerline of the Top camera laser off intensity and B) CFD pressure}
+    \caption{Examining shock diamonds from ICCD Images and CFD. Top to bottom: A) Centerline of the Top camera laser off intensity and B) CFD pressure}
     \label{fig:SI_iccd_cfd_comparison_KOH}
 \end{figure}
 
@@ -213,7 +208,7 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/final/analysis/mwt/output/figures/krb_eff_53x.png}
-\caption{Effective recombination coefficient for seed ramp at the nominal position of 180 mm downstream of the barrel exit. a) The exponential time constant measured from the MWT mono-molecular regime, averaged over runs. B) The CFD-predicted total and oxygen number density. C) The effective recombination coefficient calculated from Eq.\ \ref{eq:krbeff}}%DN: Averaged over runs. Which runs?
+\caption{Effective recombination coefficient calculation for the 53x test case sequence A) The exponential time constant measured from the MWT mono-molecular regime, averaged over all runs. B) The CFD-predicted total and O2 number density. C) The effective bimolecular recombination coefficient calculated from Equation \ref{eq:krbeff}} D) The effective termolecular rate calculation from Equation \ref{eq:krteff}
 \label{fig:SI_krb_eff_53x}
 \end{figure}
 
@@ -222,14 +217,14 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/53x_params_ionization_vsCFDK.png} 
-    \caption{Comparison of MWT $\Delta AS$ and $\Delta PD$ versus CFD-predicted K. The color scale shows the nominal K mass fraction to indicate the order of the data points.}
+    \caption{Comparison of MWT $\Delta AS$ and $\Delta PD$ versus CFD-predicted K for the 53x test case sequence. The color scale shows the nominal K mass fraction to indicate the order of the data points (the 53x sequences were an increasing 'ramp' in K mass fraction).}
     \label{fig:SI_53x_params_ionization_vsCFDK}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/53x_params_ionization_vsCFDKOH.png} 
-    \caption{Comparison of MWT $\Delta AS$ and $\Delta PD$ versus CFD-predicted KOH. The color scale shows the nominal K mass fraction to indicate the order of the data points.}
+    \caption{Comparison of MWT $\Delta AS$ and $\Delta PD$ versus CFD-predicted KOH for the 53x test case sequence. The color scale shows the nominal K mass fraction to indicate the order of the data points (the 53x sequences were an increasing 'ramp' in K mass fraction).}
     \label{fig:SI_53x_params_ionization_vsCFDKOH}
 \end{figure}
 
@@ -238,21 +233,14 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/experiment/analysis/mwt/output/figures/mwt_536_pos_mnum_sample.png}
-\caption{MWT $AS$ time profiles for a sampling of individual acquisitions (mnum) for different positions for the 536\_pos test case sequence.}
-\label{fig:SI_mwt_536_pos_mnum_sample}%DN: First time you mention mnum. What does it mean?
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[]{\repodir/final/analysis/mwt/output/figures/AS_fft.png} 
-    \caption{Power spectral density of the AS signal in the time window of 50 to 1 $\mu s$ before the laser pulse.}
-    \label{fig:SI_AS_fft}
+\caption{MWT $AS$ time profiles for a sampling of individual acquisitions (indexed by 'measurement number': $mnum$) for different positions for the 536\_pos test case sequence.}
+\label{fig:SI_mwt_536_pos_mnum_sample}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/mwt/output/figures/mwt_kwt_mnum_sample.png} 
-    \caption{MWT $\Delta AS$ time profiles for individual acquisitions (mnum) for different runs of the 53x test case.  }
+    \caption{MWT $\Delta AS$ time profiles for individual acquisitions (indexed by 'measurement number': $mnum$) for different runs of the 53x test case.  }
     \label{fig:SI_mwt_kwt_mnum_sample}
 \end{figure}
 
@@ -265,15 +253,22 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 
 \begin{figure}
     \centering
+    \includegraphics[]{\repodir/final/analysis/mwt/output/figures/AS_fft.png} 
+    \caption{Power spectral density of the AS signal in the time window of 50 to 1 $\mu s$ before the laser pulse.}
+    \label{fig:SI_AS_fft}
+\end{figure}
+
+\begin{figure}
+    \centering
     \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/mwt_1d_noise/536_pos/hist2/2023-05-18_1.png} 
-    \caption{Histogram of the magnitude of the MWT signal for different positions (indicated in mm at the top of the plot) for the 536\_pos test case for 2023-05-18 Run 1. The color represents the number of times the magnitude was observed within a magnitude bin (bins observable as grains in the image). }
+    \caption{Histogram of the magnitude of the MWT signal for different positions (indicated in mm at the top of the plot) for the 536\_pos test case for 2023-05-18 Run 1. The color represents the number of times the magnitude was observed within a magnitude bin (bin sizes are observable as pixels in the image). }
     \label{fig:SI_mwt_1d_noise_536_pos_hist2_2023-05-18_1}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/experiment/analysis/auto/output/mwt_1d_noise/536_pos/hist4/hist4_536_pos.png} 
-    \caption{Histogram of the magnitude of the MWT signal for different positions for the 536\_pos test case sequence for each experiment Run. The y-axis is the number of times the magnitude was observed within a magnitude bin (same bins as in Fig.\ \ref{fig:SI_mwt_1d_noise_536_pos_hist2_2023-05-18_1}). The x-axis is the magnitude of the MWT signal.}
+    \caption{Histogram of the magnitude of the MWT signal for different positions for the 536\_pos test case sequence for each experiment Run. The y-axis is the number of times the magnitude was observed within a magnitude bin (same bins as in Figure \ref{fig:SI_mwt_1d_noise_536_pos_hist2_2023-05-18_1}). The x-axis is the magnitude of the MWT signal.}
     \label{fig:SI_mwt_1d_noise_536_pos_hist4_hist4_536_pos}
 \end{figure}
 
@@ -283,19 +278,6 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 \caption{Comparison of $\Delta AS_{max}$ between multiple seed conditions: No torch, torch on and no seed (5x0), 1\% seed (5x6), and 0.1\% seed (5x3). All measurements were taken with an equivalence ratio of 0.8.}
 \end{figure}
 
-\label{sec:mwt-diff-eq-fitting}
-\subsubsection{Differential equation fitting method }
-
-We explored an alternative fitting method for the $\Delta AS$ time profiles by directly solving Eq.\ \ref{eq:full_deqn_phi} numerically using $G_{NE} = 0$. This method should account for the bimolecular recombination term in Eq.\ \ref{eq:full_deqn_phi}. For simplicity and robust results, we limit ourselves to exponential fitting in the main text, but this numerical fitting procedure should be explored further. %DN: This references an equation that comes way later. Should this section be moved after the referenced equation?
-
-Fitting is performed with the lmfit package in Python. For the solution to the differential equation we assume $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$. The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized, and the normalized solution is fit to the normalized $\Delta AS$ curve using the lmfit package. Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. 
-
-\begin{figure}[]
-\centering
-\includegraphics[width=0.7\textwidth]{\repodir/final/figures/SI/output/Fig6_Kwt_Recombination_fitmethod_compare.png}
-\caption{Comparison of recombination coefficients calculated from the two fitting methods.}
-\label{fig:SI_Kwt_Recombination_fitmethod_compare}
-\end{figure}
 
 \begin{figure}
 \centering
@@ -318,7 +300,7 @@ This section contains plots of fits which led to the plotted fit parameters in t
 
 \begin{figure}[]
 \centering
-\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/536_pos_phi06_absem_fit.png}
+\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/516_pos_phi06_absem_fit.png}
 \caption{$\alpha$ and fits for 536\_pos and 0.6 equivalence ratio. These measurements were only performed on 2023-05-24.}
 \label{fig:SI_536_pos_phi06_absem_fit}
 \end{figure}
@@ -330,16 +312,10 @@ This section contains plots of fits which led to the plotted fit parameters in t
 \label{fig:SI_53x_absem_fit}
 \end{figure}
 
-\begin{figure}[]
-\centering
-\includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/53x_mwt_fit_dnedtv2.png}
-\caption{MWT measurements and fits for 53x for the differential equation solving method. }
-\label{fig:SI_53x_mwt_fit_dnedtv2}%DN: What is the y-axis here?
-\end{figure}
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/53x_mwt_fit_exp.png}
 \caption{MWT measurements and fits for 53x for the exponential fitting method. }
 \label{fig:SI_53x_mwt_fit_exp}
-\end{figure}%DN: What is the y-axis here?
+\end{figure}

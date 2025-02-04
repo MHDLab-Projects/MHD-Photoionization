@@ -68,9 +68,9 @@ fig, axes = plt.subplots(1, 2, figsize=(10, 5))
 
 da_nothing.to_series().plot(ax=axes[0], marker='o')
 
-axes[0].set_title('T No Torch')
+axes[0].set_title('$U_0$ No Torch')
 
-axes[0].set_ylabel("$U_{Nothing} (V)$")
+axes[0].set_ylabel("$U_{0} (V)$")
 plt.xlabel("Date")
 
 da_sel = ds_lecroy['mag_pp']
@@ -82,8 +82,8 @@ dropna(g)
 da_sel = ds_lecroy['mag'].sel(motor=[50,100,150,180,225], method='nearest')
 da_sel = (da_sel.unstack('run')/da_nothing).xr_utils.stack_run()
 
-axes[1].set_title('$T_{abs} = U/U_{Nothing}$')
-axes[1].set_ylabel('$T_{abs}$')
+axes[1].set_title('$T$ With Torch')
+axes[1].set_ylabel('$T$')
 axes[1].set_xlabel("Motor Position (mm)")
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'mwt_nothing_T0.png'))

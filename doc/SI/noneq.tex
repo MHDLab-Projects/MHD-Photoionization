@@ -21,7 +21,7 @@ The recombination rate can be written
   R = - \sum_{i}^{}k_{r, b, i}n_{e}n_{i},
 \end{equation}
 
-Where $k_{r, b, i}$ [\unit{\centi\meter^3/\second}] and $n_i$ [\unit{1/\centi/\meter^3}] are the bimolecular recombination rate constant and species density $[1/cm^3]$ for the \emph{i}\textsuperscript{th} species, respectively. 
+Where $k_{r, b, i}$ [\unit{\centi\meter^3/\second}] and $n_i$ [\unit{1/\centi\meter^3}] are the bimolecular recombination rate constant and species density $[1/cm^3]$ for the \emph{i}\textsuperscript{th} species, respectively. 
 
 We consider the system under a perturbation from equilibrium, and write $n_i$ as the equilibrium density plus a perturbation, given by
 
@@ -48,7 +48,7 @@ If we consider Equation \ref{eq:start_deqn} in the equilibrium case where $\frac
 \frac{d\Delta n_{e}}{dt} = G_{NE}  -  \sum_{i}^{}[k_{r, b, i}n_{i,0}\Delta n_{e} + k_{r, b, i}n_{e,0}\Delta n_{i} + k_{r, b, i}\Delta n_{e}\Delta n_{i}].
 \end{equation}
 
-We assume that $\Delta n_i$ is proportional to $\Delta n_e$ — $\Delta n_i = \phi_i \Delta n_{e}$ — where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non-equilibrium process. The focus of our analysis is for small perturbations from equilibrium (discussed below), and we assume that the relationship between any created $\Delta n_i$ and $\Delta n_e$ can be linearized. We can then substitute this into Equation \ref{eq:full_deqn} to get
+We assume that $\Delta n_i$ is proportional to $\Delta n_e$ — $\Delta n_i = \phi_i \Delta n_{e}$ — where $\phi_i$ is a proportionality constant. This assumption is motivated by the fact that $\Delta n_i$ and $\Delta n_e$ are created from the same non-equilibrium process. Further, The focus of our analysis is for small perturbations from equilibrium (discussed below), and we assume that the relationship between any created $\Delta n_i$ and $\Delta n_e$ can be linearized under small perturbations. We can then substitute this into Equation \ref{eq:full_deqn} to get
 
 \begin{equation}
   \label{eq:full_deqn_phi}
@@ -82,8 +82,21 @@ Furthermore, if we consider the case of $G_{NE} = 0$, corresponding to times aft
 \end{equation}
 where $\tau$ is the exponential time constant. 
 
-For large $\Delta n_e$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will become important. We observe a super-exponential region in the $\Delta AS$ time data, which is consistent with increased recombination from the bimolecular term. However, scattering of microwaves (in addition to absorption) could also contribute to the increased slope. We attempted to fit the full $\Delta AS$ data with a fit method of numerically solving Equation \ref{eq:full_deqn_phi}, as described in Section \ref{sec:mwt-diff-eq-fitting}. 
 
+
+\label{sec:mwt-diff-eq-fitting}
+\subsubsection{Differential equation fitting method }
+
+For large $\Delta n_e$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will become important. We observe a super-exponential region in the $\Delta AS$ time data, which is consistent with increased recombination from the bimolecular term. However, scattering of microwaves (in addition to absorption) could also contribute to the increased slope. We attempted to fit the full $\Delta AS$ data with a fit method of numerically solving Equation \ref{eq:full_deqn_phi} using $G_{NE} = 0$. This method should account for the bimolecular recombination term in Eq.\ \ref{eq:full_deqn_phi}. For simplicity and robust results, we limit ourselves to exponential fitting in the main text, but this numerical fitting procedure should be explored further.
+
+Fitting is performed with the lmfit package in Python. For the solution to the differential equation we assume $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$. The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized, and the normalized solution is fit to the normalized $\Delta AS$ curve using the lmfit package. Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. 
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.7\textwidth]{\repodir/final/figures/SI/output/Fig6_Kwt_Recombination_fitmethod_compare.png}
+\caption{Comparison of recombination coefficients calculated from the two fitting methods.}
+\label{fig:SI_Kwt_Recombination_fitmethod_compare}
+\end{figure}
 \subsection{Photoionization Viability Assessment}
 
 \subsubsection{Figure of Merit}
@@ -95,7 +108,7 @@ In this subsection, we develop a model to assess the fundamental viability of ph
 \gamma = \frac{dP_{MHD}}{dP_{in}} \Big|_{P_{in}=0} = \frac{dP_{MHD}}{dn_{e}}\frac{dn_{e}}{dP_{in}}\Big|_{P_{in}=0}
 \end{equation}
 
-Where we have indicated that we will evaluate $\gamma$ at $P_{in} = 0$. We choose to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. We further justify that a situation where $\gamma > 1$ is possible, as photoionization has the potential to significantly increase the efficiency of the MHD generator. %DN: Read the edits to the section up to this point for accuracy
+Where we have indicated that we will evaluate $\gamma$ at $P_{in} = 0$. We choose to consider the effect of an infinitesimally small power input, as this will the best case scenario where the recombination rate is the lowest, as will be clarified below. A situation where $\gamma > 1$ is possible energetically (does not violate energy conservation) because photoionization has the potential to significantly increase the efficiency of the MHD generator. 
 
 The MHD power density is given by
 
@@ -110,10 +123,10 @@ To derive $\frac{dn_{e}}{dP_{in}}$, we now develop an expression for $n_e(P_{in}
 \begin{equation}
 \Delta n_{e} = \frac{G_{NE}}{k_{r, m, eff}}.
 \end{equation}
-We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a non-equilibrium generation rate \(G_{NE}\). We can then define an ionization efficiency, \(\eta\) in the following way: %DN: The following equation reads more like "We can define G_NE in terms of an ionization efficiency \eta..."
+We consider an arbitrary ionization mechanism that requires a power input per unit volume, \(P_{in}\), to generate a non-equilibrium generation rate \(G_{NE}\). We can then define an ionization efficiency, \(\eta\) in the following way: 
 
 \begin{equation}
-{G}_{NE} = \frac{\eta P_{In}}{E_{IP}}
+\eta = \frac{G_{NE}}{P_{in}/E_{IP}}
 \label{eq:G_NE_in_eta}
 \end{equation}
 
@@ -152,7 +165,7 @@ To calculate $k_{r, m, eff}$, we utilize Equation \ref{eq:krm_eff_def}. The equi
 
 To calculate $\mu_e$ and $n_i$, we model the combustion of seeded oxy-kerosene mixture with the Cantera python package. The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction (1\%). This mixture is initialized at an inlet temperature (\SI{300}{\kelvin}) and allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (\SI{1e6}{\pascal}).
 
-Next, we model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. ref shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.%DN: Missing reference here. Just says "ref"
+Next, we model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. \ref{fig:SI_Cantera_T}A shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
 We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.\cite{bedickCombustionPlasmaElectrical2017a} This method represents an improvement to previous analysis, as it considers the collisional cross-sections for alkali vapors in flames and $\mu_e$ is calculated using the species-dependent collisional cross-sections of constituent gasses.
 
@@ -193,7 +206,7 @@ Although the excimer laser used in this work is pulsed, we choose to analyze ste
 
 \subsubsection{UV absorption cross-sections}
 
-We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-\SI{285}{\nano\meter}). The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111}{\nano\meter}.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170}{\nano\meter}.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200}{\nano\meter}-\SI{300}{\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190}{\nano\meter}-\SI{200}{\nano\meter}.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800}{\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170}{\nano\meter}-\SI{210}{\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963} %DN: Broken citations
+We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-\SI{285}{\nano\meter}). The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111}{\nano\meter}.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170}{\nano\meter}.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200}{\nano\meter}-\SI{300}{\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190}{\nano\meter}-\SI{200}{\nano\meter}.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800}{\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170}{\nano\meter}-\SI{210}{\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963} 
 
 
 \begin{figure}[h]
@@ -227,7 +240,7 @@ Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b}
 
 To calculate $\gamma$, we use the chain rule, giving
 \begin{equation}
-\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}},{d\sigma_{c}} 
+\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} 
 \end{equation}
 where we have recognized that this expression is equivalent to $\gamma$ in Equation \ref{eq:gamma-final} except for an "enhancement" factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. Finally, we can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
 \begin{equation}
@@ -238,14 +251,12 @@ where we have recognized that this expression is equivalent to $\gamma$ in Equat
 
 In the main text and figures below, we calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ for a variety of different $T_{c}$ and setting $T_{b} = 3000$.
 
-For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can approach a factor of 100. However, if the boundary layer temperature is near the bulk temperature, $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can actually be much less than 1. This indicates that contact targeting is only effective for $T_{c} \ll T_{b}$. 
-
-It is still possible to have a $\frac{d\sigma_{eff}}{d\sigma_{c}}$ of less than 1 even if $T_{c} \ll T_{b}$ is the fractional width of the boundary layer is large and the  boundary layer temperature is near the bulk temperature. In this situation, changes in the boundary layer conductivity have a small effect on the effective conductivity. While the enhancement viability $\gamma$ is lowered in this situation, the absolute efficiency of the generator will be larger than for the case of a larger boundary layer width.
+For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can approach a factor of 100 as shown in Figure \ref{fig:SI_bl_enhance}. However, if the boundary layer temperature is near the bulk temperature, $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can actually be much less than 1. This indicates that contact targeting is only effective for $T_{c} \ll T_{b}$. It is still possible to have a $\frac{d\sigma_{eff}}{d\sigma_{c}}$ of less than 1 even if $T_{c} \ll T_{b}$ is the fractional width of the boundary layer is large and the  boundary layer temperature is near the bulk temperature. In this situation, changes in the boundary layer conductivity have a small effect on the overall channel conductivity.
 
 \begin{figure}[h]
     \centering
     \includegraphics[]{\repodir/modeling/viability/analysis/output/figures/bl_enhance.png} 
-    \caption{Enhancement factor for contact targeting versus fractional bulk region width $l_b$}%DN: Is "enhancement factor" the same as "enhancement viability" the same as "viability figure of merit" \gamma?
+    \caption{Enhancement factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$ for contact targeting versus fractional bulk region width $l_b$}
     \label{fig:SI_bl_enhance}
 \end{figure}
 

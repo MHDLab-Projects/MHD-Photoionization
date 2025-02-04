@@ -95,7 +95,7 @@ motor_vals_06 = da_plot.coords['motor'].values
 da_plot.attrs['long_name'] = '$\\alpha$'
 da_plot.plot(hue='var', row='motor', figsize=(8,12))
 plt.ylim(-0.1,1.1)
-plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi06_absem_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '516_pos_phi06_absem_fit.png'))
 
 #%%
 da_plot = ds.to_array('var').sel(phi=0.8, method='nearest').mean('run').dropna('motor',how='all')
