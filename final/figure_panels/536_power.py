@@ -124,9 +124,9 @@ plt.errorbar(da_mean['power'], da_mean, yerr=da_std, fmt='o', capsize=5, label='
 
 plt.plot(x_eval, y_eval, label='Fit')
 
-plt.text(0.1, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
-plt.text(0.1, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
-plt.text(0.1, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
+plt.text(0.05, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
+plt.text(0.05, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
+plt.text(0.05, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
 
 plt.yscale('log')
 plt.xscale('log')
@@ -197,9 +197,9 @@ plt.legend(loc='lower right')
 plt.yscale('log')
 plt.xscale('log')
 
-plt.text(0.1, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
-plt.text(0.1, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
-plt.text(0.1, 0.7, f'A: {result.params["amplitude"].value:.2e} ± {result.params["amplitude"].stderr:.2e}', transform=plt.gca().transAxes)
+plt.text(0.05, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
+plt.text(0.05, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
+plt.text(0.05, 0.7, f'A: {result.params["amplitude"].value:.2f} ± {result.params["amplitude"].stderr:.2f}', transform=plt.gca().transAxes)
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
