@@ -171,9 +171,11 @@ labels = ['B)', 'C)']
 axlist = [ax1, ax2]
 
 for ax, label in zip(axlist, labels):
-    ax.text(-0.15, 1.1, label, transform=ax.transAxes, va='bottom', ha='left')
+    ax.text(-0.15, 1.0, label, transform=ax.transAxes, va='bottom', ha='left')
 
 sfigs[0].get_axes()[0].text(-0.15, 2.75, 'A)', transform=ax1.transAxes)
+
+fig.savefig('Fig3_Position_AES.svg')
 
 # plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
@@ -294,14 +296,3 @@ fig.savefig('Fig4_Position_MWT.svg')
 
 
 
-
-# %%
-
-axlist = [ax1, ax2, ax3]
-
-fig_combined, axs = plt.subplots()
-
-[fig_combined.add_subplot(ax) for ax in axlist]
-
-fig_combined.show()
-# %%
