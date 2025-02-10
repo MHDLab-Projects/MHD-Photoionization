@@ -7,6 +7,9 @@ from mhdlab.plot import xr_errorbar_axes
 # update the dpi to 300 for final figures (see note in mpl.style)
 plt.rcParams['figure.dpi'] = 300
 
+
+#Extract desired data for position dependence figures
+
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 
@@ -29,12 +32,10 @@ ds_p_barrel = xr.open_dataset(pjoin(data_directory, 'ds_p_barrel.cdf')).xr_utils
 ds_p_barrel = ds_p_barrel.pint.quantify()
 ds_p_barrel['nK_barrel_cfdprofile'] = ds_p_barrel['nK_barrel_cfdprofile'].pint.to('particle/cm^3')
 
-#%%
+
 
 # This shows the dates of barrel exit data for 0.8 phi
 ds_p_barrel.sel(phi=0.8, method='nearest').dropna('run', how='all').coords['run']
-
-#%%
 
 ds_cfd = ppu.fileio.load_cfd_centerline()
 
@@ -45,30 +46,28 @@ ds_cfd['nK_cm3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/cm^3')
 
 #%%
 
+#Construct position dependence figure using two subfigures
+
 nrows = 3
 fig = plt.figure()
 
 fig.set_figheight(nrows * 3)
-fig.set_figwidth(5)
+fig.set_figwidth(4.5)
 
 # fig.set_figheight(8)
 
 sfigs = fig.subfigures(2,1, height_ratios = [1,2], hspace = 0)
 
+#Top subfigure
 sfigs[0].subplots(ncols = 3, sharey = True)
 
-
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(phi=0.8, method='nearest')
-
-# da_plot.plot(col='phi', hue='var', row='motor')
 motor_sel = [80, 130, 180]
-
 ds_plot = ds_plot.sel(motor=motor_sel, method='nearest')
-
-# fig, axes = plt.subplots(1,len(motor_sel), figsize=(5,2), sharey=True)
 
 axes = sfigs[0].get_axes()
 
+#Plot on top subfigure
 for i, motor in enumerate(ds_plot.coords['motor']):
     ax = axes[i]
     ds_plot.sel(motor=motor).to_array('var').plot(hue='var', ax=ax)
@@ -88,17 +87,15 @@ for i, motor in enumerate(ds_plot.coords['motor']):
 axes[0].set_ylabel('$\\alpha$')
 
 
-
+#Create bottom subfigure
 (ax1, ax2) = sfigs[1].subplots(nrows = 2)
+sfigs[1].subplots_adjust(hspace = 0.5)
 
-# Phi =0.8
-# ax1 = axes[0]
 
 ds_p_sel = ds_p.sel(phi=0.8, method='nearest').pint.dequantify()
 ds_cfd_sel = ds_cfd.sel(phi=0.8, method='nearest').pint.dequantify()
 
 phi_val_expt = ds_p_sel.coords['phi'].item()
-
 
 nK_mw_horns = ds_p_sel['nK_mw_horns'].dropna('run', how='all').dropna('motor', how='all')
 
@@ -117,7 +114,7 @@ nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, me
 nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
 ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
 
-ax1.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
+ax1.set_title('Equivalence ratio = {}'.format(phi_val_expt))
 
 
 # Phi = 0.65
@@ -149,7 +146,7 @@ assert nK_barrel_std.item().magnitude ==0 # there is only one run for phi=0.6
 ax2.scatter(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, color='green', marker='o', label='Barrel Exit')
 
 
-ax2.set_title('Equivalence Ratio = {}'.format(phi_val_expt))
+ax2.set_title('Equivalence ratio = {}'.format(phi_val_expt))
 
 for ax in [ax1, ax2]:
     ax.axvline(180, color='gold', linestyle='--')
@@ -159,9 +156,9 @@ for ax in [ax1, ax2]:
     ax.legend()
     ax.set_ylabel('$n_K [\\mathrm{cm^{-3}}$]')
 
-ax2.set_xlabel('Stage Position [mm]')
-ax1.set_xlabel('')
-ax1.set_xticklabels([])
+[ax.set_xlabel('Stage Position [mm]') for ax in [ax1,ax2]]
+
+# ax1.set_xticklabels([])
 
 
 #bounding box position changes for subfigure with multiple subplots, so the top subfigure's text does not end up in the same place as the bottom two. Right now, doing this hacky way of getting the top label to the right place. More robust would be to use figure coordinates for putting text, but that makes it way harder to put labels on multiple subplots.
