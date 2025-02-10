@@ -172,7 +172,7 @@ for ax, label in zip(axlist, labels):
 
 sfigs[0].get_axes()[0].text(-0.15, 2.75, 'A)', transform=ax1.transAxes)
 
-fig.savefig('Fig3_Position_AES.svg')
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig3_Position_AES.svg'))
 
 # plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
@@ -289,7 +289,7 @@ ax3.set_ylabel('SFR')
 
 dropna(g)
 
-fig.savefig('Fig4_Position_MWT.svg')
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig4_Position_MWT.svg'))
 
 
 
