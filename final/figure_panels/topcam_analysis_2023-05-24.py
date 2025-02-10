@@ -102,7 +102,37 @@ ds_cfd
 
 from matplotlib_scalebar.scalebar import ScaleBar
 
-fig, axes = plt.subplots(ncols=2, nrows=3, figsize=(8,6))
+plt.rcParams.update({'font.size': 8})
+
+fig, axes = plt.subplots(ncols=2, nrows=3, figsize = (5,6))
+
+fig.subplots_adjust(wspace= 0.45)
+
+
+
+
+label_color = 'black' #axis label color
+
+labels = ['A)','B)','C)','D)','E)','F)']
+
+# for ax, label in zip(axes.flatten(), labels):
+#     ax.text(-0.25, 1.0, label, transform=ax.transAxes, va='bottom', ha='left')
+#     # ax.tick_params(axis='y', which = "both", colors='white')
+    
+#     ax.xaxis.label.set_color(label_color)
+#     ax.yaxis.label.set_color(label_color)
+
+
+
+
+for ax, label in zip(axes.flatten(), labels):
+    X = ax.get_position().x0
+    Y = ax.get_position().y1    
+    fig.text(X - .1, Y + .015, label)
+    # ax.tick_params(axis='y', which = "both", colors='white')
+    
+    ax.xaxis.label.set_color(label_color)
+    ax.yaxis.label.set_color(label_color)
 
 
 # Select the gatedelays
@@ -114,21 +144,21 @@ gatedelays = [780, 790]
 ax = axes[0,1]
 da_plot = da_sel_tf.sel(gatedelay=gatedelays[0])
 da_plot.plot(ax=ax, vmin=0)
-axes[0,1].set_title('ICCD Before Laser [counts]')
+axes[0,1].set_title('ICCD before [counts]')
 
 
 ax = axes[1,1]
 da_plot = da_sel_tf.sel(gatedelay=gatedelays[1]) 
 da_plot.plot(ax=ax, vmin=0)
-axes[1,1].set_title('ICCD During Laser [counts]')
+axes[1,1].set_title('ICCD during [counts]')
 
 ax = axes[0,0]
 ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x')
-axes[0,0].set_title('K [$\\#/cm^3$]')
+axes[0,0].set_title(r'K $\mathrm{[\#/cm^3]}$')
 
 ax = axes[1,0]
 ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x', vmax=2e16)
-axes[1,0].set_title('KOH [$\\#/cm^3$]')
+axes[1,0].set_title(r'KOH $\mathrm{[\#/cm^3]}$')
 
 
 ax = axes[2,0]
@@ -137,7 +167,7 @@ axes[2,0].set_title('T [K]')
 
 
 
-for ax in axes.flatten():
+for ax in axes.flatten()[:-1]:
     ax.set_ylabel('')
     ax.set_xlabel('')
     # ax.set_xticks([])
@@ -165,64 +195,62 @@ axes[2,0].set_xlabel('x [mm]')
 
 axes[1,1].add_patch(plt.Rectangle((160,-21), 30, 42, fill=False, edgecolor='r', lw=1, linestyle='--', alpha=0.5))
 
-axes[2, 1].cla()
-axes[2, 1].axis('off')
-plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_compare_2ns_2023-05-24.png'), bbox_inches='tight', dpi=300)
+
+ax_lpf = axes[2,1]
+ax_lpf_twin = ax_lpf.twinx()
+
+# axes[2, 1].cla()
+# axes[2, 1].axis('off')
+# plt.savefig(pjoin(DIR_FIG_OUT, 'spe_cfd_compare_2ns_2023-05-24.png'), bbox_inches='tight', dpi=300)
 # set the 
 
-# %%
-
-plt.figure()
 
 da_sel2 = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
 
 da_sel2.attrs['long_name'] = 'Counts'
 
-da_sel2.mean('gatedelay', keep_attrs=True).plot(vmin=0)
-
-
-plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
-
-#%%
 
 fp_laser_profile = pjoin(REPO_DIR, 'experiment', 'notebook', '2018-11-20', 'output', 'laser_profile_1.csv')
 
-
 df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
 
-df_laser_profile.plot()
+# df_laser_profile.plot()
 
-#%%
 
-plt.figure(figsize=(3,1.5))
-
-ln_cam = da_sel2.mean(['x', 'y']).plot(marker='o')
+ln_cam = da_sel2.mean(['x', 'y']).plot(marker='o', ax = ax_lpf)
 
 laser_timeshift = 30
-ax = plt.gca()
-ta = plt.twinx()
 
+
+
+# for ax in axes.flatten():
+
+#     ax.set_anchor('W')
 
 df_laser_profile_shift = df_laser_profile.copy()
 df_laser_profile_shift.index = df_laser_profile_shift.index + laser_timeshift
-df_laser_profile_shift.plot(ax=ta, color='r')
-ln_laser = ta.get_lines()
+df_laser_profile_shift.plot(ax=ax_lpf_twin, color='r')
+ln_laser = ax_lpf_twin.get_lines()
 
-ta.get_legend().remove()
+ax_lpf_twin.get_legend().remove()
 
 lns = ln_cam + ln_laser
 labs = ['Top Cam', 'Laser Profile']
-ax.legend(lns, labs, loc=0)
+ax_lpf.legend(lns, labs, loc=0)
 
-plt.xlabel('Gate Delay [ns]')
-ax.set_ylabel('ICCD [counts]')
-ta.set_ylabel('Laser Profile \n[counts]')
+ax_lpf.set_xlabel('Gate Delay [ns]')
+ax_lpf.set_ylabel('ICCD [counts]')
+ax_lpf_twin.set_ylabel('Laser Profile \n[counts]')
 
-plt.xlim(780,830)
+ax_lpf_twin.grid(False)
 
-plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_timedecay.png'))
+ax_lpf.set_xlim(780,830)
 
-# ax.set_yscale('log')
-# ta.set_yscale('log')
+fig.align_ylabels(axes[:, 1])
+
+# plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_timedecay.png'))
+
+# ax_lpf.set_yscale('log')
+# ax_lpf_twin.set_yscale('log')
 
 # %%
