@@ -206,3 +206,140 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
 
 # %%
+
+#modified to be a single figure with subplots and mpl-created A, B, C... labels
+
+
+fig, axes = plt.subplots(2, 2, figsize = (7.5, 5))
+
+
+
+#delta-AS vs time
+
+powers = ds_stat['power'].values
+
+for i, power in enumerate(powers):
+
+    # plot with confidence interval
+
+    ds_stat_sel = ds_stat.sel(power=power)
+    ds_stat_sel['mean'].plot(label=f"{power:.1f}", ax = axes[0,0])
+
+    axes[0,0].fill_between(ds_stat_sel.coords['time'], ds_stat_sel['mean'] - ds_stat_sel['std'], ds_stat_sel['mean'] + ds_stat_sel['std'], alpha=0.2)
+
+    axes[0,0].set_title('')
+    axes[0,0].set_xlabel('')
+
+axes[0,0].set_yscale('log')
+axes[0,0].set_xlim(-1,50)
+axes[0,0].set_ylim(1e-5,2e-1)
+
+axes[0,0].set_ylabel('$\\Delta AS$')
+axes[0,0].set_xlabel(r'Time [$\mathrm{\mu s}$]')
+
+axes[0,0].legend(title=r'Fluence $\mathrm{[mJ/cm^2]}$')
+
+
+#delta-AS vs fluence
+
+ax = axes[0,1]
+da_max = da_lecroy.mwt._pulse_max()
+da_max.attrs['long_name'] = 'Max AS'
+da_max_runavg = da_max.mean('run')
+
+
+model = PowerLawModel()
+da_fit = da_max_runavg.sel(power=slice(0.01,100))
+result = model.fit(da_fit.values, x=da_fit['power'].values)
+params = result.params
+
+x_vals = da_fit['power'].values
+x_eval = np.linspace(x_vals.min(), x_vals.max(), 100)
+y_eval  = model.eval(params, x=x_eval)
+
+da_mean = da_max.mean('run')
+da_std = da_max.std('run')
+
+ax.errorbar(da_mean['power'], da_mean, yerr=da_std, fmt='o', capsize=5, label='Data')
+
+ax.plot(x_eval, y_eval, label='Fit')
+
+ax.text(0.05, 0.9, "Model: $Ax^b$", transform=ax.transAxes)
+ax.text(0.05, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform = ax.transAxes)
+ax.text(0.05, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform = ax.transAxes)
+
+ax.set_yscale('log')
+ax.set_xscale('log')
+
+ax.legend(reverse = True)
+
+ax.set_xlabel(r'Fluence [$\mathrm{mJ/cm^2}$]')
+ax.set_ylabel('$\\Delta AS_{max}$')
+
+
+#delta-PD vs time
+ax = axes[1,0]
+
+da_plot = ds_pd['dpd1'].copy()
+da_plot = da_plot.drop(0,'power')
+da_plot = da_plot.assign_coords(power=[float(f'{p:.1f}') for p in da_plot.coords['power'].values])
+da_plot.coords['power'].attrs = ds_pd['power'].attrs
+
+da_plot.plot(hue='power', ax = ax, add_legend = False)
+ax.set_xlim(-1,50)
+ax.set_yscale('log')
+ax.set_ylim(1e-4,)
+ax.set_title('')
+ax.set_xlabel(r'Time [$\mathrm{\mu s}$]')
+ax.set_ylabel('$\\Delta PD$ [mV]')
+
+
+#delta-PD vs fluence
+
+
+
+ax = axes[1,1]
+
+
+da_fit = ds_pd['dpd1_max'].sel(power=slice(0.01,100))
+model = PowerLawModel()
+params = model.make_params()
+result = model.fit(da_fit.values, x=da_fit['power'].values)
+
+
+
+vals  = model.eval(result.params, x=da_fit['power'].values)
+
+ax.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
+
+ax.plot(da_fit['power'].values, vals, label='Fit')
+
+
+
+ax.set_xlabel(r'Fluence [$\mathrm{mJ/cm^2}$]')
+ax.set_ylabel('$\\Delta PD_{max}$ [mV]')
+
+ax.legend(loc='lower right')
+
+ax.set_yscale('log')
+ax.set_xscale('log')
+
+ax.text(0.05, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
+ax.text(0.05, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
+ax.text(0.05, 0.7, f'A: {result.params["amplitude"].value:.2f} ± {result.params["amplitude"].stderr:.2f}', transform=plt.gca().transAxes)
+
+fig.tight_layout()
+
+
+labels = ['A)','B)','C)','D)']
+
+for ax, label in zip(axes.flatten(), labels):
+    X = ax.get_position().x0
+    Y = ax.get_position().y1    
+    fig.text(X - .07, Y + .015, label)
+    # ax.tick_params(axis='y', which = "both", colors='white')
+
+
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig5_Kwt_Ionization.svg'))
+
+
