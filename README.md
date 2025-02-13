@@ -26,7 +26,7 @@ This repository is tested to work with
     * Change `CFD_RESULTS_DIR` to the directory in which you copied the simulation data. For example, `C:/Users/USERNAME/data/Photoionization/Simulations`
     * TODO: Finalize and explain how extra input data will be downloaded and imported
 
-* Create python virtual environment `(CP) Python: Create Environment`. Select your Python 3 interpereter. If no interpereters appear, click the refresh icon in the top right.
+* Create python virtual environment `(CP) Python: Create Environment`. Select your Python 3 interpreter. If no interpreters appear, click the refresh icon in the top right.
 ![doc image](/doc/media/interpereter_select.png)
 
 * For dependencies to install, select `requirements_gitbash.txt`. After installing `(CP) Python: Select Interpreter` and select .venv
