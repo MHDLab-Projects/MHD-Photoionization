@@ -3,6 +3,9 @@
 from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu #Sets matplotlib style
+import matplotlib.ticker as mticker
+
+
 
 # update the dpi to 300 for final figures (see note in mpl.style)
 plt.rcParams['figure.dpi'] = 300
@@ -40,7 +43,7 @@ ds_mwt_fit = xr.concat([
 
 #%%
 
-fig, axes = plt.subplots(2, 1, figsize=(5,8), sharex=True)
+fig, axes = plt.subplots(2, 1, figsize=(3.5,6), sharex=True)
 
 var = 'nK_m3_barrel'
 data=ds_p_stats['{}_mean'.format(var)].pint.to('particle/cm^3').pint.dequantify()
@@ -72,7 +75,7 @@ da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/cm**3').pi
 line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 
 
-axes[0].set_ylabel(r"Species Concentration [$\#/cm^3$]")
+axes[0].set_ylabel(r"Species Concentration [$\mathrm{cm^{-3}}$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
     ['Expt. $n_K$ (Barrel)', 'Expt. $n_K$ (180 mm)', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
@@ -110,24 +113,48 @@ axes[1].set_ylim(1e-2,2e-1)
 axes[1].legend([lineAS, linePD[0]], ['$\\Delta AS_{max}$', '$\\Delta PD_{max}$'])
 
 ta.set_ylabel("$\\Delta PD_{max}$ [mV]")
+ta.grid(False)
 
 ta.set_yscale('log')
-ta.set_ylim(3.5e-1,2.5e0)
 
 
+ta.yaxis.set_minor_formatter(mticker.ScalarFormatter())
+ta.yaxis.set_major_formatter(mticker.ScalarFormatter())
+ta.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.1f'))
 
+ta.set_yticks([0.5, 0.6, 0.7, 0.8, 0.9, 1.2, 1.4, 1.6], minor=True)
+ta.yaxis.set_minor_formatter(mticker.ScalarFormatter())
+ta.yaxis.set_minor_formatter(mticker.FixedFormatter(['', '0.6', '', '0.8', '', '1.2', '1.4', '1.6']))
+
+fig.subplots_adjust(hspace = 0)
 for ax in axes:
     ax.set_xscale('log')
     ax.set_yscale('log')
 
+
+
 axes[-1].set_xlabel("$K_{wt,nominal} [\\%]$")
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_ionization.png'), dpi=300, bbox_inches='tight')
+labels = ['A)','B)','C)','D)']
+
+for ax, label in zip(axes, labels):
+    X = ax.get_position().x0
+    Y = ax.get_position().y1    
+    fig.text(X - .2, Y - 0.015, label)
+    # ax.tick_params(axis='y', which = "both", colors='white')
+
+
+
+fig.savefig(pjoin(REPO_DIR, 'final','figures', 'Fig6_kwt_dependence.svg'), dpi=300, bbox_inches='tight')
 # %%
+
+
+fig, axes = plt.subplots(2,1, figsize=(3.5,6))
+
 
 run_sel = ('2023-05-12', 1)
 
-plt.figure(figsize=(2,2))
+
 
 da_plot = ds_lecroy['dAS_abs'].sel(run=run_sel).sel(kwt=1, method='nearest')
 da_plot
@@ -145,32 +172,30 @@ x = mean.coords[mean.dims[0]].pint.magnitude
 mean = mean.pint.magnitude
 std_err = std_err.pint.magnitude
 # Plot mean
-plt.plot(x, mean, label='AS')
+axes[0].plot(x, mean, label='AS')
 
 da_plot_fit = ds_mwt_fit.sel(date=run_sel[0]).sel(run_num=run_sel[1]).sel(kwt=1, method='nearest').sel(fit_method='exp')['AS_fit']
-da_plot_fit.plot(label='AS Fit')
+da_plot_fit.plot(label='AS Fit', ax = axes[0])
 
 # Plot confidence interval
-plt.fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
+axes[0].fill_between(x, mean - std_err, mean + std_err, color='b', alpha=0.1)
 
 
-plt.yscale('log')
-plt.xlim(-1,25)
-plt.ylim(1e-5,)
-plt.ylabel(r'$\Delta AS$')
-plt.xlabel('Time [$\\mu s$]')
+axes[0].set_yscale('log')
+axes[0].set_xlim(-1,25)
+axes[0].set_ylim(1e-5,)
+axes[0].set_ylabel(r'$\Delta AS$')
+axes[0].set_xlabel('Time [$\\mu s$]')
 
-plt.title('')
-plt.legend(['Data', 'Fit'])
+axes[0].set_title('')
+axes[0].legend(['Data', 'Fit'])
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_mwt_fit_exp.png'), dpi=300, bbox_inches='tight')
-
-
-
-# %%
+# plt.savefig(pjoin(DIR_FIG_OUT, '53x_mwt_fit_exp.png'), dpi=300, bbox_inches='tight')
 
 
-fig, ax = plt.subplots(figsize=(2,2))
+
+
+ax = axes[1]
 
 var = 'mwt_fit_decay_exp'
 ax.errorbar(
@@ -206,17 +231,28 @@ for species in ds_tau_plot.data_vars:
     else:
         label = species
 
-    ds_tau_plot[species].plot(label="${}$".format(label), ax=ax, marker=marker)
+    ds_tau_plot[species].plot(label="${}$".format(label), ax=axes[1], marker=marker)
 
-ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
-ax.set_ylabel("Time Constant [$\\mu s$]")
-ax.set_title('')
-ax.set_ylim(5e-2, 2e3)
+axes[1].legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
+axes[1].set_ylabel("Time Constant [$\\mu s$]")
+axes[1].set_title('')
+axes[1].set_ylim(5e-2, 2e3)
 
-ax.set_xscale('log')
-ax.set_yscale('log')
+axes[1].set_xscale('log')
+axes[1].set_yscale('log')
 
-plt.xlabel("$K_{wt,nominal} [\\%]$")
+axes[1].set_xlabel("$K_{wt,nominal} [\\%]$")
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_exp.png'), dpi=300, bbox_inches='tight')
+# plt.savefig(pjoin(DIR_FIG_OUT, '53x_params_recomb_exp.png'), dpi=300, bbox_inches='tight')
+
+
+for ax, label in zip(axes, labels):
+    X = ax.get_position().x0
+    Y = ax.get_position().y1    
+    fig.text(X - .2, Y - 0.015, label)
+    # ax.tick_params(axis='y', which = "both", colors='white')
+
+
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig7_kwt_dependence.svg'))
+
 # %%
