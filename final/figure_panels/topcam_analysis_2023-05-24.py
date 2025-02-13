@@ -432,7 +432,7 @@ ax_lpf.set_xlim(780,830)
 
 
 #Set layout
-fig.tight_layout(w_pad = 5)
+fig.tight_layout(w_pad = 3)
 
 
 #modify labels and add A, B, C... 
