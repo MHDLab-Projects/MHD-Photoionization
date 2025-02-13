@@ -340,6 +340,6 @@ for ax, label in zip(axes.flatten(), labels):
     # ax.tick_params(axis='y', which = "both", colors='white')
 
 
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig5_Kwt_Ionization.svg'))
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig5_Laser_power_dependence.svg'))
 
 

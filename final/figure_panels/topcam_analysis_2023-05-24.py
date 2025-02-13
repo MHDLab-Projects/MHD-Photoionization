@@ -303,7 +303,7 @@ else:
 
 
 ax = fig.add_subplot(spec[0, 0])
-plot_obj = ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, x='pos_x', add_colorbar = False, norm = norm)
+plot_obj = ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, vmax = 1E16, x='pos_x', add_colorbar = False)
 
 cb = plt.colorbar(plot_obj)
 scale_cbar_ticks(cb, 10**(-16), new_label = r"K $\mathrm{[10^{16}/m^3]}$", rounding = 2)
@@ -313,7 +313,7 @@ ax.set_xlabel("x position (mm)")
 
 
 ax2 = fig.add_subplot(spec[0, 1])
-plot_obj = ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax2, vmin=0, x='pos_x', add_colorbar = False, norm = norm)
+plot_obj = ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax2, vmin=0, vmax = 2E16, x='pos_x', add_colorbar = False)
 
 cb2 = plt.colorbar(plot_obj)
 scale_cbar_ticks(cb2, 10**(-16), new_label = r"K $\mathrm{[10^{16}/m^3]}$", rounding = 2)
