@@ -47,6 +47,5 @@ source gen_figs.sh
 popd
 
 pushd $REPO_DIR/experiment/notebook/2018-11-20
-python munge_spe.py
 python analysis_beam_timing.py
 popd
