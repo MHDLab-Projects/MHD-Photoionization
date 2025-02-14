@@ -436,7 +436,7 @@ ax_lpf.legend(lns, labs, loc=0)
 
 ax_lpf.set_xlabel('Gate Delay [ns]')
 ax_lpf.set_ylabel('Intensity (normalized)')
-ax_lpf.set_yticklabels(['', '0','','', '','', '', 1])
+ax_lpf.set_yticklabels(['', '0','','', 1])
 ax_lpf.tick_params(axis = 'y', which = 'both', right = True)
 # ax_lpf_twin.set_ylabel('Laser Profile \n[counts]')
 
@@ -469,8 +469,8 @@ for ax, label in zip(axes, labels):
 
 #set parameters for all axes except for the bottom right one
 for ax in axes[:-1]:
-    ax.set_ylabel('y position [mm]')
-    ax.set_xlabel('x position [mm]')
+    ax.set_ylabel('y-position [mm]')
+    ax.set_xlabel('x-position [mm]')
     # ax.set_xticks([])
     # ax.set_yticks([])
 
