@@ -29,7 +29,7 @@ if not os.path.exists('output'): os.mkdir('output')
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
-ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf'), engine = 'scipy').squeeze()
+ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
 gamma = ds_NE['gamma']
 
 # Add enhancement factor
@@ -53,12 +53,20 @@ gs = gridspec.GridSpec(1, 2, width_ratios=[1, 1])
 ax_left = fig.add_subplot(gs[0])
 
 # Right panel with four subplots
-gs_right = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=gs[1])
+gs_right = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=gs[1], wspace= 0.1, hspace = 0.1)
+
 
 ax_right_00 = fig.add_subplot(gs_right[0, 0])
-ax_right_01 = fig.add_subplot(gs_right[0, 1], sharex=ax_right_00, sharey=ax_right_00)
-ax_right_10 = fig.add_subplot(gs_right[1, 0], sharey=ax_right_00)
-ax_right_11 = fig.add_subplot(gs_right[1, 1], sharex=ax_right_10, sharey=ax_right_00)
+ax_right_10 = fig.add_subplot(gs_right[1, 0])
+ax_right_11 = fig.add_subplot(gs_right[1, 1])
+ax_right_01 = fig.add_subplot(gs_right[0, 1])
+
+
+ax_right_01.sharey(ax_right_00)
+ax_right_11.sharey(ax_right_10)
+
+ax_right_00.sharex(ax_right_10)
+ax_right_01.sharex(ax_right_11)
 
 axes_right = np.array([[ax_right_00, ax_right_01], [ax_right_10, ax_right_11]])
 
@@ -112,13 +120,15 @@ for i, eta in enumerate(['perf', 'KOH']):
         ax.set_ylabel('')
 
 labs = [0.8, 0.9, 1.0]
-# Create a single legend for the right four axes
+
+# Create a single legend for the right four axes and modify its position
 handles, labels = axes_right[0, 0].get_legend_handles_labels()
-fig.legend(handles, labels, title='Equiv.\nRatio', loc='center right', bbox_to_anchor=(1.13, 0.5))
+fig.legend(handles, labels, title='Equiv.\nRatio', loc='center right', bbox_to_anchor=(1.1, 0.5))
 
 
-plt.xlim(0.8e4, 1.2e6)
-plt.ylim(1200, 3500)
+for ax in axes_right.flatten():
+    ax.set_xlim(0.8e4, 1.2e6)
+    ax.set_ylim(1200, 3500)
 
 axes_right[0, 0].set_title(r'$\eta$ = 1.0')
 axes_right[0, 1].set_title(r'$\eta_{KOH}$')
@@ -136,10 +146,14 @@ axes_right[1, 1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes_right[1, 1].t
 plt.setp(ax_right_01.get_yticklabels(), visible=False)
 plt.setp(ax_right_11.get_yticklabels(), visible=False)
 
+# Remove x tick labels for shared x axes
+plt.setp(ax_right_00.get_xticklabels(), visible=False)
+plt.setp(ax_right_01.get_xticklabels(), visible=False)
+
 fig.tight_layout(w_pad = 2)
 # Add labels to the subplots
 fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
 fig.text(0.505, 0.98, 'B)', transform=fig.transFigure, verticalalignment='top', horizontalalignment='left')
 
 
-plt.savefig('output/P_zero_l_b_eta.png')
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig7_viability.svg'))
