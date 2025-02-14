@@ -27,8 +27,8 @@ da_sel = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
 
 da_sel.mean('gatedelay').plot()
 
-plt.xlabel('x (mm)')
-plt.ylabel('y (mm)')
+plt.xlabel('x [mm]')
+plt.ylabel('y [mm]')
 
 
 #%%
@@ -290,7 +290,7 @@ shared_colorbar = False
 cbar_location = "right"
 
 
-fig = plt.figure(figsize = (7.5, 8))
+fig = plt.figure(figsize = (7.5, 7))
 # fig.set_figwidth(7.5)
 
 if shared_colorbar:
@@ -302,41 +302,54 @@ else:
     spec = fig.add_gridspec(3, 2, height_ratios = height_ratios)
 
 
-ax = fig.add_subplot(spec[0, 0])
-plot_obj = ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, vmax = 1E16, x='pos_x', add_colorbar = False)
 
-cb = plt.colorbar(plot_obj)
-scale_cbar_ticks(cb, 10**(-16), new_label = r"K $\mathrm{[10^{16}/m^3]}$", rounding = 2)
+if shared_colorbar:
 
-ax.set_title(r'K (CFD)')
-ax.set_xlabel("x position (mm)")
+    ax = fig.add_subplot(spec[0, 0])
+    plot_obj = ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, x='pos_x', add_colorbar = False, norm = norm)
 
-
-ax2 = fig.add_subplot(spec[0, 1])
-plot_obj = ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax2, vmin=0, vmax = 2E16, x='pos_x', add_colorbar = False)
-
-cb2 = plt.colorbar(plot_obj)
-scale_cbar_ticks(cb2, 10**(-16), new_label = r"K $\mathrm{[10^{16}/m^3]}$", rounding = 2)
-
-ax2.set_title(r'KOH (CFD)')
-ax2.sharex(ax)
-ax2.set_xlabel("x position (mm)")
+    ax.set_title(r'K (CFD)')
+    ax.set_xlabel("x position [mm]")
 
 
-# if shared_colorbar:
+    ax2 = fig.add_subplot(spec[0, 1])
+    plot_obj = ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax2, x='pos_x', add_colorbar = False, norm = norm)
 
-#     scale_cbar_ticks()
+    ax_cb = fig.add_subplot(spec[1, :])
+    cbar = plt.colorbar(plot_obj,  cax = ax_cb, location = "bottom")
+
+    #Scale ticks to make units #*10^16/cm^3
+    tick_scale_factor = 1E16
+    cbar_ticks = cbar.get_ticks()
+    new_ticks = cbar_ticks / tick_scale_factor
+    cbar.set_ticklabels(new_ticks)
+    ax_cb.set_xlabel(r"Concentration $[10^{16}/m^3]$")
 
 
-#     ax_cb = fig.add_subplot(spec[1, :])
-#     cbar = plt.colorbar(plot_obj,  cax = ax_cb, location = "bottom")
+else:     
+    ax = fig.add_subplot(spec[0, 0])
+    plot_obj = ds_cfd[ppu.CFD_K_SPECIES_NAME].plot(ax=ax, vmin=0, vmax = 1E16, x='pos_x', add_colorbar = False)
 
-#     #Scale ticks to make units #*10^16/cm^3
-#     tick_scale_factor = 1E16
-#     cbar_ticks = cbar.get_ticks()
-#     new_ticks = cbar_ticks / tick_scale_factor
-#     cbar.set_ticklabels(new_ticks)
-#     ax_cb.set_xlabel(r"K $[10^{16}/m^3]$")
+    cb = plt.colorbar(plot_obj)
+    scale_cbar_ticks(cb, 10**(-16), new_label = r"K $\mathrm{[10^{16}/m^3]}$", rounding = 2)
+
+    ax.set_title(r'K (CFD)')
+    ax.set_xlabel("x position [mm]")
+
+
+    ax2 = fig.add_subplot(spec[0, 1])
+    plot_obj = ds_cfd[ppu.CFD_KOH_SPECIES_NAME].plot(ax=ax2, vmin=0, vmax = 2E16, x='pos_x', add_colorbar = False)
+
+    cb2 = plt.colorbar(plot_obj)
+
+    scale_cbar_ticks(cb2, 10**(-16), new_label = r"KOH $\mathrm{[10^{16}/m^3]}$", rounding = 2)
+
+    ax2.set_title(r'KOH (CFD)')
+    ax2.sharex(ax)
+    ax2.set_xlabel("x position [mm]")
+
+
+
 
 
 
@@ -375,8 +388,11 @@ ax5.set_title('Temperature')
 
 
 
+if shared_colorbar:
+    ax_lpf = fig.add_subplot(spec[3,1])
+else:
+    ax_lpf = fig.add_subplot(spec[2,1])
 
-ax_lpf = fig.add_subplot(spec[2,1])
 ax_lpf_twin = ax_lpf.twinx()
 
 # axes[2, 1].cla()
@@ -432,7 +448,7 @@ ax_lpf.set_xlim(780,830)
 
 
 #Set layout
-fig.tight_layout(w_pad = 3)
+fig.tight_layout(w_pad = 3, h_pad = 3)
 
 
 #modify labels and add A, B, C... 
@@ -453,8 +469,8 @@ for ax, label in zip(axes, labels):
 
 #set parameters for all axes except for the bottom right one
 for ax in axes[:-1]:
-    ax.set_ylabel('y position (mm)')
-    ax.set_xlabel('x position (mm)')
+    ax.set_ylabel('y position [mm]')
+    ax.set_xlabel('x position [mm]')
     # ax.set_xticks([])
     # ax.set_yticks([])
 
