@@ -29,7 +29,7 @@ if not os.path.exists('output'): os.mkdir('output')
 
 ds_P_zero = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'P_zero.cdf'))
 
-ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf')).squeeze()
+ds_NE = xr.open_dataset(os.path.join(PI_modeling_dataset_dir, 'ds_NE.cdf'), engine = 'scipy').squeeze()
 gamma = ds_NE['gamma']
 
 # Add enhancement factor
@@ -39,129 +39,107 @@ gamma = gamma*da_dsigma_tot
 beta = gamma -1 
 
 #%%
-ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
-
-plt.xscale('log')
-
-plt.savefig(os.path.join('output', 'viability_kwt.png'))
 # %%
-
 from matplotlib.colors import LogNorm
 
-plt.figure(figsize=(5,3))
+# Main text viability figure
+import matplotlib.gridspec as gridspec
 
-combo_sel = dict(l_b=0,  Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
+fig = plt.figure(figsize=(8, 4))
+
+gs = gridspec.GridSpec(1, 2, width_ratios=[1, 1])
+
+# Left panel
+ax_left = fig.add_subplot(gs[0])
+
+# Right panel with four subplots
+gs_right = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=gs[1])
+
+ax_right_00 = fig.add_subplot(gs_right[0, 0])
+ax_right_01 = fig.add_subplot(gs_right[0, 1], sharex=ax_right_00, sharey=ax_right_00)
+ax_right_10 = fig.add_subplot(gs_right[1, 0], sharey=ax_right_00)
+ax_right_11 = fig.add_subplot(gs_right[1, 1], sharex=ax_right_10, sharey=ax_right_00)
+
+axes_right = np.array([[ax_right_00, ax_right_01], [ax_right_10, ax_right_11]])
+
+# Left panel of viability figure
+combo_sel = dict(l_b=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
 
 norm = LogNorm(vmin=0.01, vmax=100)
 
-g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm)
+g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm, ax=ax_left)
 
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
-
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_left)
 
 # Set the colorbar label
 g.colorbar.set_label('$\\gamma$')
 
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--')
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_left)
 
-plt.gca().set_title('')
+ax_left.set_title('')
 
-plt.ylabel('Temperature [K]')
-plt.xlabel('Pressure [Pa]')
+ax_left.set_ylabel('Temperature [K]')
+ax_left.set_xlabel('Pressure [Pa]')
 
-plt.xlim(0.8e4,1.2e6)
-plt.ylim(1200,3500)
+ax_left.set_xlim(0.8e4, 1.2e6)
+ax_left.set_ylim(1200, 3500)
 
-
-plt.savefig('output/gamma_curve_demo.png')
-# %%
-
-
+# Right panel of main text viability figure
 combo_downsel = {
-    # 'P_in' : 0,
-    # 'phi': [0.8],
-    'l_b': [0, 0.99],  
+    'l_b': [0, 0.99],
     'eta': ['perf', 'KOH'],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
-    # 'analysis': ['perf_Bconst']
 }
 
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
-
-fig, axes = plt.subplots(2, 2, figsize=(4,3), sharex=True, sharey=True)
-
-
 for i, eta in enumerate(['perf', 'KOH']):
     for j, l_b in enumerate([0, 0.99]):
-        ax = axes[j,i]
+        ax = axes_right[j, i]
 
         da_sel = P_zero.sel(eta=eta, l_b=l_b)
 
-        lns = da_sel.plot(hue='phi', y='T', xscale='log', ax=ax)
+        for phi in da_sel['phi'].values:
+            da_sel.sel(phi=phi).plot(y='T', xscale='log', ax=ax, label=f'$\phi$ = {phi}')
         ax.set_title(f'$\eta$ = {eta}, $l_b$ = {l_b}')
 
-        ax.get_legend().remove()
         ax.set_title('')
         ax.set_xlabel('')
         ax.set_ylabel('')
 
-
 labs = [0.8, 0.9, 1.0]
-
-leg = fig.legend(lns, labs, title='Equiv.\nRatio')
-leg.set_bbox_to_anchor((1.19, 0.7))  # coordinates are in figure units
-
-plt.xlim(0.8e4,1.2e6)
-plt.ylim(1200,3500)
+# Create a single legend for the right four axes
+handles, labels = axes_right[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, title='Equiv.\nRatio', loc='center right', bbox_to_anchor=(1.13, 0.5))
 
 
-axes[0,0].set_title(r'$\eta$ = 1.0')
-axes[0,1].set_title(r'$\eta_{KOH}$')
+plt.xlim(0.8e4, 1.2e6)
+plt.ylim(1200, 3500)
 
-axes[1,0].set_xlabel('Pressure [Pa]')
-axes[1,1].set_xlabel('Pressure [Pa]')
+axes_right[0, 0].set_title(r'$\eta$ = 1.0')
+axes_right[0, 1].set_title(r'$\eta_{KOH}$')
 
-axes[0,0].set_ylabel('T [K]')
-axes[1,0].set_ylabel('T [K]')
+axes_right[1, 0].set_xlabel('Pressure [Pa]')
+axes_right[1, 1].set_xlabel('Pressure [Pa]')
 
-axes[0,1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes[0,1].transAxes, rotation=-90, va='center')
-axes[1,1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes[1,1].transAxes, rotation=-90, va='center')
+axes_right[0, 0].set_ylabel('T [K]')
+axes_right[1, 0].set_ylabel('T [K]')
 
-plt.tight_layout(pad=0.6)
+axes_right[0, 1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes_right[0, 1].transAxes, rotation=-90, va='center')
+axes_right[1, 1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes_right[1, 1].transAxes, rotation=-90, va='center')
+
+# Remove y tick labels for shared y axes
+plt.setp(ax_right_01.get_yticklabels(), visible=False)
+plt.setp(ax_right_11.get_yticklabels(), visible=False)
+
+fig.tight_layout(w_pad = 2)
+# Add labels to the subplots
+fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
+fig.text(0.505, 0.98, 'B)', transform=fig.transFigure, verticalalignment='top', horizontalalignment='left')
+
 
 plt.savefig('output/P_zero_l_b_eta.png')
-# %%
-
-combo_downsel = {
-    # 'P_in' : 0,
-    'phi': [0.8, 0.9, 1.0],
-    'l_b': [0],  
-    'eta': ['perf', 'KOH'],
-    'Kwt': [0.01],
-    # 'rxn': 'mm_sum'
-    # 'analysis': ['perf_Bconst']
-}
-
-P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
-
-g = P_zero.plot(hue='rxn', row='eta', col='phi', y='T', xscale='log', figsize=(5,3))
-
-# for ax in g.axes.flatten():
-#     ax.plot([1e5], [3000], marker='*', markersize=10)
-# Get the legend and move it
-legend = g.fig.legends[0]
-legend.set_bbox_to_anchor((1.2, 0.5))  # coordinates are in figure units
-
-
-plt.xlim(0.8e4,1.2e6)
-plt.ylim(1200,3500)
-
-plt.tight_layout()
-
-
-plt.savefig('output/P_zero_rxn_component.png')

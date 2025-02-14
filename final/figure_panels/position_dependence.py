@@ -52,14 +52,15 @@ nrows = 3
 fig = plt.figure()
 
 fig.set_figheight(nrows * 3)
-fig.set_figwidth(4.5)
+fig.set_figwidth(7.5)
 
-# fig.set_figheight(8)
 
-sfigs = fig.subfigures(2,1, height_ratios = [1,2], hspace = 0)
+sfigs = fig.subfigures(2,1, height_ratios = [1,2], hspace = -0.05)
 
 #Top subfigure
 sfigs[0].subplots(ncols = 3, sharey = True)
+
+sfigs[0].subplots_adjust(hspace = 0.5)
 
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(phi=0.8, method='nearest')
 motor_sel = [80, 130, 180]
@@ -172,7 +173,9 @@ for ax, label in zip(axlist, labels):
 
 sfigs[0].get_axes()[0].text(-0.15, 2.75, 'A)', transform=ax1.transAxes)
 
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig3_Position_AES.svg'))
+# fig.tight_layout()
+
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig3_Position_AES.svg'), bbox_inches = "tight")
 
 # plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 
@@ -238,7 +241,7 @@ for i, motor in enumerate(motor_sel):
     ax1.plot(mean['time'].pint.magnitude, mean.pint.magnitude, color=colors[i % len(colors)], label='{:.0f} mm'.format(motor_val))
     ax1.fill_between(mean['time'].pint.magnitude, (mean-std).pint.magnitude, (mean+std).pint.magnitude, color=colors[i % len(colors)], alpha=0.2)
 
-ax1.set_xlabel('Time [$\mu s$]')
+ax1.set_xlabel(r'Time [$\mathrm{\mu s}$]')
 ax1.set_ylabel('AS')
 ax1.legend(bbox_to_anchor=(0.5,0.87))
 ax1.set_ylim(-0.05,1.05)
@@ -288,6 +291,8 @@ ax3.set_xlabel('Stage Position [mm]')
 ax3.set_ylabel('SFR')
 
 dropna(g)
+
+fig.tight_layout()
 
 fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig4_Position_MWT.svg'))
 
