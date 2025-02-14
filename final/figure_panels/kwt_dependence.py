@@ -185,7 +185,7 @@ axes[0].set_yscale('log')
 axes[0].set_xlim(-1,25)
 axes[0].set_ylim(1e-5,)
 axes[0].set_ylabel(r'$\Delta AS$')
-axes[0].set_xlabel('Time [$\\mu s$]')
+axes[0].set_xlabel(r'Time [$\mathrm{\mu s}$]')
 
 axes[0].set_title('')
 axes[0].legend(['Data', 'Fit'])
@@ -234,7 +234,7 @@ for species in ds_tau_plot.data_vars:
     ds_tau_plot[species].plot(label="${}$".format(label), ax=axes[1], marker=marker)
 
 axes[1].legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
-axes[1].set_ylabel("Time Constant [$\\mu s$]")
+axes[1].set_ylabel(r"Time Constant [$\mathrm{\mu s}$]")
 axes[1].set_title('')
 axes[1].set_ylim(5e-2, 2e3)
 
