@@ -23,6 +23,8 @@ ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1).sel(phi=0.8)
 
 #%%
 
+plt.figure()
+
 fig, ax = plt.subplots(4, figsize=(4,8))  
 
 plt.sca(ax[0])
@@ -72,6 +74,8 @@ plt.savefig(pjoin('output','figures','cfd_barrel_beam_K_KOH_compare.png'))
 
 
 #%%
+
+plt.figure()
 
 da_plot = ds_cfd_cl['p'].pint.to('atm').sel(offset=0)
 
@@ -192,11 +196,13 @@ ds_p_tophat = ds_p.copy()
 
 # %%
 
+plt.figure()
 
 
 ds_cfd_cl['nK_m3'] = ds_cfd_cl[ppu.CFD_K_SPECIES_NAME].pint.to('particle/m^3')
+ds_cfd_cl['nK_m3'] = ds_cfd_cl['nK_m3'].sel(offset=0).drop('offset')
 
-ds_cfd_cl['nK_m3'].sel(offset=0).plot(color='black', label ='CFD centerline', linestyle='-.')
+ds_cfd_cl['nK_m3'].plot(color='black', label ='CFD centerline', linestyle='-.')
 
 
 nK_barrel_mean = ds_p_base['nK_m3'].mean('run').sel(phi=0.8, method='nearest')

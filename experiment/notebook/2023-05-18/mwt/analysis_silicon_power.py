@@ -87,7 +87,7 @@ ds['q'].plot(hue='fw', ax=axes[1])
 axes[1].set_ylabel('Q (V)')
 
 ds['mag'].plot(hue='fw', ax=axes[2])
-axes[2].set_ylabel('Mag (V)')
+axes[2].set_ylabel('U (V)')
 
 plt.xlim(-1, 200)
 for i, ax in enumerate(axes):
@@ -175,7 +175,7 @@ plt.title('')
 
 plt.legend(['Data','Fit'], loc='lower left')
 
-plt.ylabel('AS_rel')
+plt.ylabel('$\Delta$AS')
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'silicon_power_fit.png'), bbox_inches='tight')
 

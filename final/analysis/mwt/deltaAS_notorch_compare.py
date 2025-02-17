@@ -21,7 +21,6 @@ ds_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=True, AS_calc='absolute')
 
 
 
-
 #%%
 
 fig,axes = plt.subplots(1,5, figsize=(15,5), sharey=True)
