@@ -65,6 +65,7 @@ sfigs[0].subplots_adjust(hspace = 0.5)
 ds_plot = ds_alpha_fit.sel(run=('2023-05-18', 1)).sel(phi=0.8, method='nearest')
 motor_sel = [80, 130, 180]
 ds_plot = ds_plot.sel(motor=motor_sel, method='nearest')
+ds_plot = ds_plot[['alpha_red','alpha_fit']] # remove raw data
 
 axes = sfigs[0].get_axes()
 
@@ -83,7 +84,7 @@ for i, motor in enumerate(ds_plot.coords['motor']):
         ax.get_legend().remove()
 
     else:
-        ax.legend(['Fit', 'Fitted Data', 'Raw Data'])
+        ax.legend(['Fitted Data', 'Fit'])
 
 axes[0].set_ylabel('$\\alpha$')
 
