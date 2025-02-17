@@ -137,13 +137,24 @@ ax.errorbar(
     label='MWT Fit Expon.'
     )
 
-for species in ds_tau.data_vars:
-    ds_tau[species].plot(label="CFD: {}".format(species), ax=ax)
+ds_tau_plot = ds_tau.drop_vars('O2_exp_eff') # This is included for the viability analyis, is calculated from experimental data so is redundant with the lifetime that these data are eventually compared to. 
+
+# print(f"Removing H2O from 53x_params_recomb_exp plot for clarity. Average lifetime: {ds_tau_plot['H2O'].mean().values} us")
+ds_tau_plot = ds_tau_plot.drop_vars('H2O') # Value is ~ 10^5, not including in plot for clarity.
+
+for species in ds_tau_plot.data_vars:
+    if species.startswith('O2'):
+        marker = 'x'
+    elif species.startswith('OH'):
+        marker = '.'
+    elif species.startswith('K'):
+        marker = 's'
+    ds_tau_plot[species].plot(label="CFD: {}".format(species), ax=ax, marker=marker)
 
 ax.legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
 ax.set_ylabel("Time Constant [us]")
 ax.set_title('')
-ax.set_ylim(1e-1, 1e5)
+ax.set_ylim(1e-1, 1e3)
 
 ax.set_xscale('log')
 ax.set_yscale('log')

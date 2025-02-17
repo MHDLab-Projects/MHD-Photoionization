@@ -26,20 +26,20 @@ fig, axes = plt.subplots(4, figsize=(4,6), sharex=True)
 
 ds_sel[['i','q']].to_array('var').plot(x='time', hue='var',ax=axes[0])
 axes[0].set_ylabel('I and Q [V]')
-axes[0].legend(['I','Q'])
+axes[0].legend(['I(t)','Q(t)'])
 axes[0].set_xlabel('')
 ds_sel['mag'].plot(ax=axes[1])
-axes[1].set_ylabel('U [V]')
+axes[1].set_ylabel('U(t) [V]')
 axes[1].set_xlabel('')
 
 mag_0 = ds_sel['mag_0'].item()
 axes[1].axhline(mag_0, color='k', linestyle='--')
 
 ds_sel['T_abs'].plot(ax=axes[2])
-axes[2].set_ylabel('Transmission')
+axes[2].set_ylabel('T(t)')
 
-ds_sel['AS_abs'].plot(ax=axes[3], label='AS Abs.')
-ds_sel['dAS_abs'].plot(ax=axes[3], label='$\Delta$AS Abs.')
+ds_sel['AS_abs'].plot(ax=axes[3], label='AS')
+ds_sel['dAS_abs'].plot(ax=axes[3], label='$\Delta$AS')
 axes[3].set_ylabel('AS')
 axes[3].legend()
 
