@@ -393,8 +393,8 @@ with pd.ExcelWriter(pjoin(DIR_DATA_OUT, 'sim_input_mean.xlsx'), engine='xlsxwrit
             timeslice = slice(row['Start Time'], row['Stop Time'])
 
             ds_sel = ds.sel(time=timeslice)
-            ds_sel = assign_signal(ds_sel, dst_coords['kwt'].round(2), timeindex='time')
-            ds_sel = assign_signal(ds_sel, dst_coords['phi'].round(2), timeindex='time')
+            ds_sel = assign_signal(ds_sel, dst_coords['kwt'].round(3), timeindex='time')
+            ds_sel = assign_signal(ds_sel, dst_coords['phi'].round(3), timeindex='time')
 
             dss.append(ds_sel)
 

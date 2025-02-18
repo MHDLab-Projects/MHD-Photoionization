@@ -89,7 +89,7 @@ df_std = df.xs('std', level=0)
 df_mean
 # %%
 # Create a new DataFrame where each cell is a string that contains the mean and standard deviation values
-df_combined = df_mean.applymap('{:.2f}'.format) + " ± " + df_std.applymap('{:.2f}'.format)
+df_combined = df_mean.applymap('{:.4f}'.format) + " ± " + df_std.applymap('{:.4f}'.format)
 
 # Get the current column names
 columns = df_combined.columns
