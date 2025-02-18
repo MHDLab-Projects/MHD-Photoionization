@@ -24,5 +24,5 @@ python analysis_silicon_power.py
 popd
 
 pushd $REPO_DIR/final/sim_input
-python gen_sim_input.py
+source make_sim_input.sh
 popd
