@@ -156,4 +156,4 @@ fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
 fig.text(0.505, 0.98, 'B)', transform=fig.transFigure, verticalalignment='top', horizontalalignment='left')
 
 
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig7_viability.svg'))
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))

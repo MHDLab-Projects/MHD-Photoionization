@@ -10,3 +10,9 @@ python topcam_analysis_2023-05-24.py
 python 536_power.py
 
 popd
+
+pushd $REPO_DIR/modeling/viability/figure_panels
+
+python gamma_panels.py
+
+popd

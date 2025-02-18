@@ -1,2 +1,10 @@
 output
 setup_images
+
+# These are figures generated directly from matplotlib
+Fig3_Position_AES.svg
+Fig4_Position_MWT.svg
+Fig5_Laser_power_dependence.svg
+Fig6_kwt_dependence.svg
+Fig7_kwt_dependence.svg
+Fig8_Viability.svg
