@@ -51,8 +51,8 @@ ds_cfd['nK_cm3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/cm^3')
 nrows = 3
 fig = plt.figure()
 
-fig.set_figheight(nrows * 3)
-fig.set_figwidth(7.5)
+fig.set_figheight(9)
+fig.set_figwidth(3.5)
 
 
 sfigs = fig.subfigures(2,1, height_ratios = [1,2], hspace = -0.05)
@@ -75,7 +75,7 @@ for i, motor in enumerate(ds_plot.coords['motor']):
     ds_plot.sel(motor=motor).to_array('var').plot(hue='var', ax=ax)
     ax.set_title('{:.0f} mm'.format(motor))
 
-    ax.set_xlabel("Wavelength [nm]")
+    ax.set_xlabel("Wavelength\n[nm]")
 
     ax.set_ylim(-0.1,1.1)
     ax.set_xlim(760,775)
@@ -84,7 +84,7 @@ for i, motor in enumerate(ds_plot.coords['motor']):
         ax.get_legend().remove()
 
     else:
-        ax.legend(['Fitted Data', 'Fit'])
+        ax.legend(['Data', 'Fit'])
 
 axes[0].set_ylabel('$\\alpha$')
 

@@ -1,4 +1,3 @@
-
 # %%
 import os
 import numpy as np
@@ -9,7 +8,7 @@ import matplotlib.pyplot as plt
 
 plt.rcParams.update({
     "savefig.facecolor": 'white',
-    "font.size": 11, 
+    # "font.size": 11, 
     'savefig.dpi': 300, 
     # 'font.sans-serif': 'arial', 
     # 'figure.figsize': (4.6, 3)
@@ -45,32 +44,30 @@ from matplotlib.colors import LogNorm
 # Main text viability figure
 import matplotlib.gridspec as gridspec
 
-fig = plt.figure(figsize=(8, 4))
+fig = plt.figure(figsize=(3.5, 6))
 
-gs = gridspec.GridSpec(1, 2, width_ratios=[1, 1])
+gs = gridspec.GridSpec(2, 1, height_ratios=[0.67, 1])
 
-# Left panel
-ax_left = fig.add_subplot(gs[0])
+# Top panel
+ax_top = fig.add_subplot(gs[0])
 
-# Right panel with four subplots
-gs_right = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=gs[1], wspace= 0.1, hspace = 0.1)
+# Bottom panel with four subplots
+gs_bottom = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=gs[1], wspace=0.1, hspace=0.1)
 
+ax_bottom_00 = fig.add_subplot(gs_bottom[0, 0])
+ax_bottom_10 = fig.add_subplot(gs_bottom[1, 0])
+ax_bottom_11 = fig.add_subplot(gs_bottom[1, 1])
+ax_bottom_01 = fig.add_subplot(gs_bottom[0, 1])
 
-ax_right_00 = fig.add_subplot(gs_right[0, 0])
-ax_right_10 = fig.add_subplot(gs_right[1, 0])
-ax_right_11 = fig.add_subplot(gs_right[1, 1])
-ax_right_01 = fig.add_subplot(gs_right[0, 1])
+ax_bottom_01.sharey(ax_bottom_00)
+ax_bottom_11.sharey(ax_bottom_10)
 
+ax_bottom_00.sharex(ax_bottom_10)
+ax_bottom_01.sharex(ax_bottom_11)
 
-ax_right_01.sharey(ax_right_00)
-ax_right_11.sharey(ax_right_10)
+axes_bottom = np.array([[ax_bottom_00, ax_bottom_01], [ax_bottom_10, ax_bottom_11]])
 
-ax_right_00.sharex(ax_right_10)
-ax_right_01.sharex(ax_right_11)
-
-axes_right = np.array([[ax_right_00, ax_right_01], [ax_right_10, ax_right_11]])
-
-# Left panel of viability figure
+# Top panel of viability figure
 combo_sel = dict(l_b=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
@@ -78,24 +75,24 @@ gamma_sel = gamma.sel(combo_sel)
 
 norm = LogNorm(vmin=0.01, vmax=100)
 
-g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm, ax=ax_left)
+g = (gamma_sel).plot(xscale='log', cmap=cmap, norm=norm, ax=ax_top)
 
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_left)
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_top)
 
 # Set the colorbar label
 g.colorbar.set_label('$\\gamma$')
 
-ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_left)
+ds_P_zero['P_zero'].sel(combo_sel).plot(y='T', color='green', linewidth=1, linestyle='--', ax=ax_top)
 
-ax_left.set_title('')
+ax_top.set_title('')
 
-ax_left.set_ylabel('Temperature [K]')
-ax_left.set_xlabel('Pressure [Pa]')
+ax_top.set_ylabel('Temperature [K]')
+ax_top.set_xlabel('Pressure [Pa]')
 
-ax_left.set_xlim(0.8e4, 1.2e6)
-ax_left.set_ylim(1200, 3500)
+ax_top.set_xlim(0.6e4, 1.4e6)
+ax_top.set_ylim(1200, 3500)
 
-# Right panel of main text viability figure
+# Bottom panel of main text viability figure
 combo_downsel = {
     'l_b': [0, 0.99],
     'eta': ['perf', 'KOH'],
@@ -107,7 +104,7 @@ P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
 for i, eta in enumerate(['perf', 'KOH']):
     for j, l_b in enumerate([0, 0.99]):
-        ax = axes_right[j, i]
+        ax = axes_bottom[j, i]
 
         da_sel = P_zero.sel(eta=eta, l_b=l_b)
 
@@ -122,38 +119,39 @@ for i, eta in enumerate(['perf', 'KOH']):
 labs = [0.8, 0.9, 1.0]
 
 # Create a single legend for the right four axes and modify its position
-handles, labels = axes_right[0, 0].get_legend_handles_labels()
-fig.legend(handles, labels, title='Equiv.\nRatio', loc='center right', bbox_to_anchor=(1.1, 0.5))
+handles, labels = axes_bottom[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, title='Equivalence\nRatio', loc='center right', bbox_to_anchor=(1.1, 0.56))
 
 
-for ax in axes_right.flatten():
-    ax.set_xlim(0.8e4, 1.2e6)
+for ax in axes_bottom.flatten():
+    ax.set_xlim(0.6e4, 1.4e6)
     ax.set_ylim(1200, 3500)
 
-axes_right[0, 0].set_title(r'$\eta$ = 1.0')
-axes_right[0, 1].set_title(r'$\eta_{KOH}$')
+axes_bottom[0, 0].set_title(r'$\eta$ = 1.0')
+axes_bottom[0, 1].set_title(r'$\eta_{KOH}$')
 
-axes_right[1, 0].set_xlabel('Pressure [Pa]')
-axes_right[1, 1].set_xlabel('Pressure [Pa]')
+axes_bottom[1, 0].set_xlabel('Pressure [Pa]')
+axes_bottom[1, 1].set_xlabel('Pressure [Pa]')
 
-axes_right[0, 0].set_ylabel('T [K]')
-axes_right[1, 0].set_ylabel('T [K]')
+axes_bottom[0, 0].set_ylabel('T [K]')
+axes_bottom[1, 0].set_ylabel('T [K]')
 
-axes_right[0, 1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes_right[0, 1].transAxes, rotation=-90, va='center')
-axes_right[1, 1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes_right[1, 1].transAxes, rotation=-90, va='center')
+axes_bottom[0, 1].text(1.05, 0.5, '$l_{bl} = 1$', transform=axes_bottom[0, 1].transAxes, rotation=-90, va='center')
+axes_bottom[1, 1].text(1.05, 0.5, '$l_{bl} = 0.01$', transform=axes_bottom[1, 1].transAxes, rotation=-90, va='center')
 
 # Remove y tick labels for shared y axes
-plt.setp(ax_right_01.get_yticklabels(), visible=False)
-plt.setp(ax_right_11.get_yticklabels(), visible=False)
+plt.setp(ax_bottom_01.get_yticklabels(), visible=False)
+plt.setp(ax_bottom_11.get_yticklabels(), visible=False)
 
 # Remove x tick labels for shared x axes
-plt.setp(ax_right_00.get_xticklabels(), visible=False)
-plt.setp(ax_right_01.get_xticklabels(), visible=False)
+plt.setp(ax_bottom_00.get_xticklabels(), visible=False)
+plt.setp(ax_bottom_01.get_xticklabels(), visible=False)
 
-fig.tight_layout(w_pad = 2)
+fig.tight_layout(h_pad=2)
 # Add labels to the subplots
 fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
-fig.text(0.505, 0.98, 'B)', transform=fig.transFigure, verticalalignment='top', horizontalalignment='left')
-
+fig.text(0.005, 0.48, 'B)', transform=fig.transFigure, verticalalignment='top')
 
 fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))
+
+# %%
