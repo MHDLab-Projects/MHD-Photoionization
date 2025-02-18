@@ -6,7 +6,7 @@ import matplotlib.ticker as ticker
 create_standard_folders()
 
 # update the dpi to 300 for final figures (see note in mpl.style)
-plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.dpi'] = 100
 
 # da_sel_tf.to_netcdf(pjoin(DIR_DATA_OUT, 'spe_20230524_84_tfm.cdf'))
 
@@ -481,4 +481,4 @@ for ax in axes[:-1]:
 #     ax.set_ylabel('')
 
 #saving this as svg creates a huge file, I think because it's creating a vector object for every pixel of the CCD images
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig2_ICCD_CFD.png'))
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'output', 'Fig2_ICCD_CFD.png'))
