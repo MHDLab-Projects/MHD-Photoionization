@@ -484,4 +484,7 @@ for ax in axes[:-1]:
 #     ax.set_ylabel('')
 
 #saving this as svg creates a huge file, I think because it's creating a vector object for every pixel of the CCD images
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'output', 'Fig2_ICCD_CFD.png'))
+# output dir here will not be make yet in main data pipeline...
+output_dir = os.path.join(REPO_DIR, 'final','figures', 'output')
+if not os.path.exists(output_dir): os.makedirs(output_dir)
+fig.savefig(os.path.join(output_dir, 'Fig2_ICCD_CFD.png'))
