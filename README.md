@@ -23,7 +23,6 @@ This repository is tested to work with
 
 * Copy and rename the `.env_example` to `.env`. The directories in `.env` need to be updated to match your local filepaths. 
     * Change `REPO_DIR` to the directory in which you cloned this repository (for example, `C:/Users/USERNAME/code/MHD-Photoionization`). 
-    * Change `CFD_RESULTS_DIR` to the directory in which you copied the simulation data. For example, `C:/Users/USERNAME/data/Photoionization/Simulations`
     * TODO: Finalize and explain how extra input data will be downloaded and imported
 
 * Create python virtual environment `(CP) Python: Create Environment`. Select your Python 3 interpreter. If no interpreters appear, click the refresh icon in the top right.
