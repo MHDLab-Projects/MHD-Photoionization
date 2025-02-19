@@ -23,7 +23,6 @@ This repository is tested to work with
 
 * Copy and rename the `.env_example` to `.env`. The directories in `.env` need to be updated to match your local filepaths. 
     * Change `REPO_DIR` to the directory in which you cloned this repository (for example, `C:/Users/USERNAME/code/MHD-Photoionization`). 
-    * TODO: Finalize and explain how extra input data will be downloaded and imported
 
 * Create python virtual environment `(CP) Python: Create Environment`. Select your Python 3 interpreter. If no interpreters appear, click the refresh icon in the top right.
 ![doc image](/doc/media/interpereter_select.png)
@@ -36,11 +35,13 @@ This repository is tested to work with
 * run `source install.sh` in the terminal (or run steps inside manually)
 
 
-* Add in extra input data: The repository requires some external files to fully reproduce the final results. How this is being handled is in flux but for now there is a 'Input Files' folder that contains two directories. The data are categorized based on whether they are currently reproduced by the repository from the original raw lab data. Go within these directories, and copy the contents into the base level of the directory. 
-    * Folder 1: `Extra (Not Reproduced)`: This folder contains a few various data files that were manually created. 
-        * these should be revisited and added to the repository pipelines where possible, but some can't (e.g. pictures)
+* Add in extra input data: The repository requires some external files to fully reproduce the final results. There will be an 'Input Files' folder released with the paper (TODO: add data url e.g. Zenodo) that contains two directories. The data are categorized based on whether they are currently reproduced by the repository from the original raw lab data. Go within these directories, and copy the contents into the base level of the directory. 
+    * Folder 1: `Extra (Not Reproduced)`: This folder contains a few various data files that were created outside of this repository. 
+        * CFD simulations
+        * Experiment pictures
         * There is some data that is placed in `modeling/em-sim`. This data uses the FDTD package which doesn't have a pip install currently. But this data can be reproduced by separately creating a conda environment (see `modeling\em-sim\environment.yml`)
-    * Folder 2: `Processed (Reproduced)`. This folder contains datasets that are produced by the repository (with access to Raw Data). These datasets are included here to avoid the long processing time, file size, etc. In particular the `experiment/data/munged` folder is large and takes a while to reproduce. Data munging is commented out in the main data pipeline (`automation/pipe_main.sh`) by default. 
+        * Some other manually created data in `experiment/data/manual` that could be revisted to add to data pipeline. 
+    * Folder 2: `Processed (Reproduced)`. This folder contains datasets that are produced by the repository (with access to Raw Data). This data is here to reduce processing time and need for access to the large raw dataset. In particular the `experiment/data/munged` folder is large and takes a while to reproduce. Data munging is disabled in the main data pipeline (`automation/pipe_main.sh`) by default but can be enabled by setting `MUNGE_DATA = true` in the `.env` file. 
 
 Now the repository should be setup. 
 
