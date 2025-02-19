@@ -1,9 +1,4 @@
-# Dataset formation
-
-data output from first munging step
-processing step for `experiment/*` figures
-
-## Manual 
+## Manual info
 
 manual folder includes data manually added 
 
