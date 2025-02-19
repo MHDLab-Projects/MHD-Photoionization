@@ -13,7 +13,7 @@ pushd mhdlab/mhdlab/fileio
 git submodule update --init
 popd
 
-if [ "$MUNGE_DATA" = true]; then
+if [ "$MUNGE_DATA" = true ] ; then
     # Only post process if we need to munge the data, not currently releasing post processing with paper
 
     pushd PostProcessor
@@ -24,3 +24,4 @@ if [ "$MUNGE_DATA" = true]; then
 
     pip install -e .
     popd
+fi
