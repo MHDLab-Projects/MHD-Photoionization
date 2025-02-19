@@ -371,6 +371,9 @@ da_plot = da_sel_tf.sel(gatedelay=gatedelays[1])
 da_plot.plot(ax=ax4, vmin=0, cbar_kwargs = {"location": cbar_location, "label":"counts"})
 ax4.set_title('ICCD during laser')
 
+# draw beam slice box on ax4
+ax4.add_patch(plt.Rectangle((160,-21), 30, 42, fill=False, edgecolor='r', lw=1, linestyle='--', alpha=0.5))
+
 if shared_colorbar:
     ax5 = fig.add_subplot(spec[3,0])
 else:
@@ -448,7 +451,7 @@ ax_lpf.set_xlim(780,830)
 
 
 #Set layout
-fig.tight_layout(w_pad = 3, h_pad = 3)
+fig.tight_layout(w_pad = 2, h_pad = 1)
 
 
 #modify labels and add A, B, C... 
