@@ -19,8 +19,6 @@ cp -r $REPO_DIR/final/dataset/output $output_dir/final/dataset/
 mkdir -p $output_dir/tests/test_data_final 
 cp -r $REPO_DIR/tests/test_data_final $output_dir/tests -r
 
-#final\sim_input\output\sim_input_mean_table.csv
-cp $REPO_DIR/final/sim_input/output/sim_input_mean_table.csv $output_dir/sim_input_mean_table.csv
 
 
 # Collect final documents 
@@ -34,6 +32,9 @@ cp $REPO_DIR/final/figures/output $output_dir/figures -r
 
 cd $REPO_DIR/doc/SI
 cp SI.pdf $output_dir/Supporting\ Information.pdf
+
+#final\sim_input\output\sim_input_mean_table.csv
+cp $REPO_DIR/final/sim_input/output/sim_input_mean_table.csv $output_dir/sim_input_mean_table.csv
 
 # Remove the output_dir/nb_renders directory
 rm -rf "${output_dir}/nb_renders"
