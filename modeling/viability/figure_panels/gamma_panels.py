@@ -120,7 +120,7 @@ labs = [0.8, 0.9, 1.0]
 
 # Create a single legend for the right four axes and modify its position
 handles, labels = axes_bottom[0, 0].get_legend_handles_labels()
-fig.legend(handles, labels, title='Equivalence\nRatio', loc='center right', bbox_to_anchor=(1.1, 0.56))
+fig.legend(handles, labels, title='Equivalence\nRatio', loc='center right', bbox_to_anchor=(1.22, 0.56))
 
 
 for ax in axes_bottom.flatten():
@@ -147,10 +147,21 @@ plt.setp(ax_bottom_11.get_yticklabels(), visible=False)
 plt.setp(ax_bottom_00.get_xticklabels(), visible=False)
 plt.setp(ax_bottom_01.get_xticklabels(), visible=False)
 
+# fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
+# fig.text(0.005, 0.48, 'B)', transform=fig.transFigure, verticalalignment='top')
+
 fig.tight_layout(h_pad=2)
+
+
 # Add labels to the subplots
-fig.text(0.005, 0.98, 'A)', transform=fig.transFigure, verticalalignment='top')
-fig.text(0.005, 0.48, 'B)', transform=fig.transFigure, verticalalignment='top')
+axes = [ax_top, ax_bottom_00]
+labels_ab = ['A)', 'B)']
+
+for ax, label in zip(axes, labels_ab):
+    X = ax.get_position().x0
+    Y = ax.get_position().y1    
+    fig.text(X - 0.2, Y , label)
+ 
 
 fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))
 
