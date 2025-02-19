@@ -3,7 +3,9 @@
 auto_dir=$(pwd)
 source ../.env
 
-# source munge.sh
+if [ "$MUNGE_DATA" = true ] ; then
+    source munge.sh
+fi
 
 cd $auto_dir
 source process_munged.sh
