@@ -51,11 +51,11 @@ ds_cfd['nK_cm3'] = ds_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/cm^3')
 nrows = 3
 fig = plt.figure()
 
-fig.set_figheight(9)
+fig.set_figheight(8.25)
 fig.set_figwidth(3.5)
 
 
-sfigs = fig.subfigures(2,1, height_ratios = [1,2], hspace = -0.05)
+sfigs = fig.subfigures(2,1, height_ratios = [1,4], hspace = 0.0)
 
 #Top subfigure
 sfigs[0].subplots(ncols = 3, sharey = True)
@@ -91,7 +91,8 @@ axes[0].set_ylabel('$\\alpha$')
 
 #Create bottom subfigure
 (ax1, ax2) = sfigs[1].subplots(nrows = 2)
-sfigs[1].subplots_adjust(hspace = 0.5)
+
+sfigs[1].subplots_adjust(hspace = 0.35)
 
 
 ds_p_sel = ds_p.sel(phi=0.8, method='nearest').pint.dequantify()
@@ -156,7 +157,7 @@ for ax in [ax1, ax2]:
     ax.set_xlim(-10,220)
     ax.set_yscale('log')
     ax.legend()
-    ax.set_ylabel('$n_K [\\mathrm{cm^{-3}}$]')
+    ax.set_ylabel('$n_K\ [\\mathrm{cm^{-3}}$]')
 
 [ax.set_xlabel('Stage Position [mm]') for ax in [ax1,ax2]]
 
@@ -165,14 +166,15 @@ for ax in [ax1, ax2]:
 
 #bounding box position changes for subfigure with multiple subplots, so the top subfigure's text does not end up in the same place as the bottom two. Right now, doing this hacky way of getting the top label to the right place. More robust would be to use figure coordinates for putting text, but that makes it way harder to put labels on multiple subplots.
 
-labels = ['B)', 'C)']
+#In the future, use gridspec, not subfigures.
 
+labels = ['B)', 'C)']
 axlist = [ax1, ax2]
 
 for ax, label in zip(axlist, labels):
-    ax.text(-0.15, 1.0, label, transform=ax.transAxes, va='bottom', ha='left')
+    ax.text(-0.25, 1.0, label, transform=ax.transAxes, va='bottom', ha='left')
 
-sfigs[0].get_axes()[0].text(-0.15, 2.75, 'A)', transform=ax1.transAxes)
+sfigs[0].get_axes()[0].text(-0.25, 2.2, 'A)', transform=ax1.transAxes)
 
 # fig.tight_layout()
 
