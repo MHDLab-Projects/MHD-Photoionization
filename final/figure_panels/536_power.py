@@ -13,6 +13,8 @@ plt.rcParams['figure.dpi'] = 300
 
 from mhdlab.xr_utils.stats import WeightedMeanAccessor
 from lmfit.models import PowerLawModel
+
+import matplotlib as mpl
 # %%
 
 tc = '536_power'
@@ -209,11 +211,19 @@ plt.savefig(pjoin(DIR_FIG_OUT, 'delta_pd1_power_fit.png'))
 
 #modified to be a single figure with subplots and mpl-created A, B, C... labels
 
+mpl.rcParams.update({'font.size': 8})
 
-fig, axes = plt.subplots(2, 2, figsize = (7.5, 5))
+fig, axes = plt.subplots(2, 1, figsize = (4, 5))
 
 
 
+
+ms = 2 #Marker size for scatter plots
+cs = 2 #Cap size for error bars
+
+inset_loc = [0.6, 0.65, 0.3, 0.3] #arg for inset location and height
+
+fit_export = [] #collect lines for exporting fit params to text file
 #delta-AS vs time
 
 powers = ds_stat['power'].values
@@ -223,26 +233,34 @@ for i, power in enumerate(powers):
     # plot with confidence interval
 
     ds_stat_sel = ds_stat.sel(power=power)
-    ds_stat_sel['mean'].plot(label=f"{power:.1f}", ax = axes[0,0])
+    ds_stat_sel['mean'].plot(label=f"{power:.1f}", ax = axes[0])
 
-    axes[0,0].fill_between(ds_stat_sel.coords['time'], ds_stat_sel['mean'] - ds_stat_sel['std'], ds_stat_sel['mean'] + ds_stat_sel['std'], alpha=0.2)
+    axes[0].fill_between(ds_stat_sel.coords['time'], ds_stat_sel['mean'] - ds_stat_sel['std'], ds_stat_sel['mean'] + ds_stat_sel['std'], alpha=0.2)
 
-    axes[0,0].set_title('')
-    axes[0,0].set_xlabel('')
+    axes[0].set_title('')
+    axes[0].set_xlabel('')
 
-axes[0,0].set_yscale('log')
-axes[0,0].set_xlim(-1,50)
-axes[0,0].set_ylim(1e-5,2e-1)
+axes[0].set_yscale('log')
+axes[0].set_xlim(-1,50)
+axes[0].set_ylim(1e-5,2e-1)
 
-axes[0,0].set_ylabel('$\\Delta AS$')
-axes[0,0].set_xlabel(r'Time [$\mathrm{\mu s}$]')
+axes[0].set_ylabel('$\\Delta AS$')
+axes[0].set_xlabel(r'Time [$\mathrm{\mu s}$]')
 
-axes[0,0].legend(title=r'Fluence $\mathrm{[mJ/cm^2]}$')
+# Share axis with top axes
+axes[0].sharex(axes[1])
+axes[0].set_xticklabels([])
 
+
+
+# axes[0].legend(title=r'$\n Fluence \mathrm{[mJ/cm^2]}$', loc='upper left', bbox_to_anchor=(1.05, 0.2), borderpad = 0.1)
+
+
+axes[0].legend(title='Fluence\n$\\mathrm{[mJ/cm^2]}$', loc='upper left', bbox_to_anchor=(1.05, 0.2), borderpad = 0.2)
 
 #delta-AS vs fluence
 
-ax = axes[0,1]
+ax = axes[0].inset_axes(inset_loc)
 da_max = da_lecroy.mwt._pulse_max()
 da_max.attrs['long_name'] = 'Max AS'
 da_max_runavg = da_max.mean('run')
@@ -260,25 +278,26 @@ y_eval  = model.eval(params, x=x_eval)
 da_mean = da_max.mean('run')
 da_std = da_max.std('run')
 
-ax.errorbar(da_mean['power'], da_mean, yerr=da_std, fmt='o', capsize=5, label='Data')
+ax.errorbar(da_mean['power'], da_mean, yerr=da_std, fmt='o', capsize = cs, markersize = ms, label='Data')
 
 ax.plot(x_eval, y_eval, label='Fit')
-
-ax.text(0.05, 0.9, "Model: $Ax^b$", transform=ax.transAxes)
-ax.text(0.05, 0.8, f'b: {params["exponent"].value:.2f} ± {params["exponent"].stderr:.2f}', transform = ax.transAxes)
-ax.text(0.05, 0.7, f'A: {params["amplitude"].value:.2e} ± {params["amplitude"].stderr:.2e}', transform = ax.transAxes)
 
 ax.set_yscale('log')
 ax.set_xscale('log')
 
-ax.legend(reverse = True)
+# ax.legend(reverse = True)
 
 ax.set_xlabel(r'Fluence [$\mathrm{mJ/cm^2}$]')
 ax.set_ylabel('$\\Delta AS_{max}$')
 
+#Store fit params
+fit_export.append("delta-AS vs fluence fit parameters:")
+fit_export.append(f'b: {params["exponent"].value:.2f} pm {params["exponent"].stderr:.2f}')
+fit_export.append(f'A: {params["amplitude"].value:.2e} pm {params["amplitude"].stderr:.2e}')
+fit_export.append('\n')
 
 #delta-PD vs time
-ax = axes[1,0]
+ax = axes[1]
 
 da_plot = ds_pd['dpd1'].copy()
 da_plot = da_plot.drop(0,'power')
@@ -298,7 +317,7 @@ ax.set_ylabel('$\\Delta PD$ [mV]')
 
 
 
-ax = axes[1,1]
+ax = axes[1].inset_axes(inset_loc)
 
 
 da_fit = ds_pd['dpd1_max'].sel(power=slice(0.01,100))
@@ -310,7 +329,7 @@ result = model.fit(da_fit.values, x=da_fit['power'].values)
 
 vals  = model.eval(result.params, x=da_fit['power'].values)
 
-ax.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o')
+ax.plot(da_fit['power'].values, da_fit.values, label='Data', marker='o', markersize = ms)
 
 ax.plot(da_fit['power'].values, vals, label='Fit')
 
@@ -319,27 +338,35 @@ ax.plot(da_fit['power'].values, vals, label='Fit')
 ax.set_xlabel(r'Fluence [$\mathrm{mJ/cm^2}$]')
 ax.set_ylabel('$\\Delta PD_{max}$ [mV]')
 
-ax.legend(loc='lower right')
+# ax.legend(loc='lower right')
 
 ax.set_yscale('log')
 ax.set_xscale('log')
 
-ax.text(0.05, 0.9, "Model: $Ax^b$", transform=plt.gca().transAxes)
-ax.text(0.05, 0.8, f'b: {result.params["exponent"].value:.2f} ± {result.params["exponent"].stderr:.2f}', transform=plt.gca().transAxes)
-ax.text(0.05, 0.7, f'A: {result.params["amplitude"].value:.2f} ± {result.params["amplitude"].stderr:.2f}', transform=plt.gca().transAxes)
+#Store fit params
+fit_export.append("delta-PD vs fluence fit parameters:")
+fit_export.append(f'b: {result.params["exponent"].value:.2f} pm {result.params["exponent"].stderr:.2f}')
+fit_export.append(f'A: {result.params["amplitude"].value:.2f} pm {result.params["amplitude"].stderr:.2f}')
+
+
 
 fig.tight_layout()
 
 
+
+fig.subplots_adjust(hspace = 0.02)
+
 labels = ['A)','B)','C)','D)']
 
-for ax, label in zip(axes.flatten(), labels):
+for ax, label in zip(axes, labels):
     X = ax.get_position().x0
     Y = ax.get_position().y1    
-    fig.text(X - .07, Y + .015, label)
+    fig.text(X - .15, Y - .01, label)
     # ax.tick_params(axis='y', which = "both", colors='white')
 
-
 fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig5_Laser_power_dependence.svg'))
+
+with open(os.path.join(REPO_DIR, 'final','figures','Fig5_Laser_power_dependence_fitparams.txt'), 'w') as file:
+    file.writelines(line + '\n' for line in fit_export)
 
 
