@@ -4,28 +4,12 @@ source ../.env
 
 rm -rf $REPO_DIR/output
 
-# collect datasets for processed input data (reproducible from raw data, but can be added to repo to reproduce results to avoid reprocessing time)
-# Not adding experiment\data\munged as the files are very large. Manually copy that folder if needed. Maybe have a separate script to copy all datasets together (to external drive)
-
-echo "Collecting datasets"
-
-output_dir=$REPO_DIR/output/datasets
-mkdir -p $output_dir
-
-mkdir -p $output_dir/final/dataset
-cp -r $REPO_DIR/final/dataset/output $output_dir/final/dataset/
-
-# This data should be the same as the final dataset, but addding here in case wanting to just drag only this in and test the pipeline...
-mkdir -p $output_dir/tests/test_data_final 
-cp -r $REPO_DIR/tests/test_data_final $output_dir/tests -r
-
-
 
 # Collect final documents 
 
 echo "Collecting documents"
 
-output_dir=$REPO_DIR/output/docs
+output_dir=$REPO_DIR/output
 mkdir -p $output_dir
 
 cp $REPO_DIR/final/figures/output $output_dir/figures -r

@@ -7,10 +7,7 @@
         <IgnoreTimeShift/>
     </Compare>
     <Synchronize>
-        <Changes>
-            <Left Create="right" Update="right" Delete="none"/>
-            <Right Create="none" Update="none" Delete="none"/>
-        </Changes>
+        <Differences LeftOnly="right" LeftNewer="right" RightNewer="right" RightOnly="right"/>
         <DeletionPolicy>RecycleBin</DeletionPolicy>
         <VersioningFolder Style="Replace"/>
     </Synchronize>
@@ -32,20 +29,20 @@
     </Filter>
     <FolderPairs>
         <Pair>
-            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\docs</Left>
-            <Right>D:\Photoionization\Repo Output Docs\</Right>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output</Left>
+            <Right>D:\Photoionization\Supplemental Data\Output Files</Right>
         </Pair>
         <Pair>
-            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\datasets\final</Left>
-            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\final</Right>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\final\dataset\output</Left>
+            <Right>D:\Photoionization\Supplemental Data\Output Files\final dataset</Right>
         </Pair>
         <Pair>
-            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\output\datasets\tests</Left>
-            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\tests</Right>
+            <Left>C:\Users\ASPITARL\code\MHD-Photoionization\tests\test_data_final</Left>
+            <Right>D:\Photoionization\Supplemental Data\Input Files\Processed (Reproduced)\tests\test_data_final</Right>
         </Pair>
         <Pair>
             <Left>C:\Users\ASPITARL\code\MHD-Photoionization\experiment\data\munged</Left>
-            <Right>D:\Photoionization\Input Files\Processed (Reproduced)\experiment\data\munged</Right>
+            <Right>D:\Photoionization\Supplemental Data\Input Files\Processed (Reproduced)\experiment\data\munged</Right>
         </Pair>
     </FolderPairs>
     <Errors Ignore="false" Retry="0" Delay="5"/>
