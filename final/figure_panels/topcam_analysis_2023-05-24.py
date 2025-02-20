@@ -98,6 +98,17 @@ ds_cfd = ds_cfd.cfd.convert_all_rho_number()
 
 ds_cfd
 #%%
+plt.figure()
+
+da_sel2 = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
+
+da_sel2.attrs['long_name'] = 'Counts'
+
+da_sel2.mean('gatedelay', keep_attrs=True).plot(vmin=0)
+
+
+plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
+
 
 
 #%%

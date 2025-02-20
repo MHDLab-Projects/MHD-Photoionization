@@ -166,3 +166,37 @@ for ax, label in zip(axes, labels_ab):
 fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))
 
 # %%
+combo_downsel = {
+    # 'P_in' : 0,
+    'phi': [0.8, 0.9, 1.0],
+    'l_b': [0],  
+    'eta': ['perf', 'KOH'],
+    'Kwt': [0.01],
+    # 'rxn': 'mm_sum'
+    # 'analysis': ['perf_Bconst']
+}
+
+P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
+
+g = P_zero.plot(hue='rxn', row='eta', col='phi', y='T', xscale='log', figsize=(5,3))
+
+# for ax in g.axes.flatten():
+#     ax.plot([1e5], [3000], marker='*', markersize=10)
+# Get the legend and move it
+legend = g.fig.legends[0]
+legend.set_bbox_to_anchor((1.2, 0.5))  # coordinates are in figure units
+
+
+plt.xlim(0.8e4,1.2e6)
+plt.ylim(1200,3500)
+
+plt.tight_layout()
+
+
+plt.savefig('output/P_zero_rxn_component.png')
+#%%
+ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
+
+plt.xscale('log')
+
+plt.savefig(os.path.join('output', 'viability_kwt.png'))
