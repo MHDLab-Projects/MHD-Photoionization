@@ -15,6 +15,10 @@ from mhdlab.xr_utils.stats import WeightedMeanAccessor
 from lmfit.models import PowerLawModel
 
 import matplotlib as mpl
+
+# X axis limits
+x_min = -1
+x_max = 46
 # %%
 
 tc = '536_power'
@@ -72,7 +76,7 @@ for i, power in enumerate(powers):
     ax.set_xlabel('')
 
 plt.yscale('log')
-plt.xlim(-1,50)
+plt.xlim(x_min, x_max)
 plt.ylim(1e-5,2e-1)
 
 plt.ylabel('$\\Delta AS$')
@@ -154,7 +158,7 @@ da_plot = da_plot.assign_coords(power=[float(f'{p:.1f}') for p in da_plot.coords
 da_plot.coords['power'].attrs = ds_pd['power'].attrs
 
 da_plot.plot(hue='power')
-plt.xlim(-1,50)
+plt.xlim(x_min, x_max)
 plt.yscale('log')
 plt.ylim(1e-4,)
 plt.title('')
@@ -241,14 +245,12 @@ for i, power in enumerate(powers):
     axes[0].set_xlabel('')
 
 axes[0].set_yscale('log')
-axes[0].set_xlim(-1,50)
+axes[0].set_xlim(x_min, x_max)
 axes[0].set_ylim(1e-5,2e-1)
 
 axes[0].set_ylabel('$\\Delta AS$')
 axes[0].set_xlabel(r'Time [$\mathrm{\mu s}$]')
 
-# Share axis with top axes
-axes[0].sharex(axes[1])
 axes[0].set_xticklabels([])
 
 
@@ -305,9 +307,9 @@ da_plot = da_plot.assign_coords(power=[float(f'{p:.1f}') for p in da_plot.coords
 da_plot.coords['power'].attrs = ds_pd['power'].attrs
 
 da_plot.plot(hue='power', ax = ax, add_legend = False)
-ax.set_xlim(-1,50)
+ax.set_xlim(x_min, x_max)
 ax.set_yscale('log')
-ax.set_ylim(1e-4,)
+ax.set_ylim(1e-3,)
 ax.set_title('')
 ax.set_xlabel(r'Time [$\mathrm{\mu s}$]')
 ax.set_ylabel('$\\Delta PD$ [mV]')
