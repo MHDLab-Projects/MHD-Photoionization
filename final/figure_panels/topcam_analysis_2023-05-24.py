@@ -113,6 +113,17 @@ plt.savefig(pjoin(DIR_FIG_OUT, '536_iccd_laserspot_zoom.png'))
 
 #%%
 
+
+fp_laser_profile = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'laser_profile_1.csv')
+laser_timeshift = -80
+df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
+df_laser_profile_shift = df_laser_profile.copy()
+df_laser_profile_shift.index = df_laser_profile_shift.index + laser_timeshift
+
+df_laser_profile_shift = df_laser_profile_shift.loc[780:]
+
+#%%
+
 from matplotlib_scalebar.scalebar import ScaleBar
 
 plt.rcParams.update({'font.size': 8})
@@ -224,25 +235,16 @@ da_sel2 = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
 da_sel2.attrs['long_name'] = 'Counts'
 
 
-fp_laser_profile = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'laser_profile_1.csv')
 
-df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
 
 # df_laser_profile.plot()
 
 
 ln_cam = da_sel2.mean(['x', 'y']).plot(marker='o', ax = ax_lpf)
 
-laser_timeshift = 30
 
 
 
-# for ax in axes.flatten():
-
-#     ax.set_anchor('W')
-
-df_laser_profile_shift = df_laser_profile.copy()
-df_laser_profile_shift.index = df_laser_profile_shift.index + laser_timeshift
 df_laser_profile_shift.plot(ax=ax_lpf_twin, color='r')
 ln_laser = ax_lpf_twin.get_lines()
 
@@ -420,25 +422,13 @@ da_sel2 = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
 da_sel2.attrs['long_name'] = 'Counts'
 
 
-fp_laser_profile = pjoin(REPO_DIR, 'experiment', 'notebook', '2018-11-20', 'output', 'laser_profile_1.csv')
-
-df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
-
-# df_laser_profile.plot()
-
 
 ln_cam = da_sel2.mean(['x', 'y']).plot(marker='o', ax = ax_lpf)
-
-laser_timeshift = 30
-
-
 
 # for ax in axes.flatten():
 
 #     ax.set_anchor('W')
 
-df_laser_profile_shift = df_laser_profile.copy()
-df_laser_profile_shift.index = df_laser_profile_shift.index + laser_timeshift
 df_laser_profile_shift.plot(ax=ax_lpf_twin, color='r')
 ln_laser = ax_lpf_twin.get_lines()
 
@@ -499,3 +489,5 @@ for ax in axes[:-1]:
 output_dir = os.path.join(REPO_DIR, 'final','figures', 'output')
 if not os.path.exists(output_dir): os.makedirs(output_dir)
 fig.savefig(os.path.join(output_dir, 'Fig2_ICCD_CFD.png'))
+
+# %%
