@@ -224,7 +224,7 @@ da_sel2 = da_sel_tf.sel(x=beam_xslice, y=beam_yslice)
 da_sel2.attrs['long_name'] = 'Counts'
 
 
-fp_laser_profile = pjoin(REPO_DIR, 'experiment', 'notebook', '2018-11-20', 'output', 'laser_profile_1.csv')
+fp_laser_profile = pjoin(REPO_DIR, 'final', 'dataset', 'output', 'laser_profile_1.csv')
 
 df_laser_profile = pd.read_csv(fp_laser_profile, index_col=0)
 

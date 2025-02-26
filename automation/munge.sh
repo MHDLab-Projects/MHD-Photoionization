@@ -21,6 +21,7 @@ cd $REPO_DIR/experiment/data
 
 python munge_lecroy.py
 python munge_spe.py
+python munge_spe_beamtiming.py
 
 # Generates ds_beam_timing.cdf from old beam timing measurement. 
 #TODO: Potentially move this output to main munged folder. 

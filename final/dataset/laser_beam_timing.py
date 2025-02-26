@@ -2,8 +2,9 @@
 
 from mhdlab.analysis.standard_import import *
 
+fp_in = os.path.join(REPO_DIR, 'experiment','data','munged', '2018-11-20', 'ds_beam_timing.cdf')
 
-ds = xr.load_dataset(pjoin('output', 'ds_beam_timing.cdf'))
+ds = xr.load_dataset(fp_in)
 da = ds['counts']
 
 da
