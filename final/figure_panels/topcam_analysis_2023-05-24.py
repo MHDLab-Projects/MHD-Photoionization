@@ -249,7 +249,7 @@ ln_laser = ax_lpf_twin.get_lines()
 ax_lpf_twin.get_legend().remove()
 
 lns = ln_cam + ln_laser
-labs = ['Top Cam', 'Laser Profile']
+labs = ['ICCD during laser', 'Laser pulse time profile']
 ax_lpf.legend(lns, labs, loc=0)
 
 ax_lpf.set_xlabel('Gate Delay [ns]')
@@ -445,7 +445,7 @@ ln_laser = ax_lpf_twin.get_lines()
 ax_lpf_twin.get_legend().remove()
 
 lns = ln_cam + ln_laser
-labs = ['Top Cam', 'Laser Profile']
+labs = ['ICCD during laser', 'Laser pulse time profile']
 ax_lpf.legend(lns, labs, loc=0)
 
 ax_lpf.set_xlabel('Gate Delay [ns]')
