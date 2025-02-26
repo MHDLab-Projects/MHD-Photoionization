@@ -71,14 +71,14 @@ da_KOH = ds_species_cfd[ppu.CFD_KOH_SPECIES_NAME].pint.to('particle/cm**3').pint
 lineKOH = da_KOH.plot(ax=axes[0], label='CFD: KOH')
 da_nK = ds_species_cfd[ppu.CFD_K_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
 linenK = da_nK.plot(ax=axes[0], label='CFD: K')
-da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
-line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
+# da_allK = ds_species_cfd[ppu.CFD_allK_SPECIES_NAME].pint.to('particle/cm**3').pint.dequantify()
+# line_allK = da_allK.plot(ax=axes[0], label='CFD: All K')
 
 
 axes[0].set_ylabel(r"Species Concentration [$\mathrm{cm^{-3}}$]")
 axes[0].legend(
     [line_nK_barrel, line_nK_mwhorns, lineKOH[0], linenK[0], line_allK[0]], 
-    ['Expt. $n_K$ (Barrel)', 'Expt. $n_K$ (180 mm)', 'CFD KOH (180 mm)', 'CFD K (180 mm)' , 'CFD All K (180 mm)'],
+    ['Expt. $n_K$ (Barrel)', 'Expt. $n_K$ (180 mm)', 'CFD KOH (180 mm)', 'CFD K (180 mm)'],
     bbox_to_anchor=(0.65, 0.75), loc='upper left', framealpha=1
     )
 
@@ -140,7 +140,7 @@ labels = ['A)','B)','C)','D)']
 for ax, label in zip(axes, labels):
     X = ax.get_position().x0
     Y = ax.get_position().y1    
-    fig.text(X - .2, Y - 0.015, label)
+    fig.text(X - .25, Y - 0.015, label)
     # ax.tick_params(axis='y', which = "both", colors='white')
 
 
