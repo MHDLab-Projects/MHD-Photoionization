@@ -203,7 +203,7 @@ ax.errorbar(
     ds_p_stats['{}_mean'.format(var)], 
     yerr=ds_p_stats['{}_std'.format(var)], 
     marker='o', capsize=5,
-    label=r'$\Delta AS$ Fit'
+    label=r'$\tau_{exp}$'
     )
 
 ds_tau_plot = ds_tau.drop_vars('O2_exp_eff') # This is included for the viability analyis, is calculated from experimental data so is redundant with the lifetime that these data are eventually compared to. 
@@ -231,7 +231,10 @@ for species in ds_tau_plot.data_vars:
     else:
         label = species
 
-    ds_tau_plot[species].plot(label="${}$".format(label), ax=axes[1], marker=marker)
+    label = r"$\tau_{pred}: " + label + "$"
+    # label = r'${}$'.format(label)
+
+    ds_tau_plot[species].plot(label=label, ax=axes[1], marker=marker)
 
 axes[1].legend(bbox_to_anchor=(1, 1), loc='upper left', framealpha=1) 
 axes[1].set_ylabel(r"Time Constant [$\mathrm{\mu s}$]")
