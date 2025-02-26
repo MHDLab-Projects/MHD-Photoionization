@@ -10,7 +10,7 @@ create_standard_folders()
 import dotenv; load_dotenv()
 RAW_DATA_DIR = os.getenv('RAW_DATA_FOLDER') #This will throw error if no .env file with REPO_DIR defined in analysis repo. 
 # folder = pjoin(RAW_DATA_DIR, '2018-11-20', 'PIMAX_2')
-folder = pjoin(RAW_DATA_DIR, '2017-10-20', 'LightfieldRaw')
+folder = pjoin(RAW_DATA_DIR, '2017-10-20', 'LightfieldRaw Select')
 
 fns = os.listdir(folder)
 

@@ -74,6 +74,8 @@ from matplotlib.colors import Normalize
 #this cell generates the full figure
 #Use gridspec to precisely align axes
 
+plt.rcParams.update({'font.size': 8})
+
 
 norm = Normalize(vmin = 0, vmax = 1E16)
 
