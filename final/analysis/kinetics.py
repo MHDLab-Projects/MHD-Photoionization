@@ -174,6 +174,7 @@ axes[0].set_yscale('log')
 axes[0].get_legend().set_bbox_to_anchor([0, 0, 1.3, 1])
 axes[0].set_ylabel('Species Concentration [#/ml]')
 axes[0].axvline(goldi_pos.magnitude, color='k', linestyle='--')
+axes[0].set_title('')
 
 # Second plot
 ds_tau[tau_species_list].to_array('var').sel(kwt=1, method='nearest').sel(phi=0.8, method='nearest').plot(ax=axes[1], hue='var')
@@ -183,6 +184,7 @@ axes[1].set_ylabel('Tau [$\mu s$]')
 # axes[1].axhline(tau_observed.magnitude, color='gray', linestyle='--')
 axes[1].axvline(goldi_pos.magnitude, color='k', linestyle='--')
 axes[1].get_legend().set_bbox_to_anchor([0, 0, 1.3, 1])
+axes[1].set_title('')
 
 plt.tight_layout()
 
@@ -201,6 +203,8 @@ da_plot = ds_plot[['Kp', 'em','OHm', 'O2m']].to_array('var')
 g = da_plot.plot(hue='var', ax=axes[0])
 
 axes[0].set_yscale('log')
+axes[0].set_ylabel('Species Concentration [#/ml]')
+axes[0].set_title('')
 
 da_plot = ds_plot['sigma_e']
 
@@ -208,6 +212,7 @@ g = da_plot.plot(hue='var', ax=axes[1])
 
 axes[1].set_yscale('log')
 axes[1].set_ylim(1e-15,1e2)
+axes[1].set_title('')
 
 
 plt.savefig(pjoin(DIR_FIG_OUT, 'cfd_species_charged_sigma_pos.png'))

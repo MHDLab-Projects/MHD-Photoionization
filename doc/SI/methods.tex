@@ -1,6 +1,7 @@
 
 \section{Methods Supplemental Information}
 
+Note: Acronyms may be defined in the main text. 
 
 \subsection{Experimental Procedures}
 
@@ -61,7 +62,7 @@ The results of this work are created from a set of codes located at \url{https:/
     \item Data Munging (\texttt{/automation/munge.sh}): The raw data is initially processed to reduce the size of the dataset and to convert the data to common formats of either "tdms" (National Instruments) or "cdf" (xarray python package). This includes the standard data processing steps of our lab for time series data (located in /PostProcessor), which most notably includes resampling from the 1 kHz data acquisition rate to one sample per second. Additionally, resampling and combining of individual acquisition files is done for the MWT oscilloscope data.  At this stage, the data collected during each experiment is processed separately.
     \item Process Munged Data (\texttt{/automation/process\_munged.sh}): Data is combined from different dates to create single datasets for each diagnostic. Then, test case time windows are used to create datasets for the test case sequences, with the independent variables (Potassium mass fraction, equivalence ratio, stage position, laser power, experiment date, run number, acquisition number) being added as coordinates in xarray datasets.
     \item Create Final Dataset (\texttt{/automation/final\_dataset.sh}): The final dataset is created by applying various analysis steps (data extraction, fitting, etc.) to the processed data. 
-    \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.)for the main manuscript. 
+    \item Generate Figure Panels (\texttt{/automation/gen\_fig\_panels.sh}): The final dataset is used to generate the figure panels (A, B, C, etc.) for the main manuscript. SVG files of the final figures may also be created directly in matplotlib in this step. 
     \item Render Figures (\texttt{/automation/render\_figures.sh}): The figure panels are combined into the final figures for the manuscript. The figures panels are laid out in SVG files, and the SVG file is rendered with Inkscape to create the final figure PNG file. 
 \end{enumerate}
 
@@ -91,7 +92,7 @@ Figure \ref{fig:SI_Data_Processing_Simple} shows an overview of the data process
 \label{fig:SI_MWT_Setup}
 \end{figure}
 
-The microwave transmission setup (MWT) is shown in Figure \ref{fig:SI_MWT_Setup}. The parts used to construct this setup were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a \SI{90}{\giga\hertz} Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, 15 dBm P1dB in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One leg of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR=2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves, which have passed through the sample, are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
+The microwave transmission setup (MWT) is shown in Figure \ref{fig:SI_MWT_Setup}. The parts used to construct this setup were ordered from Erevant, formerly Sage Millimeter. The system is W-band and based on WR-10 waveguides. The microwave source is a \SI{90}{\giga\hertz} Gunn oscillator (SOM-90305213-10-S1) with an output power of +13 dBm. The output of this source is fed into a 10 dB gain, 15 dBm P1dB in-line waveguide power amplifier (SBP-7531141015-1010-E1). The output of the power amplifier is then fed into a 4-way in-line power divider (SWP-90310404-10-E1). In the current configuration, only two outputs of the power divider are used, and the remaining two are terminated with waveguide terminators (SWL-1027-S1). One leg of the power divider is used for the main transmitted power, which is sent through waveguides to a rectangular horn antenna (SAR-2013-10-S2) that transmits the microwaves into free space. The transmitted microwaves, which have passed through the sample, are collected by the same type of horn, and the collected microwaves are sent to the IQ mixer (SFQ-75311415-1010SF-N1-M). The LO input of the IQ mixer is fed by the remaining port of the power divider. 
 
 % Between the power divider and the LO input there is a phase shifter (STP-18-10-M2) that is typically used to maximize the I signal in the absence of a sample. 
 
@@ -152,21 +153,21 @@ On 2023-05-24 $U_{0}$ was measured as a function of position as shown in Figure\
 \begin{figure}
 \centering
 \includegraphics[]{\repodir/final/dataset/output/figures/mwt_nothing_motor_2023-05-24.png}
-\caption{Motorized stage for position dependent transmission measurements.}
+\caption{Position dependent measurement of transmission without any torch on 2023-05-24. }
 \label{fig:SI_MWT_nothing_motor}
 \end{figure}
 
 
 The $U_{0}$ measured at the SFR-maximized position (\SI{180}{\milli\meter} downstream from barrel exit) for each of the dates is presented in \ref{fig:SI_MWT_nothing_T0}A. Note that for 2023-05-12, $U_{0}$ was only taken at the barrel exit, which is corrected by a factor of 0.95 to calculate $U_{0}$ at the SFR-maximized position for that date. This factor is determined from the ratio of the transmission at the SFR-maximized position to the transmission at the barrel exit from Figure \ref{fig:SI_MWT_nothing_motor}. Figure \ref{fig:SI_MWT_nothing_T0}B shows the magnitude of absolute transmission (see equation for $T$ in main paper) of the seeded torch before the laser pulse for the case 536\_pos, taken on multiple dates. 
 
-On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased $U_{0}$ on 2023-05-18 and 2023-05-24.
+On 2023-05-18, a blue residue/corrosion was found in the waveguides, possibly from a chemical reaction or deposition from the seeded free jet. The microwave horns were cleaned and other waveguide parts were replaced. This change could explain the increased $U_{0}$ on 2023-05-18 and 2023-05-24. For the run on 2023-04-07, the datapoints alternate between those taken while moving up and down the length of the torch, which could explain the oscillating behavior of the data.
 
 
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/final/analysis/mwt/output/figures/mwt_nothing_T0.png}
-\caption{ From left to right: A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described above) B) position-dependent transmission measurements.}
+\caption{ From left to right: A) Measurement of transmission without any torch at a position of 180 mm (except 2023-05-12, as described above) B) position-dependent pre-laser transmission measurements with the seeded torch for the 536\_pos test case.}
 \label{fig:SI_MWT_nothing_T0}
 \end{figure}
 
@@ -193,7 +194,7 @@ Surface roughness & < \SI{5}{\angstrom} RMS \\
 \label{table:material_properties}
 \end{table}
 
-The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} %missing citation
+The silicon measurements are shown in \ref{fig:SI_MWT_Silicon}. The measured exponential time constant is consistent with the minority carrier lifetime in an undoped silicon wafer, perhaps with enhanced surface recombination due to the UV light being absorbed near the surface of the wafer. \cite{tyagiMINORITYCARRIERRECOMBINATION, delalamoModellingMinoritycarrierTransport1987} %missing citation
 
 \begin{figure}[]
 \centering
@@ -269,15 +270,16 @@ In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calcu
 
 The LED used for AES is a Thorlabs M780F2 \SI{780}{\nano\meter} LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately \SI{0.6}{\ampere}. The LED is fed into a Thorlabs M28L02 fiber with \SI{400}{\micro\meter} diameter and 0.39 NA. The fiber is then connected to the input of an Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AES locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AES locations every \SI{10}{\second} throughout the duration of an AES measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AES locations are multiplexed to the same spectrometer, the measurements at the two AES locations are not simultaneous.
 
-For the barrel exit measurement, the light from the LED is collimated from the fiber with a RC02SMA-P01 reflective parabolic mirror and directed at a \SI{90}{\degree} angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then coupled into the collecting fiber with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 \SI{200}{\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 \SI{600}{\micro\meter} 0.5NA fiber. On both sides of the torch, light passes through an iris of approximately \SI{1}{\milli\meter} and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
+For the barrel exit measurement, the light from the LED is collimated from the fiber with a RC02SMA-P01 reflective parabolic mirror and directed at a \SI{90}{\degree} angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then coupled into the collecting fiber with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 \SI{200}{\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 \SI{600}{\micro\meter} 0.5 NA fiber. On both sides of the torch, light passes through an iris of approximately \SI{1}{\milli\meter} and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
 
-For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
+For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 mm iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
 The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a \SI{1}{\second} delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. 
 
 \subsubsection{Data processing and Fitting}
 
 Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.
+See \texttt{/mhdlab/analysis/absem/} for the AES processing/fitting package. 
 
 
 \begin{figure}[]
@@ -318,7 +320,6 @@ The effect of the offset procedure is shown in Figure \ref{fig:SI_AES_proc_overv
     \item The data is reduced to the wings of the absorption profile. From the left and right of the spectrum, the data is kept until a point where the absorption is 0.8. This avoids fitting where the absorption is near 1. 
     \item All individual acquisitions for a given test case are averaged.
 \end{enumerate}
-
 We model $\alpha(\lambda)$ to determine the centerline potassium density, $n_{K,max}$, by numerically integrating the Beer-Lambert law along the path $s$ of the beam for the wavelength-dependent intensity, $I(\lambda)$
 
 \begin{equation}
