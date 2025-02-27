@@ -22,22 +22,17 @@ ds_TP_species_rho = xr.open_dataset(os.path.join(cantera_data_dir, 'ds_TP_specie
 
 ds_NE = xr.open_dataset(pjoin(REPO_DIR, 'modeling', 'viability', 'dataset', 'output', 'ds_NE.cdf')).squeeze()
 # %%
-sig_bk = ds_TP_params['sigma'].sel(T=3000, phi=0.8, Kwt=0.01, P=1e5, method='nearest')
-# sig_bk = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
+sig_flow = ds_TP_params['sigma'].sel(T=3000, phi=0.8, Kwt=0.01, P=1e5, method='nearest')
+# sig_flow = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
 sigma_bl = ds_NE['sigma'].sel(phi=0.8, eta='perf', rxn='mm_sum', Kwt=0.01, P=1e5).squeeze()
 
-combos_l_b = {'l_b' :  np.linspace(0,1,100)}
+combos_l_flow = {'l_flow' :  np.linspace(0,1,100)}
 
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_b' :sig_bk, 'sigma_c': sigma_bl }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_flow' :sig_flow, 'sigma_bl': sigma_bl }, var_names = ['sigma_tot'])
+da_dsigma_tot = r.run_combos(combos_l_flow).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
-
-# gamma_bl = ds_NE['gamma']*da_dsigma_tot
-
-# gamma_bl.name = 'gamma_bl'
-# gamma_bl.to_netcdf('output/gamma_bl.cdf')
 
 
 #%%
@@ -50,6 +45,8 @@ da_plot.plot(hue='T')
 plt.gca().get_legend().set_bbox_to_anchor((1, 1))
 
 plt.yscale('log')
+plt.xlabel('$l_{flow}$')
+plt.ylabel('Enhancement Factor')
 
 plt.title('')
 

@@ -142,39 +142,19 @@ ds_NE.attrs = {}
 ds_NE.to_netcdf('output/ds_NE.cdf')
 # %%
 
-# b = bulk
-# c = contact/boundary layer
+# flow = bulk flow
+# bl = boundary layer
 
-sig_b = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
-# sig_b = ds_NE['sigma'].sel(T=3000, method='nearest') #This was used previously, incorrectly
+sig_flow = ds_TP_params['sigma'].sel(T=3000, method='nearest').pint.quantify()
+sig_bl = ds_NE['sigma'].pint.quantify()
 
-sig_c = ds_NE['sigma'].pint.quantify()
+combos_l_flow = {'l_flow' :  [0, 0.5, 0.9, 0.99]}
 
-combos_l_b = {'l_b' :  [0, 0.5, 0.9, 0.99]}
-
-r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_b' :sig_b, 'sigma_c': sig_c }, var_names = ['sigma_tot'])
-da_dsigma_tot = r.run_combos(combos_l_b).squeeze()
+r = xyzpy.Runner(noneq.calc_dsigma_tot, constants = {'sigma_flow' :sig_flow, 'sigma_bl': sig_bl }, var_names = ['sigma_tot'])
+da_dsigma_tot = r.run_combos(combos_l_flow).squeeze()
 da_dsigma_tot.name = 'enhancement factor'
 da_dsigma_tot.attrs = {}
 
 da_dsigma_tot.pint.dequantify().to_netcdf('output/da_dsigma_tot.cdf')
 
-# gamma_c = ds_NE['gamma']*da_dsigma_tot
 
-# gamma_c.name = 'gamma_c'
-# gamma_c.to_netcdf('output/gamma_c.cdf')
-
-
-
-# %%
-
-# ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).squeeze().plot()
-
-# ds_NE['sigma'].sel(eta='perf',rxn='mm_sum', phi=0.8,Kwt=0.01).sel(P=1e5).mean()
-
-#%%
-
-
-# da_dsigma_tot.sel(Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum').plot(col= 'l_b', col_wrap=2)
-
-# %%

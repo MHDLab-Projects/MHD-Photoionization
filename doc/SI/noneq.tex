@@ -216,46 +216,46 @@ We compiled data on UV absorption cross-sections to determine potential ionizati
 \end{figure}
 
 
-\subsubsection{Contact targeting}
+\subsubsection{Boundary layer targeting}
 
 
 This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD generators. In this case, $P_{in}$ would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series and show that the effect of the boundary can be encapsulated by multiplying $\gamma$ of Equation \ref{eq:gamma-final} with an enhancement factor.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[]{\repodir/final/figures/schematics/output/contact_targeting.png} 
-    \caption{Schematic of the contact targeting concept}
-    \label{fig:SI_contact_targeting_schematic}
+    \includegraphics[]{\repodir/final/figures/schematics/output/boundary_layer_targeting.png} 
+    \caption{Schematic of the boundary layer targeting concept}
+    \label{fig:SI_boundary_layer_targeting_schematic}
 \end{figure}
 
 
-To model both bulk and contact-targeted non-equilibrium generation, we only include non-equilibrium ionization in a fraction of the channel as shown in Figure \ref{fig:SI_contact_targeting_schematic}. The system comprises a bulk channel region of width $w_{b}$ and conductivity $\sigma_{b}$, and a boundary layer region near the contact of width $w_{c}$ and conductivity $\sigma_{c}$. By considering the series resistance of this 1D channel, the channel can be considered to have an effective conductivity, $\sigma_{eff}$, which can be shown to be:  
+To model both bulk flow and boundary layer targeted non-equilibrium generation, we only include non-equilibrium ionization in a fraction of the channel as shown in Figure \ref{fig:SI_boundary_layer_targeting_schematic}. The system comprises a bulk flow channel region of width $w_{flow}$ and conductivity $\sigma_{flow}$, and a boundary layer region near the boundary layer of width $w_{bl}$ and conductivity $\sigma_{bl}$. By considering the series resistance of this 1D channel, the channel can be considered to have an effective conductivity, $\sigma_{eff}$, which can be shown to be:  
 
 \begin{equation}
-\sigma_{eff}=\frac{\sigma_{b} \sigma_{c}}{\sigma_{b}+l_{b}  (\sigma_{c}  -\sigma_{b})}
+\sigma_{eff}=\frac{\sigma_{flow} \sigma_{bl}}{\sigma_{flow}+l_{flow}  (\sigma_{bl}  -\sigma_{flow})}
 \end{equation}
 
-Where we have defined the fractional bulk region width $l_{b}=w_{b}/(w_{c}+w_{b})$. The conductivities of the two regions are determined by setting two different gas temperatures and non-equilibrium generation conditions, as discussed below. In the limit of $l_{b}\rightarrow1$ and $l_{b}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{b}$ and $\sigma_{eff}= \sigma_{c}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{c}\rightarrow1$ so that $\sigma_{eff}= \sigma_{c}$.
+Where we have defined the fractional bulk flow region width $l_{flow}=w_{flow}/(w_{bl}+w_{flow})$. The conductivities of the two regions are determined by setting two different gas temperatures and non-equilibrium generation conditions, as discussed below. In the limit of $l_{flow}\rightarrow1$ and $l_{flow}\rightarrow0$, the effective conductivity takes on the value $\sigma_{eff}= \sigma_{flow}$ and $\sigma_{eff}= \sigma_{bl}$, respectively. We can then model the case of uniform ionization of the entire channel by letting $l_{bl}\rightarrow1$ so that $\sigma_{eff}= \sigma_{bl}$.
 
 To calculate $\gamma$, we use the chain rule, giving
 \begin{equation}
-\gamma_{c}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{c}} \frac{d\sigma_{c}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{c}} 
+\gamma_{bl}=\frac{dP_{MHD}}{d\sigma_{eff}} \frac{d\sigma_{eff}}{d\sigma_{bl}} \frac{d\sigma_{bl}}{dn_e} \frac{dn_e}{dP_{in}}=\gamma \frac{d\sigma_{eff}}{d\sigma_{bl}} 
 \end{equation}
-where we have recognized that this expression is equivalent to $\gamma$ in Equation \ref{eq:gamma-final} except for an "enhancement" factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$. Finally, we can calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ to be
+where we have recognized that this expression is equivalent to $\gamma$ in Equation \ref{eq:gamma-final} except for an "enhancement" factor $\frac{d\sigma_{eff}}{d\sigma_{bl}}$. Finally, we can calculate $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ to be
 \begin{equation}
-\frac{d\sigma_{eff}}{d\sigma_{c}}=\frac{\sigma_{b}^2 (1-l_{b})}{[\sigma_{b}+l_{b} (\sigma_{c}-\sigma_{b})]^2} .
+\frac{d\sigma_{eff}}{d\sigma_{bl}}=\frac{\sigma_{flow}^2 (1-l_{flow})}{[\sigma_{flow}+l_{flow} (\sigma_{bl}-\sigma_{flow})]^2} .
 \end{equation}
 
 %https://www.wolframgamma.com/input?i=derivative+of+%28b*c%29%2F%28b%2B+l+%28c++-b%29%29+with+respect+to+c
 
-In the main text and figures below, we calculate $\frac{d\sigma_{eff}}{d\sigma_{c}}$ for a variety of different $T_{c}$ and setting $T_{b} = 3000$.
+In the main text and figures below, we calculate $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ for a variety of different $T_{bl}$ and setting $T_{flow} = 3000$.
 
-For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can approach a factor of 100 as shown in Figure \ref{fig:SI_bl_enhance}. However, if the boundary layer temperature is near the bulk temperature, $\frac{d\sigma_{eff}}{d\sigma_{c}}$ can actually be much less than 1. This indicates that contact targeting is only effective for $T_{c} \ll T_{b}$. It is still possible to have a $\frac{d\sigma_{eff}}{d\sigma_{c}}$ of less than 1 even if $T_{c} \ll T_{b}$ is the fractional width of the boundary layer is large and the  boundary layer temperature is near the bulk temperature. In this situation, changes in the boundary layer conductivity have a small effect on the overall channel conductivity.
+For cold boundary layers with small fractional width ($l_{flow}\rightarrow1$), $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ can approach a factor of 100 as shown in Figure \ref{fig:SI_bl_enhance}. However, if the boundary layer temperature is near the bulk flow temperature, $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ can actually be much less than 1. This indicates that boundary layer targeting is only effective for $T_{bl} \ll T_{flow}$. It is still possible to have a $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ of less than 1 even if $T_{bl} \ll T_{flow}$ is the fractional width of the boundary layer is large and the  boundary layer temperature is near the bulk flow temperature. In this situation, changes in the boundary layer conductivity have a small effect on the overall channel conductivity.
 
 \begin{figure}[h]
     \centering
     \includegraphics[]{\repodir/modeling/viability/analysis/output/figures/bl_enhance.png} 
-    \caption{Enhancement factor $\frac{d\sigma_{eff}}{d\sigma_{c}}$ for contact targeting versus fractional bulk region width $l_b$}
+    \caption{Enhancement factor $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ for boundary layer targeting versus fractional bulk flow region width $l_b$}
     \label{fig:SI_bl_enhance}
 \end{figure}
 

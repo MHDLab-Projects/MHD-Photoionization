@@ -85,7 +85,6 @@ def calc_NE_all(P_in, eta, G_th, krb, mue_cant, B, u):
     # If wl in combos calculate eta based on photoionization, vs if not use eta = 1
     # Further, If L and R in combos calculate fractional absorption (FA) based on optical cavity approach, else FA = 1
     # If P_in not in combos P_in = 0
-    # If l_bk (fractional length of bulk vs contact) not in combos l_bk = 0 (Tbulk = 3000K)
     """
     
     G_NE = calc_G_NE(P_in, eta)
@@ -167,15 +166,15 @@ def calc_sig(ne,mue):
     return sig
 
 
-def calc_sigma_tot(sigma_c, sigma_b, l_b):
-    num = sigma_c*sigma_b
-    dem = sigma_b + l_b*(sigma_c - sigma_b)
+def calc_sigma_tot(sigma_bl, sigma_flow, l_flow):
+    num = sigma_bl*sigma_flow
+    dem = sigma_flow + l_flow*(sigma_bl - sigma_flow)
     return num/dem
 
 
-def calc_dsigma_tot(sigma_c, sigma_b, l_b):
-    num = (1-l_b)*sigma_b**2
-    dem = ( sigma_b + l_b*(sigma_c - sigma_b) )**2
+def calc_dsigma_tot(sigma_bl, sigma_flow, l_flow):
+    num = (1-l_flow)*sigma_flow**2
+    dem = ( sigma_flow + l_flow*(sigma_bl - sigma_flow) )**2
     return num/dem
 
 ### Photoionization ###

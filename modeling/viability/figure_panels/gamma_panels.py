@@ -68,7 +68,7 @@ ax_bottom_01.sharex(ax_bottom_11)
 axes_bottom = np.array([[ax_bottom_00, ax_bottom_01], [ax_bottom_10, ax_bottom_11]])
 
 # Top panel of viability figure
-combo_sel = dict(l_b=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
+combo_sel = dict(l_flow=0, Kwt=0.01, phi=0.8, eta='perf', rxn='mm_sum')
 
 cmap = plt.get_cmap('RdBu')
 gamma_sel = gamma.sel(combo_sel)
@@ -94,7 +94,7 @@ ax_top.set_ylim(1200, 3500)
 
 # Bottom panel of main text viability figure
 combo_downsel = {
-    'l_b': [0, 0.99],
+    'l_flow': [0, 0.99],
     'eta': ['perf', 'KOH'],
     'Kwt': [0.01],
     'rxn': 'mm_sum'
@@ -103,14 +103,14 @@ combo_downsel = {
 P_zero = ds_P_zero['P_zero'].sel(combo_downsel)
 
 for i, eta in enumerate(['perf', 'KOH']):
-    for j, l_b in enumerate([0, 0.99]):
+    for j, l_flow in enumerate([0, 0.99]):
         ax = axes_bottom[j, i]
 
-        da_sel = P_zero.sel(eta=eta, l_b=l_b)
+        da_sel = P_zero.sel(eta=eta, l_flow=l_flow)
 
         for phi in da_sel['phi'].values:
             da_sel.sel(phi=phi).plot(y='T', xscale='log', ax=ax, label=f'$\phi$ = {phi}')
-        ax.set_title(f'$\eta$ = {eta}, $l_b$ = {l_b}')
+        ax.set_title(f'$\eta$ = {eta}, $l_flow$ = {l_flow}')
 
         ax.set_title('')
         ax.set_xlabel('')
@@ -169,7 +169,7 @@ fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))
 combo_downsel = {
     # 'P_in' : 0,
     'phi': [0.8, 0.9, 1.0],
-    'l_b': [0],  
+    'l_flow': [0],  
     'eta': ['perf', 'KOH'],
     'Kwt': [0.01],
     # 'rxn': 'mm_sum'
@@ -190,23 +190,23 @@ legend.set_bbox_to_anchor((1.2, 0.5))  # coordinates are in figure units
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
 
-g.axes[0,0].set_ylabel('T [K]')
-g.axes[1,0].set_ylabel('T [K]')
-g.axes[1,1].set_xlabel('P [Pa]')
-g.axes[1,0].set_xlabel('P [Pa]')
-g.axes[1,2].set_xlabel('P [Pa]')
+g.axs[0,0].set_ylabel('T [K]')
+g.axs[1,0].set_ylabel('T [K]')
+g.axs[1,1].set_xlabel('P [Pa]')
+g.axs[1,0].set_xlabel('P [Pa]')
+g.axs[1,2].set_xlabel('P [Pa]')
 
 plt.tight_layout()
 
 
 plt.savefig('output/P_zero_rxn_component.png')
 #%%
-g = ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
+g = ds_P_zero['P_zero'].sel(eta='perf', l_flow=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
 
-g.axes[0,0].set_ylabel('T [K]')
-g.axes[0,0].set_xlabel('P [Pa]')
-g.axes[0,1].set_xlabel('P [Pa]')
-g.axes[0,2].set_xlabel('P [Pa]')
+g.axs[0,0].set_ylabel('T [K]')
+g.axs[0,0].set_xlabel('P [Pa]')
+g.axs[0,1].set_xlabel('P [Pa]')
+g.axs[0,2].set_xlabel('P [Pa]')
 
 plt.xscale('log')
 
