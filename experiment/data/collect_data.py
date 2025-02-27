@@ -5,16 +5,7 @@ create_standard_folders()
 
 munged_dir = 'munged'
 
-import re
-
-regex = re.compile(r'^\d{4}-\d\d-\d\d$')
-
-
-dates = []
-for dir in os.listdir(munged_dir):
-    m = regex.match(dir)
-    if m:
-        dates.append(dir)
+dates = ['2023-04-07','2023-05-12','2023-05-18','2023-05-24']
 
 # sort date strings by date. 
 # The output datasets are not monotonic in time otherwise, is it better to just sort later?
