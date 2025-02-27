@@ -111,12 +111,12 @@ The distance between the horns is \SI{85.725}{\milli\meter}. The mirror that sen
 
 The raw MWT data consists of individual files containing channel time traces, and each raw data file corresponds to an individual laser pulse. No averaging of multiple laser pulses occurs before the data is saved to disk. While the data is writing to disk, laser pulses can be missed. After 2023-05-12, the pulse rate was limited to \SI{5}{\hertz} to minimize this effect. 
 
-The MWT data is first munged by combining all individual "acquisitions" files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the time resolution of the data is reduced. Within the region of \SI{700}{\nano\second} to \SI{1500}{\nano\second} (the laser pulse is at approximately \SI{800}{\nano\second}, see Figure 2 in the main text) the data is coarsened by grouping data points into groups of 10 and averaging (using the xarray coarsen method). Outside this region, the data is grouped into \SI{1000}{\nano\second} data points and averaged. The effect of this data reduction can be seen in Figure \ \ref{fig:SI_mwt_reduction}
+The MWT data is first munged by combining all individual "acquisitions" files into a single dataset with a common oscilloscope time axis. To reduce the size and processing time of this dataset, the time resolution of the data is reduced. Within the region of \SI{700}{\nano\second} to \SI{1500}{\nano\second} (the laser pulse is at approximately \SI{800}{\nano\second}, see Figure 2 in the main text) the data is reduced by grouping data by groups of 10 ns and averaging (using the xarray coarsen method). Outside this region, the data is grouped into \SI{1000}{\nano\second} data points and averaged. The effect of this data reduction can be seen in Figure \ \ref{fig:SI_mwt_reduction}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/mwt/resampling/output/figures/mwt_sample_nors_compare.png}
-\caption{Comparison of MWT data with and without time coarsening. Both left and right panels show the same time trace, with the right panel being zoomed into the peak.}
+\caption{Comparison of MWT data with and without time data reduction. Both left and right panels show the same time trace, with the right panel being zoomed into the peak.}
 \label{fig:SI_mwt_reduction}
 \end{figure}
 
@@ -299,7 +299,7 @@ We observe changes in the calibration spectra throughout the experiment which ca
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_calib_dates.png}
-    \caption{Calibration spectra taken at different time on different dates. }
+    \caption{Calibration spectra taken at different time on different dates. Both AES setups, barrel exit (AES1) and mobile (AES2, A.K.A. mw\_horns) are shown.  There was no AES2 setup on 2023-04-07 and 2023-05-12}
     \label{fig:SI_absem_calib_dates}
 \end{figure}
 

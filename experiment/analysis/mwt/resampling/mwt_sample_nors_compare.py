@@ -66,7 +66,7 @@ for ds in dss:
 
 
 axes[0].set_xlim(0,20)
-axes[0].legend(['No Resample', '10 peak/1000 off peak'])
+axes[0].legend(['No Reduction', 'With Reduction'])
 
 
 for ds in dss:
