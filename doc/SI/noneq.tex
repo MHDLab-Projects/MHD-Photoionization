@@ -114,9 +114,9 @@ The MHD power density is given by
 
 \begin{equation}
   \label{eq:mhd_power}
-P_{MHD} = \frac{1}{2} e \mu_e n_e u^2 B^2,
+P_{MHD} = e K(1-K) \mu_e n_e u^2 B^2,
 \end{equation}
-where $e$ is the elementary charge, $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength. For $\mu_e$ we use values calculated from the chemical equilibrium model discussed in Section \ref{section:species_concentration_mobility_calc}.
+where $e$ is the elementary charge, $K$ is the MHD load factor,  $\mu_e$ is the electron mobility, $n_e$ is the electron density, $u$ is the velocity of the gas, and $B$ is the magnetic field strength. For $\mu_e$ we use values calculated from the chemical equilibrium model discussed in Section \ref{section:species_concentration_mobility_calc}.
 
 To derive $\frac{dn_{e}}{dP_{in}}$, we now develop an expression for $n_e(P_{in})$ and then take the derivative with respect to $P_{in}$. First, consider a gas subjected to a steady $G_{NE}$ and assume the system is in quasi-equilibrium, resulting in $\frac{dn_{e}}{dt} = 0$. Because this is a viability analysis, we assume the best-case scenario of an infinitesimally small $P_{in}$ corresponding to an infinitesimally small $\Delta n_{e}$. For higher $P_{in}$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will contribute and increase the recombination rate. Under the above assumptions, Equation \ref{eq:small_pert_diffeq} becomes
 
@@ -148,10 +148,10 @@ Finally, we can combine Equations \ref{eq:mhd_power}-\ref{eq:frac_dn_e_dP_in_exp
 
 \begin{equation}
   \label{eq:gamma-final}
-\gamma = \frac{1}{2} e \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}.
+\gamma =  e K (1-K) \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}.
 \end{equation}
 
-In the results presented in the main text we assume a velocity of \SI{1000}{\meter/\second}, a magnetic field strength of \SI{5}{\tesla}, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
+In the results presented in the main text we assume a velocity of \SI{1000}{\meter/\second}, a magnetic field strength of \SI{5}{\tesla}, load factor of K=0.5, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
 
 To calculate $k_{r, m, eff}$, we utilize Equation \ref{eq:krm_eff_def}. The equilibrium species concentrations, $n_i$, are calculated from the chemical equilibrium model discussed in Section \ref{section:species_concentration_mobility_calc}. The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (see Figure \ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$ for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. Therefore, we make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. This allows us to write $k_{r, m, eff}$ as
 
@@ -173,7 +173,7 @@ We calculate $\mu_e$ of the gas mixture following the method outlined previously
 \begin{figure}[ht]
     \centering
     \includegraphics[width=4.09929in,height=3.95663in]{\repodir/final/figures/SI/output/Cantera_T.png}
-    \caption{a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), and \(K_{wt} = 1\%\). b) Ionization fraction = {[}K+{]}/({[}K{]} + {[}K+{]}) and c) electrical conductivity.}
+    \caption{a) Mole fractions of species with mole fraction of greater than 1e-3. The calculations are performed for oxy-kerosene combustion with \(\phi = 0.8\), \(K_{wt} = 1\%\). and P = 1 atm b)  electrical conductivity.}
     \label{fig:SI_Cantera_T}
 \end{figure} 
 
@@ -205,7 +205,7 @@ where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\texts
 Although the excimer laser used in this work is pulsed, we choose to analyze steady state illumination in the modeling presented here. The viability model is still valid as a best-case analysis of pulsed lasers because, for a given time-averaged laser intensity, the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a corresponding higher rate recombination from second-order effects. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
 \subsubsection{UV absorption cross-sections}
 
-We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the relevant wavelength range for potassium photoionization (190-\SI{285}{\nano\meter}). The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111}{\nano\meter}.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170}{\nano\meter}.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200}{\nano\meter}-\SI{300}{\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190}{\nano\meter}-\SI{200}{\nano\meter}.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800}{\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170}{\nano\meter}-\SI{210}{\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963} 
+We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the wavelength range of 190-\SI{285}{\nano\meter}. The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111}{\nano\meter}.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170}{\nano\meter}.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200}{\nano\meter}-\SI{300}{\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190}{\nano\meter}-\SI{200}{\nano\meter}.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800}{\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170}{\nano\meter}-\SI{210}{\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963} 
 
 
 \begin{figure}[h]
@@ -263,10 +263,12 @@ For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\fr
 
 \subsubsection{Supplemental PI Viability Results}
 
+Figures \ref{fig:SI_P_zero_rxn_component} and \ref{fig:SI_P_zero_kwt} show T-P viability lines (defined in the main text). 
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/modeling/viability/figure_panels/output/P_zero_rxn_component.png} 
-    \caption{$P_{zero}$ calculated for various reactions. For each reaction, the reaction is considered to be the only recombination reaction, except for "mm\_sum" where the sum over experimental O2, K+, H2O, and OH mono-molecular recombination rates is used.}
+    \caption{T-P viability lines calculated for various reactions. For each reaction, the reaction is considered to be the only recombination reaction, except for "mm\_sum" where the sum over experimental O2, K+, H2O, and OH mono-molecular recombination rates is used.}
     \label{fig:SI_P_zero_rxn_component}
 \end{figure}
 
@@ -274,7 +276,7 @@ For cold boundary layers with small fractional width ($l_{b}\rightarrow1$), $\fr
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{\repodir/modeling/viability/figure_panels/output/viability_kwt.png} 
-    \caption{$P_{zero}$ calculated for various potassium mass fractions. }
+    \caption{T-P viability lines calculated for various potassium mass fractions. }
     \label{fig:SI_P_zero_kwt}
 \end{figure}
 

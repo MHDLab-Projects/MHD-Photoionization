@@ -55,6 +55,9 @@ ds_orig['CC_equivalenceRatio'] = da.where((da >= 0.2) & (da <= 1.5)).dropna('tim
 ds_orig['Power_Relative'] = ds_orig['Power_Relative'].ffill('time')
 ds_orig['Motor C Relative'] = ds_orig['Motor C Relative'].ffill('time')
 
+#TODO: why is this dropped?
+ds_orig['Motor C Relative'].attrs['units'] = 'mm'
+
 ds_orig
 
 #%%
@@ -97,10 +100,10 @@ for date, df in df_ct.groupby('date'):
 
     for ax in fig.axes:
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 20))
+        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 15))
         ax.set_xlabel('')
 
-    fig.axes[-1].set_xlabel('Time (PST)')
+    fig.axes[-1].set_xlabel('Time (PT)')
 
     # plt.tight_layout()
 
@@ -119,6 +122,7 @@ os.makedirs(output_dir, exist_ok=True)
 coord_keys = [
     ('hvof', 'CC_fuel_flow_in'),
     ('hvof', 'CC_o2_flow_in'),
+    ('hvof', 'CC_em_flow_in'),
     ('hvof','CC_P'),
     ('calorimetry', 'CC_water_flow_in'),
     ('calorimetry', 'CC_water_T_in'),
@@ -165,12 +169,12 @@ for date, df in df_ct.groupby('date'):
 
     for ax in fig.axes:
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 20))
+        ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 15))
 
         ax.set_xlabel('')
 
 
-    fig.axes[-1].set_xlabel('Time (PST)')
+    fig.axes[-1].set_xlabel('Time (PT)')
     plt.tight_layout()
 
     plt.savefig(pjoin(output_dir, 'tc_plot_{}.png'.format(date)))

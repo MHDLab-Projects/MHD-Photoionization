@@ -38,7 +38,7 @@ plt.figure(figsize=(6,3))
 
 ds_sel = ds_TP_species.sel(P = 1e5, Kwt=0.01, phi = 0.8, method = 'nearest')
 
-ds_sel = ds_sel.drop_vars(['KO','KOH'])
+ds_sel = ds_sel.drop_vars(['KO'])
 
 for var in ds_sel.data_vars:
     if not np.isnan(ds_sel[var].where(ds_sel[var] > 1e-4)).all():
@@ -55,14 +55,14 @@ for var in ds_sel.data_vars:
             color = None
         
         ds_sel[var].plot(label = var, linestyle=linestyle, linewidth=linewidth, color=color)
-lg = plt.legend()
-lg.set_bbox_to_anchor([0,0,1.3,1])
+
+lg = plt.legend(bbox_to_anchor=(1.05, 1.05), loc='upper left')
 plt.ylabel('Species Concentration')
 plt.yscale('log')
 # plt.xscale('log')
 plt.ylim(1e-6,1)
 plt.gca().set_title('')
-
+plt.grid()
 plt.tight_layout()
 
 plt.savefig('output/species_concentrations_T.png')
@@ -102,7 +102,7 @@ ds_TP_params_Kwt.coords['Kwt'].attrs = dict(long_name='K wt%')
 
 # %%
 
-plt.figure(figsize=(3,3))
+plt.figure(figsize=(6,2.5))
 
 ds_TP_params_Kwt['sigma'].sel(P=1e5, phi=0.8).sel(Kwt=[0.1,1,10]).plot(hue='Kwt', yscale='log', ylim=(1e-4, 1e4))
 

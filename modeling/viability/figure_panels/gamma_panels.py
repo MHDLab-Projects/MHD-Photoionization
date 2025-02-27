@@ -190,12 +190,23 @@ legend.set_bbox_to_anchor((1.2, 0.5))  # coordinates are in figure units
 plt.xlim(0.8e4,1.2e6)
 plt.ylim(1200,3500)
 
+g.axes[0,0].set_ylabel('T [K]')
+g.axes[1,0].set_ylabel('T [K]')
+g.axes[1,1].set_xlabel('P [Pa]')
+g.axes[1,0].set_xlabel('P [Pa]')
+g.axes[1,2].set_xlabel('P [Pa]')
+
 plt.tight_layout()
 
 
 plt.savefig('output/P_zero_rxn_component.png')
 #%%
-ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
+g = ds_P_zero['P_zero'].sel(eta='perf', l_b=0.99, rxn='mm_sum').plot(col='phi',hue='Kwt', y='T')
+
+g.axes[0,0].set_ylabel('T [K]')
+g.axes[0,0].set_xlabel('P [Pa]')
+g.axes[0,1].set_xlabel('P [Pa]')
+g.axes[0,2].set_xlabel('P [Pa]')
 
 plt.xscale('log')
 
