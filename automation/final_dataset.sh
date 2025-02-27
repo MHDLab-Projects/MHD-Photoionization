@@ -45,7 +45,3 @@ popd
 pushd $REPO_DIR/modeling/viability/figure_panels
 source gen_figs.sh
 popd
-
-pushd $REPO_DIR/experiment/notebook/2018-11-20
-python analysis_beam_timing.py
-popd
