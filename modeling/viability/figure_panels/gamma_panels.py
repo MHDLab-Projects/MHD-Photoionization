@@ -162,8 +162,8 @@ for ax, label in zip(axes, labels_ab):
     Y = ax.get_position().y1    
     fig.text(X - 0.2, Y , label)
  
-
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig8_viability.svg'))
+#TODO: when saving to svg the top panel has faint lines. saving directly to png
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'output', 'Fig8_viability.png'))
 
 # %%
 combo_downsel = {
