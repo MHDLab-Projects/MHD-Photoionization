@@ -23,12 +23,6 @@ python munge_lecroy.py
 python munge_spe.py
 python munge_spe_beamtiming.py
 
-# Generates ds_beam_timing.cdf from old beam timing measurement. 
-#TODO: Potentially move this output to main munged folder. 
-pushd $REPO_DIR/experiment/notebook/2018-11-20
-python munge_spe.py
-popd
-
 # Previously in process_munged.sh. but output is included in munged data folder
 date_list=('2023-04-07' '2023-05-12' '2023-05-18' '2023-05-24')
 
