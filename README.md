@@ -31,6 +31,7 @@ This repository is tested to work with
 
 * Select a python script (e.g. `setup.py`) to activate the vscode python extension. Open a terminal `ctrl + ~` and ensure the python .venv is activated. 
     * type `which python` to make sure it points to the path in which you cloned the repository.
+    * this can require a restart of vscode
 
 * run `source install.sh` in the terminal (or run steps inside manually)
 
