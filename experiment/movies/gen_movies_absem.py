@@ -37,6 +37,6 @@ for date, tw in df_exptw.ct.iterslices():
     fp_out = 'output/absem_movie_{}.mp4'.format(date)
     duration = duration_lookup[date]
 
-    gen_movie_absem_mp(da_sel, fp_out, tw, duration, mp_names=['Barrel', 'Jet'])
+    gen_movie_absem_mp(da_sel, fp_out, tw, duration, mp_names=['Barrel', 'Jet'], remove_yticks=True)
 
 # %%
