@@ -1,4 +1,4 @@
-\section{Non-equilibrium modeling}
+\section{Non-Equilibrium Modeling}
 
 \subsection{General Model}
 
@@ -85,7 +85,7 @@ where $\tau$ is the exponential time constant.
 
 
 \label{sec:mwt-diff-eq-fitting}
-\subsubsection{Differential equation fitting method }
+\subsubsection{Differential Equation Fitting Method }
 
 For large $\Delta n_e$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will become important. We observe a super-exponential region in the $\Delta AS$ time data, which is consistent with increased recombination from the bimolecular term. However, scattering of microwaves (in addition to absorption) could also contribute to the increased slope. We attempted to fit the full $\Delta AS$ data with a fit method of numerically solving Equation \ref{eq:full_deqn_phi} using $G_{NE} = 0$. This method should account for the bimolecular recombination term in Eq.\ \ref{eq:full_deqn_phi}. For simplicity and robust results, we limit ourselves to exponential fitting in the main text, but this numerical fitting procedure should be explored further.
 
@@ -130,7 +130,7 @@ We consider an arbitrary ionization mechanism that requires a power input per un
 \label{eq:G_NE_in_eta}
 \end{equation}
 
-Equation \ref{eq:G_NE_in_eta} is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames.\cite{turkOpticalDetectionLaserInduced1986}
+Equation \ref{eq:G_NE_in_eta} is agnostic to the specific ionization mechanism, which would be encapsulated in \(\eta\). In this interpretation, \(G_{NE}\) represents the rate that electrons are lifted from the potential well of depth \(E_{IP}\). When \(\eta = 1\), the ionization process is perfectly efficient and for \(\eta < 1\) a fraction \(\eta - 1\) of the input energy is wasted. We note that \(\eta > 1\) is possible, particularly in the case of laser enhanced ionization where a laser excites an atom to a higher bound state, and a subsequent collisional excitation ionizes the atom. \(\eta\ \)on the order of 10 has been observed for metals in flames. \cite{turkOpticalDetectionLaserInduced1986}
 
 Then, we can write the electron density as a function of the power input, giving
 
@@ -151,7 +151,7 @@ Finally, we can combine Equations \ref{eq:mhd_power}-\ref{eq:frac_dn_e_dP_in_exp
 \gamma =  e K (1-K) \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}.
 \end{equation}
 
-In the results presented in the main text we assume a velocity of \SI{1000}{\meter/\second}, a magnetic field strength of \SI{5}{\tesla}, load factor of K=0.5, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
+In the results presented in the main text we assume a velocity of \SI{1000} {\meter/\second}, a magnetic field strength of \SI{5} {\tesla}, load factor of K=0.5, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
 
 To calculate $k_{r, m, eff}$, we utilize Equation \ref{eq:krm_eff_def}. The equilibrium species concentrations, $n_i$, are calculated from the chemical equilibrium model discussed in Section \ref{section:species_concentration_mobility_calc}. The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (see Figure \ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$ for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. Therefore, we make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. This allows us to write $k_{r, m, eff}$ as
 
@@ -161,13 +161,13 @@ To calculate $k_{r, m, eff}$, we utilize Equation \ref{eq:krm_eff_def}. The equi
 \end{equation}
 
 
-\subsubsection{Species concentration and mobility calculations}\label{section:species_concentration_mobility_calc}
+\subsubsection{Species Concentration and Mobility Calculations}\label{section:species_concentration_mobility_calc}
 
-To calculate $\mu_e$ and $n_i$, we model the combustion of seeded oxy-kerosene mixture with the Cantera python package.\cite{goodwinCanteraObjectorientedSoftware2021} The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction (1\%). This mixture is initialized at an inlet temperature (\SI{300}{\kelvin}) and allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (\SI{1e6}{\pascal}).
+To calculate $\mu_e$ and $n_i$, we model the combustion of seeded oxy-kerosene mixture with the Cantera Python package. \cite{goodwinCanteraObjectorientedSoftware2021} The input mass flow rates of $K_2CO_3$, $C_{12}H_{26}$, and $O_2$ are determined to achieve a specified equivalence ratio and potassium mass fraction (1\%). This mixture is initialized at an inlet temperature (\SI{300} {\kelvin}) and allowed to equilibrate at a fixed enthalpy and combustion chamber pressure (\SI{1e6} {\pascal}).
 
 Next, we model different potential gas areas of the MHD channel by equilibrating this gas mixture at various fixed temperature and pressures. Our Cantera model does not consider seed particle dissociation or formation. \ref{fig:SI_Cantera_T}A shows the calculated concentrations of the 10 highest-concentration species for our modeled oxy-fuel combustion gas mixture as function of temperature and atmospheric pressure.
 
-We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al.\cite{bedickCombustionPlasmaElectrical2017a} This method represents an improvement to previous analysis, as it considers the collisional cross-sections for alkali vapors in flames and $\mu_e$ is calculated using the species-dependent collisional cross-sections of constituent gasses.
+We calculate $\mu_e$ of the gas mixture following the method outlined previously by Bedick et al. \cite{bedickCombustionPlasmaElectrical2017a} This method represents an improvement to previous analysis, as it considers the collisional cross-sections for alkali vapors in flames and $\mu_e$ is calculated using the species-dependent collisional cross-sections of constituent gasses.
 
 
 \begin{figure}[ht]
@@ -203,9 +203,9 @@ where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\texts
 \end{figure}
 
 Although the excimer laser used in this work is pulsed, we choose to analyze steady state illumination in the modeling presented here. The viability model is still valid as a best-case analysis of pulsed lasers because, for a given time-averaged laser intensity, the time-averaged electron density will be higher with a steady state light source. The higher peak intensities of pulsed laser sources will create higher peak electron densities and a corresponding higher rate recombination from second-order effects. Therefore, considering steady state illumination corresponds to an upper bound on the electron density achievable with a given photoionization energy input. This assumption also allows for the calculation of equilibrium electron density by allowing for the equivalence of recombination rate and generation rate.
-\subsubsection{UV absorption cross-sections}
+\subsubsection{UV Absorption Cross-Sections}
 
-We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the wavelength range of 190-\SI{285}{\nano\meter}. The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation.\cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database.\cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111}{\nano\meter}.\cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170}{\nano\meter}.\cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}.\cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200}{\nano\meter}-\SI{300}{\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190}{\nano\meter}-\SI{200}{\nano\meter}.\cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800}{\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170}{\nano\meter}-\SI{210}{\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al.\cite{thompsonUltravioletAbsorptionCoefficients1963} 
+We compiled data on UV absorption cross-sections to determine potential ionization pathways. Data was collected within the wavelength range of 190-\SI{285} {\nano\meter}. The consolidated data are shown in Figure \ref{fig:SI_UV_abscs}, and were determined as follows:For potassium, we use compiled photoionization cross-sections (Verner) for solar and blackbody radiation. \cite{huebnerPhotoionizationPhotodissociationRates2015} Regarding the other constituent gasses, we first rule out absorption by the atomic species H and O through the NIST database. \cite{sansonettiHandbookBasicAtomic2005} The UV absorption of the hydrogen molecule requires light with wavelength shorter than about \SI{111} {\nano\meter}. \cite{franceFARULTRAVIOLETMOLECULARHYDROGEN} The OH radical similarly does not absorb UV light until wavelengths shorter than about \SI{170} {\nano\meter}. \cite{chipmanAbsorptionSpectrumOH2008} empirical formulas for the wavelength and temperature dependent UV cross-sections exist for $CO_2$\cite{oehlschlaegerUltravioletAbsorptionCrosssections2004}, H\textsubscript{2}O,\cite{zuevUVABSORPTIONCROSS} and O\textsubscript{2}. \cite{zuevUVABSORPTIONCROSS} KOH is dissociated by UV light in the \SI{200} {\nano\meter}-\SI{300} {\nano\meter} range, and consequently has a relatively large absorption cross-section. We extract the KOH absorption cross-section data from Weng et al. and extrapolate it in the range \SI{190} {\nano\meter}-\SI{200} {\nano\meter}. \cite{wengUltravioletAbsorptionCross2019} Weng et al. observe a weak difference in absorption cross-section for different flame conditions at 1400 and \SI{1800} {\kelvin}, so we do not include a temperature dependence to the KOH cross-section. CO does absorb very weakly at Cameron bands in the range of \SI{170} {\nano\meter}-\SI{210} {\nano\meter}. We include CO absorption through the room temperature absorption measurements performed by Thompson et al. \cite{thompsonUltravioletAbsorptionCoefficients1963} 
 
 
 \begin{figure}[h]
@@ -216,7 +216,7 @@ We compiled data on UV absorption cross-sections to determine potential ionizati
 \end{figure}
 
 
-\subsubsection{Boundary layer targeting}
+\subsubsection{Boundary Layer Targeting}
 
 
 This work is motivated in part by targeting cold boundary layers near the electrode walls in MHD generators. In this case, $P_{in}$ would need to only be applied to a fraction of the MHD channel and the power requirement will be reduced. We consider the simple 1D model with two regions in series and show that the effect of the boundary can be encapsulated by multiplying $\gamma$ of Equation \ref{eq:gamma-final} with an enhancement factor.
@@ -224,7 +224,7 @@ This work is motivated in part by targeting cold boundary layers near the electr
 \begin{figure}[h]
     \centering
     \includegraphics[]{\repodir/final/figures/schematics/output/boundary_layer_targeting.png} 
-    \caption{Schematic of the boundary layer targeting concept}
+    \caption{Schematic of the boundary layer targeting concept.}
     \label{fig:SI_boundary_layer_targeting_schematic}
 \end{figure}
 
@@ -255,7 +255,7 @@ For cold boundary layers with small fractional width ($l_{flow}\rightarrow1$), $
 \begin{figure}[h]
     \centering
     \includegraphics[]{\repodir/modeling/viability/analysis/output/figures/bl_enhance.png} 
-    \caption{Enhancement factor $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ for boundary layer targeting versus fractional bulk flow region width $l_b$}
+    \caption{Enhancement factor $\frac{d\sigma_{eff}}{d\sigma_{bl}}$ for boundary layer targeting vs. fractional bulk flow region width $l_b$}
     \label{fig:SI_bl_enhance}
 \end{figure}
 
