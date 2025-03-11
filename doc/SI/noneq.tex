@@ -89,7 +89,7 @@ where $\tau$ is the exponential time constant.
 
 For large $\Delta n_e$, the bimolecular term in Equation \ref{eq:full_deqn_phi} will become important. We observe a super-exponential region in the $\Delta AS$ time data, which is consistent with increased recombination from the bimolecular term. However, scattering of microwaves (in addition to absorption) could also contribute to the increased slope. We attempted to fit the full $\Delta AS$ data with a fit method of numerically solving Equation \ref{eq:full_deqn_phi} using $G_{NE} = 0$. This method should account for the bimolecular recombination term in Eq.\ \ref{eq:full_deqn_phi}. For simplicity and robust results, we limit ourselves to exponential fitting in the main text, but this numerical fitting procedure should be explored further.
 
-Fitting is performed with the lmfit package in Python. For the solution to the differential equation we assume $k_{r,b,K+} = 1 \times 10^{-8} cm^3/s$. The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized, and the normalized solution is fit to the normalized $\Delta AS$ curve using the lmfit package. Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. 
+Fitting is performed with the lmfit package in Python. For the solution to the differential equation we assume $k_{r,b,K+} = 1 \times 10^{-8}\ cm^3/s$. The differential equation is solved with the scipy solve\_ivp function. The solution and the $\Delta AS$ curve are both normalized, and the normalized solution is fit to the normalized $\Delta AS$ curve using the lmfit package. Figure \ref{fig:SI_Kwt_Recombination_fitmethod_compare} shows a comparison between exponential fitting and full differential equation fitting for the recombination coefficient. 
 
 \begin{figure}[]
 \centering
@@ -151,7 +151,7 @@ Finally, we can combine Equations \ref{eq:mhd_power}-\ref{eq:frac_dn_e_dP_in_exp
 \gamma =  e K (1-K) \mu_e u^2 B^2 \frac{\eta}{E_{IP}k_{r, m, eff}}.
 \end{equation}
 
-In the results presented in the main text we assume a velocity of \SI{1000} {\meter/\second}, a magnetic field strength of \SI{5} {\tesla}, load factor of K=0.5, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $eta$ calculated from the energy absorbed by KOH (described later). 
+In the results presented in the main text we assume a velocity of \SI{1000} {\meter/\second}, a magnetic field strength of \SI{5} {\tesla}, load factor of K=0.5, and an ionization potential of potassium $E_{IP}$ of 4.34 eV. In this work, we consider $\eta = 1$, an $\eta$ calculated from the energy absorbed by KOH (described later). 
 
 To calculate $k_{r, m, eff}$, we utilize Equation \ref{eq:krm_eff_def}. The equilibrium species concentrations, $n_i$, are calculated from the chemical equilibrium model discussed in Section \ref{section:species_concentration_mobility_calc}. The $\phi_i$ are not known \emph{a priori} and are not easily measured. The ionization model proposed in the main text indicates that photoionization creates both OH molecules and K+ ions, though subsequent reactions are not known. However, chemical equilibrium calculations (see Figure \ref{fig:SI_Cantera_T}) indicate that for seeded oxy-fuel combustion, $n_{e,0} << n_{i,0}$ for all species other that K+. Assuming that $\phi_i$ is of order 1, then the second term in Equation \ref{eq:krm_eff_def} can be neglected except for the K+ species. Therefore, we make the simplifying assumption that  $\phi_K+ = 1$ and $\phi_i = 0$ for all other species. This allows us to write $k_{r, m, eff}$ as
 
@@ -193,7 +193,7 @@ where \(FA_{KOH}\) has been expressed in terms of the optical attenuation length
 \begin{equation}
 \delta = \sum_{i}^{}\delta_{i} = \sum_{i}^{}{n_{i}Q_{i}},
 \end{equation}
-where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species ( \(\delta_{i} = n_{i}Q_{i}\)). To calculate \(\frac{\delta}{\delta_{KOH}\ }\), we utilize the compiled UV absorption cross subsection data for the major species in the calculated gas mixtures outlined in Figure \ref{fig:SI_UV_abscs}. Figure \ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\) for various UV wavelengths and temperatures. In the viability analysis presented in the main text, we down-select to the \SI{248}{\nano\meter} light of the excimer laser used in this work.
+where \(Q_{i}\) is the optical absorption cross subsection of the \emph{i}\textsuperscript{th} species ( \(\delta_{i} = n_{i}Q_{i}\)). To calculate \(\frac{\delta}{\delta_{KOH}\ }\), we utilize the compiled UV absorption cross subsection data for the major species in the calculated gas mixtures outlined in Figure \ref{fig:SI_UV_abscs}. Figure \ref{fig:SI_atten_length} shows\(\ \delta\), \(\delta_{KOH}\), and \(\frac{\delta}{\delta_{KOH}\ }\) for various UV wavelengths and temperatures. In the viability analysis presented in the main text, we down-select to the \SI{248} {\nano\meter} light of the excimer laser used in this work.
 
 \begin{figure}[ht]
     \centering

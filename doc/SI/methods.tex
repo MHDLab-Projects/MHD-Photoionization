@@ -9,7 +9,7 @@ Note: Acronyms may be defined in the main text.
 %Probably should define acronyms again in SI the first time they are used.
 %MWT, SFW, SFR
 
-Throughout the experimental campaign, we performed the following test case sequences. The test cases are presented below with our internal naming scheme that begins with a three digit number that represent the nominal values for the HVOF process inputs. The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). A "x" indicates that the nominal value was varied during that sequence. The sequence is then appended with "pos" or "pow" to indicate a position or power sweep, respectively. The absence of "pos" or "pow" indicates that the SFR-maximized position of 180mm downstream of the barrel exit and full laser power (7 mJ) were used. A given test case sequence is appended with a "run number" to indicate repeats of the sequence performed on the same day. 
+Throughout the experimental campaign, we performed the following test case sequences. The test cases are presented below with our internal naming scheme that begins with a three digit number that represent the nominal values for the HVOF process inputs. The first digit represents the total mass flow (5 = 13.0 g/s), the second digit represents the equivalence ratio (1 = 0.6, 3 = 0.8), and the third digit represents the potassium mass fraction (3 = 0.1\% and 6 = 1.0\%). A "x" indicates that the nominal value was varied during that sequence. The sequence is then appended with "pos" or "pow" to indicate a position or power sweep, respectively. The absence of "pos" or "pow" indicates that the SFR-maximized position of \SI{180} {mm} downstream of the barrel exit and full laser power (\SI{7} {mJ}) were used. A given test case sequence is appended with a "run number" to indicate repeats of the sequence performed on the same day. 
 
 %Define Kwt here? Is it defined differently in main text?
 \begin{itemize}
@@ -101,7 +101,7 @@ The oscilloscope was used with a \SI{1} {\mega\ohm} input impedance with DC coup
 
 The excimer laser was used with 12 kV pulse power. The repetition rate of the laser varied: 2023-04-07 5Hz, 2023-05-12: 12 Hz, 2023-05-18: 5 Hz, 2023-05-24: 5 Hz. The oscilloscope was used with no averaging of acquisitions, with a file saved for each acquisition. The repetition rate was limited by the rate at which the oscilloscope could save individual files to disk. 
 
-The excimer laser is sent through a 90/10 UV beam splitter with the 10\% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a \SI{2.7(0.05)} {\milli\meter}  opening before a UV-enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90 \% of the laser is directed through a Thorlabs FW 102C filter wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before and after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis. 
+The excimer laser is sent through a 90/10 UV beam splitter with the 10\% sent to a photovoltaic power meter (Ophir PD-10C). There is an iris with a \SI{2.7(0.05)} {\milli\meter}  opening before a UV-enhanced neutral density filter with optical density of 3 before the power meter. The power data was not used in this analysis but is present in the dataset. The remaining 90\% of the laser is directed through a Thorlabs FW 102C filter wheel. The filter wheel housed Thorlabs reflective UV neutral density filters. These neutral density filters have been observed to degrade from continued use with the excimer laser, and the laser power was measured before and after the experiment to ensure there was no significant degradation in filter performance. After the filter wheel, the laser is redirected with a UV mirror (Acton Instruments, 248-FR45-ID-MB) to the center of the microwave horns. Everything including the final mirror is located on the motorized stage, which moves parallel to the torch axis. 
 
 The distance between the horns is \SI{85.725} {\milli\meter}. The mirror that sends the excimer beam to the measurement location is located \SI{247} {\milli\meter} downstream along the torch axis, \SI{397} {\milli\meter} horizontally (along the table) perpendicular from the torch axis, and \SI{65} {\milli\meter} vertically above the torch axis. 
 
@@ -230,7 +230,7 @@ The laser power was measured with an Ophir PE25BG-C pyroelectric power meter bef
 
 \subsubsection{Mie Scattering Analysis}
 
-To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation \cite{bohrenAbsorptionScatteringLight2007}. We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is \SI{10}{\milli\meter} and the radiation wavelength is \SI{3} {\milli\meter}, which are approximately the diameter of our laser beam and wavelength of our \SI{90} {\giga\hertz} microwave source, respectively.  %broken citation
+To examine the relative contributions of absorption and scattering of microwaves on our transmission signal, we examined models of Mie scattering of a weakly conducting sphere of air plasma. Mie scattering refers to the scattering or absorption of electromagnetic radiation by a sphere of objects with a size that is comparable or larger than the wavelength of incident radiation \cite{bohrenAbsorptionScatteringLight2007}. We model our laser-plasma interaction volume as a sphere, for which analytical expressions exist for the absorption efficiency, $Q_{abs}$, and the scattering efficiency, $Q_{sca}$. The diameter of the sphere is \SI{10} {\milli\meter} and the radiation wavelength is \SI{3} {\milli\meter}, which are approximately the diameter of our laser beam and wavelength of our \SI{90} {\giga\hertz} microwave source, respectively.  %broken citation
 
 $Q_{abs}$ and $Q_{sca}$ are defined through $Q_x = \frac{\frac{P_x}{I}}{A_p}$, where $I$ is the incident radiation, $A_p$ is the particle cross-sectional area, and $P_x$ is the power with $x=abs$ and $x=sca$ corresponding to absorbed or scattered radiation, respectively \cite{bohrenAbsorptionScatteringLight2007}. The extinction efficiency is defined as $Q_{ext} = Q_{abs} + Q_{sca}$, which will be related to the measured power transmission. %broken citation
 
@@ -271,7 +271,7 @@ The LED used for AES is a Thorlabs M780F2 \SI{780} {\nano\meter} LED driven by a
 
 For the barrel exit measurement, the light from the LED is collimated from the fiber with a RC02SMA-P01 reflective parabolic mirror and directed at a \SI{90} {\degree} angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then coupled into the collecting fiber with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 \SI{200} {\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 \SI{600} {\micro\meter} 0.5 NA fiber. On both sides of the torch, light passes through an iris of approximately \SI{1} {\milli\meter} and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
 
-For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 mm iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 400um 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
+For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 mm iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 \SI{400} {\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
 The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a \SI{1} {\second} delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. 
 
@@ -315,7 +315,7 @@ Even with interpolation, slight differences between the calibration spectrum and
 The effect of the offset procedure is shown in Figure \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
 
 \begin{enumerate}
-    \item Individual acquisitions with a negative absorption in the 765 to \SI{772}{\nano\meter} range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and LED off measurements.
+    \item Individual acquisitions with a negative absorption in the 765 to \SI{772} {\nano\meter} range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and LED off measurements.
     \item The data is reduced to the wings of the absorption profile. From the left and right of the spectrum, the data is kept until a point where the absorption is 0.8. This avoids fitting where the absorption is near 1. 
     \item All individual acquisitions for a given test case are averaged.
 \end{enumerate}
@@ -439,11 +439,11 @@ Figure \ref{fig:SI_PD_setup_schematic} shows a schematic the photodiode (PD) set
 \clearpage
 \subsection{Emulsion Preparation and Delivery}
 
-Potassium was introduced into the HVOF system using an emulsion of potassium carbonate ($K_{2}CO_{3}$) brine and kerosene (hereafter referred to as the "emulsion"). The emulsion was delivered into the HVOF fuel flow via a tee. The tee run carried the fuel flow while the tee branch accepted emulsion through a PTFE feed line which was served by a high-pressure syringe pump. The emulsion was loaded into three syringes in the syringe pump with the syringe outputs manifolded together. A switching valve allowed syringes to withdraw emulsion from the stirred reservoir or to infuse emulsion into the HVOF fuel line. Before igniting the torch, the 4.8 m emulsion line was filled to the tee to eliminate delay between initiating emulsion pumping and emulsion reaching the torch. At the tee, fuel flow momentum was used to mix the emulsion with the fuel flow over the 15cm distance between the tee and combustion chamber nozzle. 
+Potassium was introduced into the HVOF system using an emulsion of potassium carbonate ($K_{2}CO_{3}$) brine and kerosene (hereafter referred to as the "emulsion"). The emulsion was delivered into the HVOF fuel flow via a tee. The tee run carried the fuel flow while the tee branch accepted emulsion through a PTFE feed line which was served by a high-pressure syringe pump. The emulsion was loaded into three syringes in the syringe pump with the syringe outputs manifolded together. A switching valve allowed syringes to withdraw emulsion from the stirred reservoir or to infuse emulsion into the HVOF fuel line. Before igniting the torch, the 4.8 m emulsion line was filled to the tee to eliminate delay between initiating emulsion pumping and emulsion reaching the torch. At the tee, fuel flow momentum was used to mix the emulsion with the fuel flow over the \SI{15} {cm} distance between the tee and combustion chamber nozzle. 
 
-Literature was reviewed for an emulsion specifically designed to work with brine — especially water-in-oil (W/O) emulsions. Developing emulsions for use in oilfields, Mohamed et al. \cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (~20\% by mass).  
+Literature was reviewed for an emulsion specifically designed to work with brine — especially water-in-oil (W/O) emulsions. Developing emulsions for use in oilfields, Mohamed et al. \cite{mohamedInfluenceSurfactantStructure2017a} investigated high salinity W/O emulsions between “formation brine” and diesel. According to these authors, “[D]iesel and kerosene are used in the oilfields because of availability.” Their formation brine included more than 221,673 mg total dissolved solids (TDS) per liter of brine (approximately 20\% by mass).  
 
-We noted the most stable result in \cite{mohamedInfluenceSurfactantStructure2017a} and reproduced it using a $K_{2}CO_{3}$ brine, kerosene, and a SPAN 80 / TWEEN 80 surfactant blend meeting their recommended hydrophilic-lipophilic balance (HLB) of 6.8. The concentration of the surfactant was 0.5\% of the emulsion by volume - the minimum necessary found in \cite{mohamedInfluenceSurfactantStructure2017a} to obtain a stable emulsion. (Mohamed et al. measured that ~5\% of liquid came out of emulsion in 100 minutes at 120 °C.)  
+We noted the most stable result in \cite{mohamedInfluenceSurfactantStructure2017a} and reproduced it using a $K_{2}CO_{3}$ brine, kerosene, and a SPAN 80/TWEEN 80 surfactant blend meeting their recommended hydrophilic-lipophilic balance (HLB) of 6.8. The concentration of the surfactant was 0.5\% of the emulsion by volume - the minimum necessary found in \cite{mohamedInfluenceSurfactantStructure2017a} to obtain a stable emulsion. (Mohamed et al. measured that approximately 5\% of liquid came out of emulsion in 100 minutes at 120 °C.)  
 
 To generate the initial brine droplets, we used a spray nozzle. Spraying to create an emulsion is a standard practice used in this work because it avoids the temperature-rise associated with higher energy processes. \cite{atkinsonKeroseneEmulsionHow1890} These spray-generated droplets were then passed through an ultrasonic process to break them up further. This continuous process also minimized temperature rise because the material exited seconds after entering the ultrasonic field. 
 
@@ -452,10 +452,10 @@ To generate the initial brine droplets, we used a spray nozzle. Spraying to crea
 \begin{enumerate}
     \item Prepare liquid components ahead of time, as follows:
     \begin{itemize}
-        \item 100 g supply of surfactant blend with HLB=6.8 by mixing 77g of Span 80 and 23 g of Tween 80 on a magnetic stir plate 
-        \item Eight aliquots of $K_{2}CO_{3}$ brine by mixing 847.7g of $K_{2}CO_{3}$ powder into 350 mL of deionized water on a magnetic stirrer 
-        \item Eight aliquots of prepared kerosene by mixing 5 g of the surfactant blend into 106.5 g of kerosene  
-        \item Each brine/kerosene aliquot pair will produce 500 mL of emulsion. 
+        \item \SI{100} {g} supply of surfactant blend with HLB=6.8 by mixing \SI{77} {g} of Span 80 and \SI{23} {g} of Tween 80 on a magnetic stir plate 
+        \item Eight aliquots of $K_{2}CO_{3}$ brine by mixing \SI{847.7} {g} of $K_{2}CO_{3}$ powder into \SI{350} {mL} of deionized water on a magnetic stirrer 
+        \item Eight aliquots of prepared kerosene by mixing \SI{5} {g} of the surfactant blend into \SI{106.5} {g} of kerosene  
+        \item Each brine/kerosene aliquot pair will produce \SI{500} {mL} of emulsion. 
     \end{itemize}
 
     \item Create a pre-emulsion:
@@ -482,7 +482,7 @@ Figure \ref{fig:SI_Emulsion_Process} shows a schematic of the emulsion preparati
 \end{figure}
 
 
-The emulsion recipe is given in Table \ref{tab:emulsion_parameters}. The mass of the fuel was incorrectly used as 109 g to calculate setpoints on each day except 2023-05-24, instead of 106.5 g. The emulsion recipe on 2023-05-24 corresponds to the physical emulsion prepared on each date, and is used in the calculation of process parameters including the potassium mass fraction, equivalence ratio, and total mass flow. 
+The emulsion recipe is given in Table \ref{tab:emulsion_parameters}. The mass of the fuel was incorrectly used as \SI{109} {g} to calculate setpoints on each day except 2023-05-24, instead of \SI{106.5} {g}. The emulsion recipe on 2023-05-24 corresponds to the physical emulsion prepared on each date, and is used in the calculation of process parameters including the potassium mass fraction, equivalence ratio, and total mass flow. 
 
 
 \begin{table}[h]
@@ -502,7 +502,7 @@ $f_{fuel}$ & 0.19865 dimensionless & 0.19498 dimensionless \\
 $f_{K_2CO_3}$ & 0.15436 dimensionless & 0.15507 dimensionless \\
 \hline
 \end{tabular}
-\caption{Emulsion Recipe. M = mass, $rho_m$ is the measured mass density, $M_{total}$ is the calculated total mass, and $f_{fuel}$ and $f_{K_2CO_3}$ are the calculated mass fraction of fuel and $K_2CO_3$, respectively. The mass density ($\rho_m$) was measured by withdrawing a sample (about 10 ml) of emulsion and weighing it.  }
+\caption{Emulsion Recipe. M = mass, $rho_m$ is the measured mass density, $M_{total}$ is the calculated total mass, and $f_{fuel}$ and $f_{K_2CO_3}$ are the calculated mass fraction of fuel and $K_2CO_3$, respectively. The mass density ($\rho_m$) was measured by withdrawing a sample (about \SI{10} {mL}) of emulsion and weighing it.  }
 
 
 \label{tab:emulsion_parameters}
