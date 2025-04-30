@@ -12,9 +12,9 @@ from mhdlab.coords import gen_coords_to_assign_1, assign_coords_multi
 DIR_EXP_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 # Absorption emsssion and lecroy
-ds_absem = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_absem.cdf'))
-ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
-ds_absem = ds_absem.rename(time='acq_time')
+ds_aas = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_aas.cdf'))
+ds_aas = ds_aas.set_index(acq=['time','mp']).unstack('acq')
+ds_aas = ds_aas.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXP_PROC_DATA, 'ds_lecroy.cdf'))
 
 
@@ -106,7 +106,7 @@ process_tcs = [
 
 # Minimum number of measurements that must be present in each timewindow
 # 2024-03-04, min mnum of lecroy to 50 to remove some transient motor positions on 2023-04-07
-dict_min_mnum_absem = {tc: 3 for tc in process_tcs}
+dict_min_mnum_aas = {tc: 3 for tc in process_tcs}
 dict_min_mnum_lecroy = {tc: 50 for tc in process_tcs}
 
 
@@ -162,7 +162,7 @@ def assign_coords_timewindows(ds, coords_to_assign, df_cuttimes, min_mnum=None, 
     return ds_out
     
 
-dss_absem = defaultdict(list)
+dss_aas = defaultdict(list)
 dss_lecroy = defaultdict(list)
 
 for tc_base, df_cuttimes_tc in df_ct_sequence.groupby('tc'):
@@ -175,21 +175,21 @@ for tc_base, df_cuttimes_tc in df_ct_sequence.groupby('tc'):
 
 
     #TODO: can we add 'mnum_counts' as a variable in a general way and downselect later?
-    ds_absem_sel = assign_coords_timewindows(ds_absem, coords_to_assign, df_cuttimes_tc, min_mnum=dict_min_mnum_absem[tc_base], downselect_dict=downselect_dict)
+    ds_aas_sel = assign_coords_timewindows(ds_aas, coords_to_assign, df_cuttimes_tc, min_mnum=dict_min_mnum_aas[tc_base], downselect_dict=downselect_dict)
     ds_lecroy_sel = assign_coords_timewindows(ds_lecroy, coords_to_assign, df_cuttimes_tc, min_mnum=dict_min_mnum_lecroy[tc_base] , downselect_dict=downselect_dict)
 
 
-    dss_absem[tc_base].append(ds_absem_sel)
+    dss_aas[tc_base].append(ds_aas_sel)
     dss_lecroy[tc_base].append(ds_lecroy_sel)
 #%%
 
 import warnings
 
-output_dir = pjoin(DIR_PROC_DATA, 'absem')
+output_dir = pjoin(DIR_PROC_DATA, 'aas')
 if not os.path.exists(output_dir): os.mkdir(output_dir)
 
-for tc in dss_absem:
-    ds = xr.concat(dss_absem[tc], 'run')
+for tc in dss_aas:
+    ds = xr.concat(dss_aas[tc], 'run')
 
     # ds['led_on'] = ds['led_on']*2
 

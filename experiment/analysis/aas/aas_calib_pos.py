@@ -1,7 +1,7 @@
 
 #%%[markdown]
 
-# # Examing Calibration of ABSEM signal with motor position
+# # Examing Calibration of aas signal with motor position
 
 # Calibration was taken with position dependence on 2023-05-24, and an extra datapoint on 2023-05-18. Looking at the dependence 
 # The positino dependence doesn't appear to be reproducible, and is on the order of 1%. Just using calibration at the goldilocks position of 150mm for now. 
@@ -12,7 +12,7 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
 from mhdlab.fileio.tdms import TFxr
-from mhdlab.fileio.spectral import load_absem
+from mhdlab.fileio.spectral import load_aas
 
 
 # datestr = '2023-05-24'
@@ -23,9 +23,9 @@ fp_dsst = os.path.join(DIR_EXPT_PROC_DATA, 'dsst.tdms')
 
 dsst = TFxr(fp_dsst).as_dsst(convert_to_PT=False)
 
-fp = os.path.join(DIR_EXPT_PROC_DATA, 'ds_absem.cdf')
-ds_absem = xr.load_dataset(fp)
-ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
+fp = os.path.join(DIR_EXPT_PROC_DATA, 'ds_aas.cdf')
+ds_aas = xr.load_dataset(fp)
+ds_aas = ds_aas.set_index(acq=['time','mp']).unstack('acq')
 # %%
 
 tws = {
@@ -42,7 +42,7 @@ motor = dsst['motor']['Motor C Relative'].rename('motor')
 dss = []
 
 for tw_calib_pos, tw in tws.items():
-    ds_sel = ds_absem.sel(time=tw).sel(mp='mw_horns')
+    ds_sel = ds_aas.sel(time=tw).sel(mp='mw_horns')
     ds_sel = assign_signal(ds_sel, motor, 'time')
     ds_sel = unstack_multindexed_acq_dim(ds_sel, min_mnum=2).dropna('motor', how='all')
 

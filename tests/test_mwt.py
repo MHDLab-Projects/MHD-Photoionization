@@ -1,8 +1,8 @@
 #%%
 from mhdlab.analysis.standard_import import *
 
-from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1
-from mhdlab.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis.aas.fitting import gen_model_alpha_blurred, pipe_fit_alpha_1
+from mhdlab.analysis.aas.fit_prep import interp_alpha
 from mhdlab.analysis import mwt
 from mhdlab.xr_utils import fit_da_lmfit
 from pint import Quantity

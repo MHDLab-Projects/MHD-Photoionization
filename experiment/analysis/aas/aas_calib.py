@@ -4,7 +4,7 @@ from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 
 #%%
 
@@ -62,7 +62,7 @@ for i, date in enumerate(dates):
     ax.set_xlabel('')
     # ax.set_title(date)
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'absem_calib_dates.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'aas_calib_dates.png'))
 
 #%%
 
@@ -90,7 +90,7 @@ for date, ds in ds_calib.groupby('date'):
 axes[0].legend()
 #%%
 
-fp = pjoin(REPO_DIR, 'experiment','data','proc_data','ds_absem.cdf')
+fp = pjoin(REPO_DIR, 'experiment','data','proc_data','ds_aas.cdf')
 
 ds = xr.load_dataset(fp)
 
@@ -172,16 +172,16 @@ rat.sel(wavelength_bins=pd.Interval(725,735)).plot()
 
 #%%
 
-ds_absem = ppu.fileio.load_absem('53x', avg_mnum=True)
+ds_aas = ppu.fileio.load_aas('53x', avg_mnum=True)
 
-ds_absem = ds_absem.sel(mp='barrel')
+ds_aas = ds_aas.sel(mp='barrel')
 
-dss_absem_methods = [ds_absem['alpha'].assign_coords(method='raw')]
+dss_aas_methods = [ds_aas['alpha'].assign_coords(method='raw')]
 
 # %%
 
 
-da = ds_absem['alpha']
+da = ds_aas['alpha']
 
 g = da.plot(hue='run_plot', x='wavelength', row='kwt')
 
@@ -195,7 +195,7 @@ for ax in g.axes.flatten():
 
 
 # %%
-from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred
+from mhdlab.analysis.aas.fitting import gen_model_alpha_blurred
 from mhdlab import analysis
 final_model, pars = gen_model_alpha_blurred()
 
@@ -203,11 +203,11 @@ final_model, pars = gen_model_alpha_blurred()
 sl1 = slice(750,755)
 sl2 = slice(780,785)
 
-beta = -np.log(1-ds_absem['alpha'])/pars['L'].value
+beta = -np.log(1-ds_aas['alpha'])/pars['L'].value
 beta_off = beta.sel(wavelength=sl1).mean('wavelength')
 alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
 
-dss_absem_methods.append(alpha_tc.assign_coords(method='const'))
+dss_aas_methods.append(alpha_tc.assign_coords(method='const'))
 
 
 #%%
@@ -226,7 +226,7 @@ for ax in g.axes.flatten():
 
 #%%
 
-ds_sel = ds_absem
+ds_sel = ds_aas
 
 beta = -np.log(1-ds_sel['alpha'])/pars['L'].value
 
@@ -249,7 +249,7 @@ beta_off = beta_temp.interp(wavelength=beta.coords['wavelength'], kwargs={'fill_
 
 alpha_tc = 1 - np.exp(-(beta - beta_off)*pars['L'].value)
 
-dss_absem_methods.append(alpha_tc.assign_coords(method='linear'))
+dss_aas_methods.append(alpha_tc.assign_coords(method='linear'))
 
 #%%
 
@@ -270,12 +270,12 @@ for ax in g.axes.flatten():
 # %%
 
 # put in same form as previous code
-ds_fit = xr.concat(dss_absem_methods, 'method').to_dataset(name='alpha')
+ds_fit = xr.concat(dss_aas_methods, 'method').to_dataset(name='alpha')
 ds_fit['alpha_red'] = ds_fit['alpha']
 
-model, params = absem.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
+model, params = aas.gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
-ds_alpha_fit, ds_p, ds_p_stderr = ds_fit['alpha_red'].absem.perform_fit(model, params)
+ds_alpha_fit, ds_p, ds_p_stderr = ds_fit['alpha_red'].aas.perform_fit(model, params)
 # %%
 
 

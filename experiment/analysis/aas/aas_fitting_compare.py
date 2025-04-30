@@ -8,11 +8,11 @@
 from mhdlab.analysis.standard_import import *
 import pi_paper_utils as ppu
 
-from mhdlab.analysis.absem.fit_prep import interp_alpha
-from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred 
-from mhdlab.analysis import absem
+from mhdlab.analysis.aas.fit_prep import interp_alpha
+from mhdlab.analysis.aas.fitting import gen_model_alpha_blurred 
+from mhdlab.analysis import aas
 
-from mhdlab.analysis.absem.fitting import alpha_2peak
+from mhdlab.analysis.aas.fitting import alpha_2peak
 from mhdlab.xr_utils import fit_da_lmfit_global
 from mhdlab.xr_utils import fit_da_lmfit
 
@@ -23,11 +23,11 @@ model, pars = gen_model_alpha_blurred(assert_xs_equal_spacing=False)
 
 # %%
 
-ds_absem = ppu.fileio.load_absem('53x')
+ds_aas = ppu.fileio.load_aas('53x')
 
 #%%
 
-ds_sel = ds_absem.sel(mp='barrel').sel(run=('2023-05-24', 1))
+ds_sel = ds_aas.sel(mp='barrel').sel(run=('2023-05-24', 1))
 ds_sel = ds_sel.dropna('wavelength', how='all')
 ds_sel = ds_sel.sel(wavelength=slice(750,790))
 
@@ -46,16 +46,16 @@ plt.axhline(0, color='k', linestyle='--', linewidth=0.5)
 
 #%%
 
-ds_sel_2 = ds_sel.mean('mnum').absem.calc_alpha()
+ds_sel_2 = ds_sel.mean('mnum').aas.calc_alpha()
 
-ds_absem_fit, ds_p, ds_p_stderr = ds_sel_2['alpha'].absem.perform_fit(model, pars, method='iterative')
+ds_aas_fit, ds_p, ds_p_stderr = ds_sel_2['alpha'].aas.perform_fit(model, pars, method='iterative')
 
 dss_p.append(ds_p.assign_coords(method='preavg'))
 dss_p_stderr.append(ds_p.assign_coords(method='preavg'))
 
 #%%
 
-da = ds_absem_fit.to_array('var')
+da = ds_aas_fit.to_array('var')
 
 da.plot(hue='var', row='kwt')
 
@@ -70,7 +70,7 @@ da.plot(hue='var', row='kwt')
 # da_alpha = interp_alpha(da_sel)
 da_sel = ds_sel['alpha'].dropna('mnum',how='all')
 
-ds_absem_fit, ds_p, ds_p_stderr = da_sel.absem.perform_fit(model, pars, method='global')
+ds_aas_fit, ds_p, ds_p_stderr = da_sel.aas.perform_fit(model, pars, method='global')
 
 dss_p.append(ds_p.assign_coords(method='global'))
 dss_p_stderr.append(ds_p_stderr.assign_coords(method='global'))
@@ -78,7 +78,7 @@ dss_p_stderr.append(ds_p_stderr.assign_coords(method='global'))
 
 #%%
 
-da = ds_absem_fit.mean('mnum').to_array('var')
+da = ds_aas_fit.mean('mnum').to_array('var')
 
 da.plot(hue='var', row='kwt')
 
@@ -90,13 +90,13 @@ da.plot(hue='var', row='kwt')
 da_sel = ds_sel['alpha'].dropna('mnum',how = 'all')
 
 
-ds_absem_fit, ds_p, ds_p_stderr = da_sel.absem.perform_fit(model, pars, method='iterative')
+ds_aas_fit, ds_p, ds_p_stderr = da_sel.aas.perform_fit(model, pars, method='iterative')
 
 dss_p.append(ds_p.mean('mnum').assign_coords(method='individual'))
 dss_p_stderr.append(ds_p.std('mnum').assign_coords(method='individual'))
 #%%
 
-da = ds_absem_fit.to_array('var').sel(kwt=1, method='nearest')
+da = ds_aas_fit.to_array('var').sel(kwt=1, method='nearest')
 ds_p_sel = ds_p.sel(kwt=1, method='nearest')
 ds_p_stderr_sel = ds_p_stderr.sel(kwt=1, method='nearest')
 da = da.dropna('mnum','all')

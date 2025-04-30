@@ -7,7 +7,7 @@ import pi_paper_utils as ppu
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 from mhdlab.analysis import mwt
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 from mhdlab.plot import dropna
 
 # plt.rcParams.update({'font.size': 16})
@@ -16,7 +16,7 @@ from mhdlab.plot import dropna
 
 tc = '516_pos'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
 ds_lecroy = ppu.fileio.load_lecroy('516_pos', AS_calc='relative')
 
@@ -26,23 +26,23 @@ ds_lecroy = ds_lecroy.isel(run=0) # There is only one 516
 
 #%%
 
-ds_absem
+ds_aas
 
 #%%
 
 #%%
 
-ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
+ds_aas.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
 
 #%%
 
-ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wavelength')
+ds_aas['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wavelength')
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 
 #%%
 
-ds_absem['alpha'].sel(mp='mw_horns').mean('mnum').mean('run').plot(hue='motor', x='wavelength')
+ds_aas['alpha'].sel(mp='mw_horns').mean('mnum').mean('run').plot(hue='motor', x='wavelength')
 
 plt.gca().get_legend().remove()
 
@@ -51,10 +51,10 @@ plt.ylim(-0.1,0.1)
 
 #%%
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_2
 
 
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_aas.mean('mnum')
 
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 ds_alpha_fit['alpha'] = ds_fit['alpha']

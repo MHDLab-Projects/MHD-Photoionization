@@ -1,5 +1,5 @@
 # %% [markdown]
-#  # Absem fitting with CFD profiles
+#  # aas fitting with CFD profiles
 
 # uses euler method to solve the differential equation for I(x)
 # using normalized number density profile nK(x) and maximum number density nK_max
@@ -14,9 +14,9 @@ import pi_paper_utils as ppu
 
 tc = '536_pos'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
-ds_absem
+ds_aas
 
 #%%
 
@@ -76,10 +76,10 @@ plt.plot(x, nK_profile)
 # %%
 
 from scipy.integrate import solve_ivp
-from mhdlab.analysis.absem.fitting import kappa_2peak
+from mhdlab.analysis.aas.fitting import kappa_2peak
 from pint import Quantity
 
-from mhdlab.analysis.absem.fitting import calc_I_profile_euler, alpha_deq_solve
+from mhdlab.analysis.aas.fitting import calc_I_profile_euler, alpha_deq_solve
 
 
 wl = Quantity(770, 'nm')
@@ -175,7 +175,7 @@ plt.gca().get_legend().set_title('Stage position [mm]')
 
 # Compare to the experimental data
 
-da_sel = ds_absem['alpha'].mean('mnum').mean('run').sel(mp='mw_horns')
+da_sel = ds_aas['alpha'].mean('mnum').mean('run').sel(mp='mw_horns')
 da_sel.coords['motor'] = da_sel.coords['motor']
 
 da_sel_wl = da_sel.sel(wavelength=770, method='nearest')
@@ -209,18 +209,18 @@ plt.xlabel('Stage position [mm]')
 
 #%%
 
-# wls = ds_absem.coords['wavelength'].values
+# wls = ds_aas.coords['wavelength'].values
 
 
 # %%
 
-from mhdlab.analysis.absem.fit_prep import interp_alpha
+from mhdlab.analysis.aas.fit_prep import interp_alpha
 
-ds_test = ds_absem.mean('mnum').mean('run').sel(mp='barrel')
+ds_test = ds_aas.mean('mnum').mean('run').sel(mp='barrel')
 
 ds_test = ds_test.mean('motor')
 
-ds_test = ds_test.absem.reduce_keep_wings()
+ds_test = ds_test.aas.reduce_keep_wings()
 
 # ds_test = ds_test.dropna('wavelength')
 
@@ -251,7 +251,7 @@ plt.ylim(0,1)
 
 # %%
 
-ds_fit = ds_absem.mean('mnum').mean('run').sel(mp='mw_horns').dropna('motor')
+ds_fit = ds_aas.mean('mnum').mean('run').sel(mp='mw_horns').dropna('motor')
 
 ds_fit
 
@@ -267,7 +267,7 @@ rat = rat.sel(wavelength=slice(750,755)).mean('wavelength')
 
 ds_fix['calib'] = ds_fix['calib'] * rat
 
-ds_fix = ds_fix.absem.calc_alpha()
+ds_fix = ds_fix.aas.calc_alpha()
 
 ds_fix['alpha'].plot(row='motor')
 
@@ -275,10 +275,10 @@ plt.ylim(-0.1,1.1)
 
 #%%
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_num_1
 
-ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix)
+ds_aas_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fix)
 
 ds_p_beer = ds_p.copy()
 
@@ -298,11 +298,11 @@ params['nK_m3'].vary = False
 
 
 
-from mhdlab.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+from mhdlab.analysis.aas.fit_prep import pipe_fit_prep_alpha_2
 
 da_fit = pipe_fit_prep_alpha_2(ds_fix)
 
-ds_absem_fit, ds_p, ds_p_fit = da_fit.absem.perform_fit(mod, params)
+ds_aas_fit, ds_p, ds_p_fit = da_fit.aas.perform_fit(mod, params)
 
 ds_p_tophat = ds_p.copy()
 
@@ -319,7 +319,7 @@ plt.yscale('log')
 
 # %%
 
-ds_absem_fit.to_array('var').plot(hue='var', row='motor')
+ds_aas_fit.to_array('var').plot(hue='var', row='motor')
 
 plt.ylim(0,1)
 
@@ -344,12 +344,12 @@ da_cfd_nK_norm
 #%%
 
 
-ds_absem_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, perform_fit_kwargs={'nK_profile': da_cfd_nK_norm})
+ds_aas_fit, ds_p, ds_p_fit = pipe_fit_alpha_num_1(ds_fix, perform_fit_kwargs={'nK_profile': da_cfd_nK_norm})
 
 ds_p_cfd = ds_p.copy()
 
 #%%
-ds_absem_fit.to_array('var').plot(hue='var', row='motor')
+ds_aas_fit.to_array('var').plot(hue='var', row='motor')
 
 plt.ylim(0,1)
 

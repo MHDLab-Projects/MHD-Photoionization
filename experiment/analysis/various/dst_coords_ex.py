@@ -18,9 +18,9 @@ from mhdlab.coords import gen_coords_to_assign_1
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
 # Absorption emsssion and lecroy
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
-ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
-ds_absem = ds_absem.rename(time='acq_time')
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_aas.cdf'))
+ds_aas = ds_aas.set_index(acq=['time','mp']).unstack('acq')
+ds_aas = ds_aas.rename(time='acq_time')
 ds_lecroy = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_lecroy.cdf'))
 
 

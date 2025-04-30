@@ -8,7 +8,7 @@ duration_lookup = {
 }
 
 time_downselect_lookup = {
-    'absem': None,
+    'aas': None,
     'mwt': 10,
     'dials': 10,
 }

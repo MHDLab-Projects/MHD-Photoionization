@@ -10,7 +10,7 @@ if [ "$1" = "final" ]; then
     render_dirs=( "analysis" "analysis/mwt" "analysis/topcam")
 else
     expt_analysis_dir=$REPO_DIR/experiment/analysis
-    render_dirs=( "mwt" "absem" "tcs" "uncertainty" "various" )
+    render_dirs=( "mwt" "aas" "tcs" "uncertainty" "various" )
 fi
 
 purge_dirs=false

@@ -10,12 +10,12 @@ import pi_paper_utils as ppu
 
 tc = '536_pos'
 
-ds_absem_536 = ppu.fileio.load_absem(tc).expand_dims('phi')
+ds_aas_536 = ppu.fileio.load_aas(tc).expand_dims('phi')
 ds_lecroy_536 = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute').expand_dims('phi')
 
 tc = '516_pos'
 
-ds_absem_536 = ppu.fileio.load_absem(tc).expand_dims('phi')
+ds_aas_536 = ppu.fileio.load_aas(tc).expand_dims('phi')
 ds_lecroy_516 = ppu.fileio.load_lecroy(tc, avg_mnum=False, AS_calc='absolute').expand_dims('phi')
 
 

@@ -11,7 +11,7 @@ from lmfit.models import PowerLawModel
 
 tc = '536_power'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_lecroy = ds_lecroy['dAS_abs']

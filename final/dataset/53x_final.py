@@ -8,12 +8,12 @@ import pi_paper_utils as ppu
 from mhdlab.fileio.ct import load_df_cuttimes
 from mhdlab.coords.ct import downselect_acq_time
 from pi_paper_utils.kinetics import gen_ds_krb, calc_krbO2_weighted, calc_krm
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_num_1
 from mhdlab.analysis.mwt.fitting import pipe_fit_mwt_3, pipe_fit_exp
 
 #%%
 tc = '53x'
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 ds_lecroy = ppu.fileio.load_lecroy(tc, AS_calc='absolute')
 ds_cfd = ppu.fileio.load_cfd_centerline(kwt_interp=ds_lecroy.coords['kwt'].values)
 ds_cfd = ds_cfd.sel(phi=0.8).sel(offset=0)
@@ -47,27 +47,27 @@ ds_species_cfd.pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_species_c
 fp_ct_seedramp = pjoin(REPO_DIR, 'experiment', 'metadata', 'ct_testcase_kwt.csv')
 df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 ds_lecroy = downselect_acq_time(ds_lecroy, df_cuttimes_seedtcs)
-ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
+ds_aas = downselect_acq_time(ds_aas, df_cuttimes_seedtcs)
 ds_lecroy.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_lecroy.cdf'))
-ds_absem.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_absem.cdf'))
+ds_aas.mean('mnum').unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_aas.cdf'))
 
 #%%
-ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_absem.coords['kwt'].values)
+ds_cfd_beam = ppu.fileio.load_cfd_beam(kwt_interp=ds_aas.coords['kwt'].values)
 ds_cfd_beam = ds_cfd_beam.sel(phi=0.8).sel(offset=0).sel(motor=goldi_pos, method='nearest')
 da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME]
 da_cfd_beam = da_cfd_beam / da_cfd_beam.max('dist')
 
 #%%
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_aas.mean('mnum')
 ds_fit = ds_fit.sel(kwt=da_cfd_beam.kwt.values)
-ds_fit_absem, ds_p_absem, ds_p_stderr_absem = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile': da_cfd_beam})
-ds_fit_absem['alpha'] = ds_fit['alpha']
+ds_fit_aas, ds_p_aas, ds_p_stderr_aas = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile': da_cfd_beam})
+ds_fit_aas['alpha'] = ds_fit['alpha']
 
 #%%
-da_plot = ds_fit_absem.mean('run').to_array('var')
+da_plot = ds_fit_aas.mean('run').to_array('var')
 da_plot.attrs['long_name'] = '$\\alpha$'
 da_plot.plot.line(row='kwt', col='mp', hue='var', figsize=(8, 12))
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_absem_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_aas_fit.png'))
 
 #%%
 ds_fit = ds_lecroy
@@ -122,8 +122,8 @@ ds_stats_lecroy = ds_stats_lecroy.mean('mnum', keep_attrs=True)
 #%%
 ds_p_exp['krm'] = 1 / ds_p_exp['decay']
 ds_params = xr.merge([
-    ds_p_absem['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel'),
-    ds_p_absem['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns'),
+    ds_p_aas['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel'),
+    ds_p_aas['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns'),
     ds_p_dnedt['decay'].rename('mwt_fit_decay'),
     ds_p_exp['decay'].rename('mwt_fit_decay_exp'),
     ds_p_exp['krm'].rename('mwt_fit_krm'),

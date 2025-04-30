@@ -4,7 +4,7 @@ from mhdlab.analysis.standard_import import *
 from mhdlab.plot import dropna
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 
 datestr = '2023-05-18'
 
@@ -14,18 +14,18 @@ data_folder = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr)
 
 dsst = mhdlab.fileio.TFxr(pjoin(data_folder, 'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_aas.cdf'))
 
-ds_Absem = ds_absem.absem.calc_alpha()
+ds_aas = ds_aas.aas.calc_alpha()
 
-ds_absem
+ds_aas
 #%%
 
-ds_fit = ds_absem.rename(acq='time').set_index(time='time')
+ds_fit = ds_aas.rename(acq='time').set_index(time='time')
 
 # ds_fit = ds_fit.sel(time=ds_fit.coords['time'].values[::100])
 
-ds_fit = ds_fit.absem.calc_alpha()
+ds_fit = ds_fit.aas.calc_alpha()
 
 #Downselect to remove data where there are no peaks... TODO: revisit
 ds_fit = ds_fit.where(ds_fit['alpha'].sel(wavelength=slice(760,775)).max('wavelength') > 0.5).dropna('time', how='all')
@@ -33,7 +33,7 @@ ds_fit = ds_fit.where(ds_fit['alpha'].sel(wavelength=slice(760,775)).max('wavele
 spectral_reduction_params_fp = os.path.join(REPO_DIR, 'experiment', 'metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()
 
-ds_alpha_fit, ds_p, ds_p_stderr= absem.fitting.pipe_fit_alpha_1(ds_fit, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
+ds_alpha_fit, ds_p, ds_p_stderr= aas.fitting.pipe_fit_alpha_1(ds_fit, fit_prep_kwargs={'spect_red_dict': spect_red_dict})
 
 ds_alpha_fit['nK_m3'] = ds_p['nK_m3']
 

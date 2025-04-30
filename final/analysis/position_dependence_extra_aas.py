@@ -3,7 +3,7 @@
 from mhdlab.analysis.standard_import import *
 create_standard_folders()
 import pi_paper_utils as ppu
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_num_1
 
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
@@ -98,19 +98,19 @@ min_p, max_p
 stack_dims = ['date','run_num','motor','phi']
 
 tc = '536_pos'
-ds_absem_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem_536_pos = ds_absem_536_pos.expand_dims('phi').stack(temp=stack_dims)
+ds_aas_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
+ds_aas_536_pos = ds_aas_536_pos.expand_dims('phi').stack(temp=stack_dims)
 
-ds_absem = xr.concat([ds_absem_536_pos], dim='temp').unstack('temp')
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.absem.calc_alpha().sel(wavelength=slice(750,790))
+ds_aas = xr.concat([ds_aas_536_pos], dim='temp').unstack('temp')
+ds_aas = ds_aas.xr_utils.stack_run()
+ds_aas = ds_aas.aas.calc_alpha().sel(wavelength=slice(750,790))
 
 #%%
 
 
 #TODO: motor coordinates not exactly the same, why?
-ds_cfd_beam = ds_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
-ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values)
+ds_cfd_beam = ds_cfd_beam.sel(motor=ds_aas.coords['motor'].values, method='nearest')
+ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_aas.coords['motor'].values)
 da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIES_NAME].max('dist')
 
 
@@ -118,7 +118,7 @@ da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIE
 # fit with 2 atm pressure
 
 # pipe_fit_alpha_num_1.params['p'].value = 2
-ds_fit = ds_absem.mean('mnum').sel(mp='barrel').dropna('run', how='all')
+ds_fit = ds_aas.mean('mnum').sel(mp='barrel').dropna('run', how='all')
 ds_fit = ds_fit.mean('motor', keep_attrs=True)
 
 nK_profile = da_cfd_beam.sel(mp='barrel').isel(motor=0)
@@ -134,7 +134,7 @@ ds_p_base = ds_p.copy()
 
 
 pipe_fit_alpha_num_1.params['p'].value = max_p.to('atm').magnitude
-ds_fit = ds_absem.mean('mnum').sel(mp='barrel').dropna('run', how='all')
+ds_fit = ds_aas.mean('mnum').sel(mp='barrel').dropna('run', how='all')
 ds_fit = ds_fit.mean('motor', keep_attrs=True)
 
 nK_profile = da_cfd_beam.sel(mp='barrel').isel(motor=0)
@@ -149,7 +149,7 @@ ds_p_max_p = ds_p.copy()
 #%%
 
 pipe_fit_alpha_num_1.params['p'].value = min_p.to('atm').magnitude
-ds_fit = ds_absem.mean('mnum').sel(mp='barrel').dropna('run', how='all')
+ds_fit = ds_aas.mean('mnum').sel(mp='barrel').dropna('run', how='all')
 ds_fit = ds_fit.mean('motor', keep_attrs=True)
 
 nK_profile = da_cfd_beam.sel(mp='barrel').isel(motor=0)

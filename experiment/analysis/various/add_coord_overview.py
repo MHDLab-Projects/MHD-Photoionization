@@ -18,9 +18,9 @@ dsst = mhdlab.fileio.TFxr(pjoin(DIR_EXPT_PROC_DATA, 'dsst.tdms')).as_dsst(conver
 coords_to_assign = tdms2ds(pjoin(DIR_EXPT_PROC_DATA, 'dst_coords.tdms'), convert_to_PT=False)
 
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_absem.cdf'))
-ds_absem = ds_absem.set_index(acq=['time','mp']).unstack('acq')
-ds_absem = ds_absem.rename(time='acq_time')
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'ds_aas.cdf'))
+ds_aas = ds_aas.set_index(acq=['time','mp']).unstack('acq')
+ds_aas = ds_aas.rename(time='acq_time')
 
 
 coords_orig = xr.merge([
@@ -95,7 +95,7 @@ ta.legend(bbox_to_anchor=[0.5,0,0,1])
 
 #%%
 
-ds_absem
+ds_aas
 
 #%%
 
@@ -110,8 +110,8 @@ ta = axes[0].twinx()
 coords_to_assign.sel(time=tw)['kwt'].plot(color='r', ax=ta)
 
 
-ds_absem_sel = ds_absem.sel(acq_time=tw).sel(mp='barrel')
-ds_absem_sel['led_on'].mean('wavelength').plot( ax=axes[1], marker='o')
+ds_aas_sel = ds_aas.sel(acq_time=tw).sel(mp='barrel')
+ds_aas_sel['led_on'].mean('wavelength').plot( ax=axes[1], marker='o')
 
 #%%
 
@@ -120,7 +120,7 @@ coord_signal_dict = {k: coords_to_assign[k].dropna('time',how='all') for k in co
 
 from mhdlab.coords import assign_signal
 
-ds = assign_signal(ds_absem_sel, coord_signal_dict['kwt'], timeindex='acq_time')
+ds = assign_signal(ds_aas_sel, coord_signal_dict['kwt'], timeindex='acq_time')
 
 ds
 #%%[markdown]
@@ -161,7 +161,7 @@ ds['led_on'].mean('acq_time').plot(hue='kwt')
 
 from mhdlab.coords import assign_coords_multi
 
-ds = assign_coords_multi(ds_absem_sel, coord_signal_dict, min_mnum=10)
+ds = assign_coords_multi(ds_aas_sel, coord_signal_dict, min_mnum=10)
 
 ds
 
@@ -177,9 +177,9 @@ ds['led_on'].mean('mnum').plot(hue='kwt')
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
 
-ds_absem
+ds_aas
 
 #%%[markdown]
 
@@ -189,9 +189,9 @@ ds_absem
 
 #%%
 
-ds_absem = ds_absem.xr_utils.stack_run()
+ds_aas = ds_aas.xr_utils.stack_run()
 
-ds_absem
+ds_aas
 
 #%%[markdown]
 
@@ -199,7 +199,7 @@ ds_absem
 
 #%%
 
-counts = ds_absem['led_on'].count('mnum').isel(wavelength=0) # Counts are all same for each wavelength
+counts = ds_aas['led_on'].count('mnum').isel(wavelength=0) # Counts are all same for each wavelength
 
 counts
 

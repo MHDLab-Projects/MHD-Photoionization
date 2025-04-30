@@ -11,7 +11,7 @@ import pi_paper_utils as ppu
 from mhdlab.analysis import mwt
 from mhdlab.plot import dropna
 from mhdlab.xr_utils import WeightedMeanAccessor
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 from mhdlab.coords.ct import downselect_acq_time
 
 from mhdlab.fileio.ct import load_df_cuttimes
@@ -21,41 +21,41 @@ df_cuttimes_seedtcs = load_df_cuttimes(fp_ct_seedramp)
 
 #%%[markdown]
 
-# # Absem
+# # aas
 
 # %%
 
-ds_absem = ppu.fileio.load_absem('53x')
+ds_aas = ppu.fileio.load_aas('53x')
 
 #%%
 
 
 
-ds_absem = downselect_acq_time(ds_absem, df_cuttimes_seedtcs)
+ds_aas = downselect_acq_time(ds_aas, df_cuttimes_seedtcs)
 
 # %%
 
-ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='kwt', x='wavelength')
+ds_aas['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='kwt', x='wavelength')
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 
 #%%
 
 # # Examine calibration offset. This does not appear to be off as much as in the 5xx notebook. TODO: investigate and quantify off-peak calibraiton offset. 
-# ds_absem['alpha'].mean('mnum').sel(mp='mw_horns').isel(run=-1).plot(hue='kwt')
+# ds_aas['alpha'].mean('mnum').sel(mp='mw_horns').isel(run=-1).plot(hue='kwt')
 
 
 #%%
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_2
 
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_aas.mean('mnum')
 
-ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
+ds_aas_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 
 # %%
-da_plot = ds_absem_fit[['alpha_red','alpha_fit']].to_array('var')
+da_plot = ds_aas_fit[['alpha_red','alpha_fit']].to_array('var')
 
 g = da_plot.sel(mp='barrel').plot(col='kwt',hue='var', row='run', ylim = (1e-3,2), yscale='log', figsize=(10,10))
 
@@ -83,7 +83,7 @@ plt.savefig(pjoin(DIR_FIG_OUT, '53x_AAS_nK.png'), dpi=300, bbox_inches='tight')
 ds_nK = xr.merge([
     ds_p['nK_m3'].to_dataset(name='mean'),
     ds_p_stderr['nK_m3'].to_dataset(name='stderr'),
-    ds_absem.mean('wavelength').count('mnum')['alpha'].to_dataset(name='count')
+    ds_aas.mean('wavelength').count('mnum')['alpha'].to_dataset(name='count')
 ])
 
 ds_nK['std'] = ds_nK['stderr']*np.sqrt(ds_nK['count'])

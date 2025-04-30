@@ -278,12 +278,12 @@ The LED is continuously turned on and off throughout the experiment to obtain "L
 \subsubsection{Data Processing and Fitting}
 
 Figure \ref{fig:SI_AAS_proc_overview} shows the processing steps for the AAS data.
-See \texttt{/mhdlab/analysis/absem/} for the AAS processing/fitting package. 
+See \texttt{/mhdlab/analysis/aas/} for the AAS processing/fitting package. 
 
 
 \begin{figure}[]
     \centering
-    \includegraphics[height=0.6\textheight]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
+    \includegraphics[height=0.6\textheight]{\repodir/experiment/analysis/aas/output/figures/aas_proc_overview.png}
     \caption{AAS processing overview: (A) LED on and off measurements; (B) Difference (LED on - LED off) compared to the interpolated calibration measurement; (C) Absorption calculation (raw) and absorption after offset removal; (D) Fitted absorption profile (Data) and fit.}
     \label{fig:SI_AAS_proc_overview}
 \end{figure}
@@ -293,13 +293,13 @@ Before and after each experiment, calibration spectra are taken with no free jet
 
 %DN: Is the SFR-maximized position always 180 mm, as mentioned previously? If so, for clarity we should say "SFR-maximized position (180 mm from the barrel exit)" every time "SFR-maximized position" is used %LA: SFR-maximized clarified on first use (also defined in main text)
 
-We observe changes in the calibration spectra throughout the experiment which cause offsets in $\alpha(\lambda)$. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is unreliable, so we elect to run the torch continuously through each experiment. We developed a method to correct the calibration spectra using the "LED on" and "LED off" measurements. Figure \ref{fig:SI_absem_calib_dates} shows the calibration spectrum for each date. For the current work, we interpolate the calibration spectra shown in Figure \ref{fig:SI_absem_calib_dates} to the time of any given measurement to determine the calibration spectrum for that measurement. 
+We observe changes in the calibration spectra throughout the experiment which cause offsets in $\alpha(\lambda)$. Unfortunately, the calibration spectrum cannot be obtained throughout the experiment as turning off and restarting the HVOF torch is unreliable, so we elect to run the torch continuously through each experiment. We developed a method to correct the calibration spectra using the "LED on" and "LED off" measurements. Figure \ref{fig:SI_aas_calib_dates} shows the calibration spectrum for each date. For the current work, we interpolate the calibration spectra shown in Figure \ref{fig:SI_aas_calib_dates} to the time of any given measurement to determine the calibration spectrum for that measurement. 
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_calib_dates.png}
+    \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/aas/output/figures/aas_calib_dates.png}
     \caption{Calibration spectra taken at different time on different dates. Both AAS setups, barrel exit (AAS1) and mobile (AAS2, A.K.A. mw\_horns) are shown.  There was no AAS2 setup on 2023-04-07 and 2023-05-12.}
-    \label{fig:SI_absem_calib_dates}
+    \label{fig:SI_aas_calib_dates}
 \end{figure}
 
 %DN: Ideally, wouldn't switch between saying "absorption" and $\alpha(\lambda)$. But I'm not certain whether "absorption" can always be replaced with \alpha, and if "absorption spectrum" can always be replaced with $\alpha(\lambda)$. 
@@ -383,7 +383,7 @@ Collisional frequency width ($\Delta \nu_{i,C}$) & \SI{3.19} {\giga\hertz} & \SI
 
 \begin{figure}[]
     \centering
-    \includegraphics[]{\repodir/experiment/analysis/absem/output/figures/euler_method_tophat_demo.png}
+    \includegraphics[]{\repodir/experiment/analysis/aas/output/figures/euler_method_tophat_demo.png}
     \caption{Euler method demonstration with a "top hat" absorption profile. The top hat profile has a constant potassium density across a length of 1 cm and zero elsewhere. The calculated intensity found with the Euler method is also shown.}
     \label{fig:SI_euler_method_tophat_demo}
 \end{figure}

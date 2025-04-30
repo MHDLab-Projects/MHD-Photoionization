@@ -17,20 +17,20 @@ from mhdlab.analysis import mwt
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
 
-ds_absem = ds_absem.xr_utils.stack_run()
+ds_aas = ds_aas.xr_utils.stack_run()
 
-ds_absem
+ds_aas
 
 
 # %%
 
 # examine one specific test case and 1% seed
 
-ds_absem2 = ds_absem.sel(mp='barrel').sel(kwt=1, method='nearest')
+ds_aas2 = ds_aas.sel(mp='barrel').sel(kwt=1, method='nearest')
 
-ds_absem2
+ds_aas2
 
 #%%[markdown]
 
@@ -38,7 +38,7 @@ ds_absem2
 
 #%%
 
-ds_sel = ds_absem2.sel(run=('2023-05-18',1)).dropna('mnum', how='all')
+ds_sel = ds_aas2.sel(run=('2023-05-18',1)).dropna('mnum', how='all')
 
 ds_sel['led_on'].plot.line(x='wavelength', hue='mnum')
 
@@ -51,14 +51,14 @@ ds_sel['led_on'].plot.line(x='wavelength', hue='mnum')
 
 #%%
 
-from mhdlab.analysis.absem import calc_alpha_scipp
+from mhdlab.analysis.aas import calc_alpha_scipp
 
-ds_absem_in = ds_absem2.unstack('run')
+ds_aas_in = ds_aas2.unstack('run')
 
 #TODO: scipp error
-ds_absem_in.coords['date'] = ds_absem_in.coords['date'].astype(str)
+ds_aas_in.coords['date'] = ds_aas_in.coords['date'].astype(str)
 
-ds_alpha = calc_alpha_scipp(ds_absem_in)
+ds_alpha = calc_alpha_scipp(ds_aas_in)
 
 ds_alpha = ds_alpha.xr_utils.stack_run()
 

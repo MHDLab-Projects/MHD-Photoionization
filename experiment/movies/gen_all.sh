@@ -1,4 +1,4 @@
-python gen_movies_absem.py
+python gen_movies_aas.py
 python gen_movies_mwt.py
 
 # Temporarily broken, waiting for kaleido fix, see script for details

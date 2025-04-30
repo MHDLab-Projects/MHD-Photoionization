@@ -21,7 +21,7 @@ datestr = '2023-05-18'
 # Data is taken continuously with LED (AKA Shutter) continously switching. 
 
 # %%
-fp_1 = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr, 'Munged','Spectral','absem.tdms')
+fp_1 = pjoin(REPO_DIR, 'experiment', 'data','munged',datestr, 'Munged','Spectral','aas.tdms')
 
 ds = mhdlab.fileio.spectral.load_multindexed_spectral(fp_1)
 
@@ -31,7 +31,7 @@ ds
 # The Raw Data is divided by the integration time to give counts/ms. Other time-based metadata is dropped, but it is first checked that there is only one value. 
 
 # %%
-ds = mhdlab.fileio.spectral.load_absem(fp_1, convert_to_PT=False)
+ds = mhdlab.fileio.spectral.load_aas(fp_1, convert_to_PT=False)
 
 ds
 
@@ -81,10 +81,10 @@ with open(pjoin(REPO_DIR, 'experiment', 'metadata', 'settings.json')) as f:
 
 has_multiplexer = settings['has_multiplexer']
 
-ds_absem = ds
+ds_aas = ds
 
 # Start processing 
-from mhdlab.analysis.absem import calc_alpha_simple
+from mhdlab.analysis.aas import calc_alpha_simple
 from mhdlab.coords import reduce_acq_group, get_value_switches, downselect_num_acq
 from mhdlab.coords.spectral import assign_multiplexer_coord
 
@@ -93,34 +93,34 @@ data_folder = os.path.join(REPO_DIR, 'experiment', 'data', 'munged',datestr)
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
 # Determine LED switching events
-switches = get_value_switches(ds_absem.coords['led'].values, switch_to_vals=['led_off','led_on'])
-ds_absem = ds_absem.assign_coords(led_switch_num=('time', switches))
+switches = get_value_switches(ds_aas.coords['led'].values, switch_to_vals=['led_off','led_on'])
+ds_aas = ds_aas.assign_coords(led_switch_num=('time', switches))
 
 if has_multiplexer:
     ds_mp = assign_multiplexer_coord(
-    ds_absem,
+    ds_aas,
     mp_sent=dsst['multiplexer_send']['Position'].pint.dequantify(),
     mp_receive=dsst['multiplexer_receive']['Position'].pint.dequantify(),
     mp_port_names={1:'barrel', 2:'mw_horns'}
     )
 
     # Now we remove data when the multiplexer was switching, kept to allow for accurate determination of switching events
-    ds_absem = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time', how='all')
+    ds_aas = ds_mp.where(ds_mp['mp'] != 'switch').dropna('time', how='all')
 else:
-    ds_absem = ds_absem.assign_coords(mp = ('time', ['barrel']*len(ds_absem.coords['time']) ))
+    ds_aas = ds_aas.assign_coords(mp = ('time', ['barrel']*len(ds_aas.coords['time']) ))
 
-ds_absem = ds_absem.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
-ds_absem = ds_absem.dropna('time', how='all')
+ds_aas = ds_aas.groupby('led_switch_num').apply(downselect_num_acq, num_acq=10)
+ds_aas = ds_aas.dropna('time', how='all')
 
 
 # %%
 
-ds_absem
+ds_aas
 #%%
 
 
 # ds_sel = ds.isel(time=slice(1000,1100))
-ds_sel = ds_absem.sel(time=tw)
+ds_sel = ds_aas.sel(time=tw)
 
 fig, axes = plt.subplots(4,1, figsize=(5,10), sharex=True)
 
@@ -141,7 +141,7 @@ from mhdlab.xr_utils import interp_ds_to_var
 # Perform grouping operations over switching groups, to obtain one led off and on for each switch. 
 #TODO: remove this averaging, should only perform one average. But need to revisit data pipeline to avoid too many large files. 
 acq_groups = ['led_switch_num','led','time','mp']
-ds_acq_group = ds_absem.set_index(acq_group=acq_groups)
+ds_acq_group = ds_aas.set_index(acq_group=acq_groups)
 
 ds_reduce = reduce_acq_group(ds_acq_group)
 ds_reduce = ds_reduce.reset_coords('led_switch_num', drop=True)
@@ -170,22 +170,22 @@ da.plot(hue='var', col='mp', row='time')
 #%%
 
 
-ds_absem = ppu.fileio.load_absem('53x')
+ds_aas = ppu.fileio.load_aas('53x')
 
 #%%
 
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_2
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_2
 
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_aas.mean('mnum')
 
-ds_absem_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
+ds_aas_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%
 
-from mhdlab.analysis.absem.fit_prep import pipe_fit_prep_alpha_2
+from mhdlab.analysis.aas.fit_prep import pipe_fit_prep_alpha_2
 
-ds_fit_beta_off = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755))
+ds_fit_beta_off = ds_fit.aas.remove_beta_offset(beta_offset_wls=slice(750,755))
 
 # da_fit_prep =  pipe_fit_prep_alpha_2(ds_fit, led_off_norm_cutoff=0.8)
 #%%
@@ -195,14 +195,14 @@ ds_fit_beta_off = ds_fit.absem.remove_beta_offset(beta_offset_wls=slice(750,755)
 
 #%%
 
-ds_absem['alpha_fit'] = ds_absem_fit['alpha_fit']
-ds_absem['alpha_beta_off'] = ds_fit_beta_off['alpha']
-ds_absem['alpha_red'] = ds_absem_fit['alpha_red']
+ds_aas['alpha_fit'] = ds_aas_fit['alpha_fit']
+ds_aas['alpha_beta_off'] = ds_fit_beta_off['alpha']
+ds_aas['alpha_red'] = ds_aas_fit['alpha_red']
 
 
 # %%
 
-ds_sel = ds_absem.sel(run=('2023-05-24',1)).sel(kwt=1, method='nearest')
+ds_sel = ds_aas.sel(run=('2023-05-24',1)).sel(kwt=1, method='nearest')
 ds_sel = ds_sel.mean('mnum')
 ds_sel
 
@@ -254,7 +254,7 @@ axes[3].text(750,0.5, '$n_K$ = {:.2e}'.format(nK_sel.values), fontsize=10)
 
 axes[-1].set_xlabel('Wavelength (nm)')
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'absem_proc_overview.png'), bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, 'aas_proc_overview.png'), bbox_inches='tight')
 
 #%%
 

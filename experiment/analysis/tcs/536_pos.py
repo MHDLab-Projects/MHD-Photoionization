@@ -12,7 +12,7 @@ import pi_paper_utils as ppu
 
 tc = '536_pos'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 
 # add 536 photodiode data from 5x6_pos run. Do not have photodiode data for 536_pos run
@@ -35,24 +35,24 @@ ds_lecroy['pd1'].isnull().all()
 
 #%%[markdown]
 
-# # Absem
+# # aas
 
 #%%
 
-ds_absem.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
+ds_aas.sel(mp='barrel')['alpha'].mean('mnum').mean('wavelength').dropna('run', how='all')
 
 #%%
 
-ds_absem['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wavelength')
+ds_aas['alpha'].mean('mnum').plot(col='mp', hue='run_plot',row='motor', x='wavelength')
 plt.ylim(0,1.1)
 plt.xlim(760,780)
 
 
 #%%
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_1, pipe_fit_alpha_2
 
-ds_fit = ds_absem.mean('mnum')
+ds_fit = ds_aas.mean('mnum')
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_2(ds_fit)
 
 #%%

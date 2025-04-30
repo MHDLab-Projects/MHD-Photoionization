@@ -102,7 +102,7 @@
  <chain id="chain7" out="00:02:12.045">
   <property name="length">3958</property>
   <property name="eof">pause</property>
-  <property name="resource">../output/absem_movie_2023-05-18.mp4</property>
+  <property name="resource">../output/aas_movie_2023-05-18.mp4</property>
   <property name="mlt_service">avformat-novalidate</property>
   <property name="meta.media.nb_streams">1</property>
   <property name="meta.media.0.stream.type">video</property>
@@ -1390,7 +1390,7 @@
  <chain id="chain14" out="00:02:12.045">
   <property name="length">3958</property>
   <property name="eof">pause</property>
-  <property name="resource">../output/absem_movie_2023-05-18.mp4</property>
+  <property name="resource">../output/aas_movie_2023-05-18.mp4</property>
   <property name="mlt_service">avformat-novalidate</property>
   <property name="seekable">1</property>
   <property name="audio_index">-1</property>
@@ -1442,7 +1442,7 @@
  <chain id="chain15" out="00:02:12.045">
   <property name="length">3958</property>
   <property name="eof">pause</property>
-  <property name="resource">../output/absem_movie_2023-05-18.mp4</property>
+  <property name="resource">../output/aas_movie_2023-05-18.mp4</property>
   <property name="mlt_service">avformat-novalidate</property>
   <property name="seekable">1</property>
   <property name="audio_index">-1</property>

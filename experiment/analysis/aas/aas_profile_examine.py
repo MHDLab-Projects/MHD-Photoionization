@@ -3,7 +3,7 @@
 from mhdlab.analysis.standard_import import *
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 
-from mhdlab.analysis.absem.fitting import kappa_2peak
+from mhdlab.analysis.aas.fitting import kappa_2peak
 
 
 

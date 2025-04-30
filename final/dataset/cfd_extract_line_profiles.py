@@ -23,10 +23,10 @@ beam_path_dist_grid = Quantity(beam_path_dist_grid, 'm')
 tc = '536_pos'
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data', 'proc_data')
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem', '{}.cdf'.format(tc)))
-ds_absem = ds_absem.xr_utils.stack_run()
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas', '{}.cdf'.format(tc)))
+ds_aas = ds_aas.xr_utils.stack_run()
 
-beam_positions = ds_absem.coords['motor'].pint.quantify('mm')
+beam_positions = ds_aas.coords['motor'].pint.quantify('mm')
 beam_positions = beam_positions.pint.to('cm').pint.magnitude
 beam_positions = [Quantity(pos, 'cm') for pos in beam_positions]
 

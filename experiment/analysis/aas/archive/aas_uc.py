@@ -10,21 +10,21 @@ from mhdlab.xr_utils import WeightedMeanAccessor
 
 tc = '53x'
 
-ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
 # Scipp cannot handle multindex, casts to a custom 'PyObject' dtype that does not go back to xarray
 
 
 #TODO: having to do this on office comp?
-ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
-ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
+ds_aas.coords['mp'] = ds_aas.coords['mp'].astype(str)
+ds_aas.coords['date'] = ds_aas.coords['date'].astype(str)
 
-ds_absem
+ds_aas
 
 #%%
 
-from mhdlab.analysis.absem import calc_alpha_scipp
+from mhdlab.analysis.aas import calc_alpha_scipp
 
-ds = calc_alpha_scipp(ds_absem)
+ds = calc_alpha_scipp(ds_aas)
 
 ds = ds.xr_utils.stack_run()
 
@@ -133,7 +133,7 @@ plt.xlim(765,772)
 
 #%%
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_1 
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_1 
 
 spectral_reduction_params_fp = os.path.join(REPO_DIR,'experiment','metadata', 'spectral_reduction_params.csv')
 spect_red_dict = pd.read_csv(spectral_reduction_params_fp, index_col=0).squeeze().to_dict()

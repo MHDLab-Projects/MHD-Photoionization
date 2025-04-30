@@ -6,7 +6,7 @@ import pi_paper_utils as ppu
 from mhdlab.analysis import mwt
 from mhdlab.plot import dropna
 from mhdlab.xr_utils import WeightedMeanAccessor
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 from mhdlab.coords.ct import downselect_acq_time
 
 #%%

@@ -8,7 +8,7 @@ from mhdlab.plot import xr_errorbar_axes
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
 ds_lecroy = xr.open_dataset(pjoin(data_directory, 'ds_pos_lecroy.cdf')).xr_utils.stack_run()
-# ds_absem = xr.open_dataset(pjoin(data_directory, 'ds_pos_absem.cdf')).xr_utils.stack_run()
+# ds_aas = xr.open_dataset(pjoin(data_directory, 'ds_pos_aas.cdf')).xr_utils.stack_run()
 
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 # ds_p = ds_p.drop(34.81, 'motor')

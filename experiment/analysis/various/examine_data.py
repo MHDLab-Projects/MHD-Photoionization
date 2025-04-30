@@ -1,9 +1,9 @@
 #%%
 from mhdlab.analysis.standard_import import *
 
-fp = pjoin(REPO_DIR, 'experiment','data','munged','2023-05-24','Munged','Spectral','ds_absem_mp.cdf')
-# fp = pjoin(REPO_DIR, 'experiment','data','proc_data','ds_absem.cdf')
-# fp = pjoin(REPO_DIR, 'experiment','data','proc_data','absem', '53x.cdf')
+fp = pjoin(REPO_DIR, 'experiment','data','munged','2023-05-24','Munged','Spectral','ds_aas_mp.cdf')
+# fp = pjoin(REPO_DIR, 'experiment','data','proc_data','ds_aas.cdf')
+# fp = pjoin(REPO_DIR, 'experiment','data','proc_data','aas', '53x.cdf')
 
 ds = xr.load_dataset(fp)
 

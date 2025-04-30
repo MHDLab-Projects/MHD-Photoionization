@@ -7,9 +7,9 @@ from mhdlab.fileio.path import gen_path_date
 data_folder = gen_path_date('2023-04-07')
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
-ds_calib_mp = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_calib.cdf'))
-ds_mp_mean = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_mean.cdf'))
-ds_mp_std = xr.load_dataset(pjoin(DIR_PROC_DATA, 'absem_std.cdf'))
+ds_calib_mp = xr.load_dataset(pjoin(DIR_PROC_DATA, 'aas_calib.cdf'))
+ds_mp_mean = xr.load_dataset(pjoin(DIR_PROC_DATA, 'aas_mean.cdf'))
+ds_mp_std = xr.load_dataset(pjoin(DIR_PROC_DATA, 'aas_std.cdf'))
 
 ds_mean_time = ds_mp_mean.mean('wavelength').dropna('time', how='all')
 
@@ -77,7 +77,7 @@ axes[2].xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 axes[2].set_xlabel('Time')
 
 
-plt.savefig(pjoin(DIR_FIG_OUT, 'absem_uncertainty_time.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, 'aas_uncertainty_time.png'))
 
 
 # %%

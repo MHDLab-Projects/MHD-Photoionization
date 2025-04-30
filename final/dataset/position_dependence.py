@@ -4,15 +4,15 @@ from mhdlab.analysis.standard_import import *
 create_standard_folders()
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
-from mhdlab.analysis import mwt, absem
+from mhdlab.analysis import mwt, aas
 from mhdlab.plot import dropna
 
 stack_dims = ['date','run_num','motor','phi']
 
 #%%
 tc = '536_pos'
-ds_absem_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem_536_pos = ds_absem_536_pos.expand_dims('phi').stack(temp=stack_dims)
+ds_aas_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
+ds_aas_536_pos = ds_aas_536_pos.expand_dims('phi').stack(temp=stack_dims)
 
 ds_lecroy_536_pos = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy_536_pos = ds_lecroy_536_pos.sortby('time').expand_dims('phi').stack(temp=stack_dims)
@@ -25,17 +25,17 @@ ds_lecroy_5x6 = ds_lecroy_5x6[['pd1','pd2']].stack(temp=stack_dims)
 
 #%%
 tc = '516_pos'
-ds_absem_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
-ds_absem_516 = ds_absem_516.expand_dims('phi').stack(temp=stack_dims)
+ds_aas_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
+ds_aas_516 = ds_aas_516.expand_dims('phi').stack(temp=stack_dims)
 
 ds_lecroy_516 = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'lecroy','{}.cdf'.format(tc)))
 ds_lecroy_516 = ds_lecroy_516.sortby('time').expand_dims('phi').stack(temp=stack_dims)
 
 #%%
-ds_absem = xr.concat([ds_absem_536_pos, ds_absem_516], dim='temp').unstack('temp')
-ds_absem = ds_absem.xr_utils.stack_run()
-ds_absem = ds_absem.absem.calc_alpha().sel(wavelength=slice(750,790))
-ds_absem.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_absem.cdf'))
+ds_aas = xr.concat([ds_aas_536_pos, ds_aas_516], dim='temp').unstack('temp')
+ds_aas = ds_aas.xr_utils.stack_run()
+ds_aas = ds_aas.aas.calc_alpha().sel(wavelength=slice(750,790))
+ds_aas.mean('mnum').unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos_aas.cdf'))
 
 #%%
 da_mwt_nothing = ppu.fileio.load_mwt_T0()
@@ -54,11 +54,11 @@ ds_lecroy.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_pos
 #%%
 ds_cfd_beam = ppu.fileio.load_cfd_beam()
 ds_cfd_beam = ds_cfd_beam.sel(offset=0).sel(kwt=1)
-ds_cfd_beam = ds_cfd_beam.assign_coords(phi=ds_absem.coords['phi'].values)
+ds_cfd_beam = ds_cfd_beam.assign_coords(phi=ds_aas.coords['phi'].values)
 
 #TODO: motor coordinates not exactly the same, why?
-ds_cfd_beam = ds_cfd_beam.sel(motor=ds_absem.coords['motor'].values, method='nearest')
-ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_absem.coords['motor'].values)
+ds_cfd_beam = ds_cfd_beam.sel(motor=ds_aas.coords['motor'].values, method='nearest')
+ds_cfd_beam = ds_cfd_beam.assign_coords(motor=ds_aas.coords['motor'].values)
 da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIES_NAME].max('dist')
 
 #%%
@@ -68,9 +68,9 @@ da_cfd_beam = ds_cfd_beam[ppu.CFD_K_SPECIES_NAME] / ds_cfd_beam[ppu.CFD_K_SPECIE
 # Fit the position dependent mw horns data
 # 
 
-from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
+from mhdlab.analysis.aas.fitting import pipe_fit_alpha_num_1
 
-ds_fit = ds_absem.mean('mnum').sel(mp='mw_horns').dropna('run', how='all')
+ds_fit = ds_aas.mean('mnum').sel(mp='mw_horns').dropna('run', how='all')
 nK_profile = da_cfd_beam.sel(mp='mw_horns')
 ds_alpha_fit, ds_p, ds_p_stderr = pipe_fit_alpha_num_1(ds_fit, perform_fit_kwargs={'nK_profile':nK_profile})
 
@@ -95,7 +95,7 @@ motor_vals_06 = da_plot.coords['motor'].values
 da_plot.attrs['long_name'] = '$\\alpha$'
 da_plot.plot(hue='var', row='motor', figsize=(8,12))
 plt.ylim(-0.1,1.1)
-plt.savefig(pjoin(DIR_FIG_OUT, '516_pos_phi06_absem_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '516_pos_phi06_aas_fit.png'))
 
 #%%
 da_plot = ds.to_array('var').sel(phi=0.8, method='nearest').mean('run').dropna('motor',how='all')
@@ -103,16 +103,16 @@ da_plot = da_plot.sel(motor=motor_vals_06)
 da_plot.attrs['long_name'] = '$\\alpha$'
 da_plot.plot(hue='var', row='motor', figsize=(8,12))
 plt.ylim(-0.1,1.1)
-plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_absem_fit.png'))
+plt.savefig(pjoin(DIR_FIG_OUT, '536_pos_phi08_aas_fit.png'))
 
 #%%
 
 # Now fit the barrel data. Both datasets have it stored with 'motor' dimension.
 # Data is duplicated for cfd data  (see load_cfd_beam fn)
-# For absem, this corresponds to the times the stage was at this position...so we average over all motor
+# For aas, this corresponds to the times the stage was at this position...so we average over all motor
 
 
-ds_fit = ds_absem.mean('mnum').sel(mp='barrel').dropna('run', how='all')
+ds_fit = ds_aas.mean('mnum').sel(mp='barrel').dropna('run', how='all')
 ds_fit = ds_fit.mean('motor', keep_attrs=True)
 
 nK_profile = da_cfd_beam.sel(mp='barrel').isel(motor=0)

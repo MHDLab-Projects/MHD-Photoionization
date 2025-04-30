@@ -5,13 +5,13 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
 from mhdlab.analysis import mwt
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 
 # %%
 
 tc = '536_pos_power'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
 ds_lecroy = ppu.fileio.load_lecroy(tc, avg_mnum=True, AS_calc='absolute')
 da_lecroy = ds_lecroy['AS_abs'] 

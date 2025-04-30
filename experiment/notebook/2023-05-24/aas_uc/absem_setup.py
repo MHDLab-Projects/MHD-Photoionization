@@ -3,10 +3,10 @@ from mhdlab.analysis.standard_import import *
 
 from mhdlab.fileio import TFxr
 from mhdlab.fileio.path import gen_path_date
-from mhdlab.fileio.spectral import load_absem
+from mhdlab.fileio.spectral import load_aas
 
 from mhdlab.xr_utils import interp_ds_to_var
-from mhdlab.analysis.absem import calc_alpha_simple
+from mhdlab.analysis.aas import calc_alpha_simple
 
 
 import json 
@@ -22,7 +22,7 @@ has_multiplexer = settings['has_multiplexer']
 
 #%%
 
-#TODO: make consistent with main absem_setup
+#TODO: make consistent with main aas_setup
 
 
 #%%
@@ -33,11 +33,11 @@ data_folder = os.path.join(REPO_DIR, 'experiment','data', 'munged',datestr)
 
 dsst = TFxr(os.path.join(data_folder,'Processed_Data.tdms')).as_dsst(convert_to_PT=False)
 
-fp = os.path.join(data_folder,'Munged','Spectral' ,'absem.tdms')
-ds_absem = load_absem(fp, convert_to_PT=False)
+fp = os.path.join(data_folder,'Munged','Spectral' ,'aas.tdms')
+ds_aas = load_aas(fp, convert_to_PT=False)
 
 # Needed for scipp
-ds_absem = ds_absem.assign_coords(led = ('time', ds_absem.coords['led'].astype(np.int64).values))
+ds_aas = ds_aas.assign_coords(led = ('time', ds_aas.coords['led'].astype(np.int64).values))
 
 
 ds

@@ -15,8 +15,8 @@ import pi_paper_utils as ppu
 figsize = (10, 8)
 # plt.rcParams.update({'figure.figsize':(3,3), 'figure.dpi':100})
 
-from mhdlab.analysis.absem.fitting import gen_model_alpha_blurred 
-from mhdlab.analysis import absem
+from mhdlab.analysis.aas.fitting import gen_model_alpha_blurred 
+from mhdlab.analysis import aas
 
 from mhdlab.xr_utils import XarrayUtilsAccessorCommon
 
@@ -48,20 +48,20 @@ tc_dim_dict = {
 
 tc_dim = tc_dim_dict[tc]
 
-figure_out_dir = pjoin(DIR_DATA_OUT, 'absem_1d', tc)
+figure_out_dir = pjoin(DIR_DATA_OUT, 'aas_1d', tc)
 if not os.path.exists(figure_out_dir): os.makedirs(figure_out_dir)
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
-ds_absem = ds_absem.drop_vars('acq_time')
+ds_aas = ds_aas.drop_vars('acq_time')
 
-ds_absem
+ds_aas
 
 #%%
 
 plt.figure()
 
-da_counts = ds_absem['led_on'].count('mnum').isel(wavelength=0)
+da_counts = ds_aas['led_on'].count('mnum').isel(wavelength=0)
 da_counts.name = 'counts'
 
 da_counts.plot(hue='mp', row='run', marker='o', figsize=figsize)
@@ -74,9 +74,9 @@ plt.savefig(pjoin(figure_out_dir, '{}_counts.png'.format(tc) ))
 
 
 if tc_dim == 'kwt':
-    ds_sel = ds_absem.sel(mp='barrel')
+    ds_sel = ds_aas.sel(mp='barrel')
 else:
-    ds_sel = ds_absem.sel(mp='mw_horns')
+    ds_sel = ds_aas.sel(mp='mw_horns')
     ds_sel = ds_sel.dropna('mnum', how='all')
     ds_sel = ds_sel.dropna('run', how='all')
 # ds_sel = ds_sel.sel(run=[('2023-05-24', 1)]).dropna('mnum', how='all').dropna('kwt', how='all')

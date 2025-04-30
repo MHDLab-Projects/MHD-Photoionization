@@ -8,7 +8,7 @@ DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 import pi_paper_utils as ppu
 
 from mhdlab.analysis import mwt
-from mhdlab.analysis import absem
+from mhdlab.analysis import aas
 from mhdlab.plot import dropna
 
 # plt.rcParams.update({'font.size': 16})
@@ -17,12 +17,12 @@ from mhdlab.plot import dropna
 
 tc = '536_pos'
 
-ds_absem = ppu.fileio.load_absem(tc)
+ds_aas = ppu.fileio.load_aas(tc)
 
 
 # %%
 
-ds = ds_absem.sel(mp='mw_horns').mean('mnum').dropna('run', how='all')
+ds = ds_aas.sel(mp='mw_horns').mean('mnum').dropna('run', how='all')
 
 
 ds
@@ -55,7 +55,7 @@ ds_fix = ds.copy()
 
 ds_fix['calib'] = ds_fix['calib'] * rat
 
-ds_fix = ds_fix.absem.calc_alpha()
+ds_fix = ds_fix.aas.calc_alpha()
 
 #%%
 

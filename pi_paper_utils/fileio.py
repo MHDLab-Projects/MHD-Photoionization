@@ -10,13 +10,13 @@ from mhdlab.pyvista_utils import CFDDatasetAccessor
 from .constants import MAG_MWT_BLOCK
 
 
-def load_absem(
+def load_aas(
         tc, 
         avg_mnum = False,
         wl_slice = slice(750,790)
         ):
     """
-    pipeline for loading absem data
+    pipeline for loading aas data
 
     Parameters
     ----------
@@ -26,25 +26,25 @@ def load_absem(
         if True, average over mnum before calculation of alpha
     """
 
-    ds_absem = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'absem','{}.cdf'.format(tc)))
+    ds_aas = xr.load_dataset(pjoin(DIR_EXPT_PROC_DATA, 'aas','{}.cdf'.format(tc)))
 
     # #TODO: having to do this on office comp?
-    # ds_absem.coords['mp'] = ds_absem.coords['mp'].astype(str)
-    # ds_absem.coords['date'] = ds_absem.coords['date'].astype(str)
+    # ds_aas.coords['mp'] = ds_aas.coords['mp'].astype(str)
+    # ds_aas.coords['date'] = ds_aas.coords['date'].astype(str)
 
-    ds_absem = ds_absem.xr_utils.stack_run()
+    ds_aas = ds_aas.xr_utils.stack_run()
 
-    ds_absem = ds_absem.sel(wavelength=wl_slice)
+    ds_aas = ds_aas.sel(wavelength=wl_slice)
 
     if tc == '53x':
-        ds_absem = ds_absem.drop(0, 'kwt')
+        ds_aas = ds_aas.drop(0, 'kwt')
 
     if avg_mnum:
-        ds_absem = ds_absem.mean('mnum')
+        ds_aas = ds_aas.mean('mnum')
     
-    ds_absem = ds_absem.absem.calc_alpha()
+    ds_aas = ds_aas.aas.calc_alpha()
 
-    return ds_absem
+    return ds_aas
 
 from mhdlab.coords.ct import downselect_acq_time
 
@@ -166,7 +166,7 @@ def load_cfd_beam(kwt_interp = None, convert_rho_number = True):
     ds_cfd_beam_barrel = xr.load_dataset(fp_cfd_profiles)
 
     # This creates a dataset where the barrel measurement is duplicated across the motor positions.
-    #TODO: this is inefficient, but is consistent with experimental absem. Not sure if it needs to be fixed. 
+    #TODO: this is inefficient, but is consistent with experimental aas. Not sure if it needs to be fixed. 
     # Just select any motor positon (or take average) to get barrel measurement
     ds_cfd_beam = xr.concat([
                         ds_cfd_beam_mobile.assign_coords(mp='mw_horns'),
