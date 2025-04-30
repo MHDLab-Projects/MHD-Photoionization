@@ -20,6 +20,9 @@ python 53x_final.py
 echo "Position dependence"
 python position_dependence.py
 
+echo "Laser Profile Calculation"
+python laser_beam_timing.py
+
 popd
 
 
