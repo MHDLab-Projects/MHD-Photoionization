@@ -76,7 +76,7 @@ dropna(g)
 plt.yscale('log')
 plt.xscale('log')
 
-plt.savefig(pjoin(DIR_FIG_OUT, '53x_AES_nK.png'), dpi=300, bbox_inches='tight')
+plt.savefig(pjoin(DIR_FIG_OUT, '53x_AAS_nK.png'), dpi=300, bbox_inches='tight')
 
 #%%
 

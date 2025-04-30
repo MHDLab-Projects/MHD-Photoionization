@@ -6,7 +6,7 @@ On 2023-05-24, we performed measurements with a varying equivalence ratio.
 
 \begin{itemize}
     \item 516 - a position sweep at a fixed equivalence ratio of 0.6.
-    \item 5x3\_pos - a position and equivalence ratio sweep at five equivalence ratios and 0.1\% potassium mass fraction. The lower potassium mass fraction allowed for longer times on each test case allowed for both AES $n_{K}$ and MWT measurements. 
+    \item 5x3\_pos - a position and equivalence ratio sweep at five equivalence ratios and 0.1\% potassium mass fraction. The lower potassium mass fraction allowed for longer times on each test case allowed for both AAS $n_{K}$ and MWT measurements. 
     \item 5x6\_pos - a position and equivalence ratio sweep at five equivalence ratios and 1\% potassium mass fraction. The high potassium mass uses up seed quickly, leaving enough time for only MWT measurements. 
 \end{itemize}
  
@@ -14,21 +14,21 @@ On 2023-05-24, we performed measurements with a varying equivalence ratio.
 
 This section contains additional measurements for the 5x3\_pos and 5x6\_pos test case sequences. These were two-dimensional parameter sweeps of both stage position and equivalence ratio. See Figure \ref{fig:SI_expt_overview_2023-05-24} for how the sequence was performed. 
 
-Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos test case sequence. Note the calibration of the AES signal for this test case sequence exhibited significant calibration drift (see Figure \ref{fig:SI_5x3_pos_alpha}), and systematic error may be present in the $nK$ values. 
+Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AAS measurements for the 5x3\_pos test case sequence. Note the calibration of the AAS signal for this test case sequence exhibited significant calibration drift (see Figure \ref{fig:SI_5x3_pos_alpha}), and systematic error may be present in the $nK$ values. 
 
 %TODO: Make sure every mention of nk is formatted as $nk$
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x3_pos_nK_m3.png}
-\caption{AES measurements for 5x3\_pos.}
+\caption{AAS measurements for 5x3\_pos.}
 \label{fig:SI_5x3_pos_nK_m3}
 \end{figure}
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/tcs/output/figures/5x3_pos_alpha.png}
-\caption{Absorption data for AES measurements in 5x3\_pos. The absorption offset at large wavelengths is due to drift in calibration.}
+\caption{Absorption data for AAS measurements in 5x3\_pos. The absorption offset at large wavelengths is due to drift in calibration.}
 \label{fig:SI_5x3_pos_alpha}
 \end{figure}%mp = "motor position"?
 
@@ -76,7 +76,7 @@ Figure \ref{fig:SI_5x3_pos_nK_m3} shows the AES measurements for the 5x3\_pos te
 \clearpage
 \subsubsection{516 Position-Dependence Test Case Sequence}
 
-This section contains additional measurements for the 516\_pos test case sequence. This test case sequence was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. The AES measurements associated with this test case sequence are presented in the main text Figure 3C. 
+This section contains additional measurements for the 516\_pos test case sequence. This test case sequence was a position sweep at fixed nominal equivalence ratio 0.6. The higher seed rate and longer time on each test case allows for more accurate determination of AS exponential time constants than 5x3\_pos and 5x6\_pos test case sequences. The AAS measurements associated with this test case sequence are presented in the main text Figure 3C. 
 
 Figure \ref{fig:SI_536_516_pos_mwt_fitting} shows position-dependent MWT measurements for the 516\_pos and 536\_pos (presented in main text) test case sequences. Figure \ref{fig:SI_tau_cfd_pos_phi_compare} shows the position-dependent CFD-predicted electron lifetimes for K+ and $O_{2,A}$ for both the 516 and 536 test case sequences. 
 
@@ -284,14 +284,14 @@ where $n_{all}$ is the total number density predicted from CFD. Figure \ref{fig:
 
 
 \clearpage
-\subsection{AES and MWT Seed and Position Dependence Fits}
+\subsection{AAS and MWT Seed and Position Dependence Fits}
 
 This section contains plots of fits which led to the plotted fit parameters in the final text. In the following plots, the fitted parameters are averaged over all runs; however, during the fitting procedure, fits are performed on each individual run. 
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.7\textwidth]{\repodir/final/dataset/output/figures/536_pos_phi08_absem_fit.png}
-\caption{AES absorption $\alpha$ and fits for 536\_pos and 0.8 equivalence ratio. Note that some stage position values that were only performed on 2023-05-12 have been dropped to reduce the size of the figure. }
+\caption{AAS absorption $\alpha$ and fits for 536\_pos and 0.8 equivalence ratio. Note that some stage position values that were only performed on 2023-05-12 have been dropped to reduce the size of the figure. }
 \label{fig:SI_536_pos_phi08_absem_fit}
 \end{figure}
 

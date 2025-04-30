@@ -418,7 +418,7 @@
  <producer id="producer14" in="00:00:00.000" out="00:00:10.177">
   <property name="length">00:00:10.210</property>
   <property name="eof">pause</property>
-  <property name="resource">C:/Users/ASPITARL/code/MHD-Photoionization/final/figures/output/Fig3_Position_AES.png</property>
+  <property name="resource">C:/Users/ASPITARL/code/MHD-Photoionization/final/figures/output/Fig3_Position_AAS.png</property>
   <property name="ttl">25</property>
   <property name="aspect_ratio">1</property>
   <property name="meta.media.progressive">1</property>
@@ -436,8 +436,8 @@
   <property name="kdenlive:file_size">359763</property>
   <property name="kdenlive:activeeffect">1</property>
   <property name="kdenlive:monitorPosition">56</property>
-  <property name="kdenlive:clipname">Fig3_Position_AES.png</property>
-  <property name="kdenlive:originalurl">C:/Users/ASPITARL/code/MHD-Photoionization/final/figures/output/Fig3_Position_AES.png</property>
+  <property name="kdenlive:clipname">Fig3_Position_AAS.png</property>
+  <property name="kdenlive:originalurl">C:/Users/ASPITARL/code/MHD-Photoionization/final/figures/output/Fig3_Position_AAS.png</property>
   <property name="kdenlive:proxy">-</property>
   <property name="kdenlive:file_hash">2fa560f5b2ca8ad883280045c802c8d0</property>
  </producer>
@@ -635,7 +635,7 @@
  <producer id="producer4" in="00:00:00.000" out="00:00:07.074">
   <property name="length">00:00:07.107</property>
   <property name="eof">pause</property>
-  <property name="resource">C:/Users/ASPITARL/code/MHD-Photoionization/experiment/movies/figure_edit/output/AES_position.png</property>
+  <property name="resource">C:/Users/ASPITARL/code/MHD-Photoionization/experiment/movies/figure_edit/output/AAS_position.png</property>
   <property name="ttl">25</property>
   <property name="aspect_ratio">1</property>
   <property name="meta.media.progressive">1</property>
@@ -1556,7 +1556,7 @@
   <property name="kdenlive:trackheight">67</property>
   <property name="kdenlive:timeline_active">1</property>
   <property name="kdenlive:collapsed">0</property>
-  <property name="kdenlive:track_name">AES</property>
+  <property name="kdenlive:track_name">AAS</property>
   <property name="kdenlive:thumbs_format"/>
   <property name="kdenlive:audio_rec"/>
   <track hide="audio" producer="playlist10"/>

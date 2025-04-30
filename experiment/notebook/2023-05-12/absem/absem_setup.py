@@ -1,5 +1,5 @@
 # %% [markdown]
-#  # 2022-10-05 Continous seed feeding absorption emission measurements
+#  # 2022-10-05 Continous seed feeding Atomic Absorption measurements
 # 
 
 # %% [markdown]

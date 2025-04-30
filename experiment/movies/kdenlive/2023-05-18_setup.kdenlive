@@ -503,7 +503,7 @@
   <property name="kdenlive:trackheight">67</property>
   <property name="kdenlive:timeline_active">1</property>
   <property name="kdenlive:collapsed">0</property>
-  <property name="kdenlive:track_name">AES</property>
+  <property name="kdenlive:track_name">AAS</property>
   <property name="kdenlive:thumbs_format"/>
   <property name="kdenlive:audio_rec"/>
   <track hide="both" producer="playlist10"/>

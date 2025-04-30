@@ -127,7 +127,7 @@ ds_p_cfdprofile = ds_p['nK_m3'].rename('nK_barrel_cfdprofile')
 
 #%%
 
-# was originally combining with tophat profile, but removed now. see position_dependence_extra_aes.py
+# was originally combining with tophat profile, but removed now. see position_dependence_extra_aas.py
 ds_p_out = xr.merge([ds_p_cfdprofile]).dropna('run', how='all')
 
 ds_p_out.pint.dequantify().unstack('run').to_netcdf(pjoin(DIR_DATA_OUT, 'ds_p_barrel.cdf'))

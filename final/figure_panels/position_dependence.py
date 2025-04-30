@@ -19,15 +19,15 @@ ds_lecroy = ds_lecroy.sel(phi=0.8, method='nearest')
 ds_lecroy_536 = ppu.fileio.load_lecroy('536_pos', avg_mnum=False, AS_calc='absolute')
 ds_lecroy_536 = ds_lecroy_536.mwt.calc_time_stats()
 
-# Position dependent barrel AES
+# Position dependent barrel AAS
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_p = ds_p.pint.quantify()
 ds_p['nK_mw_horns'] = ds_p['nK_mw_horns'].pint.to('particle/cm^3')
 
-# Position dependent AES spectra
+# Position dependent AAS spectra
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
 
-# Non position dependent barrel AES
+# Non position dependent barrel AAS
 ds_p_barrel = xr.open_dataset(pjoin(data_directory, 'ds_p_barrel.cdf')).xr_utils.stack_run()
 ds_p_barrel = ds_p_barrel.pint.quantify()
 ds_p_barrel['nK_barrel_cfdprofile'] = ds_p_barrel['nK_barrel_cfdprofile'].pint.to('particle/cm^3')
@@ -115,7 +115,7 @@ ds_cfd_sel['nK_cm3'].sel(offset=0).plot(color='black', label ='CFD centerline', 
 # Barrel exit
 nK_barrel_mean = ds_p_barrel['nK_barrel_cfdprofile'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.8, method='nearest')
-ax1.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
+ax1.errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
 
 ax1.set_title('Equivalence ratio = {}'.format(phi_val_expt))
 
@@ -145,8 +145,8 @@ nK_barrel_std = ds_p_barrel['nK_barrel_cfdprofile'].std('run').sel(phi=0.6, meth
 
 assert nK_barrel_std.item().magnitude ==0 # there is only one run for phi=0.6
 
-# ax2.errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
-ax2.scatter(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, color='green', marker='o', label='Barrel Exit')
+# ax2.errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='Barrel Exit', capsize=5, )
+ax2.scatter(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, color='green', marker='o', label='Barrel Exit')
 
 
 ax2.set_title('Equivalence ratio = {}'.format(phi_val_expt))
@@ -178,7 +178,7 @@ sfigs[0].get_axes()[0].text(-0.25, 2.2, 'A)', transform=ax1.transAxes)
 
 # fig.tight_layout()
 
-fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig3_Position_AES.svg'), bbox_inches = "tight")
+fig.savefig(os.path.join(REPO_DIR, 'final','figures', 'Fig3_Position_AAS.svg'), bbox_inches = "tight")
 
 # plt.savefig(pjoin(DIR_FIG_OUT, 'pos_nK_mwt_cfd.png'), dpi=300, bbox_inches='tight')
 

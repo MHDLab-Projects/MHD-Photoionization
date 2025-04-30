@@ -15,7 +15,7 @@ MAG_MWT_BLOCK = Quantity(0.006245581698287483, 'V')
 
 MWT_TIME_OFFSET = Quantity(0.88, 'us')
 
-AES_BARREL_OFFSET = Quantity(1/8, 'inches')
+AAS_BARREL_OFFSET = Quantity(1/8, 'inches')
 
 # Taken from geometry.toml #TODO: read this file?
 CFD_EXIT_OFFSET = Quantity(20.911, 'cm')

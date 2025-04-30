@@ -13,7 +13,7 @@ from mhdlab.pyvista_utils import AxiMesh
 from pi_paper_utils.fileio import cfd_fp_dict, cfd_all_fields
 import pi_paper_utils as ppu
 
-from pi_paper_utils.constants import CFD_EXIT_OFFSET, AES_BARREL_OFFSET
+from pi_paper_utils.constants import CFD_EXIT_OFFSET, AAS_BARREL_OFFSET
 
 BEAM_Y_DISTANCE = Quantity(5, 'cm')
 beam_path_dist_grid = np.arange(0, 0.1, 0.0005)
@@ -148,8 +148,8 @@ ds_lines.pint.dequantify().to_netcdf(pjoin('output', 'cfd_profiles_beam_mobile.c
 
 #%%
 exit_offset = Quantity(5, 'mm')
-a_barrel = [CFD_EXIT_OFFSET + AES_BARREL_OFFSET, Quantity(-5, 'cm'), Quantity(0, 'cm')]
-b_barrel = [CFD_EXIT_OFFSET + AES_BARREL_OFFSET, Quantity(5, 'cm'), Quantity(0, 'cm')]
+a_barrel = [CFD_EXIT_OFFSET + AAS_BARREL_OFFSET, Quantity(-5, 'cm'), Quantity(0, 'cm')]
+b_barrel = [CFD_EXIT_OFFSET + AAS_BARREL_OFFSET, Quantity(5, 'cm'), Quantity(0, 'cm')]
 line_barrel = extract_line_axi(mesh, a_barrel, b_barrel)
 
 p = pv.Plotter()

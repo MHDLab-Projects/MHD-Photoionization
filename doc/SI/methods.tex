@@ -24,7 +24,7 @@ Throughout the experimental campaign, we performed the following test case seque
 For each diagnostic, data is obtained continuously throughout the experiment and indexed in time. For each individual test case, there are a number of repeated acquisitions depending on the duration of the test case and acquisition rate of the diagnostic. In the data processing, these repeated acquisitions are averaged to obtain a single value for each test case before further analysis (e.g., fitting). For statistics across runs presented in the main text, the variation within repeat acquisitions is not considered. 
 
 The syringe pump limits the duration of a given test case sequence, with shorter durations at high potassium mass fraction. Furthermore, it was not possible to maintain consistent durations for the same test cases performed in different sequences.
-The time limitation on seeding duration limits the AES diagnostic more than the MWT diagnostic. The AES diagnostic must wait 1 s between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10 s. Therefore, a minimum of at least 20 s is needed for a nK measurement at both locations, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWT diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (5-12 Hz).  Therefore, for a given test case sequence, the MWT diagnostic has more data than the AES diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
+The time limitation on seeding duration limits the AAS diagnostic more than the MWT diagnostic. The AAS diagnostic must wait 1 s between LED switching events to allow for the LED to stabilize. Additionally, the multiplexer switches every 10 s. Therefore, a minimum of at least 20 s is needed for a nK measurement at both locations, but ideally multiple measurements are taken at each location to ensure reproducibility. The MWT diagnostic, on the other hand, is continuously acquiring at the repetition rate of the laser (5-12 Hz).  Therefore, for a given test case sequence, the MWT diagnostic has more data than the AAS diagnostic. For the standard test case sequences outlined above, approximately 1 minute was used for each test case and data is presented for both diagnostics.
 
 
 
@@ -263,29 +263,29 @@ In Figure \ref{fig:SI_MWT_lin_square_compare}, we compare the transmission calcu
 
 
 \clearpage
-\subsection{Absorption Emission Spectroscopy (AES) Setup}
+\subsection{Atomic Absorption Spectroscopy (AAS) Setup}
 
 \subsubsection{Setup Description}
 
-The LED used for AES is a Thorlabs M780F2 \SI{780} {\nano\meter} LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately \SI{0.6} {\ampere}. The LED is fed into a Thorlabs M28L02 fiber with \SI{400} {\micro\meter} diameter and 0.39 NA. The fiber is then connected to the input of an Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AES locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AES locations every \SI{10} {\second} throughout the duration of an AES measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AES locations are multiplexed to the same spectrometer, the measurements at the two AES locations are not simultaneous.
+The LED used for AAS is a Thorlabs M780F2 \SI{780} {\nano\meter} LED driven by a Thorlabs T-Cube LED Driver with input current set to approximately \SI{0.6} {\ampere}. The LED is fed into a Thorlabs M28L02 fiber with \SI{400} {\micro\meter} diameter and 0.39 NA. The fiber is then connected to the input of an Ocean Optics MPM-2000-UV-VIS600-2X8 Multiplexer. The multiplexer can send light to either of the AAS locations (barrel exit and mobile stage). The multiplexer continuously switches between the two AAS locations every \SI{10} {\second} throughout the duration of an AAS measurement. After collection of light with the collection lenses (as described below), the light collected from both the barrel exit and the translation stage is sent back to the multiplexer. Finally, the light is routed from multiplexer to the spectrometer through an Ocean Optics QP-600-2-VIS-NIR fiber. Because both AAS locations are multiplexed to the same spectrometer, the measurements at the two AAS locations are not simultaneous.
 
 For the barrel exit measurement, the light from the LED is collimated from the fiber with a RC02SMA-P01 reflective parabolic mirror and directed at a \SI{90} {\degree} angle with a MRA05-E3 dielectric mirror. After passing through the torch, the light is then coupled into the collecting fiber with a second RC02SMA-P01 reflective parabolic mirror. The light is sent from the multiplexer to the collimating lens with a Thorlabs M38L02 \SI{200} {\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53L02 \SI{600} {\micro\meter} 0.5 NA fiber. On both sides of the torch, light passes through an iris of approximately \SI{1} {\milli\meter} and a glass slide which is used to protect the optics from the torch. The beam is positioned to go through the center of the torch at approximately 1/8 inch \pm 1/16 inch downstream of the barrel exit. The beam diameter is approximately 3/32 inch to 4/32 inch. 
 
 For the mobile absorption measurement, the light is collimated and collected with Thorlabs F950SMA-A multimode collimating lenses. On the collection side, there is a 3.25 \pm 0.5 mm iris. The light is sent from the multiplexer to the collimating lens with a Thorlabs M28L02 \SI{400} {\micro\meter} 0.39 NA fiber, and sent from the collection lens to the multiplexer with a Thorlabs M53LO2 600 um 0.5 NA fiber. 
 
-The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a \SI{1} {\second} delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AES measurements. 
+The LED is continuously turned on and off throughout the experiment to obtain "LED on" and "LED off" measurements. The LED is triggered by the spectrometer. When switching the LED, there is a \SI{1} {\second} delay before the spectrometer is triggered to allow the LED state to stabilize. This LED switching time limits the temporal resolution of the AAS measurements. 
 
 \subsubsection{Data Processing and Fitting}
 
-Figure \ref{fig:SI_AES_proc_overview} shows the processing steps for the AES data.
-See \texttt{/mhdlab/analysis/absem/} for the AES processing/fitting package. 
+Figure \ref{fig:SI_AAS_proc_overview} shows the processing steps for the AAS data.
+See \texttt{/mhdlab/analysis/absem/} for the AAS processing/fitting package. 
 
 
 \begin{figure}[]
     \centering
     \includegraphics[height=0.6\textheight]{\repodir/experiment/analysis/absem/output/figures/absem_proc_overview.png}
-    \caption{AES processing overview: (A) LED on and off measurements; (B) Difference (LED on - LED off) compared to the interpolated calibration measurement; (C) Absorption calculation (raw) and absorption after offset removal; (D) Fitted absorption profile (Data) and fit.}
-    \label{fig:SI_AES_proc_overview}
+    \caption{AAS processing overview: (A) LED on and off measurements; (B) Difference (LED on - LED off) compared to the interpolated calibration measurement; (C) Absorption calculation (raw) and absorption after offset removal; (D) Fitted absorption profile (Data) and fit.}
+    \label{fig:SI_AAS_proc_overview}
 \end{figure}
 
 
@@ -298,7 +298,7 @@ We observe changes in the calibration spectra throughout the experiment which ca
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\textwidth]{\repodir/experiment/analysis/absem/output/figures/absem_calib_dates.png}
-    \caption{Calibration spectra taken at different time on different dates. Both AES setups, barrel exit (AES1) and mobile (AES2, A.K.A. mw\_horns) are shown.  There was no AES2 setup on 2023-04-07 and 2023-05-12.}
+    \caption{Calibration spectra taken at different time on different dates. Both AAS setups, barrel exit (AAS1) and mobile (AAS2, A.K.A. mw\_horns) are shown.  There was no AAS2 setup on 2023-04-07 and 2023-05-12.}
     \label{fig:SI_absem_calib_dates}
 \end{figure}
 
@@ -312,7 +312,7 @@ Even with interpolation, slight differences between the calibration spectrum and
     \item Recalculate $\alpha = 1 - e^{- (\beta - \beta_{off})}$ 
 \end{enumerate}
 
-The effect of the offset procedure is shown in Figure \ref{fig:SI_AES_proc_overview}C. Additional processing steps are as follows:
+The effect of the offset procedure is shown in Figure \ref{fig:SI_AAS_proc_overview}C. Additional processing steps are as follows:
 
 \begin{enumerate}
     \item Individual acquisitions with a negative absorption in the 765 to \SI{772} {\nano\meter} range are removed. Negative absorption can occur when there is a significant fluctuation in seed level between the LED on and LED off measurements.
@@ -389,18 +389,18 @@ Collisional frequency width ($\Delta \nu_{i,C}$) & \SI{3.19} {\giga\hertz} & \SI
 \end{figure}
 
 
-There is a discrepancy between the barrel AES $n_{K,max}$ measurements and the CFD centerline $n_{K}$ predictions. We investigated the possibility that this discrepancy is due to an incorrect spatial prediction of CFD pressure or $n_{K}$ profile along the beam path in Figure \ref{fig:SI_AES_barrel_cases}.  
+There is a discrepancy between the barrel AAS $n_{K,max}$ measurements and the CFD centerline $n_{K}$ predictions. We investigated the possibility that this discrepancy is due to an incorrect spatial prediction of CFD pressure or $n_{K}$ profile along the beam path in Figure \ref{fig:SI_AAS_barrel_cases}.  
 
-$\Delta \nu_{i,C}$ will be roughly proportional to the pressure which will affect the fitted $n_{K,max}$ value (see \cite{alkemadeMetalVapoursFlames1982}, eq. II.231). Figure \ref{fig:SI_AES_barrel_cases}A shows the CFD centerline pressure along the axis of the torch and \ref{fig:SI_cfd_barrel_beam_K_KOH_compare}C shows there is a large pressure spike in the center of the torch at the barrel exit. In Figure \ref{fig:SI_AES_barrel_cases}B, we examined the extreme cases where the pressure (assumed constant along the entire beam path) was the minimum and maximum CFD centerline pressure. 
+$\Delta \nu_{i,C}$ will be roughly proportional to the pressure which will affect the fitted $n_{K,max}$ value (see \cite{alkemadeMetalVapoursFlames1982}, eq. II.231). Figure \ref{fig:SI_AAS_barrel_cases}A shows the CFD centerline pressure along the axis of the torch and \ref{fig:SI_cfd_barrel_beam_K_KOH_compare}C shows there is a large pressure spike in the center of the torch at the barrel exit. In Figure \ref{fig:SI_AAS_barrel_cases}B, we examined the extreme cases where the pressure (assumed constant along the entire beam path) was the minimum and maximum CFD centerline pressure. 
 
-The $n_{K}$ profile is also important for the fitting process. As shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt}, at the barrel exit the potassium is somewhat concentrated in the center of the free jet. To investigate the effect of the profile on the fitted $n_{K,max}$, we performed a fit with a constant $n{K}$ profile along the beam path with the width of the profile set to the width of the barrel exit (called a top hat profile), as shown in Figure \ref{fig:SI_AES_barrel_cases}B.
+The $n_{K}$ profile is also important for the fitting process. As shown in Figure \ref{fig:SI_cfd_beam_goldi_pos_kwt}, at the barrel exit the potassium is somewhat concentrated in the center of the free jet. To investigate the effect of the profile on the fitted $n_{K,max}$, we performed a fit with a constant $n{K}$ profile along the beam path with the width of the profile set to the width of the barrel exit (called a top hat profile), as shown in Figure \ref{fig:SI_AAS_barrel_cases}B.
 
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=0.9\textwidth]{\repodir/final/figures/SI/output/AES_barrel_cases.png}
-    \caption{AES measurements at the barrel exit for alternative pressure and $n_{K}$ profile fitting assumptions. Left: the CFD centerline pressure. Right: The CFD centerline $n_{K}$ density along with barrel AES measurements for different assumptions about the beam $n_{K}$ profile and pressure. }
-    \label{fig:SI_AES_barrel_cases}
+    \includegraphics[width=0.9\textwidth]{\repodir/final/figures/SI/output/AAS_barrel_cases.png}
+    \caption{AAS measurements at the barrel exit for alternative pressure and $n_{K}$ profile fitting assumptions. Left: the CFD centerline pressure. Right: The CFD centerline $n_{K}$ density along with barrel AAS measurements for different assumptions about the beam $n_{K}$ profile and pressure. }
+    \label{fig:SI_AAS_barrel_cases}
 \end{figure}
 
 

@@ -1,5 +1,5 @@
 # %% [markdown]
-# # Absorption Emission Data Processing Overview
+# # Atomic Absorption Data Processing Overview
 
 # %%
 from mhdlab.analysis.standard_import import *

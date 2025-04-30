@@ -91,7 +91,7 @@ ta.legend(bbox_to_anchor=[0.5,0,0,1])
 
 # These binned coordinates are added along the time dimension multindex
 #
-# For example, the absorption emission data. Currently indexed by time, wavelength, and multiplexer positon (mp). Multiplexer position was added by the same process. 
+# For example, the Atomic Absorption data. Currently indexed by time, wavelength, and multiplexer positon (mp). Multiplexer position was added by the same process. 
 
 #%%
 

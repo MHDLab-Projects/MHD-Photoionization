@@ -1,6 +1,6 @@
 #%%[markdown]
 
-# # Absorption emission fitting algorithm comparison
+# # Atomic Absorption fitting algorithm comparison
 
 
 #%%

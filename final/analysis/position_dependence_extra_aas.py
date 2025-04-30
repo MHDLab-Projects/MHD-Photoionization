@@ -8,10 +8,10 @@ from mhdlab.analysis.absem.fitting import pipe_fit_alpha_num_1
 DIR_EXPT_PROC_DATA = pjoin(REPO_DIR, 'experiment', 'data','proc_data')
 data_directory = pjoin(REPO_DIR, 'final', 'dataset', 'output')
 
-# Position dependent AES and MWT
+# Position dependent AAS and MWT
 ds_p = xr.open_dataset(pjoin(data_directory, 'ds_p_stats_pos.cdf')).xr_utils.stack_run()
 ds_alpha_fit = xr.open_dataset(pjoin(data_directory, 'ds_pos_alpha_fit.cdf')).xr_utils.stack_run()
-# Non position dependent barrel AES
+# Non position dependent barrel AAS
 ds_p_barrel = xr.open_dataset(pjoin(data_directory, 'ds_p_barrel.cdf')).xr_utils.stack_run()
 
 ds_cfd_cl = ppu.fileio.load_cfd_centerline()
@@ -207,22 +207,22 @@ ds_cfd_cl['nK_m3'].plot(color='black', label ='CFD centerline', linestyle='-.')
 
 nK_barrel_mean = ds_p_base['nK_m3'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_base['nK_m3'].std('run').sel(phi=0.8, method='nearest')
-plt.gca().errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='1 Atm', capsize=5, )
+plt.gca().errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='o', label='1 Atm', capsize=5, )
 
 max_p_str = '{:.2f} atm'.format(max_p.to('atm').magnitude)
 min_p_str = '{:.2f} atm'.format(min_p.to('atm').magnitude)
 
 nK_barrel_mean = ds_p_max_p['nK_m3'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_max_p['nK_m3'].std('run').sel(phi=0.8, method='nearest')
-plt.gca().errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='x', label=f'Max ({max_p_str})', capsize=5, )
+plt.gca().errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='red', marker='x', label=f'Max ({max_p_str})', capsize=5, )
 
 nK_barrel_mean = ds_p_min_p['nK_m3'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_min_p['nK_m3'].std('run').sel(phi=0.8, method='nearest')
-plt.gca().errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='blue', marker='x', label=f'Min ({min_p_str})', capsize=5, )
+plt.gca().errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='blue', marker='x', label=f'Min ({min_p_str})', capsize=5, )
 
 nK_barrel_mean = ds_p_tophat['nK_m3'].mean('run').sel(phi=0.8, method='nearest')
 nK_barrel_std = ds_p_tophat['nK_m3'].std('run').sel(phi=0.8, method='nearest')
-plt.gca().errorbar(ppu.AES_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Tophat (1 atm)', capsize=5, )
+plt.gca().errorbar(ppu.AAS_BARREL_OFFSET.to('mm').magnitude, nK_barrel_mean, yerr=nK_barrel_std, color='green', marker='x', label='Tophat (1 atm)', capsize=5, )
 
 
 plt.legend()
