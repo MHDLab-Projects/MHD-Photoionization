@@ -93,6 +93,7 @@ ds_fit = ds_lecroy
 da_fit_lecroy = ds_fit['dAS_abs'].mean('mnum')
 ds_fit_mwt, ds_p_mwt, ds_p_stderr_mwt = pipe_fit_exp(da_fit_lecroy)
 ds_p_mwt['decay'] = ds_p_mwt['decay'].pint.quantify('us')
+ds_p_stderr_mwt_exp = ds_p_stderr_mwt.copy() 
 ds_p_exp = ds_p_mwt.copy()
 ds_fit_mwt.unstack('run').pint.dequantify().to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_fit_mwt_exp.cdf'))
 
@@ -146,3 +147,21 @@ for var in ds_params.data_vars:
 ds_p_stats = ds_p_stats.pint.dequantify()
 ds_p_stats.to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_p_stats.cdf'))
 
+
+#%%
+
+ds_params_full = xr.merge([
+    ds_p_aas['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel'),
+    ds_p_aas['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns'),
+    ds_p_stderr_aas['nK_m3'].sel(mp='barrel').drop_vars('mp').rename('nK_m3_barrel_stderr'),
+    ds_p_stderr_aas['nK_m3'].sel(mp='mw_horns').drop_vars('mp').rename('nK_m3_mw_horns_stderr'),
+    ds_p_exp['decay'].rename('mwt_fit_decay_exp'),
+    ds_p_stderr_mwt_exp['decay'].rename('mwt_fit_decay_exp_stderr')
+])
+
+#%%
+
+ds_out = ds_params_full.unstack('run').pint.dequantify()
+ds_out.to_netcdf(pjoin(DIR_DATA_OUT, '53x_ds_p_full.cdf'))
+
+#%%
