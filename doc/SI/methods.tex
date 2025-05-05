@@ -550,3 +550,23 @@ A representative picture of an emulsion batch is shown in \ref{fig:SI_Emulsion_P
 \end{figure}
 
 
+\clearpage
+\subsection{Error Methodology and Analysis}
+
+In this section, we discuss the methodology for calculating the error bars shown in the main text. Many results presented in the main text are often averages over multiple runs (see definition of 'run' in main text), where the error bars are the standard deviation across the runs. These statistics are calculated from the mean value of measurements over repeat acquisitions during each run. The uncertainty between repeat acquisitions is not propagated into the error bars shown in the main text. 
+
+The potassium number density obtained from AAS measurements, $n_{K}$, and the electron lifetime exponential time constant obtained from MWT measurements, $\tau_{exp}$, are both fitted quantities. We perform the fits on data for each individual run, with the fitted data being the average over repeat acquisitions for that run. The error bars in the main text are then the standard deviation of the fitted parameters across runs as described above.
+
+We use the 'lmfit' python package to perform the fitting which returns the standard error  of the fitted parameters, $SE_{fit}$ . We do not propagate the standard error of the fit into the error bars shown in the main text. To justify this we compare the average of $SE_{fit}$ across runs to the standard error of the fitted parameters across runs, $SE_{run}$ in Figure \ref{fig:SI_error_prop_analysis} for the 53x test case sequence. $SE_{run}$ is calculated as $SE_{run} = \sigma_{run}/\sqrt{N}$, where $\sigma_{run}$ is the standard deviation of the fitted parameters across runs and $N$ is the number of runs. The ratio $SE_{fit}/SE_{run}$ is shown in Figure \ref{fig:SI_error_prop_analysis} C and D for the $n_K$ and $\tau_{exp}$ measurements, respectively. 
+$SE_{fit}/SE_{run}$ is significantly less than 1, indicating that the deviation of fitted parameters between runs is likely dominating the uncertainty of the fitted parameters shown in the main text.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{\repodir/final/analysis/output/figures/error_prop_analysis_stderr.png} 
+    \caption{Comparison of the $SE_{fit}$ and $SE_{run}$ for the 53x test case sequence. (A) $SE_{fit}$ and $SE_{run}$ for the $n_{K}$ measurements; (B) $SE_{fit}$ and $SE_{run}$ for the $\tau_{exp}$ measurements; (C) $SE_{fit}/SE_{run}$ for the $n_{K}$ measurements; (D) $SE_{fit}/SE_{run}$ for the $\tau_{exp}$ measurements. }
+    \label{fig:SI_error_prop_analysis}
+\end{figure}
+
+
+For data presented from an individual run, the presented error is defined on a case by case basis. For the example AS decay measurement in Figure 7A of the main text (from 2023-05-12 Run 1), the error bars are the standard error across repeat acquisitions. In this case the error is calculated as $\sigma_{acq}/\sqrt{N}$, where $N$ is the number of repeat acquisitions and $\sigma_{acq}$ is the standard deviation across repeat acquisitions.  For the position-dependent AS measurements in Figure 3A and 3B (from 2023-05-18 Run 1), the error bars are the standard deviation across repeat acquisitions as we are interested in quantifying the fluctuations in the AS signal. 
