@@ -265,7 +265,7 @@ xr_errorbar_axes(AS_pp, AS_pp_fluct, axes=ax2, capsize=5, label='AS Pre Laser')
 xr_errorbar_axes(AS_laser, AS_laser_fluct, axes=ax2, capsize=5, label='AS Laser')
 
 for motor_val in motor_actual:
-    plt.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
+    ax2.axvline(motor_val, color='k', linestyle='--', alpha=0.5)
 
 dropna(ax2)
 
