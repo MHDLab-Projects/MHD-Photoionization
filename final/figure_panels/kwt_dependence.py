@@ -47,7 +47,7 @@ fig, axes = plt.subplots(2, 1, figsize=(3.5,6), sharex=True)
 
 var = 'nK_m3_barrel'
 data=ds_p_stats['{}_mean'.format(var)].pint.to('particle/cm^3').pint.dequantify()
-yerr=ds_p_stats['{}_stderr'.format(var)].pint.to('particle/cm^3').pint.dequantify()
+yerr=ds_p_stats['{}_std'.format(var)].pint.to('particle/cm^3').pint.dequantify()
 line_nK_barrel = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
     data,
@@ -58,7 +58,7 @@ line_nK_barrel = axes[0].errorbar(
 
 var = 'nK_m3_mw_horns'
 data=ds_p_stats['{}_mean'.format(var)].pint.to('particle/cm^3').pint.dequantify()
-yerr=ds_p_stats['{}_stderr'.format(var)].pint.to('particle/cm^3').pint.dequantify()
+yerr=ds_p_stats['{}_std'.format(var)].pint.to('particle/cm^3').pint.dequantify()
 line_nK_mwhorns = axes[0].errorbar(
     ds_p_stats.coords['kwt'], 
     data,
